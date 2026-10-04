@@ -1,6 +1,6 @@
 {% extends 'base.html' %}
 {% load static %}
-{% block title %}Live AI Mock Interview with Aria | CampusLink{% endblock %}
+{% block title %}Live Mock Interview with Priya | CampusLink{% endblock %}
 
 {% block content %}
 <main class="mock-interview-room bg-dark text-white position-relative" style="min-height: calc(100vh - 70px); overflow: hidden;">
@@ -10,16 +10,16 @@
         <div class="d-flex align-items-center gap-3">
             <div class="d-flex align-items-center gap-2">
                 <span class="live-cyan-dot"></span>
-                <strong class="fs-6 text-white tracking-wide" id="interviewerHeaderTitle">NEXUS · AI HUMANOID INTERVIEWER</strong>
+                <strong class="fs-6 text-white tracking-wide" id="interviewerHeaderTitle">PRIYA · SENIOR TECHNICAL HR PARTNER</strong>
             </div>
 
             <!-- Avatar Switcher (Futuristic Humanoid Android vs Human Persona) -->
-            <div class="btn-group btn-group-sm rounded-pill p-1 border border-secondary border-opacity-50" style="background: rgba(30, 41, 59, 0.75);" role="group" aria-label="Avatar Model Switcher">
-                <button type="button" class="btn avatar-selector-btn rounded-pill px-3 py-1 active" id="btnSelectAndroid" title="Futuristic Android Humanoid Assistant">
-                    <i class="bi bi-robot me-1 text-info"></i> Nexus (Android)
+            <div class="btn-group btn-group-sm rounded-pill p-1 border border-secondary border-opacity-50" style="background: rgba(30, 41, 59, 0.75);" role="group" aria-label="Avatar appearance">
+                <button type="button" class="btn avatar-selector-btn rounded-pill px-3 py-1" id="btnSelectAndroid" title="Use alternate avatar appearance">
+                    <i class="bi bi-robot me-1 text-info"></i> Alternate Avatar
                 </button>
-                <button type="button" class="btn avatar-selector-btn rounded-pill px-3 py-1" id="btnSelectHuman" title="Human Interviewer Partner">
-                    <i class="bi bi-person-circle me-1 text-primary"></i> Priya (Human)
+                <button type="button" class="btn avatar-selector-btn rounded-pill px-3 py-1 active" id="btnSelectHuman" title="Priya avatar">
+                    <i class="bi bi-person-circle me-1 text-primary"></i> Priya
                 </button>
             </div>
 
@@ -44,7 +44,7 @@
             <!-- Nexus / Priya Live State Badge -->
             <div class="badge bg-opacity-20 px-3 py-1 rounded-pill d-flex align-items-center gap-2" id="ariaStateBadge" style="background-color: rgba(6, 182, 212, 0.2); color: #22d3ee; border: 1px solid rgba(6, 182, 212, 0.4);">
                 <span class="spinner-grow spinner-grow-sm text-info" role="status" id="ariaStateSpinner"></span>
-                <span id="ariaStateText">Nexus is ready</span>
+                <span id="ariaStateText">Priya is ready</span>
             </div>
         </div>
     </header>
@@ -58,7 +58,7 @@
             <div class="avatar-card position-relative rounded-4 shadow-lg overflow-hidden border border-secondary border-opacity-25" id="avatarCard" style="width: min(94vw, 880px); height: min(70vh, 530px); background: #000;">
                 
                 <!-- High Resolution Base Portrait: Defaults to Futuristic Humanoid Android -->
-                <img src="{% static 'images/humanoid_interviewer.jpg' %}" alt="Nexus - Humanoid AI Mock Interviewer" id="ariaBaseImage" class="w-100 h-100 object-fit-cover transition-all" style="filter: brightness(0.98);">
+                <img src="{% static 'images/aria_interviewer.jpg' %}" alt="Priya, Senior Technical HR Partner" id="ariaBaseImage" class="w-100 h-100 object-fit-cover transition-all" style="filter: brightness(0.98);">
                 
                 <!-- Dynamic Lighting & Studio Atmosphere Overlay -->
                 <div class="position-absolute top-0 start-0 w-100 h-100 pointer-events-none" style="background: linear-gradient(180deg, rgba(15, 23, 42, 0.08) 0%, rgba(15, 23, 42, 0.42) 100%);"></div>
@@ -73,14 +73,14 @@
                 <div class="position-absolute top-0 start-0 p-3 d-flex align-items-center gap-2 pointer-events-none" style="z-index: 5;">
                     <span class="badge bg-dark bg-opacity-80 border border-info border-opacity-50 text-info font-monospace small px-2 py-1 shadow-sm d-flex align-items-center gap-2" id="avatarHudBadge">
                         <span class="live-cyan-dot"></span>
-                        <span id="avatarHudModelText">MODEL: NEXUS-7 ANDROID // VOCAL CADENCE: HUMAN-SYNCHRONIZED</span>
+                        <span id="avatarHudModelText">PRIYA | INTERVIEW COACH</span>
                     </span>
                 </div>
 
                 <!-- Top-Right Status Watermark -->
                 <div class="position-absolute top-0 end-0 p-3 opacity-80 d-flex align-items-center gap-2 pointer-events-none" style="z-index: 5;">
                     <span class="badge text-bg-dark bg-opacity-80 border border-secondary border-opacity-50 text-white small px-2 py-1 shadow-sm font-monospace">
-                        <i class="bi bi-broadcast text-success me-1"></i> LIVE · 60 FPS
+                        <i class="bi bi-broadcast text-success me-1"></i> LIVE SESSION
                     </span>
                 </div>
 
@@ -154,7 +154,7 @@
                     <i class="bi bi-person-fill text-primary me-1"></i> You ({{ student_name }})
                 </span>
                 <span class="badge text-bg-success px-2 py-1 small" id="eyeContactBadge">
-                    <i class="bi bi-eye-fill me-1"></i> Eye Contact: Good
+                    <i class="bi bi-eye-fill me-1"></i> Eye Contact: Waiting for Speech-X
                 </span>
             </div>
 
@@ -168,8 +168,9 @@
 
         <!-- Floating Live Captions & Subtitles Box -->
         <div class="live-captions-container position-absolute bottom-0 start-50 translate-middle-x mb-2 px-4 py-3 rounded-4 text-center border border-secondary border-opacity-50 shadow-lg" id="captionsContainer" style="width: min(90vw, 820px); background: rgba(15, 23, 42, 0.88); backdrop-filter: blur(12px); z-index: 12;">
-            <div class="small text-uppercase tracking-wider text-primary fw-bold mb-1" id="captionSpeaker">Aria</div>
+            <div class="small text-uppercase tracking-wider text-primary fw-bold mb-1" id="captionSpeaker">Priya</div>
             <p class="fs-6 text-light mb-0" id="captionText">"Welcome to CampusLink Mock Interview. Please adjust your audio and click Start when ready."</p>
+            <p class="small text-info text-start text-break mt-2 mb-0 d-none" id="starFeedbackText"></p>
             
             <!-- Live observation telemetry (Fillers, Speaking Pace) -->
             <div class="d-flex justify-content-center align-items-center gap-3 mt-2 pt-2 border-top border-secondary border-opacity-25" id="telemetryRow">
@@ -228,7 +229,7 @@
     <!-- Text Input Tray (Slide up when user clicks keyboard) -->
     <div id="textInputTray" class="position-absolute bottom-0 start-50 translate-middle-x mb-5 p-3 rounded-4 shadow-lg border border-secondary d-none" style="width: min(90vw, 780px); background: rgba(15, 23, 42, 0.96); z-index: 25; margin-bottom: 80px !important;">
         <div class="d-flex justify-content-between align-items-center mb-2">
-            <span class="small text-muted"><i class="bi bi-keyboard text-primary me-1"></i> Type your response to Aria:</span>
+            <span class="small text-muted"><i class="bi bi-keyboard text-primary me-1"></i> Type your response to Priya:</span>
             <button type="button" class="btn-close btn-close-white small" id="btnCloseTextTray"></button>
         </div>
         <div class="input-group">
@@ -246,7 +247,7 @@
         <div class="modal-content border-0 shadow-lg rounded-4 overflow-hidden text-dark">
             <div class="modal-header border-0 pb-0 pt-4 px-4 bg-light">
                 <div class="d-flex align-items-center gap-3">
-                    <img src="{% static 'images/humanoid_interviewer.jpg' %}" alt="Nexus AI" id="setupModalAvatarImg" class="rounded-circle shadow-sm" style="width: 60px; height: 60px; object-fit: cover; border: 2px solid #06b6d4;">
+                    <img src="{% static 'images/aria_interviewer.jpg' %}" alt="Priya" id="setupModalAvatarImg" class="rounded-circle shadow-sm" style="width: 60px; height: 60px; object-fit: cover; border: 2px solid #06b6d4;">
                     <div>
                         <span class="badge text-bg-primary rounded-pill px-3 py-1 mb-1">AI MOCK INTERVIEW</span>
                         <h2 class="h5 fw-bold mb-0">Meet Your AI Mock Interviewer</h2>
@@ -268,16 +269,16 @@
                             <div class="row g-2">
                                 <div class="col-md-6">
                                     <div class="form-check p-2 px-3 rounded-3 border bg-light h-100">
-                                        <input class="form-check-input" type="radio" name="setupAvatarChoice" id="choiceNexus" value="nexus" checked>
+                                        <input class="form-check-input" type="radio" name="setupAvatarChoice" id="choiceNexus" value="nexus">
                                         <label class="form-check-label small fw-bold text-dark d-block" for="choiceNexus">
-                                            🤖 Nexus-7 (Sleek Humanoid Android)
-                                            <span class="d-block text-muted fw-normal" style="font-size: 0.76rem;">Cybernetic vocal engine, glowing audio receptor telemetry</span>
+                                            Alternate avatar appearance
+                                            <span class="d-block text-muted fw-normal" style="font-size: 0.76rem;">Use a different visual style for Priya</span>
                                         </label>
                                     </div>
                                 </div>
                                 <div class="col-md-6">
                                     <div class="form-check p-2 px-3 rounded-3 border bg-light h-100">
-                                        <input class="form-check-input" type="radio" name="setupAvatarChoice" id="choicePriya" value="priya">
+                                        <input class="form-check-input" type="radio" name="setupAvatarChoice" id="choicePriya" value="priya" checked>
                                         <label class="form-check-label small fw-bold text-dark d-block" for="choicePriya">
                                             👩 Priya (Senior Technical HR Partner)
                                             <span class="d-block text-muted fw-normal" style="font-size: 0.76rem;">Warm corporate interviewer with natural behavioral probing</span>
@@ -350,7 +351,7 @@
                     <div class="p-3 bg-light rounded-3 border">
                         <strong class="small d-block mb-2 text-dark"><i class="bi bi-camera-video me-1 text-primary"></i> Camera & Audio Check:</strong>
                         <div class="d-flex flex-wrap align-items-center justify-content-between gap-3">
-                            <span class="small text-muted">Aria observes eye contact, speaking pace, and posture to provide holistic feedback.</span>
+                            <span class="small text-muted">Priya uses your answers and available interview observations to provide feedback.</span>
                             <button type="button" class="btn btn-outline-primary btn-sm fw-semibold" id="btnTestMedia">
                                 <i class="bi bi-shield-check me-1"></i> Allow Camera & Microphone
                             </button>
@@ -363,7 +364,7 @@
             <div class="modal-footer border-0 pt-0 px-4 pb-4">
                 <a href="{% url 'interview_list' %}" class="btn btn-outline-secondary">Cancel</a>
                 <button type="button" class="btn btn-primary btn-lg px-4 fw-bold shadow-sm" id="btnStartCall">
-                    <i class="bi bi-telephone-plus me-1"></i> Start Call with Aria
+                    <i class="bi bi-telephone-plus me-1"></i> Start Call with Priya
                 </button>
             </div>
         </div>
@@ -378,7 +379,7 @@
                 <div>
                     <span class="badge text-bg-warning text-dark fw-bold px-3 py-1 rounded-pill mb-2">INTERVIEW COMPLETE ✦</span>
                     <h2 class="h4 fw-bold mb-1">Performance Evaluation & Feedback Report</h2>
-                    <p class="mb-0 text-white text-opacity-75 small">Comprehensive feedback compiled by Aria for {{ student_name }}</p>
+                    <p class="mb-0 text-white text-opacity-75 small">Personalized interview feedback for {{ student_name }}</p>
                 </div>
                 <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
@@ -386,7 +387,7 @@
             <div class="modal-body p-4" id="feedbackModalBody">
                 <div class="text-center py-5" id="feedbackLoading">
                     <div class="spinner-border text-primary mb-3" style="width: 3rem; height: 3rem;" role="status"></div>
-                    <h3 class="h5 fw-bold">Aria is compiling your personalized evaluation...</h3>
+                    <h3 class="h5 fw-bold">Preparing your personalized evaluation...</h3>
                     <p class="text-muted small">Analyzing vocabulary, STAR structure, eye contact, and communication clarity.</p>
                 </div>
 
@@ -624,14 +625,19 @@ document.addEventListener('DOMContentLoaded', function() {
     let mediaStream = null;
     let recognition = null;
     let silenceTimer = null;
+    let localSpeechEndTimer = null;
     let callTimerInterval = null;
     let secondsRemaining = 15 * 60;
     let totalStudentWords = 0;
     let detectedFillers = 0;
+    let speechXMetrics = {};
+    let speechXActive = false;
+    let speechXSpeechEnded = true;
+    let speechXTurnPending = false;
     let startTime = null;
 
     // AI Avatar Mode: 'nexus' (Futuristic Humanoid Android) or 'priya' (Human Partner)
-    let currentAvatarMode = 'nexus';
+    let currentAvatarMode = 'priya';
 
     // Elements
     const setupModalEl = document.getElementById('setupModal');
@@ -662,6 +668,9 @@ document.addEventListener('DOMContentLoaded', function() {
     const ariaBaseImage = document.getElementById('ariaBaseImage');
     const statWpm = document.getElementById('statWpm');
     const statFillers = document.getElementById('statFillers');
+    const statStar = document.getElementById('statStar');
+    const eyeContactBadge = document.getElementById('eyeContactBadge');
+    const starFeedbackText = document.getElementById('starFeedbackText');
 
     const btnSelectAndroid = document.getElementById('btnSelectAndroid');
     const btnSelectHuman = document.getElementById('btnSelectHuman');
@@ -684,17 +693,17 @@ document.addEventListener('DOMContentLoaded', function() {
         currentAvatarMode = mode;
         if (mode === 'nexus') {
             if (ariaBaseImage) ariaBaseImage.src = "{% static 'images/humanoid_interviewer.jpg' %}";
-            if (interviewerHeaderTitle) interviewerHeaderTitle.textContent = "NEXUS · AI HUMANOID INTERVIEWER";
-            if (avatarHudModelText) avatarHudModelText.textContent = "MODEL: NEXUS-7 ANDROID // VOCAL CADENCE: HUMAN-SYNCHRONIZED";
-            if (ariaStateText && !isSpeaking) ariaStateText.textContent = "Nexus is ready";
+            if (interviewerHeaderTitle) interviewerHeaderTitle.textContent = "PRIYA · SENIOR TECHNICAL HR PARTNER";
+            if (avatarHudModelText) avatarHudModelText.textContent = "PRIYA | INTERVIEW COACH";
+            if (ariaStateText && !isSpeaking) ariaStateText.textContent = "Priya is ready";
             if (btnSelectAndroid) btnSelectAndroid.classList.add('active');
             if (btnSelectHuman) btnSelectHuman.classList.remove('active');
             const setupImg = document.getElementById('setupModalAvatarImg');
             if (setupImg) setupImg.src = "{% static 'images/humanoid_interviewer.jpg' %}";
         } else {
             if (ariaBaseImage) ariaBaseImage.src = "{% static 'images/aria_interviewer.jpg' %}";
-            if (interviewerHeaderTitle) interviewerHeaderTitle.textContent = "PRIYA · AI INTERVIEW PARTNER";
-            if (avatarHudModelText) avatarHudModelText.textContent = "MODEL: PRIYA HUMAN-AVATAR // AUDIO-VISUAL ENGINE";
+            if (interviewerHeaderTitle) interviewerHeaderTitle.textContent = "PRIYA · SENIOR TECHNICAL HR PARTNER";
+            if (avatarHudModelText) avatarHudModelText.textContent = "PRIYA | INTERVIEW COACH";
             if (ariaStateText && !isSpeaking) ariaStateText.textContent = "Priya is ready";
             if (btnSelectAndroid) btnSelectAndroid.classList.remove('active');
             if (btnSelectHuman) btnSelectHuman.classList.add('active');
@@ -812,40 +821,58 @@ document.addEventListener('DOMContentLoaded', function() {
             this.queue = [];
             this.isPlaying = false;
             this.currentAudio = null;
+            this.currentItem = null;
+            this.cancelCurrentPlayback = null;
         }
 
         enqueue(text, emotion = 'neutral', gesture = 'nod') {
-            if (!text || !text.trim()) return;
-            // Split incoming speech into short conversational chunks by punctuation for rapid first-token playback
-            const sentences = text.match(/[^.!?]+[.!?]+(\s+|$)/g) || [text];
-            sentences.forEach(s => {
-                const trimmed = s.trim();
-                if (trimmed) {
-                    this.queue.push({ text: trimmed, emotion, gesture });
+            if (!text || !text.trim()) return Promise.resolve();
+            const sentences = text.match(/[^.!?]+[.!?]+|[^.!?]+$/g) || [text];
+            return new Promise(resolve => {
+                sentences.forEach((sentence, index) => {
+                    const trimmed = sentence.trim();
+                    if (trimmed) {
+                        this.queue.push({
+                            text: trimmed,
+                            emotion,
+                            gesture,
+                            done: index === sentences.length - 1 ? resolve : null
+                        });
+                    }
+                });
+                if (!this.isPlaying) {
+                    this.isPlaying = true;
+                    this.playNext();
                 }
             });
-            if (!this.isPlaying) {
-                this.playNext();
-            }
+        }
+
+        beginSpeaking() {
+            updatePillState('speaking');
+            startLipSyncAnimation();
+        }
+
+        endSpeaking() {
+            stopLipSyncAnimation();
+            if (this.queue.length > 0 && !isPaused) updatePillState('thinking');
         }
 
         async playNext() {
             if (this.queue.length === 0) {
                 this.isPlaying = false;
+                this.currentItem = null;
                 isAiSpeakingNow = false;
                 stopLipSyncAnimation();
-                updatePillState('listening');
-                startStudentListening();
+                if (!isPaused) {
+                    updatePillState('listening');
+                    startStudentListening();
+                }
                 return;
             }
 
-            this.isPlaying = true;
-            isAiSpeakingNow = true;
-            updatePillState('speaking');
-            startLipSyncAnimation();
-
             const item = this.queue.shift();
-            captionSpeaker.textContent = currentAvatarMode === 'nexus' ? 'Nexus · AI Humanoid' : 'Priya · AI Interviewer';
+            this.currentItem = item;
+            captionSpeaker.textContent = 'Priya · Interview Coach';
             captionText.textContent = `"${item.text}"`;
 
             // Micro-gesture and facial expression hook
@@ -853,7 +880,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
             // Try server-synthesized Neural TTS (Azure en-IN-NeerjaNeural or ElevenLabs)
             const playedNeural = await this.playNeuralAudio(item.text);
-            if (!playedNeural) {
+            if (!playedNeural && this.isPlaying) {
                 // Fallback to high-speed client Web Speech with natural conversational cadence
                 await this.playWebSpeech(item.text);
             }
@@ -863,7 +890,21 @@ document.addEventListener('DOMContentLoaded', function() {
                 await new Promise(r => setTimeout(r, 160));
             }
 
+            if (item.done) item.done();
+            this.currentItem = null;
             if (!isPaused && this.isPlaying) {
+                this.playNext();
+            }
+        }
+
+        pause() {
+            if (this.currentAudio) this.currentAudio.pause();
+            stopLipSyncAnimation();
+        }
+
+        resume() {
+            if (this.currentAudio) this.currentAudio.play().catch(() => {});
+            if (this.isPlaying && !this.currentItem && this.queue.length > 0) {
                 this.playNext();
             }
         }
@@ -871,16 +912,32 @@ document.addEventListener('DOMContentLoaded', function() {
         playNeuralAudio(text) {
             return new Promise((resolve) => {
                 const audio = new Audio(`{% url "api_synthesize_tts" %}?text=${encodeURIComponent(text)}`);
+                let settled = false;
+                const finish = (played) => {
+                    if (settled) return;
+                    settled = true;
+                    if (this.currentAudio === audio) this.currentAudio = null;
+                    this.cancelCurrentPlayback = null;
+                    resolve(played);
+                };
                 this.currentAudio = audio;
+                audio.onplay = () => this.beginSpeaking();
                 audio.onended = () => {
-                    this.currentAudio = null;
-                    resolve(true);
+                    this.endSpeaking();
+                    finish(true);
                 };
                 audio.onerror = () => {
-                    this.currentAudio = null;
-                    resolve(false);
+                    this.endSpeaking();
+                    finish(false);
                 };
-                audio.play().catch(() => resolve(false));
+                this.cancelCurrentPlayback = () => {
+                    audio.pause();
+                    finish(false);
+                };
+                audio.play().catch(() => {
+                    this.endSpeaking();
+                    finish(false);
+                });
             });
         }
 
@@ -895,33 +952,37 @@ document.addEventListener('DOMContentLoaded', function() {
 
                 const voices = window.speechSynthesis.getVoices();
                 let voice = null;
-                if (currentAvatarMode === 'nexus') {
-                    // Crisp, articulate humanoid voice
-                    voice = voices.find(v => (v.name.toLowerCase().includes('google') || v.name.toLowerCase().includes('natural') || v.name.toLowerCase().includes('guy') || v.name.toLowerCase().includes('david') || v.name.toLowerCase().includes('george')) && v.lang.startsWith('en')) ||
-                            voices.find(v => v.lang.startsWith('en'));
-                    utterance.rate = 1.0;
-                    utterance.pitch = 1.0;
-                } else {
-                    // Warm conversational female Indian English voice
-                    voice = voices.find(v => v.lang.includes('en-IN') && v.name.toLowerCase().includes('female')) ||
-                            voices.find(v => v.lang.includes('en-IN')) ||
-                            voices.find(v => v.name.toLowerCase().includes('neerja') || v.name.toLowerCase().includes('ananya') || v.name.toLowerCase().includes('samantha') || v.name.toLowerCase().includes('zira') || v.name.toLowerCase().includes('google'));
-                    utterance.rate = 1.02;
-                    utterance.pitch = 1.05;
-                }
+                voice = voices.find(v => v.lang.includes('en-IN') && v.name.toLowerCase().includes('female')) ||
+                    voices.find(v => v.lang.includes('en-IN')) ||
+                    voices.find(v => v.name.toLowerCase().includes('neerja') || v.name.toLowerCase().includes('ananya') || v.name.toLowerCase().includes('samantha') || v.name.toLowerCase().includes('zira') || v.name.toLowerCase().includes('google'));
+                utterance.rate = 1.02;
+                utterance.pitch = 1.05;
 
                 if (voice) utterance.voice = voice;
 
-                utterance.onend = () => resolve(true);
-                utterance.onerror = () => resolve(true);
+                utterance.onstart = () => this.beginSpeaking();
+                utterance.onpause = () => stopLipSyncAnimation();
+                utterance.onresume = () => this.beginSpeaking();
+                utterance.onend = () => {
+                    this.endSpeaking();
+                    resolve(true);
+                };
+                utterance.onerror = () => {
+                    this.endSpeaking();
+                    resolve(true);
+                };
                 window.speechSynthesis.speak(utterance);
             });
         }
 
         stop() {
+            this.queue.forEach(item => item.done && item.done());
             this.queue = [];
             this.isPlaying = false;
+            if (this.currentItem && this.currentItem.done) this.currentItem.done();
+            this.currentItem = null;
             isAiSpeakingNow = false;
+            if (this.cancelCurrentPlayback) this.cancelCurrentPlayback();
             if (this.currentAudio) {
                 try { this.currentAudio.pause(); } catch (e) {}
                 this.currentAudio = null;
@@ -934,13 +995,42 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     const sentencePlayer = new SentenceQueuePlayer();
+    let speechXTurnSequence = 0;
 
     function speakAria(text, emotion = 'neutral', gesture = 'nod') {
-        return new Promise((resolve) => {
-            sentencePlayer.enqueue(text, emotion, gesture);
-            // Resolve quickly to allow concurrent pipelining
-            setTimeout(resolve, 300);
-        });
+        if (speechXActive) {
+            const turnId = `aria-${++speechXTurnSequence}`;
+            return new Promise(resolve => {
+                const onPlaybackStarted = event => {
+                    if (event.detail && event.detail.turn_id === turnId) {
+                        updatePillState('speaking');
+                        startLipSyncAnimation();
+                    }
+                };
+                const onPlaybackEnded = event => {
+                    if (!event.detail || event.detail.turn_id !== turnId) return;
+                    window.removeEventListener('speechx:playback-started', onPlaybackStarted);
+                    window.removeEventListener('speechx:playback-ended', onPlaybackEnded);
+                    stopLipSyncAnimation();
+                    updatePillState('listening');
+                    resolve();
+                };
+                window.addEventListener('speechx:playback-started', onPlaybackStarted);
+                window.addEventListener('speechx:playback-ended', onPlaybackEnded);
+
+                const turnEvent = new CustomEvent('speechx:assistant-turn', {
+                    cancelable: true,
+                    detail: { turn_id: turnId, text, emotion, gesture }
+                });
+                window.dispatchEvent(turnEvent);
+                if (!turnEvent.defaultPrevented) {
+                    window.removeEventListener('speechx:playback-started', onPlaybackStarted);
+                    window.removeEventListener('speechx:playback-ended', onPlaybackEnded);
+                    sentencePlayer.enqueue(text, emotion, gesture).then(resolve);
+                }
+            });
+        }
+        return sentencePlayer.enqueue(text, emotion, gesture);
     }
 
     // 4. Voice Activity Detection (VAD) & Instant Barge-In
@@ -1019,21 +1109,21 @@ document.addEventListener('DOMContentLoaded', function() {
             isAiSpeakingNow = true;
             pillSpeaking.classList.remove('d-none');
             avatarCard.classList.add('speaking');
-            ariaStateText.textContent = 'Aria is speaking...';
+            ariaStateText.textContent = 'Priya is speaking...';
             unifiedPill.style.borderColor = 'rgba(6, 182, 212, 0.75)';
         } else if (state === 'listening') {
             isSpeaking = false;
             isAiSpeakingNow = false;
             pillListening.classList.remove('d-none');
             avatarCard.classList.add('listening');
-            ariaStateText.textContent = 'Aria is listening...';
+            ariaStateText.textContent = 'Priya is listening...';
             unifiedPill.style.borderColor = 'rgba(16, 185, 129, 0.75)';
         } else if (state === 'thinking') {
             isSpeaking = false;
             isAiSpeakingNow = false;
             pillThinking.classList.remove('d-none');
             avatarCard.classList.add('thinking');
-            ariaStateText.textContent = 'Aria is thinking...';
+            ariaStateText.textContent = 'Priya is thinking...';
             unifiedPill.style.borderColor = 'rgba(245, 158, 11, 0.75)';
         } else if (state === 'paused') {
             isSpeaking = false;
@@ -1082,24 +1172,17 @@ document.addEventListener('DOMContentLoaded', function() {
         recognition.lang = 'en-IN'; // Indian English acoustic model
 
         recognition.onresult = function(event) {
-            let interimTranscript = '';
-            let finalTranscript = '';
-
-            for (let i = event.resultIndex; i < event.results.length; ++i) {
-                if (event.results[i].isFinal) {
-                    finalTranscript += event.results[i][0].transcript;
-                } else {
-                    interimTranscript += event.results[i][0].transcript;
-                }
-            }
-
-            const currentSpoken = (finalTranscript || interimTranscript).trim();
+            const currentSpoken = Array.from(event.results)
+                .map(result => result[0].transcript.trim())
+                .filter(Boolean)
+                .join(' ');
             if (currentSpoken) {
                 captionSpeaker.textContent = 'You (Student)';
                 captionText.textContent = `"${currentSpoken}"`;
                 typedAnswerInput.value = currentSpoken;
                 detectFillersAndPace(currentSpoken);
                 resetSilenceTimer();
+                scheduleLocalSpeechEnd();
             }
         };
 
@@ -1108,8 +1191,19 @@ document.addEventListener('DOMContentLoaded', function() {
         };
     }
 
+    function scheduleLocalSpeechEnd() {
+        clearTimeout(localSpeechEndTimer);
+        if (speechXActive) return;
+        localSpeechEndTimer = setTimeout(() => {
+            if (speechXActive || isSpeaking || isPaused || speechXTurnPending || !typedAnswerInput.value.trim()) return;
+            speechXSpeechEnded = true;
+            speechXTurnPending = true;
+            submitAnswer('answer');
+        }, 1800);
+    }
+
     function startStudentListening() {
-        if (recognition && !isSpeaking && !isPaused) {
+        if (recognition && !speechXActive && !isSpeaking && !isPaused) {
             try { recognition.start(); } catch (e) {}
             isListening = true;
             resetSilenceTimer();
@@ -1117,12 +1211,70 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     function stopStudentListening() {
+        clearTimeout(localSpeechEndTimer);
         if (recognition) {
             try { recognition.stop(); } catch (e) {}
             isListening = false;
             clearTimeout(silenceTimer);
         }
     }
+
+    // Speech-X may dispatch this event with {text, metrics} for each final transcript.
+    window.addEventListener('speechx:transcript', function(event) {
+        const detail = event.detail || {};
+        const text = typeof detail.text === 'string' ? detail.text.trim() : '';
+        speechXActive = true;
+        speechXSpeechEnded = false;
+        clearTimeout(localSpeechEndTimer);
+        speechXMetrics = detail.metrics && typeof detail.metrics === 'object' ? detail.metrics : {};
+        stopStudentListening();
+
+        if (text) {
+            typedAnswerInput.value = text;
+            captionSpeaker.textContent = 'You (Student)';
+            captionText.textContent = `"${text}"`;
+        }
+        const fillerCount = Number(speechXMetrics.filler_count ?? speechXMetrics.total_fillers);
+        if (Number.isFinite(fillerCount)) {
+            detectedFillers = Math.max(0, fillerCount);
+            statFillers.innerHTML = `<i class="bi bi-chat-dots text-warning me-1"></i> Fillers: <strong>${detectedFillers}</strong>`;
+        }
+        const eyeContact = Number(speechXMetrics.eye_contact_percent);
+        if (Number.isFinite(eyeContact) && eyeContactBadge) {
+            eyeContactBadge.textContent = `Eye Contact: ${Math.max(0, Math.min(100, eyeContact))}%`;
+        }
+        const pace = Number(speechXMetrics.speaking_pace_wpm ?? speechXMetrics.pace_wpm);
+        if (Number.isFinite(pace)) {
+            statWpm.innerHTML = `<i class="bi bi-speedometer2 text-info me-1"></i> Pace: <strong>${Math.max(0, Math.min(300, pace))} WPM</strong>`;
+        }
+    });
+
+    function handleSpeechXSpeechEnd(event) {
+        if (isSpeaking || isPaused || speechXTurnPending) return;
+        const detail = event.detail || {};
+        const text = typeof detail.text === 'string' ? detail.text.trim() : '';
+        if (text) {
+            typedAnswerInput.value = text;
+            captionSpeaker.textContent = 'You (Student)';
+            captionText.textContent = `"${text}"`;
+        }
+        if (detail.metrics && typeof detail.metrics === 'object') {
+            speechXMetrics = { ...speechXMetrics, ...detail.metrics };
+        }
+        speechXActive = true;
+        speechXSpeechEnded = true;
+        clearTimeout(localSpeechEndTimer);
+        if (!typedAnswerInput.value.trim()) {
+            captionSpeaker.textContent = 'Priya · Interview Coach';
+            captionText.textContent = 'I did not catch a response. Please speak again.';
+            return;
+        }
+        speechXTurnPending = true;
+        submitAnswer('answer');
+    }
+
+    window.addEventListener('speechx:speech_end', handleSpeechXSpeechEnd);
+    window.addEventListener('speech_end', handleSpeechXSpeechEnd);
 
     // 7. Live Captions Toggle Button Hook
     const btnToggleCaptions = document.getElementById('btnToggleCaptions');
@@ -1171,12 +1323,26 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // 10. Submit / Finish Answer
     async function submitAnswer(action = 'answer') {
+        if (action === 'answer' && speechXActive && !speechXSpeechEnded) {
+            captionSpeaker.textContent = 'Priya';
+            captionText.textContent = 'Please finish your response before I reply.';
+            return;
+        }
         stopStudentListening();
         updatePillState('thinking');
 
-        const answerText = typedAnswerInput.value.trim() || "Thank you for the question. In my recent coursework and projects, I focused on applying structured problem solving, continuous integration, and collaborating effectively with my peers to deliver real outcomes.";
-        
-        transcriptHistory.push({ speaker: 'Student', text: answerText, time: new Date() });
+        const answerText = typedAnswerInput.value.trim();
+        if (action === 'answer' && !answerText) {
+            captionSpeaker.textContent = 'Priya · Interview Coach';
+            captionText.textContent = 'I did not catch a response. Please speak or type your answer.';
+            updatePillState('listening');
+            startStudentListening();
+            return;
+        }
+
+        if (answerText) {
+            transcriptHistory.push({ speaker: 'Student', text: answerText, time: new Date() });
+        }
         typedAnswerInput.value = '';
 
         try {
@@ -1192,17 +1358,34 @@ document.addEventListener('DOMContentLoaded', function() {
                     student_answer: answerText,
                     questions: questionsList,
                     transcript: transcriptHistory,
+                    speech_metrics: speechXMetrics,
+                    speechx_active: speechXActive,
+                    speech_end: speechXSpeechEnded,
                     action: action
                 })
             });
 
             const data = await resp.json();
             if (data.success) {
+                speechXTurnPending = false;
+                speechXSpeechEnded = false;
+                if (Array.isArray(data.questions)) questionsList = data.questions;
                 const speech = data.speech_text || data.aria_speech;
-                const activeSpeaker = currentAvatarMode === 'nexus' ? 'Nexus' : 'Priya';
+                const activeSpeaker = 'Priya';
                 transcriptHistory.push({ speaker: activeSpeaker, text: speech, time: new Date() });
                 currentQuestionIndex = data.next_index;
                 updateQuestionDisplay();
+
+                if (data.star_feedback && starFeedbackText) {
+                    const components = data.star_feedback.components || {};
+                    const labels = [['situation', 'S'], ['task', 'T'], ['action', 'A'], ['result', 'R']];
+                    const coverage = labels.map(([key, label]) => `${label}: ${components[key] ? 'covered' : 'add detail'}`).join(' | ');
+                    const coaching = (data.star_feedback.feedback || []).join(' ');
+                    const metrics = (data.star_feedback.metrics_feedback || []).join(' ');
+                    starFeedbackText.textContent = `STAR (${data.star_feedback.score}/4): ${coverage}. ${coaching} ${metrics}`.trim();
+                    starFeedbackText.classList.remove('d-none');
+                    statStar.textContent = `STAR: ${data.star_feedback.score}/4`;
+                }
 
                 await speakAria(speech, data.emotion || 'encouraging', data.gesture || 'nod');
 
@@ -1211,6 +1394,8 @@ document.addEventListener('DOMContentLoaded', function() {
                 }
             }
         } catch (e) {
+            speechXTurnPending = false;
+            if (speechXActive) speechXSpeechEnded = true;
             console.error('Error in Aria turn', e);
         }
     }
@@ -1251,9 +1436,13 @@ document.addEventListener('DOMContentLoaded', function() {
                     transcript: transcriptHistory,
                     observed_metrics: {
                         duration_seconds: (15 * 60) - secondsRemaining,
-                        eye_contact_percent: 88,
                         camera_active: !!mediaStream,
-                        total_fillers: detectedFillers
+                        total_fillers: Number.isFinite(Number(speechXMetrics.filler_count ?? speechXMetrics.total_fillers))
+                            ? Number(speechXMetrics.filler_count ?? speechXMetrics.total_fillers)
+                            : detectedFillers,
+                        ...(speechXMetrics.eye_contact_percent !== undefined && speechXMetrics.eye_contact_percent !== null
+                            ? { eye_contact_percent: Number(speechXMetrics.eye_contact_percent) }
+                            : {})
                     }
                 })
             });
@@ -1422,14 +1611,16 @@ document.addEventListener('DOMContentLoaded', function() {
             btnPauseInterview.innerHTML = '<i class="bi bi-play-fill me-1"></i> Resume';
             btnPauseInterview.classList.replace('btn-outline-warning', 'btn-warning');
             window.speechSynthesis && window.speechSynthesis.pause();
+            sentencePlayer.pause();
             stopStudentListening();
             ariaStateText.textContent = 'Call Paused';
         } else {
             btnPauseInterview.innerHTML = '<i class="bi bi-pause-fill me-1"></i> Pause';
             btnPauseInterview.classList.replace('btn-warning', 'btn-outline-warning');
             window.speechSynthesis && window.speechSynthesis.resume();
-            startStudentListening();
-            ariaStateText.textContent = 'Aria is listening...';
+            sentencePlayer.resume();
+            if (!sentencePlayer.isPlaying) startStudentListening();
+            ariaStateText.textContent = 'Priya is listening...';
         }
     });
 
@@ -1523,9 +1714,9 @@ document.addEventListener('DOMContentLoaded', function() {
             return {
                 mode: 'priya',
                 scale: scale,
-                mouthCenter: { x: offsetX + 0.4990 * renderedW, y: offsetY + 0.5664 * renderedH },
-                mouthCornerL: { x: offsetX + 0.4492 * renderedW, y: offsetY + 0.5615 * renderedH },
-                mouthCornerR: { x: offsetX + 0.5586 * renderedW, y: offsetY + 0.5615 * renderedH },
+                mouthCenter: { x: offsetX + 0.5000 * renderedW, y: offsetY + 0.3780 * renderedH },
+                mouthCornerL: { x: offsetX + 0.4620 * renderedW, y: offsetY + 0.3750 * renderedH },
+                mouthCornerR: { x: offsetX + 0.5420 * renderedW, y: offsetY + 0.3750 * renderedH },
                 leftEye: { x: offsetX + 0.4043 * renderedW, y: offsetY + 0.3232 * renderedH },
                 rightEye: { x: offsetX + 0.5928 * renderedW, y: offsetY + 0.3223 * renderedH }
             };

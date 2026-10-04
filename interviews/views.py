@@ -8,12 +8,14 @@ from django.shortcuts import get_object_or_404, redirect, render
 from django.urls import reverse
 from django.utils import timezone
 
+from accounts.decorators import pro_required
 from applications.models import Application
 from notifications.models import Notification
 from .models import Interview, MockInterviewSession
 from .services import (
     get_aria_greeting,
     get_interview_questions,
+    evaluate_star_feedback,
     generate_aria_follow_up,
     generate_priya_interviewer_turn,
     synthesize_neural_tts,
@@ -32,10 +34,12 @@ def interview_list(request):
         interviews = Interview.objects.all()
     interviews = interviews.select_related('application__student__user', 'application__job', 'application__job__company')
 
-    # Get student's AI mock interview history
-    mock_sessions = MockInterviewSession.objects.filter(user=request.user, status='COMPLETED').order_by('-created_at')[:5]
     membership = getattr(request.user, 'membership', None)
     is_pro = bool(membership and membership.is_active)
+    mock_sessions = (
+        MockInterviewSession.objects.filter(user=request.user, status='COMPLETED').order_by('-created_at')[:5]
+        if is_pro else MockInterviewSession.objects.none()
+    )
 
     return render(request, 'interviews/list.html', {
         'interviews': interviews,
@@ -47,9 +51,9 @@ def interview_list(request):
     })
 
 
-@login_required
+@pro_required
 def ai_mock_interview(request):
-    """Interactive Video-Call AI Mock Interview Room with Aria."""
+    """Interactive video mock interview room led by Priya."""
     membership = getattr(request.user, 'membership', None)
     is_pro = bool(membership and membership.is_active)
     profile = getattr(request.user, 'student_profile', None)
@@ -66,7 +70,7 @@ def ai_mock_interview(request):
     })
 
 
-@login_required
+@pro_required
 def api_start_mock_interview(request):
     """Initialize a new mock interview session and return questions."""
     if request.method != 'POST':
@@ -102,7 +106,7 @@ def api_start_mock_interview(request):
         difficulty=difficulty,
         duration_minutes=duration_minutes,
         status='IN_PROGRESS',
-        transcript=[{'speaker': 'Aria', 'text': greeting, 'time': 0}]
+        transcript=[{'speaker': 'Priya', 'text': greeting, 'time': 0}]
     )
 
     return JsonResponse({
@@ -116,9 +120,9 @@ def api_start_mock_interview(request):
     })
 
 
-@login_required
+@pro_required
 def api_aria_turn(request):
-    """Handle student answer or control action and generate Aria's response."""
+    """Handle student answer or control action and generate Priya's response."""
     if request.method != 'POST':
         return JsonResponse({'error': 'Method not allowed'}, status=405)
 
@@ -135,14 +139,29 @@ def api_aria_turn(request):
 
     student_answer = data.get('student_answer', '').strip()
     questions = data.get('questions', [])
+    if not isinstance(questions, list) or not questions:
+        questions = get_interview_questions('Software Engineer Intern', 'Tech Product Company', 'HR', 'BEGINNER')
     transcript = data.get('transcript', [])
     action = data.get('action', 'answer')
+    if action == 'answer' and data.get('speechx_active') and data.get('speech_end') is not True:
+        return JsonResponse({
+            'success': False,
+            'error': 'WAIT_FOR_SPEECH_END',
+            'message': 'The response is still being transcribed.',
+        }, status=409)
+    if action == 'answer' and not student_answer:
+        return JsonResponse({'success': False, 'error': 'Please provide an answer before continuing.'}, status=400)
 
     session = MockInterviewSession.objects.filter(pk=session_id, user=request.user).first()
-    role_target = session.role_target if session else "Software Engineer Intern"
-    interview_type = session.interview_type if session else "HR"
-    difficulty = session.difficulty if session else "BEGINNER"
+    if not session:
+        return JsonResponse({'success': False, 'error': 'Interview session not found.'}, status=404)
+    role_target = session.role_target
+    company_type = session.company_type
+    interview_type = session.interview_type
+    difficulty = session.difficulty
     user_name = request.user.first_name or request.user.username
+    speech_metrics = data.get('speech_metrics', {})
+    star_feedback = None
 
     emotion = "neutral"
     gesture = "none"
@@ -182,8 +201,10 @@ def api_aria_turn(request):
             difficulty=difficulty,
             transcript=transcript,
             current_question=current_q,
-            student_answer=student_answer
+            student_answer=student_answer,
+            speech_metrics=speech_metrics
         )
+        star_feedback = evaluate_star_feedback(student_answer, speech_metrics)
         follow_up = turn_data.get('speech_text', '')
         emotion = turn_data.get('emotion', 'encouraging')
         gesture = turn_data.get('gesture', 'nod')
@@ -204,6 +225,38 @@ def api_aria_turn(request):
             ]
             aria_speech = conversational_transitions[current_index % len(conversational_transitions)]
 
+        updated_questions = list(questions)
+        next_difficulty = difficulty
+        if next_q and star_feedback:
+            difficulty_levels = ['BEGINNER', 'INTERMEDIATE', 'ADVANCED']
+            level_index = difficulty_levels.index(difficulty) if difficulty in difficulty_levels else 0
+            if star_feedback['score'] >= 3:
+                level_index = min(level_index + 1, len(difficulty_levels) - 1)
+            elif star_feedback['score'] <= 1:
+                level_index = max(level_index - 1, 0)
+            next_difficulty = difficulty_levels[level_index]
+            if next_difficulty != difficulty:
+                adaptive_questions = get_interview_questions(
+                    role_target, company_type, interview_type, next_difficulty
+                )
+                previously_asked = set(updated_questions[:next_index])
+                adaptive_question = next(
+                    (question for question in adaptive_questions if question not in previously_asked),
+                    next_q,
+                )
+                if next_index < len(updated_questions):
+                    updated_questions[next_index] = adaptive_question
+                else:
+                    updated_questions.append(adaptive_question)
+                next_q = adaptive_question
+                session.difficulty = next_difficulty
+                session.save(update_fields=['difficulty', 'updated_at'])
+        else:
+            updated_questions = list(questions)
+
+    if action in {'repeat', 'skip'}:
+        updated_questions = list(questions)
+
     return JsonResponse({
         'success': True,
         'aria_speech': aria_speech,
@@ -211,13 +264,17 @@ def api_aria_turn(request):
         'emotion': emotion,
         'gesture': gesture,
         'internal_score_note': internal_score_note,
+        'star_feedback': star_feedback,
+        'speech_metrics': star_feedback['metrics'] if star_feedback else {},
+        'difficulty': session.difficulty,
+        'questions': updated_questions,
         'next_question': next_q,
         'is_last': is_last,
         'next_index': next_index,
     })
 
 
-@login_required
+@pro_required
 def api_synthesize_tts(request):
     """Synthesize natural Indian-English female voice audio via Azure Speech / ElevenLabs."""
     text = request.GET.get('text', '').strip()
@@ -230,7 +287,7 @@ def api_synthesize_tts(request):
     return HttpResponse(status=204)  # No content -> client seamlessly uses local Web Speech
 
 
-@login_required
+@pro_required
 def api_avatar_session(request):
     """Negotiate or provide streaming WebRTC avatar session credentials (HeyGen / D-ID)."""
     if request.method != 'POST':
@@ -240,7 +297,7 @@ def api_avatar_session(request):
     return JsonResponse(session_data)
 
 
-@login_required
+@pro_required
 def api_finish_mock_interview(request):
     """Compute and save comprehensive feedback report for the session."""
     if request.method != 'POST':
@@ -297,7 +354,7 @@ def api_finish_mock_interview(request):
     })
 
 
-@login_required
+@pro_required
 def mock_interview_report(request, session_id):
     """Render dedicated feedback and evaluation report for a mock interview."""
     session = get_object_or_404(MockInterviewSession, pk=session_id, user=request.user)

@@ -15,12 +15,12 @@
         </div>
     </div>
 
-    <!-- AI MOCK INTERVIEW WITH ARIA HERO BANNER -->
+    <!-- AI MOCK INTERVIEW WITH PRIYA HERO BANNER -->
     <div class="card border-0 shadow-sm rounded-4 p-4 mb-4 text-white overflow-hidden position-relative" style="background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);">
         <div class="row align-items-center g-4 position-relative z-1">
             <div class="col-md-3 text-center text-md-start">
                 <div class="position-relative d-inline-block">
-                    <img src="{% static 'images/aria_interviewer.jpg' %}" alt="Aria Interviewer" class="rounded-4 shadow-lg border border-secondary border-opacity-50" style="width: 140px; height: 140px; object-fit: cover;">
+                    <img src="{% static 'images/aria_interviewer.jpg' %}" alt="Priya, Senior Technical HR Partner" class="rounded-4 shadow-lg border border-secondary border-opacity-50" style="width: 140px; height: 140px; object-fit: cover;">
                     <span class="position-absolute bottom-0 end-0 badge text-bg-success rounded-pill px-2 py-1 shadow" style="font-size: 0.75rem;">
                         <i class="bi bi-circle-fill me-1" style="font-size: 7px;"></i> LIVE AI
                     </span>
@@ -28,28 +28,34 @@
             </div>
             <div class="col-md-6">
                 <div class="d-flex align-items-center gap-2 mb-2">
-                    <span class="badge text-bg-warning text-dark fw-bold px-3 py-1 rounded-pill">AI AVATAR · ARIA</span>
+                    <span class="badge text-bg-warning text-dark fw-bold px-3 py-1 rounded-pill">PRIYA · TECHNICAL HR PARTNER</span>
                     <span class="badge text-bg-primary-subtle text-primary rounded-pill px-2 py-1 small">Voice & Video</span>
                 </div>
                 <h2 class="h4 fw-bold text-white mb-2">Practice Live Video Call Mock Interview</h2>
                 <p class="text-light text-opacity-75 small mb-0">
-                    Conduct a realistic video call with Aria. Speak naturally by voice, receive live eye contact & filler word tracking, and get an immediate STAR feedback evaluation report.
+                    Practice a realistic interview with Priya, receive STAR coaching, and review available speaking and eye-contact observations.
                 </p>
             </div>
             <div class="col-md-3 text-center text-md-end">
+                {% if is_pro %}
                 <a href="{% url 'ai_mock_interview' %}" class="btn btn-primary btn-lg px-4 py-3 fw-bold rounded-pill shadow-sm d-inline-flex align-items-center justify-content-center">
-                    <i class="bi bi-camera-video me-2"></i> Start with Aria
+                    <i class="bi bi-camera-video me-2"></i> Start with Priya
                 </a>
+                {% else %}
+                <a href="{% url 'pro_checkout' %}" class="btn btn-warning btn-lg px-4 py-3 fw-bold rounded-pill shadow-sm d-inline-flex align-items-center justify-content-center">
+                    <i class="bi bi-lock-fill me-2"></i> Unlock with PRO
+                </a>
+                {% endif %}
             </div>
         </div>
     </div>
 
     <!-- Recent Mock Sessions -->
-    {% if mock_sessions %}
+    {% if is_pro and mock_sessions %}
     <section class="panel-card mb-4">
         <div class="section-heading">
             <div>
-                <span class="eyebrow">Aria evaluation history</span>
+                <span class="eyebrow">Priya evaluation history</span>
                 <h2>Your Recent AI Mock Interviews</h2>
             </div>
             <a href="{% url 'ai_mock_interview' %}" class="btn btn-outline-primary btn-sm">New Session</a>
@@ -139,7 +145,7 @@
         <div class="empty-interview">
             <i class="bi bi-calendar2-x"></i>
             <h2 class="h5 fw-bold">No recruiter interviews scheduled yet</h2>
-            <p class="text-muted mb-0">Scheduled interviews will appear here with joining details. In the meantime, sharpen your skills with Aria above!</p>
+            <p class="text-muted mb-0">Scheduled interviews will appear here with joining details. In the meantime, sharpen your skills with Priya above!</p>
         </div>
         {% endfor %}
     </div>

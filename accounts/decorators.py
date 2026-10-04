@@ -41,6 +41,7 @@ def pro_required(view_func):
                 request.headers.get('x-requested-with') == 'XMLHttpRequest'
                 or request.path.startswith('/api/')
                 or request.content_type == 'application/json'
+                or bool(request.resolver_match and (request.resolver_match.url_name or '').startswith('api_'))
             )
             if is_ajax_or_api:
                 from django.http import JsonResponse
