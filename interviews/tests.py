@@ -1,0 +1,330 @@
+import json
+from django.contrib.auth import get_user_model
+from django.test import Client, TestCase
+from django.urls import reverse
+
+User = get_user_model()
+
+from accounts.models import Membership
+from students.models import StudentProfile
+from interviews.models import MockInterviewSession
+from interviews.services import (
+    get_aria_greeting,
+    get_interview_questions,
+    generate_aria_follow_up,
+    generate_priya_interviewer_turn,
+    synthesize_neural_tts,
+    create_avatar_streaming_session,
+    generate_mock_interview_report,
+)
+
+
+class MockInterviewSessionModelTest(TestCase):
+    def setUp(self):
+        self.user = User.objects.create_user(
+            username='rohit_sharma',
+            email='rohit@campuslink.edu',
+            password='Password@123',
+            first_name='Rohit',
+            last_name='Sharma',
+        )
+
+    def test_create_mock_interview_session(self):
+        session = MockInterviewSession.objects.create(
+            user=self.user,
+            role_target='Software Engineer Intern',
+            company_type='Tech Startup',
+            interview_type='TECHNICAL',
+            difficulty='INTERMEDIATE',
+            duration_minutes=20,
+            overall_score=8.5,
+            communication_score=8.0,
+            content_score=9.0,
+            confidence_score=8.5,
+            body_language_score=8.5,
+            strengths=['Great structure', 'Clear speech', 'Relevant project examples'],
+            areas_for_improvement=['Reduce filler words', 'Add more metrics', 'Maintain eye contact'],
+            sample_answer={'question': 'Tell me about yourself', 'better_star_answer': 'STAR example'},
+            practice_plan=[{'day': 1, 'task': 'Practice STAR framework'}],
+            transcript=[{'speaker': 'Aria', 'text': 'Hello Rohit!'}],
+            observations={'filler_count': 2, 'speaking_pace_wpm': 130},
+            status='COMPLETED',
+        )
+        self.assertEqual(session.user.first_name, 'Rohit')
+        self.assertEqual(session.overall_score, 8.5)
+        self.assertEqual(len(session.strengths), 3)
+        self.assertEqual(session.status, 'COMPLETED')
+        self.assertIn('rohit_sharma', str(session))
+
+
+class AriaMockInterviewViewsTest(TestCase):
+    def setUp(self):
+        self.client = Client()
+        self.user = User.objects.create_user(
+            username='ananya_sen',
+            email='ananya@campuslink.edu',
+            password='Password@123',
+            first_name='Ananya',
+            last_name='Sen',
+        )
+        self.student_profile = StudentProfile.objects.create(
+            user=self.user,
+            department='Computer Science',
+            degree='B.Tech',
+            cgpa=9.1,
+            graduation_year=2026,
+        )
+        self.membership = Membership.objects.create(
+            user=self.user,
+            plan='PRO_MONTHLY',
+            status='ACTIVE',
+        )
+
+    def test_anonymous_user_redirected_from_mock_room(self):
+        response = self.client.get(reverse('ai_mock_interview'))
+        self.assertEqual(response.status_code, 302)
+        self.assertIn('/login/', response.url)
+
+    def test_authenticated_student_can_access_mock_room(self):
+        self.client.login(username='ananya_sen', password='Password@123')
+        response = self.client.get(reverse('ai_mock_interview'))
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, 'Aria')
+        self.assertContains(response, 'Ananya')
+        self.assertContains(response, 'CampusLink')
+        self.assertTemplateUsed(response, 'interviews/mock_room.html')
+
+    def test_api_start_mock_interview(self):
+        self.client.login(username='ananya_sen', password='Password@123')
+        payload = {
+            'role_target': 'Full Stack Developer Intern',
+            'company_type': 'FinTech Leader',
+            'interview_type': 'TECHNICAL',
+            'difficulty': 'INTERMEDIATE',
+            'duration_minutes': 20,
+        }
+        response = self.client.post(
+            reverse('api_start_mock_interview'),
+            data=json.dumps(payload),
+            content_type='application/json',
+        )
+        self.assertEqual(response.status_code, 200)
+        data = response.json()
+        self.assertTrue(data['success'])
+        self.assertIn('session_id', data)
+        self.assertIn('Ananya', data['greeting'])
+        self.assertIn('Full Stack Developer Intern', data['greeting'])
+        self.assertTrue(len(data['questions']) > 0)
+
+        # Verify DB session created
+        session = MockInterviewSession.objects.get(pk=data['session_id'])
+        self.assertEqual(session.user, self.user)
+        self.assertEqual(session.interview_type, 'TECHNICAL')
+        self.assertEqual(session.status, 'IN_PROGRESS')
+
+    def test_api_aria_turn_regular_answer(self):
+        self.client.login(username='ananya_sen', password='Password@123')
+        session = MockInterviewSession.objects.create(
+            user=self.user,
+            role_target='Software Engineer Intern',
+            company_type='Tech Firm',
+            interview_type='HR',
+            difficulty='BEGINNER',
+            status='IN_PROGRESS',
+        )
+        payload = {
+            'session_id': session.pk,
+            'current_index': 0,
+            'student_answer': 'I am a final-year CS student passionate about building scalable web applications. Recently I built a real-time collaboration tool using Django and WebSockets.',
+            'questions': ['Tell me about yourself.', 'What is your greatest technical strength?'],
+            'transcript': [{'speaker': 'Aria', 'text': 'Tell me about yourself.'}],
+            'action': 'answer',
+        }
+        response = self.client.post(
+            reverse('api_aria_turn'),
+            data=json.dumps(payload),
+            content_type='application/json',
+        )
+        self.assertEqual(response.status_code, 200)
+        data = response.json()
+        self.assertTrue(data['success'])
+        self.assertIn('aria_speech', data)
+        self.assertEqual(data['next_question'], 'What is your greatest technical strength?')
+        self.assertFalse(data['is_last'])
+
+    def test_api_aria_turn_repeat_question(self):
+        self.client.login(username='ananya_sen', password='Password@123')
+        session = MockInterviewSession.objects.create(
+            user=self.user,
+            role_target='Data Analyst Intern',
+            company_type='Analytics Firm',
+            interview_type='BEHAVIORAL',
+            difficulty='INTERMEDIATE',
+        )
+        payload = {
+            'session_id': session.pk,
+            'current_index': 1,
+            'student_answer': '',
+            'questions': ['Tell me about yourself.', 'Describe a challenging project you solved with data.'],
+            'transcript': [],
+            'action': 'repeat',
+        }
+        response = self.client.post(
+            reverse('api_aria_turn'),
+            data=json.dumps(payload),
+            content_type='application/json',
+        )
+        self.assertEqual(response.status_code, 200)
+        data = response.json()
+        self.assertIn('repeat the question', data['aria_speech'])
+        self.assertEqual(data['next_question'], 'Describe a challenging project you solved with data.')
+
+    def test_api_aria_turn_skip_question(self):
+        self.client.login(username='ananya_sen', password='Password@123')
+        session = MockInterviewSession.objects.create(
+            user=self.user,
+            role_target='Product Intern',
+            company_type='Startup',
+            interview_type='CASE',
+            difficulty='ADVANCED',
+        )
+        payload = {
+            'session_id': session.pk,
+            'current_index': 0,
+            'student_answer': '',
+            'questions': ['Question 1', 'Question 2'],
+            'transcript': [],
+            'action': 'skip',
+        }
+        response = self.client.post(
+            reverse('api_aria_turn'),
+            data=json.dumps(payload),
+            content_type='application/json',
+        )
+        self.assertEqual(response.status_code, 200)
+        data = response.json()
+        self.assertEqual(data['next_question'], 'Question 2')
+
+    def test_api_finish_mock_interview_and_report_view(self):
+        self.client.login(username='ananya_sen', password='Password@123')
+        session = MockInterviewSession.objects.create(
+            user=self.user,
+            role_target='Software Engineer Intern',
+            company_type='Enterprise Tech',
+            interview_type='TECHNICAL',
+            difficulty='INTERMEDIATE',
+            status='IN_PROGRESS',
+        )
+        transcript = [
+            {'speaker': 'Aria', 'text': 'Tell me about yourself.'},
+            {
+                'speaker': 'Student',
+                'text': 'I am a CS student at BPUT. In my last internship, I created an automated test pipeline that cut release cycle times by 30 percent. My main technologies are Python, Django, and PostgreSQL.',
+            },
+            {'speaker': 'Aria', 'text': 'What was your biggest technical challenge?'},
+            {
+                'speaker': 'Student',
+                'text': 'We faced severe database lockups during concurrent batch updates. I restructured the queries to use chunked transactions with Redis caching, which resolved the latency spikes.',
+            },
+        ]
+        payload = {
+            'session_id': session.pk,
+            'transcript': transcript,
+            'observed_metrics': {
+                'filler_count': 1,
+                'words_spoken': 75,
+                'duration_seconds': 60,
+                'eye_contact_ratio': 85,
+                'posture_rating': 'Solid',
+                'confidence_rating': 'High',
+            },
+        }
+        response = self.client.post(
+            reverse('api_finish_mock_interview'),
+            data=json.dumps(payload),
+            content_type='application/json',
+        )
+        self.assertEqual(response.status_code, 200)
+        data = response.json()
+        self.assertTrue(data['success'])
+        report = data['report']
+
+        self.assertGreaterEqual(report['overall_score'], 1.0)
+        self.assertLessEqual(report['overall_score'], 10.0)
+        self.assertEqual(len(report['strengths']), 3)
+        self.assertEqual(len(report['areas_for_improvement']), 3)
+        self.assertIn('STAR', report['sample_answer'])
+        self.assertIn('Situation', report['sample_answer'])
+
+        # Now test the report view renders
+        report_url = data['report_url']
+        report_response = self.client.get(report_url)
+        self.assertEqual(report_response.status_code, 200)
+        self.assertContains(report_response, 'Interview Performance Report')
+        self.assertContains(report_response, '7-Day Practice Plan')
+        self.assertContains(report_response, 'Aria')
+
+    def test_api_synthesize_tts_fallback_or_content(self):
+        self.client.force_login(self.user)
+        resp = self.client.get(reverse('api_synthesize_tts'), {'text': 'Hello world'})
+        # Returns 204 (fallback to browser speech) or 200 (if Azure/ElevenLabs key present)
+        self.assertIn(resp.status_code, [200, 204])
+
+    def test_api_avatar_session_endpoint(self):
+        self.client.force_login(self.user)
+        resp = self.client.post(reverse('api_avatar_session'), {'provider': 'heygen'})
+        self.assertEqual(resp.status_code, 200)
+        data = resp.json()
+        self.assertIn('provider', data)
+        self.assertTrue('fallback' in data or 'success' in data)
+
+
+class AriaServicesTest(TestCase):
+    def test_greeting_format(self):
+        greeting = get_aria_greeting('Rahul', 'Data Science Intern', 'AI Labs', 'TECHNICAL', 'Intermediate')
+        self.assertIn('Rahul', greeting)
+        self.assertIn('Data Science Intern', greeting)
+        self.assertIn('AI Labs', greeting)
+        self.assertIn('TECHNICAL', greeting)
+
+    def test_question_banks_return_questions(self):
+        for itype in ['HR', 'TECHNICAL', 'BEHAVIORAL', 'CASE']:
+            for diff in ['BEGINNER', 'INTERMEDIATE', 'ADVANCED']:
+                questions = get_interview_questions('Software Engineer', 'Big Tech', itype, diff)
+                self.assertGreaterEqual(len(questions), 4)
+                for q in questions:
+                    self.assertIsInstance(q, str)
+                    self.assertGreater(len(q), 10)
+
+    def test_generate_aria_follow_up_length_and_professionalism(self):
+        follow_up = generate_aria_follow_up(
+            transcript=[],
+            current_question='Tell me about yourself.',
+            student_answer='I love programming in Python and built a full stack app for campus event registrations.',
+            role_target='Backend Intern',
+            interview_type='HR',
+            difficulty='BEGINNER',
+        )
+        self.assertIsInstance(follow_up, str)
+        self.assertTrue(len(follow_up) > 20)
+        # Verify it doesn't lecture (under 30s speaking time ~ 60-80 words)
+        words = follow_up.split()
+        self.assertLess(len(words), 80)
+
+    def test_priya_interviewer_structured_turn(self):
+        turn = generate_priya_interviewer_turn(
+            user_name='Rohit',
+            role_target='Software Engineer Intern',
+            interview_type='TECHNICAL',
+            difficulty='BEGINNER',
+            transcript=[],
+            current_question='Tell me about yourself.',
+            student_answer='I built a full-stack Django and React application with Redis caching and Docker.'
+        )
+        self.assertIn('speech_text', turn)
+        self.assertIn('emotion', turn)
+        self.assertIn('gesture', turn)
+        self.assertIn('internal_score_note', turn)
+        self.assertIn(turn['emotion'], ['neutral', 'smile', 'curious', 'serious', 'encouraging'])
+        self.assertIn(turn['gesture'], ['none', 'nod', 'explain', 'emphasize'])
+        self.assertTrue(len(turn['speech_text']) > 15)

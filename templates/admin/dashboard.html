@@ -1,0 +1,91 @@
+{% extends 'base.html' %}
+{% block title %}Admin Dashboard | CAMPUSLINK{% endblock %}
+{% block content %}
+<div class="admin-advanced-bg">
+    <div class="admin-grid-overlay"></div>
+    <div class="admin-glow orb-1"></div>
+    <div class="admin-glow orb-2"></div>
+    
+<main class="container py-5 position-relative z-1"><div class="d-flex flex-wrap justify-content-between align-items-center gap-3 mb-4"><div><p class="text-uppercase text-primary small fw-bold mb-1">Administration</p><h1 class="fw-bold mb-1">Admin Dashboard</h1><p class="text-muted mb-0">Manage the CampusLink platform from one secure workspace.</p></div><a href="{% url 'admin:index' %}" class="btn btn-primary"><i class="bi bi-grid-3x3-gap me-2"></i>Open Management Console</a></div><div class="row g-4"><div class="col-md-6 col-lg-4"><a class="admin-action-card card h-100 p-4 text-decoration-none" href="{% url 'admin:accounts_user_changelist' %}"><i class="bi bi-people fs-2 text-primary mb-3"></i><h2 class="h5 fw-bold text-dark">Manage users</h2><p class="text-muted mb-0">Review accounts, roles, and access through the management console.</p><span class="admin-action-link">Open users <i class="bi bi-arrow-up-right"></i></span></a></div><div class="col-md-6 col-lg-4"><div class="admin-action-card card h-100 p-4"><i class="bi bi-clipboard-data fs-2 text-primary mb-3"></i><h2 class="h5 fw-bold text-dark">Manage registrations</h2><p class="text-muted mb-3">View and update submitted student registrations and profiles.</p><a class="admin-action-link" href="{% url 'admin:students_studentprofile_changelist' %}">Open registrations <i class="bi bi-arrow-up-right"></i></a><span class="admin-action-secondary"><a href="{% url 'admin:applications_application_changelist' %}">View applications <i class="bi bi-arrow-up-right"></i></a></span></div></div><div class="col-md-6 col-lg-4"><a class="admin-action-card card h-100 p-4 text-decoration-none" href="{% url 'admin:index' %}"><i class="bi bi-sliders fs-2 text-primary mb-3"></i><h2 class="h5 fw-bold text-dark">Content and settings</h2><p class="text-muted mb-0">Add, edit, or remove platform content and website records.</p><span class="admin-action-link">Open settings <i class="bi bi-arrow-up-right"></i></span></a></div><div class="col-12"><a href="{% url 'admin:accounts_membership_changelist' %}" class="premium-admin-card position-relative shadow-sm transition-all text-decoration-none d-block"><div><span class="pro-mini-badge">PRO MANAGEMENT</span><h2>Payments & Memberships</h2><p>Review membership state and manage provider-verified subscriptions from the admin console.</p></div><div class="premium-admin-stats"><span><strong>{{ pro_user_count }}</strong>PRO users</span><span><strong>{{ active_subscription_count }}</strong>Active subscriptions</span><span><strong>{{ monthly_subscription_count }}</strong>Monthly</span><span><strong>{{ annual_subscription_count }}</strong>Annual</span></div><span class="btn btn-primary">Manage memberships <i class="bi bi-arrow-up-right ms-1"></i></span></a></div>
+    
+    <div class="col-12 mb-2">
+        <div class="admin-toolbar-card card border-0 shadow-sm overflow-hidden">
+            <div class="d-flex flex-wrap justify-content-between align-items-center gap-3 p-4">
+                <a href="{% url 'admin:accounts_membership_changelist' %}" class="text-decoration-none text-reset flex-grow-1">
+                    <div>
+                        <p class="text-uppercase text-primary small fw-bold mb-2">PRO management</p>
+                        <h2 class="h3 fw-bold mb-1">Payments & Memberships</h2>
+                        <p class="mb-0 text-muted">Review membership state and manage provider-verified subscriptions from the admin console.</p>
+                    </div>
+                </a>
+                <div class="d-flex gap-3 align-items-center flex-wrap">
+                    <div class="d-flex align-items-center gap-3 text-center">
+                        <div>
+                            <div class="h2 mb-0 fw-bold">{{ pro_user_count }}</div>
+                            <small class="text-muted text-uppercase">PRO users</small>
+                        </div>
+                        <div>
+                            <div class="h2 mb-0 fw-bold">{{ active_subscription_count }}</div>
+                            <small class="text-muted text-uppercase">Active subscriptions</small>
+                        </div>
+                        <div>
+                            <div class="h2 mb-0 fw-bold">{{ monthly_subscription_count }}</div>
+                            <small class="text-muted text-uppercase">Monthly</small>
+                        </div>
+                        <div>
+                            <div class="h2 mb-0 fw-bold">{{ annual_subscription_count }}</div>
+                            <small class="text-muted text-uppercase">Annual</small>
+                        </div>
+                    </div>
+                    <a href="{% url 'admin:accounts_membership_changelist' %}" class="btn btn-primary px-4 py-2 fw-semibold">Manage memberships <i class="bi bi-arrow-up-right ms-1"></i></a>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Advanced Features Section -->
+    <div class="row g-4 mt-2">
+        <div class="col-lg-8">
+            <div class="card admin-feature-card h-100 p-4 border-0 shadow-sm">
+                <div class="d-flex justify-content-between align-items-center mb-4">
+                    <h3 class="h5 fw-bold mb-0">System Overview</h3>
+                    <span class="badge {% if maintenance_mode %}bg-warning bg-opacity-10 text-warning{% else %}bg-success bg-opacity-10 text-success{% endif %} rounded-pill px-3 py-2"><i class="bi bi-circle-fill me-1" style="font-size: 8px;"></i> {% if maintenance_mode %}Maintenance Mode{% else %}All Systems Operational{% endif %}</span>
+                </div>
+                <div class="row g-3">
+                    <div class="col-sm-4">
+                        <div class="admin-stat-box p-3 rounded-3 bg-light bg-opacity-50 border border-light-subtle h-100 text-center transition-all">
+                            <i class="bi bi-cpu fs-3 text-primary mb-2"></i>
+                            <h4 class="h6 text-muted mb-1">Server Load</h4>
+                            <p class="fs-4 fw-bold mb-0 text-dark">24%</p>
+                        </div>
+                    </div>
+                    <div class="col-sm-4">
+                        <div class="admin-stat-box p-3 rounded-3 bg-light bg-opacity-50 border border-light-subtle h-100 text-center transition-all">
+                            <i class="bi bi-hdd-network fs-3 text-info mb-2"></i>
+                            <h4 class="h6 text-muted mb-1">Database</h4>
+                            <p class="fs-4 fw-bold mb-0 text-dark">12ms</p>
+                        </div>
+                    </div>
+                    <div class="col-sm-4">
+                        <div class="admin-stat-box p-3 rounded-3 bg-light bg-opacity-50 border border-light-subtle h-100 text-center transition-all">
+                            <i class="bi bi-shield-check fs-3 text-success mb-2"></i>
+                            <h4 class="h6 text-muted mb-1">Security</h4>
+                            <p class="fs-4 fw-bold mb-0 text-dark">Active</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-4">
+            <div class="card admin-feature-card h-100 p-4 border-0 shadow-sm">
+                <h3 class="h5 fw-bold mb-4">Quick Actions</h3>
+                <div class="d-flex flex-column gap-3">
+                    <a href="{% url 'admin_send_announcement' %}" class="btn btn-light border text-start py-2 fw-medium btn-hover-primary"><i class="bi bi-envelope-paper text-primary me-2"></i> Send Announcement</a>
+                    <a href="{% url 'admin_export_data_report' %}" class="btn btn-light border text-start py-2 fw-medium btn-hover-info"><i class="bi bi-file-earmark-arrow-down text-info me-2"></i> Export Data Report</a>
+                    <a href="{% url 'admin_toggle_maintenance' %}" class="btn btn-light border text-start py-2 fw-medium btn-hover-danger"><i class="bi bi-exclamation-triangle text-danger me-2"></i> {% if maintenance_mode %}Disable Maintenance{% else %}System Maintenance{% endif %}</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</main>
+</div>
+{% endblock %}

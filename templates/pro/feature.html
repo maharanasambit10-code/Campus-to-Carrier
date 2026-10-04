@@ -1,0 +1,96 @@
+{% extends 'base.html' %}
+{% block title %}{{ feature_name }} | CampusLinkLearn PRO{% endblock %}
+{% block content %}
+<main class="pro-feature-page py-5">
+    <div class="container">
+        <div class="pro-feature-shell {% if not membership.is_active %}is-locked{% endif %} card border-0 shadow-sm rounded-4 p-4 p-md-5 text-center mx-auto" style="max-width: 760px;">
+            <div class="mb-3">
+                <span class="badge text-bg-warning text-dark fw-bold px-3 py-1 rounded-pill">PRO ✦</span>
+            </div>
+            <span class="text-primary fw-semibold small text-uppercase tracking-wider">Advanced Career Intelligence</span>
+            <h1 class="h2 fw-bold text-dark mt-2 mb-3">{{ feature_name }}</h1>
+
+            {% if membership.is_active %}
+                <p class="text-muted fs-6 mb-4">{{ feature_desc }}</p>
+
+                <div class="alert alert-success d-inline-flex align-items-center gap-2 px-4 py-2 rounded-pill mx-auto mb-4">
+                    <i class="bi bi-check-circle-fill fs-5 text-success"></i>
+                    <strong class="text-success">PRO feature unlocked</strong>
+                    <span class="text-muted small">· Unlimited Access Enabled</span>
+                </div>
+
+                <div class="d-grid gap-2 d-sm-flex justify-content-sm-center mb-4">
+                    <a href="{% url feature_url_name %}" class="btn btn-primary btn-lg px-4 py-3 fw-bold">
+                        <i class="bi {{ feature_icon }} me-2"></i> {{ feature_action_label }}
+                    </a>
+                </div>
+
+                <div class="mt-4 pt-4 border-top text-start">
+                    <h3 class="h6 fw-bold mb-3 text-muted text-uppercase small">Quick Jump to All PRO Tools:</h3>
+                    <div class="row g-2">
+                        <div class="col-sm-6">
+                            <a href="{% url 'career_match' %}" class="btn btn-outline-light text-dark border w-100 text-start py-2 px-3 small d-flex align-items-center justify-content-between">
+                                <span><i class="bi bi-file-earmark-check text-primary me-2"></i> AI Resume Analyzer</span>
+                                <i class="bi bi-chevron-right text-muted small"></i>
+                            </a>
+                        </div>
+                        <div class="col-sm-6">
+                            <a href="{% url 'ai_mock_interview' %}" class="btn btn-outline-light text-dark border w-100 text-start py-2 px-3 small d-flex align-items-center justify-content-between">
+                                <span><i class="bi bi-camera-video text-primary me-2"></i> AI Mock Interview with Aria</span>
+                                <i class="bi bi-chevron-right text-muted small"></i>
+                            </a>
+                        </div>
+                        <div class="col-sm-6">
+                            <a href="{% url 'career_match' %}" class="btn btn-outline-light text-dark border w-100 text-start py-2 px-3 small d-flex align-items-center justify-content-between">
+                                <span><i class="bi bi-bullseye text-primary me-2"></i> Advanced Job Matching</span>
+                                <i class="bi bi-chevron-right text-muted small"></i>
+                            </a>
+                        </div>
+                        <div class="col-sm-6">
+                            <a href="{% url 'career_match' %}#skill-gap" class="btn btn-outline-light text-dark border w-100 text-start py-2 px-3 small d-flex align-items-center justify-content-between">
+                                <span><i class="bi bi-map text-primary me-2"></i> Skill Gap Roadmap</span>
+                                <i class="bi bi-chevron-right text-muted small"></i>
+                            </a>
+                        </div>
+                        <div class="col-sm-6">
+                            <a href="{% url 'course_list' %}" class="btn btn-outline-light text-dark border w-100 text-start py-2 px-3 small d-flex align-items-center justify-content-between">
+                                <span><i class="bi bi-mortarboard text-primary me-2"></i> Premium Learning Hub</span>
+                                <i class="bi bi-chevron-right text-muted small"></i>
+                            </a>
+                        </div>
+                        <div class="col-sm-6">
+                            <a href="{% url 'career_match' %}" class="btn btn-outline-light text-dark border w-100 text-start py-2 px-3 small d-flex align-items-center justify-content-between">
+                                <span><i class="bi bi-graph-up-arrow text-primary me-2"></i> Career Intelligence</span>
+                                <i class="bi bi-chevron-right text-muted small"></i>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+
+            {% else %}
+                <div class="py-3">
+                    <div class="d-inline-flex align-items-center justify-content-center bg-light text-muted rounded-circle mb-3" style="width: 72px; height: 72px;">
+                        <i class="bi bi-lock-fill fs-1 text-secondary"></i>
+                    </div>
+                    <p class="text-muted fs-6 mb-4">This feature is available with CampusLinkLearn PRO. {{ feature_desc }}</p>
+
+                    <div class="card bg-light border-0 rounded-3 p-3 mb-4 text-start">
+                        <strong class="text-dark small d-block mb-1"><i class="bi bi-stars text-warning me-1"></i> Unlock with CampusLink PRO (₹1/month)</strong>
+                        <span class="text-muted small">Pay securely via UPI QR Scanner or UPI ID <code>sambitmaharana92@naviaxis</code> for instant activation.</span>
+                    </div>
+
+                    <a href="{% url 'pro_checkout' %}" class="btn btn-primary btn-lg px-4 py-3 fw-bold">
+                        <i class="bi bi-qr-code-scan me-2"></i> Unlock This Feature for ₹1 <i class="bi bi-arrow-right ms-1"></i>
+                    </a>
+                </div>
+            {% endif %}
+
+            <div class="mt-4 pt-3 border-top">
+                <a href="{% url 'pro_landing' %}" class="text-decoration-none small text-muted">
+                    <i class="bi bi-arrow-left me-1"></i> Back to PRO Membership Plans
+                </a>
+            </div>
+        </div>
+    </div>
+</main>
+{% endblock %}

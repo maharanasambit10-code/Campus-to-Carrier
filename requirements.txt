@@ -1,0 +1,8 @@
+requests
+django
+python-dotenv
+django-cors-headers
+djangorestframework
+pymupdf
+python-docx
+pypdf

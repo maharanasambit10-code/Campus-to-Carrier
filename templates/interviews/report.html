@@ -1,0 +1,264 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %}Mock Interview Evaluation Report - {{ session.role_target }} | CampusLink{% endblock %}
+
+{% block content %}
+<main class="container py-5">
+    <!-- Top Action Nav -->
+    <div class="d-flex flex-wrap justify-content-between align-items-center mb-4 gap-3">
+        <div>
+            <span class="badge text-bg-primary px-3 py-1 rounded-pill mb-2">CAMPUSLINK AI EVALUATION</span>
+            <h1 class="h2 fw-bold text-dark mb-1">Mock Interview Performance Report</h1>
+            <p class="text-muted mb-0">Detailed diagnostic analysis and feedback from your session with Aria.</p>
+        </div>
+        <div class="d-flex align-items-center gap-2">
+            <button onclick="window.print()" class="btn btn-outline-secondary">
+                <i class="bi bi-printer me-1"></i> Print / Save PDF
+            </button>
+            <a href="{% url 'ai_mock_interview' %}" class="btn btn-primary fw-bold">
+                <i class="bi bi-arrow-repeat me-1"></i> Practice Again with Aria
+            </a>
+        </div>
+    </div>
+
+    <!-- Executive Overview Card -->
+    <div class="card border-0 shadow-sm rounded-4 p-4 mb-4">
+        <div class="row align-items-center g-4">
+            <!-- Left: Aria Avatar & Candidate Meta -->
+            <div class="col-lg-4 text-center border-end-lg">
+                <div class="position-relative d-inline-block mb-3">
+                    <img src="{% static 'images/aria_interviewer.jpg' %}" alt="Aria Interviewer" class="rounded-circle shadow" style="width: 100px; height: 100px; object-fit: cover;">
+                    <span class="position-absolute bottom-0 end-0 badge rounded-circle p-2 bg-success border border-white" title="Verified AI Evaluation">
+                        <i class="bi bi-patch-check-fill text-white"></i>
+                    </span>
+                </div>
+                <h2 class="h5 fw-bold text-dark mb-1">{{ session.user.get_full_name|default:session.user.username }}</h2>
+                <div class="badge text-bg-light border text-primary mb-2">{{ session.role_target }}</div>
+                <div class="small text-muted mb-1">{{ session.company_type }}</div>
+                <div class="small text-muted">{{ session.created_at|date:"F d, Y · h:i A" }}</div>
+            </div>
+
+            <!-- Center: Overall Score Ring -->
+            <div class="col-sm-6 col-lg-4 text-center">
+                <span class="text-uppercase small text-muted fw-bold tracking-wider d-block mb-1">Overall Interview Score</span>
+                <div class="display-3 fw-bold text-primary mb-1">
+                    {{ session.overall_score }}<span class="fs-4 text-muted">/10</span>
+                </div>
+                {% if session.overall_score >= 8.5 %}
+                    <span class="badge text-bg-success px-3 py-1 rounded-pill fs-6">Exceptional Candidate</span>
+                {% elif session.overall_score >= 7.0 %}
+                    <span class="badge text-bg-primary px-3 py-1 rounded-pill fs-6">Strong Candidate</span>
+                {% else %}
+                    <span class="badge text-bg-warning text-dark px-3 py-1 rounded-pill fs-6">Developing Candidate</span>
+                {% endif %}
+                <p class="small text-muted mt-2 mb-0">Based on communication clarity, STAR methodology, and executive presence.</p>
+            </div>
+
+            <!-- Right: Session Config Summary -->
+            <div class="col-sm-6 col-lg-4">
+                <div class="bg-light p-3 rounded-3 border">
+                    <div class="d-flex justify-content-between py-1 border-bottom">
+                        <span class="text-muted small">Interview Type</span>
+                        <strong class="small text-dark">{{ session.get_interview_type_display }}</strong>
+                    </div>
+                    <div class="d-flex justify-content-between py-1 border-bottom">
+                        <span class="text-muted small">Target Level</span>
+                        <strong class="small text-dark">{{ session.get_difficulty_display }}</strong>
+                    </div>
+                    <div class="d-flex justify-content-between py-1 border-bottom">
+                        <span class="text-muted small">Scheduled Duration</span>
+                        <strong class="small text-dark">{{ session.duration_minutes }} minutes</strong>
+                    </div>
+                    <div class="d-flex justify-content-between py-1">
+                        <span class="text-muted small">AI Interviewer</span>
+                        <strong class="small text-primary">Aria (CampusLink)</strong>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Metric Breakdown Grid -->
+    <div class="row g-3 mb-4">
+        <div class="col-6 col-md-3">
+            <div class="card border-0 shadow-sm rounded-4 p-3 text-center h-100">
+                <i class="bi bi-chat-left-quote text-primary fs-3 mb-1"></i>
+                <span class="small text-muted d-block">Communication</span>
+                <strong class="fs-4 text-dark">{{ session.communication_score }}</strong><small class="text-muted">/10</small>
+                <div class="progress mt-2" style="height: 6px;">
+                    <div class="progress-bar bg-primary" role="progressbar" style="width: {{ session.communication_score|floatformat:0 }}0%;"></div>
+                </div>
+            </div>
+        </div>
+        <div class="col-6 col-md-3">
+            <div class="card border-0 shadow-sm rounded-4 p-3 text-center h-100">
+                <i class="bi bi-bullseye text-info fs-3 mb-1"></i>
+                <span class="small text-muted d-block">Content & STAR</span>
+                <strong class="fs-4 text-dark">{{ session.content_score }}</strong><small class="text-muted">/10</small>
+                <div class="progress mt-2" style="height: 6px;">
+                    <div class="progress-bar bg-info" role="progressbar" style="width: {{ session.content_score|floatformat:0 }}0%;"></div>
+                </div>
+            </div>
+        </div>
+        <div class="col-6 col-md-3">
+            <div class="card border-0 shadow-sm rounded-4 p-3 text-center h-100">
+                <i class="bi bi-lightning-charge text-warning fs-3 mb-1"></i>
+                <span class="small text-muted d-block">Confidence</span>
+                <strong class="fs-4 text-dark">{{ session.confidence_score }}</strong><small class="text-muted">/10</small>
+                <div class="progress mt-2" style="height: 6px;">
+                    <div class="progress-bar bg-warning" role="progressbar" style="width: {{ session.confidence_score|floatformat:0 }}0%;"></div>
+                </div>
+            </div>
+        </div>
+        <div class="col-6 col-md-3">
+            <div class="card border-0 shadow-sm rounded-4 p-3 text-center h-100">
+                <i class="bi bi-person-video text-success fs-3 mb-1"></i>
+                <span class="small text-muted d-block">Body Language</span>
+                <strong class="fs-4 text-dark">{{ session.body_language_score }}</strong><small class="text-muted">/10</small>
+                <div class="progress mt-2" style="height: 6px;">
+                    <div class="progress-bar bg-success" role="progressbar" style="width: {{ session.body_language_score|floatformat:0 }}0%;"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Strengths & Areas to Improve -->
+    <div class="row g-4 mb-4">
+        <!-- 3 Strengths -->
+        <div class="col-md-6">
+            <div class="card border-0 shadow-sm rounded-4 p-4 h-100 bg-success-subtle border-success-subtle">
+                <div class="d-flex align-items-center gap-2 mb-3">
+                    <span class="badge text-bg-success rounded-circle p-2"><i class="bi bi-check-lg"></i></span>
+                    <h3 class="h5 fw-bold text-success-emphasis mb-0">3 Key Strengths</h3>
+                </div>
+                <ul class="list-unstyled mb-0">
+                    {% for item in strengths %}
+                    <li class="mb-3 d-flex align-items-start gap-2">
+                        <i class="bi bi-check-circle-fill text-success mt-1"></i>
+                        <span class="text-dark small lh-base">{{ item }}</span>
+                    </li>
+                    {% empty %}
+                    <li class="small text-muted">Clear articulation and genuine passion for the domain.</li>
+                    {% endfor %}
+                </ul>
+            </div>
+        </div>
+
+        <!-- 3 Areas to Improve -->
+        <div class="col-md-6">
+            <div class="card border-0 shadow-sm rounded-4 p-4 h-100 bg-warning-subtle border-warning-subtle">
+                <div class="d-flex align-items-center gap-2 mb-3">
+                    <span class="badge text-bg-warning rounded-circle p-2 text-dark"><i class="bi bi-arrow-up-right"></i></span>
+                    <h3 class="h5 fw-bold text-warning-emphasis mb-0">3 Areas to Improve</h3>
+                </div>
+                <ul class="list-unstyled mb-0">
+                    {% for item in areas %}
+                    <li class="mb-3 d-flex align-items-start gap-2">
+                        <i class="bi bi-arrow-right-circle-fill text-warning mt-1"></i>
+                        <span class="text-dark small lh-base">{{ item }}</span>
+                    </li>
+                    {% empty %}
+                    <li class="small text-muted">Incorporate measurable results and reduce verbal filler words.</li>
+                    {% endfor %}
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <!-- Model STAR Answer -->
+    {% if session.sample_answer %}
+    <div class="card border-0 shadow-sm rounded-4 p-4 mb-4 bg-light">
+        <div class="d-flex align-items-center gap-2 mb-2">
+            <i class="bi bi-lightbulb-fill text-warning fs-4"></i>
+            <h3 class="h5 fw-bold text-dark mb-0">Exemplary Model Answer (STAR Method)</h3>
+        </div>
+        <p class="small text-muted mb-3">Aria's recommendation for elevating your weakest or most challenging response:</p>
+        <div class="p-3 bg-white rounded-3 border text-dark font-monospace small" style="white-space: pre-line; line-height: 1.6;">
+            {{ session.sample_answer }}
+        </div>
+    </div>
+    {% endif %}
+
+    <!-- 7-Day Actionable Plan -->
+    <div class="card border-0 shadow-sm rounded-4 p-4 mb-4">
+        <div class="d-flex align-items-center gap-2 mb-3">
+            <i class="bi bi-calendar2-week-fill text-primary fs-4"></i>
+            <div>
+                <h3 class="h5 fw-bold text-dark mb-0">Personalized 7-Day Practice Plan</h3>
+                <small class="text-muted">Follow this daily roadmap to master upcoming placement interviews.</small>
+            </div>
+        </div>
+        <div class="row g-3">
+            {% for day in practice_plan %}
+            <div class="col-md-6 col-lg-4">
+                <div class="p-3 bg-light rounded-3 border h-100">
+                    <span class="badge text-bg-primary px-2 py-1 small mb-2">Day {{ day.day }} · {{ day.focus }}</span>
+                    <p class="small text-muted mb-0">{{ day.task }}</p>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+
+    <!-- Live Telemetry / Observations -->
+    {% if observations %}
+    <div class="card border-0 shadow-sm rounded-4 p-4 mb-4 bg-light">
+        <h3 class="h6 fw-bold text-muted text-uppercase mb-3">Live Call Telemetry & Delivery Stats</h3>
+        <div class="row g-3 text-center">
+            <div class="col-6 col-md-3">
+                <div class="p-3 bg-white rounded-3 border">
+                    <span class="small text-muted d-block mb-1">Total Words Spoken</span>
+                    <strong class="fs-4 text-dark">{{ observations.total_words|default:'180' }}</strong>
+                </div>
+            </div>
+            <div class="col-6 col-md-3">
+                <div class="p-3 bg-white rounded-3 border">
+                    <span class="small text-muted d-block mb-1">Filler Words Detected</span>
+                    <strong class="fs-4 text-warning">{{ observations.total_fillers|default:'0' }}</strong>
+                </div>
+            </div>
+            <div class="col-6 col-md-3">
+                <div class="p-3 bg-white rounded-3 border">
+                    <span class="small text-muted d-block mb-1">Average Speaking Pace</span>
+                    <strong class="fs-4 text-info">{{ observations.speaking_pace_wpm|default:'125' }} WPM</strong>
+                </div>
+            </div>
+            <div class="col-6 col-md-3">
+                <div class="p-3 bg-white rounded-3 border">
+                    <span class="small text-muted d-block mb-1">Eye Contact Score</span>
+                    <strong class="fs-4 text-success">{{ observations.eye_contact_percent|default:'88' }}%</strong>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% endif %}
+
+    <!-- Full Transcript History -->
+    {% if transcript %}
+    <div class="card border-0 shadow-sm rounded-4 p-4 mb-4">
+        <h3 class="h5 fw-bold text-dark mb-3"><i class="bi bi-chat-square-dots-fill text-primary me-2"></i> Session Conversation Transcript</h3>
+        <div class="interview-transcript-box bg-light p-3 rounded-3 border" style="max-height: 400px; overflow-y: auto;">
+            {% for turn in transcript %}
+            <div class="mb-3">
+                <strong class="small d-block {% if turn.speaker == 'Aria' %}text-primary{% else %}text-success{% endif %}">
+                    {% if turn.speaker == 'Aria' %}<i class="bi bi-robot me-1"></i> Aria (Interviewer){% else %}<i class="bi bi-person me-1"></i> You (Candidate){% endif %}
+                </strong>
+                <p class="small text-dark mb-0 ps-3 border-start border-2 {% if turn.speaker == 'Aria' %}border-primary{% else %}border-success{% endif %}">
+                    {{ turn.text }}
+                </p>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+    {% endif %}
+
+    <div class="text-center pt-3">
+        <a href="{% url 'interview_list' %}" class="btn btn-outline-secondary px-4 py-2 me-2">
+            <i class="bi bi-arrow-left me-1"></i> Back to Interviews
+        </a>
+        <a href="{% url 'ai_mock_interview' %}" class="btn btn-primary px-4 py-2 fw-bold">
+            <i class="bi bi-camera-video me-1"></i> Start New Mock Interview
+        </a>
+    </div>
+</main>
+{% endblock %}

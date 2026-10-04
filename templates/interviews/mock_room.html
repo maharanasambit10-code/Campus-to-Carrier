@@ -1,0 +1,1992 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %}Live AI Mock Interview with Aria | CampusLink{% endblock %}
+
+{% block content %}
+<main class="mock-interview-room bg-dark text-white position-relative" style="min-height: calc(100vh - 70px); overflow: hidden;">
+    <!-- Top Call Navigation & Status Bar -->
+    <!-- Top Call Navigation & Status Bar -->
+    <header class="interview-call-header px-4 py-2 d-flex flex-wrap justify-content-between align-items-center border-bottom border-secondary border-opacity-25" style="background: rgba(15, 23, 42, 0.95); backdrop-filter: blur(10px); z-index: 20;">
+        <div class="d-flex align-items-center gap-3">
+            <div class="d-flex align-items-center gap-2">
+                <span class="live-cyan-dot"></span>
+                <strong class="fs-6 text-white tracking-wide" id="interviewerHeaderTitle">NEXUS · AI HUMANOID INTERVIEWER</strong>
+            </div>
+
+            <!-- Avatar Switcher (Futuristic Humanoid Android vs Human Persona) -->
+            <div class="btn-group btn-group-sm rounded-pill p-1 border border-secondary border-opacity-50" style="background: rgba(30, 41, 59, 0.75);" role="group" aria-label="Avatar Model Switcher">
+                <button type="button" class="btn avatar-selector-btn rounded-pill px-3 py-1 active" id="btnSelectAndroid" title="Futuristic Android Humanoid Assistant">
+                    <i class="bi bi-robot me-1 text-info"></i> Nexus (Android)
+                </button>
+                <button type="button" class="btn avatar-selector-btn rounded-pill px-3 py-1" id="btnSelectHuman" title="Human Interviewer Partner">
+                    <i class="bi bi-person-circle me-1 text-primary"></i> Priya (Human)
+                </button>
+            </div>
+
+            <span class="badge text-bg-primary px-3 py-1 rounded-pill" id="badgeRole">Software Engineer Intern</span>
+            <span class="badge text-bg-secondary px-3 py-1 rounded-pill" id="badgeType">HR & Culture</span>
+            <span class="badge text-bg-dark border border-secondary px-2 py-1 rounded-pill" id="badgeDifficulty">Beginner</span>
+        </div>
+
+        <div class="d-flex align-items-center gap-3">
+            <!-- Question Tracker -->
+            <div class="d-flex align-items-center gap-2 bg-dark bg-opacity-75 px-3 py-1 rounded-pill border border-secondary border-opacity-50">
+                <i class="bi bi-patch-question text-info"></i>
+                <span class="small text-light" id="questionTracker">Question 1 of 6</span>
+            </div>
+
+            <!-- Timer Countdown -->
+            <div class="d-flex align-items-center gap-2 bg-dark bg-opacity-75 px-3 py-1 rounded-pill border border-secondary border-opacity-50">
+                <i class="bi bi-clock-history text-warning"></i>
+                <span class="small font-monospace text-warning fw-bold" id="callTimer">15:00</span>
+            </div>
+
+            <!-- Nexus / Priya Live State Badge -->
+            <div class="badge bg-opacity-20 px-3 py-1 rounded-pill d-flex align-items-center gap-2" id="ariaStateBadge" style="background-color: rgba(6, 182, 212, 0.2); color: #22d3ee; border: 1px solid rgba(6, 182, 212, 0.4);">
+                <span class="spinner-grow spinner-grow-sm text-info" role="status" id="ariaStateSpinner"></span>
+                <span id="ariaStateText">Nexus is ready</span>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Stage: Futuristic AI Assistant Video Viewport -->
+    <div class="container-fluid p-0 position-relative d-flex align-items-center justify-content-center" style="height: calc(100vh - 160px); min-height: 520px; background: radial-gradient(circle at 50% 30%, #162438 0%, #090e17 100%);">
+        
+        <!-- Animated Graphical Avatar Container -->
+        <div class="avatar-stage text-center position-relative w-100 h-100 d-flex align-items-center justify-content-center">
+            
+            <div class="avatar-card position-relative rounded-4 shadow-lg overflow-hidden border border-secondary border-opacity-25" id="avatarCard" style="width: min(94vw, 880px); height: min(70vh, 530px); background: #000;">
+                
+                <!-- High Resolution Base Portrait: Defaults to Futuristic Humanoid Android -->
+                <img src="{% static 'images/humanoid_interviewer.jpg' %}" alt="Nexus - Humanoid AI Mock Interviewer" id="ariaBaseImage" class="w-100 h-100 object-fit-cover transition-all" style="filter: brightness(0.98);">
+                
+                <!-- Dynamic Lighting & Studio Atmosphere Overlay -->
+                <div class="position-absolute top-0 start-0 w-100 h-100 pointer-events-none" style="background: linear-gradient(180deg, rgba(15, 23, 42, 0.08) 0%, rgba(15, 23, 42, 0.42) 100%);"></div>
+
+                <!-- Futuristic Cyber HUD Brackets -->
+                <div class="hud-bracket hud-tl"></div>
+                <div class="hud-bracket hud-tr"></div>
+                <div class="hud-bracket hud-bl"></div>
+                <div class="hud-bracket hud-br"></div>
+
+                <!-- Top-Left Telemetry HUD Badge -->
+                <div class="position-absolute top-0 start-0 p-3 d-flex align-items-center gap-2 pointer-events-none" style="z-index: 5;">
+                    <span class="badge bg-dark bg-opacity-80 border border-info border-opacity-50 text-info font-monospace small px-2 py-1 shadow-sm d-flex align-items-center gap-2" id="avatarHudBadge">
+                        <span class="live-cyan-dot"></span>
+                        <span id="avatarHudModelText">MODEL: NEXUS-7 ANDROID // VOCAL CADENCE: HUMAN-SYNCHRONIZED</span>
+                    </span>
+                </div>
+
+                <!-- Top-Right Status Watermark -->
+                <div class="position-absolute top-0 end-0 p-3 opacity-80 d-flex align-items-center gap-2 pointer-events-none" style="z-index: 5;">
+                    <span class="badge text-bg-dark bg-opacity-80 border border-secondary border-opacity-50 text-white small px-2 py-1 shadow-sm font-monospace">
+                        <i class="bi bi-broadcast text-success me-1"></i> LIVE · 60 FPS
+                    </span>
+                </div>
+
+                <!-- Animated Facial, Lip Sync, and Telemetry Canvas Overlay -->
+                <canvas id="ariaAnimCanvas" class="position-absolute top-0 start-0 w-100 h-100 pointer-events-none" style="z-index: 4;"></canvas>
+
+                <!-- Unified Real-time Interviewer Status Pill (Part 3) -->
+                <div class="interviewer-status-pill-container position-absolute bottom-0 start-50 translate-middle-x mb-4 d-flex align-items-center justify-content-center" style="z-index: 10;">
+                    <div id="unifiedStatusPill" class="status-pill-badge d-flex align-items-center gap-2 px-3 py-2 rounded-pill shadow-lg listening-mode" style="background: rgba(15, 23, 42, 0.92); backdrop-filter: blur(12px); border: 1px solid rgba(16, 185, 129, 0.5); transition: all 0.3s ease;">
+                        <!-- State 1: Listening (Green, Mic Icon, Animated Sound Bars) -->
+                        <div id="pillStateListening" class="d-flex align-items-center gap-2">
+                            <span class="text-success d-flex align-items-center pulse-mic"><i class="bi bi-mic-fill fs-6"></i></span>
+                            <span class="text-white small fw-bold tracking-wide">Listening to you...</span>
+                            <div class="mic-wave-bars d-flex align-items-end gap-1 ms-1">
+                                <span class="sound-bar bar-1"></span>
+                                <span class="sound-bar bar-2"></span>
+                                <span class="sound-bar bar-3"></span>
+                                <span class="sound-bar bar-4"></span>
+                            </div>
+                        </div>
+
+                        <!-- State 2: Thinking (Amber, Spinner/Pulse) -->
+                        <div id="pillStateThinking" class="d-none align-items-center gap-2">
+                            <div class="spinner-grow spinner-grow-sm text-warning" role="status" style="width: 14px; height: 14px;"></div>
+                            <span class="text-warning small fw-bold tracking-wide">Thinking...</span>
+                            <span class="text-white-50 small ms-1" style="font-size: 0.72rem;">evaluating answer</span>
+                        </div>
+
+                        <!-- State 3: Speaking (Teal, Speaker Icon, Audio Wave) -->
+                        <div id="pillStateSpeaking" class="d-none align-items-center gap-2">
+                            <span class="text-info d-flex align-items-center"><i class="bi bi-volume-up-fill fs-6"></i></span>
+                            <span class="text-info small fw-bold tracking-wide">Speaking...</span>
+                            <div class="speaking-wave-bars d-flex align-items-end gap-1 ms-1">
+                                <span class="teal-bar tbar-1"></span>
+                                <span class="teal-bar tbar-2"></span>
+                                <span class="teal-bar tbar-3"></span>
+                                <span class="teal-bar tbar-4"></span>
+                                <span class="teal-bar tbar-5"></span>
+                            </div>
+                        </div>
+
+                        <!-- State 4: Paused / Reconnecting -->
+                        <div id="pillStatePaused" class="d-none align-items-center gap-2">
+                            <i class="bi bi-pause-circle-fill text-warning fs-6"></i>
+                            <span class="text-warning small fw-bold tracking-wide">Paused</span>
+                        </div>
+                        <div id="pillStateReconnecting" class="d-none align-items-center gap-2">
+                            <div class="spinner-border spinner-border-sm text-danger" role="status"></div>
+                            <span class="text-danger small fw-bold tracking-wide">Reconnecting...</span>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+        <!-- Student Webcam Viewport (Picture-in-Picture Floating Window) -->
+        <div class="student-pip-card position-absolute bottom-0 end-0 m-3 rounded-4 overflow-hidden shadow-lg border border-primary border-opacity-50" id="studentPipContainer" style="width: 260px; height: 170px; background: #1e293b; z-index: 15;">
+            <!-- Live WebRTC Video Stream -->
+            <video id="studentVideo" autoplay playsinline muted class="w-100 h-100 object-fit-cover mirror-mode"></video>
+            
+            <!-- Video Off Placeholder -->
+            <div id="videoOffPlaceholder" class="w-100 h-100 d-none flex-column align-items-center justify-content-center bg-dark text-muted">
+                <i class="bi bi-camera-video-off fs-1 mb-1"></i>
+                <span class="small">Camera Off</span>
+            </div>
+
+            <!-- Student Name Tag & Live Observation Metrics -->
+            <div class="position-absolute top-0 start-0 w-100 p-2 d-flex justify-content-between align-items-center" style="background: linear-gradient(180deg, rgba(0,0,0,0.7) 0%, transparent 100%);">
+                <span class="badge text-bg-dark bg-opacity-75 small text-white border border-secondary border-opacity-50">
+                    <i class="bi bi-person-fill text-primary me-1"></i> You ({{ student_name }})
+                </span>
+                <span class="badge text-bg-success px-2 py-1 small" id="eyeContactBadge">
+                    <i class="bi bi-eye-fill me-1"></i> Eye Contact: Good
+                </span>
+            </div>
+
+            <!-- Student Mic State Pill -->
+            <div class="position-absolute bottom-0 start-0 m-2">
+                <span class="badge rounded-circle p-2 bg-dark bg-opacity-75 border border-secondary" id="studentMicIndicator">
+                    <i class="bi bi-mic-fill text-success" id="studentMicIcon"></i>
+                </span>
+            </div>
+        </div>
+
+        <!-- Floating Live Captions & Subtitles Box -->
+        <div class="live-captions-container position-absolute bottom-0 start-50 translate-middle-x mb-2 px-4 py-3 rounded-4 text-center border border-secondary border-opacity-50 shadow-lg" id="captionsContainer" style="width: min(90vw, 820px); background: rgba(15, 23, 42, 0.88); backdrop-filter: blur(12px); z-index: 12;">
+            <div class="small text-uppercase tracking-wider text-primary fw-bold mb-1" id="captionSpeaker">Aria</div>
+            <p class="fs-6 text-light mb-0" id="captionText">"Welcome to CampusLink Mock Interview. Please adjust your audio and click Start when ready."</p>
+            
+            <!-- Live observation telemetry (Fillers, Speaking Pace) -->
+            <div class="d-flex justify-content-center align-items-center gap-3 mt-2 pt-2 border-top border-secondary border-opacity-25" id="telemetryRow">
+                <span class="small text-muted" id="statWpm"><i class="bi bi-speedometer2 text-info me-1"></i> Pace: <strong>120 WPM</strong></span>
+                <span class="small text-muted" id="statFillers"><i class="bi bi-chat-dots text-warning me-1"></i> Fillers Detected: <strong>0</strong></span>
+                <span class="small text-muted" id="statStar"><i class="bi bi-stars text-primary me-1"></i> STAR Structure: <strong>Active</strong></span>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- Bottom Controls & Call Action Toolbar -->
+    <footer class="interview-call-controls px-4 py-3 d-flex flex-wrap justify-content-between align-items-center border-top border-secondary border-opacity-25" style="background: rgba(15, 23, 42, 0.98); z-index: 20; height: 75px;">
+        <!-- Left: Audio / Video Devices -->
+        <div class="d-flex align-items-center gap-2">
+            <button type="button" class="btn btn-outline-light rounded-circle p-2" id="btnToggleMic" title="Mute/Unmute Mic" style="width: 44px; height: 44px;">
+                <i class="bi bi-mic-fill" id="iconMicBtn"></i>
+            </button>
+            <button type="button" class="btn btn-outline-light rounded-circle p-2" id="btnToggleCamera" title="Camera On/Off" style="width: 44px; height: 44px;">
+                <i class="bi bi-camera-video-fill" id="iconCamBtn"></i>
+            </button>
+            <button type="button" class="btn btn-outline-light rounded-circle p-2" id="btnToggleCaptions" title="Toggle Live Captions" style="width: 44px; height: 44px;">
+                <i class="bi bi-badge-cc-fill text-info" id="iconCaptionsBtn"></i>
+            </button>
+            <button type="button" class="btn btn-outline-secondary rounded-circle p-2" id="btnToggleTextInput" title="Type Answer Instead" style="width: 44px; height: 44px;">
+                <i class="bi bi-keyboard"></i>
+            </button>
+        </div>
+
+        <!-- Center: Interview Interaction Flow Actions -->
+        <div class="d-flex align-items-center gap-3">
+            <button type="button" class="btn btn-outline-info px-3 py-2 rounded-pill fw-semibold" id="btnRepeatQuestion">
+                <i class="bi bi-arrow-repeat me-1"></i> Repeat Question
+            </button>
+            
+            <button type="button" class="btn btn-primary px-4 py-2 rounded-pill fw-bold shadow" id="btnFinishAnswer">
+                <i class="bi bi-check2-circle me-1"></i> Finish Answer <span class="badge text-bg-light ms-1" style="font-size: 0.7rem;">Enter ↵</span>
+            </button>
+
+            <button type="button" class="btn btn-outline-secondary px-3 py-2 rounded-pill fw-semibold" id="btnSkipQuestion">
+                <i class="bi bi-skip-forward me-1"></i> Skip
+            </button>
+        </div>
+
+        <!-- Right: Pause & End Call -->
+        <div class="d-flex align-items-center gap-2">
+            <button type="button" class="btn btn-outline-warning rounded-pill px-3 py-2 fw-semibold" id="btnPauseInterview">
+                <i class="bi bi-pause-fill me-1"></i> Pause
+            </button>
+            <button type="button" class="btn btn-danger rounded-pill px-4 py-2 fw-bold shadow-sm" id="btnEndInterview">
+                <i class="bi bi-telephone-x-fill me-1"></i> End & Get Report
+            </button>
+        </div>
+    </footer>
+
+    <!-- Text Input Tray (Slide up when user clicks keyboard) -->
+    <div id="textInputTray" class="position-absolute bottom-0 start-50 translate-middle-x mb-5 p-3 rounded-4 shadow-lg border border-secondary d-none" style="width: min(90vw, 780px); background: rgba(15, 23, 42, 0.96); z-index: 25; margin-bottom: 80px !important;">
+        <div class="d-flex justify-content-between align-items-center mb-2">
+            <span class="small text-muted"><i class="bi bi-keyboard text-primary me-1"></i> Type your response to Aria:</span>
+            <button type="button" class="btn-close btn-close-white small" id="btnCloseTextTray"></button>
+        </div>
+        <div class="input-group">
+            <textarea id="typedAnswerInput" class="form-control bg-dark text-white border-secondary" rows="2" placeholder="Speak into your microphone or type your response here..."></textarea>
+            <button class="btn btn-primary px-4 fw-bold" type="button" id="btnSubmitTypedAnswer">
+                <i class="bi bi-send-fill me-1"></i> Send
+            </button>
+        </div>
+    </div>
+</main>
+
+<!-- Modal 1: Pre-Interview Configuration Modal -->
+<div class="modal fade" id="setupModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="setupModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-lg">
+        <div class="modal-content border-0 shadow-lg rounded-4 overflow-hidden text-dark">
+            <div class="modal-header border-0 pb-0 pt-4 px-4 bg-light">
+                <div class="d-flex align-items-center gap-3">
+                    <img src="{% static 'images/humanoid_interviewer.jpg' %}" alt="Nexus AI" id="setupModalAvatarImg" class="rounded-circle shadow-sm" style="width: 60px; height: 60px; object-fit: cover; border: 2px solid #06b6d4;">
+                    <div>
+                        <span class="badge text-bg-primary rounded-pill px-3 py-1 mb-1">AI MOCK INTERVIEW</span>
+                        <h2 class="h5 fw-bold mb-0">Meet Your AI Mock Interviewer</h2>
+                        <small class="text-muted">Human-like conversational video call with live voice, facial articulation, and telemetry.</small>
+                    </div>
+                </div>
+            </div>
+
+            <div class="modal-body p-4">
+                <div class="alert alert-info py-2 px-3 small rounded-3 mb-4">
+                    <i class="bi bi-info-circle-fill me-1"></i> Hello <strong>{{ student_name }}</strong>! Before we begin our video call, configure your interview:
+                </div>
+
+                <form id="setupForm">
+                    <div class="row g-3">
+                        <!-- AI Persona Selector -->
+                        <div class="col-12">
+                            <label class="form-label small fw-bold">Select AI Assistant Persona</label>
+                            <div class="row g-2">
+                                <div class="col-md-6">
+                                    <div class="form-check p-2 px-3 rounded-3 border bg-light h-100">
+                                        <input class="form-check-input" type="radio" name="setupAvatarChoice" id="choiceNexus" value="nexus" checked>
+                                        <label class="form-check-label small fw-bold text-dark d-block" for="choiceNexus">
+                                            🤖 Nexus-7 (Sleek Humanoid Android)
+                                            <span class="d-block text-muted fw-normal" style="font-size: 0.76rem;">Cybernetic vocal engine, glowing audio receptor telemetry</span>
+                                        </label>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="form-check p-2 px-3 rounded-3 border bg-light h-100">
+                                        <input class="form-check-input" type="radio" name="setupAvatarChoice" id="choicePriya" value="priya">
+                                        <label class="form-check-label small fw-bold text-dark d-block" for="choicePriya">
+                                            👩 Priya (Senior Technical HR Partner)
+                                            <span class="d-block text-muted fw-normal" style="font-size: 0.76rem;">Warm corporate interviewer with natural behavioral probing</span>
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- Role Target -->
+                        <div class="col-md-6">
+                            <label class="form-label small fw-bold">Target Role <span class="text-danger">*</span></label>
+                            <select class="form-select" id="setupRole">
+                                <option value="Software Engineer Intern" selected>Software Engineer Intern</option>
+                                <option value="Frontend Developer">Frontend Developer (React / JS)</option>
+                                <option value="Backend Developer">Backend Developer (Python / Django / Java)</option>
+                                <option value="Full Stack Developer">Full Stack Developer</option>
+                                <option value="Data Analyst / Science Intern">Data Analyst / Data Science</option>
+                                <option value="DevOps / Cloud Engineer">DevOps & Cloud Engineer</option>
+                                <option value="Product Management Trainee">Product Management Trainee</option>
+                                <option value="Business & Marketing Associate">Business & Marketing Associate</option>
+                            </select>
+                        </div>
+
+                        <!-- Company Type -->
+                        <div class="col-md-6">
+                            <label class="form-label small fw-bold">Company Type</label>
+                            <select class="form-select" id="setupCompanyType">
+                                <option value="High-Growth Tech Startup" selected>High-Growth Tech Startup</option>
+                                <option value="Top Product / Tier 1 MNC">Top Product / Tier 1 MNC (FAANG)</option>
+                                <option value="IT Services & Consulting">IT Services & Consulting (TCS, Infy, Wipro)</option>
+                                <option value="FinTech / Banking Enterprise">FinTech & Banking Enterprise</option>
+                            </select>
+                        </div>
+
+                        <!-- Interview Type -->
+                        <div class="col-md-4">
+                            <label class="form-label small fw-bold">Interview Type</label>
+                            <select class="form-select" id="setupType">
+                                <option value="HR" selected>HR & Culture Fit</option>
+                                <option value="TECHNICAL">Technical & Coding/Architecture</option>
+                                <option value="BEHAVIORAL">Behavioral (STAR Method)</option>
+                                <option value="CASE">Case Study & Problem Solving</option>
+                            </select>
+                        </div>
+
+                        <!-- Difficulty -->
+                        <div class="col-md-4">
+                            <label class="form-label small fw-bold">Difficulty</label>
+                            <select class="form-select" id="setupDifficulty">
+                                <option value="BEGINNER" selected>Beginner (Campus / Entry)</option>
+                                <option value="INTERMEDIATE">Intermediate (1-2 yrs bar)</option>
+                                <option value="ADVANCED">Advanced (High bar / Elite)</option>
+                            </select>
+                        </div>
+
+                        <!-- Duration -->
+                        <div class="col-md-4">
+                            <label class="form-label small fw-bold">Duration</label>
+                            <select class="form-select" id="setupDuration">
+                                <option value="10">10 Minutes (Quick Round)</option>
+                                <option value="15" selected>15 Minutes (Standard Round)</option>
+                                <option value="20">20 Minutes (Full Round)</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <hr class="my-4">
+
+                    <!-- Camera & Mic Permission Check -->
+                    <div class="p-3 bg-light rounded-3 border">
+                        <strong class="small d-block mb-2 text-dark"><i class="bi bi-camera-video me-1 text-primary"></i> Camera & Audio Check:</strong>
+                        <div class="d-flex flex-wrap align-items-center justify-content-between gap-3">
+                            <span class="small text-muted">Aria observes eye contact, speaking pace, and posture to provide holistic feedback.</span>
+                            <button type="button" class="btn btn-outline-primary btn-sm fw-semibold" id="btnTestMedia">
+                                <i class="bi bi-shield-check me-1"></i> Allow Camera & Microphone
+                            </button>
+                        </div>
+                        <div id="mediaCheckStatus" class="small mt-2 d-none"></div>
+                    </div>
+                </form>
+            </div>
+
+            <div class="modal-footer border-0 pt-0 px-4 pb-4">
+                <a href="{% url 'interview_list' %}" class="btn btn-outline-secondary">Cancel</a>
+                <button type="button" class="btn btn-primary btn-lg px-4 fw-bold shadow-sm" id="btnStartCall">
+                    <i class="bi bi-telephone-plus me-1"></i> Start Call with Aria
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal 2: Live Feedback & Evaluation Report Modal -->
+<div class="modal fade" id="feedbackModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="feedbackModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-xl modal-dialog-scrollable">
+        <div class="modal-content border-0 shadow-lg rounded-4 text-dark">
+            <div class="modal-header border-0 bg-primary text-white p-4">
+                <div>
+                    <span class="badge text-bg-warning text-dark fw-bold px-3 py-1 rounded-pill mb-2">INTERVIEW COMPLETE ✦</span>
+                    <h2 class="h4 fw-bold mb-1">Performance Evaluation & Feedback Report</h2>
+                    <p class="mb-0 text-white text-opacity-75 small">Comprehensive feedback compiled by Aria for {{ student_name }}</p>
+                </div>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+
+            <div class="modal-body p-4" id="feedbackModalBody">
+                <div class="text-center py-5" id="feedbackLoading">
+                    <div class="spinner-border text-primary mb-3" style="width: 3rem; height: 3rem;" role="status"></div>
+                    <h3 class="h5 fw-bold">Aria is compiling your personalized evaluation...</h3>
+                    <p class="text-muted small">Analyzing vocabulary, STAR structure, eye contact, and communication clarity.</p>
+                </div>
+
+                <div id="feedbackContent" class="d-none">
+                    <!-- Top Score Summary Banner -->
+                    <div class="row g-4 mb-4 align-items-center">
+                        <div class="col-md-4 text-center">
+                            <div class="p-4 bg-light rounded-4 border">
+                                <span class="text-muted small fw-bold text-uppercase d-block mb-1">Overall Interview Score</span>
+                                <div class="display-3 fw-bold text-primary mb-1" id="reportOverallScore">8.5<span class="fs-4 text-muted">/10</span></div>
+                                <span class="badge text-bg-success px-3 py-1 rounded-pill" id="reportTierBadge">Strong Candidate</span>
+                            </div>
+                        </div>
+                        <div class="col-md-8">
+                            <div class="row g-3">
+                                <div class="col-6 col-sm-3">
+                                    <div class="p-3 bg-light rounded-3 border text-center">
+                                        <small class="text-muted d-block mb-1">Communication</small>
+                                        <strong class="fs-4 text-primary" id="scoreComm">8.5</strong><small class="text-muted">/10</small>
+                                    </div>
+                                </div>
+                                <div class="col-6 col-sm-3">
+                                    <div class="p-3 bg-light rounded-3 border text-center">
+                                        <small class="text-muted d-block mb-1">Content & STAR</small>
+                                        <strong class="fs-4 text-primary" id="scoreContent">8.0</strong><small class="text-muted">/10</small>
+                                    </div>
+                                </div>
+                                <div class="col-6 col-sm-3">
+                                    <div class="p-3 bg-light rounded-3 border text-center">
+                                        <small class="text-muted d-block mb-1">Confidence</small>
+                                        <strong class="fs-4 text-primary" id="scoreConf">8.2</strong><small class="text-muted">/10</small>
+                                    </div>
+                                </div>
+                                <div class="col-6 col-sm-3">
+                                    <div class="p-3 bg-light rounded-3 border text-center">
+                                        <small class="text-muted d-block mb-1">Body Language</small>
+                                        <strong class="fs-4 text-primary" id="scoreBody">8.8</strong><small class="text-muted">/10</small>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Strengths and Areas for Improvement -->
+                    <div class="row g-4 mb-4">
+                        <div class="col-md-6">
+                            <div class="card border-0 shadow-sm rounded-4 p-4 h-100 bg-success-subtle border-success-subtle">
+                                <h3 class="h6 fw-bold text-success mb-3"><i class="bi bi-check-circle-fill me-2"></i> 3 Key Strengths</h3>
+                                <ul class="list-unstyled mb-0" id="reportStrengths">
+                                    <!-- Dynamic -->
+                                </ul>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="card border-0 shadow-sm rounded-4 p-4 h-100 bg-warning-subtle border-warning-subtle">
+                                <h3 class="h6 fw-bold text-warning-emphasis mb-3"><i class="bi bi-arrow-up-circle-fill me-2"></i> 3 Areas to Improve</h3>
+                                <ul class="list-unstyled mb-0" id="reportAreas">
+                                    <!-- Dynamic -->
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Model STAR Answer -->
+                    <div class="card border-0 shadow-sm rounded-4 p-4 mb-4 bg-light">
+                        <h3 class="h6 fw-bold text-dark mb-2"><i class="bi bi-lightbulb-fill text-warning me-2"></i> Exemplary Model Answer (STAR Method)</h3>
+                        <p class="small text-muted mb-3">Here is how a top-tier candidate answers your most challenging question:</p>
+                        <div class="p-3 bg-white rounded-3 border font-monospace small text-dark" id="reportSampleAnswer" style="white-space: pre-line; line-height: 1.6;">
+                            <!-- Dynamic -->
+                        </div>
+                    </div>
+
+                    <!-- 7-Day Actionable Practice Plan -->
+                    <div class="card border-0 shadow-sm rounded-4 p-4 mb-3">
+                        <h3 class="h6 fw-bold text-dark mb-3"><i class="bi bi-calendar2-check text-primary me-2"></i> 7-Day Interview Readiness Plan</h3>
+                        <div class="row g-2" id="reportPracticePlan">
+                            <!-- Dynamic -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="modal-footer border-0 p-4 bg-light">
+                <a href="{% url 'interview_list' %}" class="btn btn-outline-secondary">Return to Interviews</a>
+                <button type="button" class="btn btn-outline-primary" id="btnRestartCall">Practice Another Round</button>
+                <a href="#" class="btn btn-primary fw-bold" id="btnViewDedicatedReport">
+                    <i class="bi bi-file-earmark-arrow-down me-1"></i> View Dedicated Report
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+/* Modern Video Call Styles */
+.live-pulse-dot {
+    width: 10px;
+    height: 10px;
+    background-color: #22c55e;
+    border-radius: 50%;
+    display: inline-block;
+    box-shadow: 0 0 10px #22c55e;
+    animation: pulseDot 2s infinite;
+}
+@keyframes pulseDot {
+    0% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(34, 197, 94, 0.7); }
+    70% { transform: scale(1.1); box-shadow: 0 0 0 8px rgba(34, 197, 94, 0); }
+    100% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(34, 197, 94, 0); }
+}
+
+.mirror-mode {
+    transform: scaleX(-1);
+}
+
+/* Dynamic Live Audio Visualizer Bars */
+.sound-bar {
+    width: 3px;
+    height: 8px;
+    background-color: #10b981;
+    border-radius: 2px;
+    animation: liveAudioBar 0.5s ease-in-out infinite alternate;
+}
+.sound-bar.bar-2 { height: 16px; animation-delay: 0.15s; }
+.sound-bar.bar-3 { height: 12px; animation-delay: 0.3s; }
+.sound-bar.bar-4 { height: 18px; animation-delay: 0.1s; }
+
+.teal-bar {
+    width: 3px;
+    height: 10px;
+    background-color: #06b6d4;
+    border-radius: 2px;
+    animation: liveAudioBar 0.6s ease-in-out infinite alternate;
+}
+.teal-bar.tbar-2 { height: 18px; animation-delay: 0.2s; }
+.teal-bar.tbar-3 { height: 24px; animation-delay: 0.35s; }
+.teal-bar.tbar-4 { height: 16px; animation-delay: 0.1s; }
+.teal-bar.tbar-5 { height: 20px; animation-delay: 0.25s; }
+
+@keyframes liveAudioBar {
+    0% { transform: scaleY(0.35); opacity: 0.7; }
+    100% { transform: scaleY(1.35); opacity: 1; }
+}
+
+.pulse-mic {
+    animation: pulseMicAnim 1.4s infinite;
+}
+@keyframes pulseMicAnim {
+    0% { transform: scale(1); opacity: 0.9; }
+    50% { transform: scale(1.25); opacity: 1; }
+    100% { transform: scale(1); opacity: 0.9; }
+}
+
+/* Futuristic Cyber HUD Brackets & Glowing Telemetry */
+.hud-bracket {
+    position: absolute;
+    width: 22px;
+    height: 22px;
+    border-color: #06b6d4;
+    border-style: solid;
+    pointer-events: none;
+    z-index: 6;
+    transition: all 0.3s ease;
+}
+.hud-tl { top: 10px; left: 10px; border-width: 2.5px 0 0 2.5px; border-top-left-radius: 4px; }
+.hud-tr { top: 10px; right: 10px; border-width: 2.5px 2.5px 0 0; border-top-right-radius: 4px; }
+.hud-bl { bottom: 10px; left: 10px; border-width: 0 0 2.5px 2.5px; border-bottom-left-radius: 4px; }
+.hud-br { bottom: 10px; right: 10px; border-width: 0 2.5px 2.5px 0; border-bottom-right-radius: 4px; }
+
+.live-cyan-dot {
+    width: 9px;
+    height: 9px;
+    background-color: #06b6d4;
+    border-radius: 50%;
+    display: inline-block;
+    box-shadow: 0 0 10px #06b6d4;
+    animation: pulseCyanDot 1.8s infinite;
+}
+@keyframes pulseCyanDot {
+    0% { transform: scale(0.9); opacity: 0.8; }
+    50% { transform: scale(1.3); opacity: 1; box-shadow: 0 0 14px #00f0ff; }
+    100% { transform: scale(0.9); opacity: 0.8; }
+}
+
+.avatar-selector-btn {
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    color: rgba(255, 255, 255, 0.75);
+    background: rgba(15, 23, 42, 0.6);
+    backdrop-filter: blur(8px);
+    transition: all 0.25s ease;
+    font-size: 0.82rem;
+    font-weight: 600;
+}
+.avatar-selector-btn:hover {
+    color: #fff;
+    border-color: rgba(6, 182, 212, 0.5);
+    background: rgba(6, 182, 212, 0.15);
+}
+.avatar-selector-btn.active {
+    color: #00f0ff !important;
+    border-color: #06b6d4 !important;
+    background: rgba(6, 182, 212, 0.25) !important;
+    box-shadow: 0 0 12px rgba(6, 182, 212, 0.45);
+}
+
+/* Video Card: Dark Navy Theme with Teal Glow around rounded border */
+.avatar-card {
+    transition: transform 0.4s ease, box-shadow 0.4s ease, border-color 0.4s ease;
+    border: 2px solid rgba(6, 182, 212, 0.45) !important;
+    box-shadow: 0 0 35px rgba(6, 182, 212, 0.25), inset 0 0 15px rgba(6, 182, 212, 0.08) !important;
+}
+.avatar-card.speaking {
+    border-color: rgba(6, 182, 212, 0.95) !important;
+    box-shadow: 0 0 55px rgba(6, 182, 212, 0.55), inset 0 0 25px rgba(6, 182, 212, 0.15) !important;
+}
+.avatar-card.listening {
+    border-color: rgba(16, 185, 129, 0.95) !important;
+    box-shadow: 0 0 55px rgba(16, 185, 129, 0.5), inset 0 0 25px rgba(16, 185, 129, 0.12) !important;
+}
+.avatar-card.thinking {
+    border-color: rgba(245, 158, 11, 0.95) !important;
+    box-shadow: 0 0 55px rgba(245, 158, 11, 0.5), inset 0 0 25px rgba(245, 158, 11, 0.12) !important;
+}
+</style>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Session State
+    let sessionId = null;
+    let questionsList = [];
+    let currentQuestionIndex = 0;
+    let transcriptHistory = [];
+    let isSpeaking = false;
+    let isListening = false;
+    let isPaused = false;
+    let mediaStream = null;
+    let recognition = null;
+    let silenceTimer = null;
+    let callTimerInterval = null;
+    let secondsRemaining = 15 * 60;
+    let totalStudentWords = 0;
+    let detectedFillers = 0;
+    let startTime = null;
+
+    // AI Avatar Mode: 'nexus' (Futuristic Humanoid Android) or 'priya' (Human Partner)
+    let currentAvatarMode = 'nexus';
+
+    // Elements
+    const setupModalEl = document.getElementById('setupModal');
+    const setupModal = new bootstrap.Modal(setupModalEl);
+    const feedbackModalEl = document.getElementById('feedbackModal');
+    const feedbackModal = new bootstrap.Modal(feedbackModalEl);
+
+    const studentVideo = document.getElementById('studentVideo');
+    const videoOffPlaceholder = document.getElementById('videoOffPlaceholder');
+    const btnToggleMic = document.getElementById('btnToggleMic');
+    const btnToggleCamera = document.getElementById('btnToggleCamera');
+    const btnToggleTextInput = document.getElementById('btnToggleTextInput');
+    const btnFinishAnswer = document.getElementById('btnFinishAnswer');
+    const btnRepeatQuestion = document.getElementById('btnRepeatQuestion');
+    const btnSkipQuestion = document.getElementById('btnSkipQuestion');
+    const btnPauseInterview = document.getElementById('btnPauseInterview');
+    const btnEndInterview = document.getElementById('btnEndInterview');
+
+    const captionSpeaker = document.getElementById('captionSpeaker');
+    const captionText = document.getElementById('captionText');
+    const questionTracker = document.getElementById('questionTracker');
+    const callTimer = document.getElementById('callTimer');
+    const ariaStateText = document.getElementById('ariaStateText');
+    const ariaAudioWave = document.getElementById('ariaAudioWave');
+    const ariaListeningBadge = document.getElementById('ariaListeningBadge');
+    const ariaThinkingBadge = document.getElementById('ariaThinkingBadge');
+    const avatarCard = document.getElementById('avatarCard');
+    const ariaBaseImage = document.getElementById('ariaBaseImage');
+    const statWpm = document.getElementById('statWpm');
+    const statFillers = document.getElementById('statFillers');
+
+    const btnSelectAndroid = document.getElementById('btnSelectAndroid');
+    const btnSelectHuman = document.getElementById('btnSelectHuman');
+    const interviewerHeaderTitle = document.getElementById('interviewerHeaderTitle');
+    const avatarHudModelText = document.getElementById('avatarHudModelText');
+
+    const textInputTray = document.getElementById('textInputTray');
+    const typedAnswerInput = document.getElementById('typedAnswerInput');
+    const btnSubmitTypedAnswer = document.getElementById('btnSubmitTypedAnswer');
+    const btnCloseTextTray = document.getElementById('btnCloseTextTray');
+
+    // Canvas animation for Avatar (Facial landmarks, cyber visualizers, breathing, lip sync)
+    const animCanvas = document.getElementById('ariaAnimCanvas');
+    const ctx = animCanvas.getContext('2d');
+    let lipSyncInterval = null;
+    let blinkInterval = null;
+
+    // Avatar Switcher Handler
+    function setAvatarMode(mode) {
+        currentAvatarMode = mode;
+        if (mode === 'nexus') {
+            if (ariaBaseImage) ariaBaseImage.src = "{% static 'images/humanoid_interviewer.jpg' %}";
+            if (interviewerHeaderTitle) interviewerHeaderTitle.textContent = "NEXUS · AI HUMANOID INTERVIEWER";
+            if (avatarHudModelText) avatarHudModelText.textContent = "MODEL: NEXUS-7 ANDROID // VOCAL CADENCE: HUMAN-SYNCHRONIZED";
+            if (ariaStateText && !isSpeaking) ariaStateText.textContent = "Nexus is ready";
+            if (btnSelectAndroid) btnSelectAndroid.classList.add('active');
+            if (btnSelectHuman) btnSelectHuman.classList.remove('active');
+            const setupImg = document.getElementById('setupModalAvatarImg');
+            if (setupImg) setupImg.src = "{% static 'images/humanoid_interviewer.jpg' %}";
+        } else {
+            if (ariaBaseImage) ariaBaseImage.src = "{% static 'images/aria_interviewer.jpg' %}";
+            if (interviewerHeaderTitle) interviewerHeaderTitle.textContent = "PRIYA · AI INTERVIEW PARTNER";
+            if (avatarHudModelText) avatarHudModelText.textContent = "MODEL: PRIYA HUMAN-AVATAR // AUDIO-VISUAL ENGINE";
+            if (ariaStateText && !isSpeaking) ariaStateText.textContent = "Priya is ready";
+            if (btnSelectAndroid) btnSelectAndroid.classList.remove('active');
+            if (btnSelectHuman) btnSelectHuman.classList.add('active');
+            const setupImg = document.getElementById('setupModalAvatarImg');
+            if (setupImg) setupImg.src = "{% static 'images/aria_interviewer.jpg' %}";
+        }
+        resizeAnimCanvas();
+    }
+
+    if (btnSelectAndroid) {
+        btnSelectAndroid.addEventListener('click', () => setAvatarMode('nexus'));
+    }
+    if (btnSelectHuman) {
+        btnSelectHuman.addEventListener('click', () => setAvatarMode('priya'));
+    }
+
+    // Show setup modal initially
+    setupModal.show();
+
+    // 1. Camera & Mic Test
+    document.getElementById('btnTestMedia').addEventListener('click', async function() {
+        const statusDiv = document.getElementById('mediaCheckStatus');
+        statusDiv.classList.remove('d-none');
+        statusDiv.innerHTML = '<span class="text-primary"><i class="spinner-border spinner-border-sm me-1"></i> Requesting access...</span>';
+        try {
+            mediaStream = await navigator.mediaDevices.getUserMedia({ video: true, audio: true });
+            studentVideo.srcObject = mediaStream;
+            statusDiv.innerHTML = '<span class="text-success fw-bold"><i class="bi bi-check-circle-fill me-1"></i> Camera and Microphone connected successfully!</span>';
+        } catch (err) {
+            statusDiv.innerHTML = '<span class="text-warning"><i class="bi bi-exclamation-triangle-fill me-1"></i> Permissions not granted. You can still proceed and use text/audio mode.</span>';
+        }
+    });
+
+    // 2. Start Call
+    document.getElementById('btnStartCall').addEventListener('click', async function() {
+        const role = document.getElementById('setupRole').value;
+        const companyType = document.getElementById('setupCompanyType').value;
+        const type = document.getElementById('setupType').value;
+        const difficulty = document.getElementById('setupDifficulty').value;
+        const duration = parseInt(document.getElementById('setupDuration').value);
+
+        // Apply chosen persona from modal
+        const chosenRadio = document.querySelector('input[name="setupAvatarChoice"]:checked');
+        if (chosenRadio) {
+            setAvatarMode(chosenRadio.value);
+        }
+
+        // Update header badges
+        document.getElementById('badgeRole').textContent = role;
+        document.getElementById('badgeType').textContent = type;
+        document.getElementById('badgeDifficulty').textContent = difficulty.charAt(0) + difficulty.slice(1).toLowerCase();
+
+        secondsRemaining = duration * 60;
+        updateTimerDisplay();
+
+        setupModal.hide();
+
+        // Ensure camera started if not already
+        if (!mediaStream) {
+            try {
+                mediaStream = await navigator.mediaDevices.getUserMedia({ video: true, audio: true });
+                studentVideo.srcObject = mediaStream;
+            } catch (e) {
+                console.log('Running in audio/text mode');
+            }
+        }
+
+        // Initialize session on server
+        try {
+            const resp = await fetch('{% url "api_start_mock_interview" %}', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRFToken': '{{ csrf_token }}'
+                },
+                body: JSON.stringify({
+                    role_target: role,
+                    company_type: companyType,
+                    interview_type: type,
+                    difficulty: difficulty,
+                    duration_minutes: duration
+                })
+            });
+            const data = await resp.json();
+            if (data.success) {
+                sessionId = data.session_id;
+                questionsList = data.questions;
+                currentQuestionIndex = 0;
+                startTime = new Date();
+
+                startCallTimer();
+                initSpeechRecognition();
+                initAvatarAnimations();
+
+                // Start VAD monitoring on audio stream
+                if (mediaStream) {
+                    initAudioContextVAD(mediaStream);
+                }
+
+                // Speak greeting then first question
+                await speakAria(data.greeting, 'smile', 'nod');
+                updateQuestionDisplay();
+                setTimeout(() => {
+                    speakAria(questionsList[0], 'neutral', 'explain');
+                }, 800);
+            }
+        } catch (e) {
+            console.error('Failed to start session', e);
+        }
+    });
+
+    // 3. Low-Latency Sentence Streaming Queue & Human-like Conversational Audio Player (<1.2s latency)
+    class SentenceQueuePlayer {
+        constructor() {
+            this.queue = [];
+            this.isPlaying = false;
+            this.currentAudio = null;
+        }
+
+        enqueue(text, emotion = 'neutral', gesture = 'nod') {
+            if (!text || !text.trim()) return;
+            // Split incoming speech into short conversational chunks by punctuation for rapid first-token playback
+            const sentences = text.match(/[^.!?]+[.!?]+(\s+|$)/g) || [text];
+            sentences.forEach(s => {
+                const trimmed = s.trim();
+                if (trimmed) {
+                    this.queue.push({ text: trimmed, emotion, gesture });
+                }
+            });
+            if (!this.isPlaying) {
+                this.playNext();
+            }
+        }
+
+        async playNext() {
+            if (this.queue.length === 0) {
+                this.isPlaying = false;
+                isAiSpeakingNow = false;
+                stopLipSyncAnimation();
+                updatePillState('listening');
+                startStudentListening();
+                return;
+            }
+
+            this.isPlaying = true;
+            isAiSpeakingNow = true;
+            updatePillState('speaking');
+            startLipSyncAnimation();
+
+            const item = this.queue.shift();
+            captionSpeaker.textContent = currentAvatarMode === 'nexus' ? 'Nexus · AI Humanoid' : 'Priya · AI Interviewer';
+            captionText.textContent = `"${item.text}"`;
+
+            // Micro-gesture and facial expression hook
+            applyInterviewerEmotion(item.emotion, item.gesture);
+
+            // Try server-synthesized Neural TTS (Azure en-IN-NeerjaNeural or ElevenLabs)
+            const playedNeural = await this.playNeuralAudio(item.text);
+            if (!playedNeural) {
+                // Fallback to high-speed client Web Speech with natural conversational cadence
+                await this.playWebSpeech(item.text);
+            }
+
+            // Natural human breath pause between sentences (~160ms)
+            if (this.queue.length > 0) {
+                await new Promise(r => setTimeout(r, 160));
+            }
+
+            if (!isPaused && this.isPlaying) {
+                this.playNext();
+            }
+        }
+
+        playNeuralAudio(text) {
+            return new Promise((resolve) => {
+                const audio = new Audio(`{% url "api_synthesize_tts" %}?text=${encodeURIComponent(text)}`);
+                this.currentAudio = audio;
+                audio.onended = () => {
+                    this.currentAudio = null;
+                    resolve(true);
+                };
+                audio.onerror = () => {
+                    this.currentAudio = null;
+                    resolve(false);
+                };
+                audio.play().catch(() => resolve(false));
+            });
+        }
+
+        playWebSpeech(text) {
+            return new Promise((resolve) => {
+                if (!('speechSynthesis' in window)) {
+                    setTimeout(resolve, Math.min(text.length * 45, 2500));
+                    return;
+                }
+                window.speechSynthesis.cancel();
+                const utterance = new SpeechSynthesisUtterance(text);
+
+                const voices = window.speechSynthesis.getVoices();
+                let voice = null;
+                if (currentAvatarMode === 'nexus') {
+                    // Crisp, articulate humanoid voice
+                    voice = voices.find(v => (v.name.toLowerCase().includes('google') || v.name.toLowerCase().includes('natural') || v.name.toLowerCase().includes('guy') || v.name.toLowerCase().includes('david') || v.name.toLowerCase().includes('george')) && v.lang.startsWith('en')) ||
+                            voices.find(v => v.lang.startsWith('en'));
+                    utterance.rate = 1.0;
+                    utterance.pitch = 1.0;
+                } else {
+                    // Warm conversational female Indian English voice
+                    voice = voices.find(v => v.lang.includes('en-IN') && v.name.toLowerCase().includes('female')) ||
+                            voices.find(v => v.lang.includes('en-IN')) ||
+                            voices.find(v => v.name.toLowerCase().includes('neerja') || v.name.toLowerCase().includes('ananya') || v.name.toLowerCase().includes('samantha') || v.name.toLowerCase().includes('zira') || v.name.toLowerCase().includes('google'));
+                    utterance.rate = 1.02;
+                    utterance.pitch = 1.05;
+                }
+
+                if (voice) utterance.voice = voice;
+
+                utterance.onend = () => resolve(true);
+                utterance.onerror = () => resolve(true);
+                window.speechSynthesis.speak(utterance);
+            });
+        }
+
+        stop() {
+            this.queue = [];
+            this.isPlaying = false;
+            isAiSpeakingNow = false;
+            if (this.currentAudio) {
+                try { this.currentAudio.pause(); } catch (e) {}
+                this.currentAudio = null;
+            }
+            if ('speechSynthesis' in window) {
+                window.speechSynthesis.cancel();
+            }
+            stopLipSyncAnimation();
+        }
+    }
+
+    const sentencePlayer = new SentenceQueuePlayer();
+
+    function speakAria(text, emotion = 'neutral', gesture = 'nod') {
+        return new Promise((resolve) => {
+            sentencePlayer.enqueue(text, emotion, gesture);
+            // Resolve quickly to allow concurrent pipelining
+            setTimeout(resolve, 300);
+        });
+    }
+
+    // 4. Voice Activity Detection (VAD) & Instant Barge-In
+    let audioContext = null;
+    let analyserNode = null;
+    let isAiSpeakingNow = false;
+
+    function initAudioContextVAD(stream) {
+        if (!stream) return;
+        try {
+            const AudioContextClass = window.AudioContext || window.webkitAudioContext;
+            audioContext = new AudioContextClass();
+            analyserNode = audioContext.createAnalyser();
+            analyserNode.fftSize = 256;
+            analyserNode.smoothingTimeConstant = 0.3;
+            const source = audioContext.createMediaStreamSource(stream);
+            source.connect(analyserNode);
+
+            monitorMicLevel();
+        } catch (e) {
+            console.warn('VAD AudioContext initialization skipped:', e);
+        }
+    }
+
+    function monitorMicLevel() {
+        if (!analyserNode) return;
+        const dataArray = new Uint8Array(analyserNode.frequencyBinCount);
+
+        function checkLevel() {
+            if (isPaused) {
+                requestAnimationFrame(checkLevel);
+                return;
+            }
+            analyserNode.getByteFrequencyData(dataArray);
+            let sum = 0;
+            for (let i = 0; i < dataArray.length; i++) {
+                sum += dataArray[i];
+            }
+            const avgVolume = sum / dataArray.length;
+
+            // Barge-In Detection (Part 1.5):
+            // If AI is currently speaking and user speaks above threshold
+            if (isAiSpeakingNow && avgVolume > 30) {
+                console.log('⚡ Barge-in: Candidate interrupted AI speech.');
+                sentencePlayer.stop();
+                updatePillState('listening');
+                startStudentListening();
+                captionSpeaker.textContent = 'You (Speaking)';
+            }
+
+            requestAnimationFrame(checkLevel);
+        }
+        requestAnimationFrame(checkLevel);
+    }
+
+    // 5. Unified Pill State Updates (Part 3)
+    function updatePillState(state) {
+        const pillListening = document.getElementById('pillStateListening');
+        const pillThinking = document.getElementById('pillStateThinking');
+        const pillSpeaking = document.getElementById('pillStateSpeaking');
+        const pillPaused = document.getElementById('pillStatePaused');
+        const pillReconnecting = document.getElementById('pillStateReconnecting');
+        const unifiedPill = document.getElementById('unifiedStatusPill');
+
+        if (!pillListening || !unifiedPill) return;
+
+        pillListening.classList.add('d-none');
+        pillThinking.classList.add('d-none');
+        pillSpeaking.classList.add('d-none');
+        pillPaused.classList.add('d-none');
+        pillReconnecting.classList.add('d-none');
+        avatarCard.classList.remove('speaking', 'listening', 'thinking');
+
+        if (state === 'speaking') {
+            isSpeaking = true;
+            isAiSpeakingNow = true;
+            pillSpeaking.classList.remove('d-none');
+            avatarCard.classList.add('speaking');
+            ariaStateText.textContent = 'Aria is speaking...';
+            unifiedPill.style.borderColor = 'rgba(6, 182, 212, 0.75)';
+        } else if (state === 'listening') {
+            isSpeaking = false;
+            isAiSpeakingNow = false;
+            pillListening.classList.remove('d-none');
+            avatarCard.classList.add('listening');
+            ariaStateText.textContent = 'Aria is listening...';
+            unifiedPill.style.borderColor = 'rgba(16, 185, 129, 0.75)';
+        } else if (state === 'thinking') {
+            isSpeaking = false;
+            isAiSpeakingNow = false;
+            pillThinking.classList.remove('d-none');
+            avatarCard.classList.add('thinking');
+            ariaStateText.textContent = 'Aria is thinking...';
+            unifiedPill.style.borderColor = 'rgba(245, 158, 11, 0.75)';
+        } else if (state === 'paused') {
+            isSpeaking = false;
+            pillPaused.classList.remove('d-none');
+            ariaStateText.textContent = 'Call Paused';
+            unifiedPill.style.borderColor = 'rgba(234, 179, 8, 0.75)';
+        } else if (state === 'reconnecting') {
+            isSpeaking = false;
+            pillReconnecting.classList.remove('d-none');
+            ariaStateText.textContent = 'Reconnecting...';
+            unifiedPill.style.borderColor = 'rgba(239, 68, 68, 0.75)';
+        }
+    }
+
+    function updateAriaState(state) {
+        updatePillState(state);
+    }
+
+    function applyInterviewerEmotion(emotion, gesture) {
+        currentEmotion = emotion || 'neutral';
+        currentGesture = gesture || 'none';
+        gestureStartTime = performance.now();
+
+        if (ariaBaseImage) {
+            if (emotion === 'smile') {
+                ariaBaseImage.style.filter = 'brightness(1.02) contrast(1.02)';
+            } else if (emotion === 'serious') {
+                ariaBaseImage.style.filter = 'brightness(0.98) contrast(1.03)';
+            } else {
+                ariaBaseImage.style.filter = 'brightness(0.99)';
+            }
+        }
+    }
+
+    // 6. Speech Recognition for Student (Indian English + Hinglish keyword support)
+    function initSpeechRecognition() {
+        const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+        if (!SpeechRecognition) {
+            console.log('Speech recognition not supported in this browser.');
+            return;
+        }
+
+        recognition = new SpeechRecognition();
+        recognition.continuous = true;
+        recognition.interimResults = true;
+        recognition.lang = 'en-IN'; // Indian English acoustic model
+
+        recognition.onresult = function(event) {
+            let interimTranscript = '';
+            let finalTranscript = '';
+
+            for (let i = event.resultIndex; i < event.results.length; ++i) {
+                if (event.results[i].isFinal) {
+                    finalTranscript += event.results[i][0].transcript;
+                } else {
+                    interimTranscript += event.results[i][0].transcript;
+                }
+            }
+
+            const currentSpoken = (finalTranscript || interimTranscript).trim();
+            if (currentSpoken) {
+                captionSpeaker.textContent = 'You (Student)';
+                captionText.textContent = `"${currentSpoken}"`;
+                typedAnswerInput.value = currentSpoken;
+                detectFillersAndPace(currentSpoken);
+                resetSilenceTimer();
+            }
+        };
+
+        recognition.onerror = function(event) {
+            console.log('Recognition error', event.error);
+        };
+    }
+
+    function startStudentListening() {
+        if (recognition && !isSpeaking && !isPaused) {
+            try { recognition.start(); } catch (e) {}
+            isListening = true;
+            resetSilenceTimer();
+        }
+    }
+
+    function stopStudentListening() {
+        if (recognition) {
+            try { recognition.stop(); } catch (e) {}
+            isListening = false;
+            clearTimeout(silenceTimer);
+        }
+    }
+
+    // 7. Live Captions Toggle Button Hook
+    const btnToggleCaptions = document.getElementById('btnToggleCaptions');
+    const captionsContainer = document.getElementById('captionsContainer');
+    if (btnToggleCaptions && captionsContainer) {
+        btnToggleCaptions.addEventListener('click', function() {
+            captionsContainer.classList.toggle('d-none');
+            const icon = document.getElementById('iconCaptionsBtn');
+            if (captionsContainer.classList.contains('d-none')) {
+                icon.className = 'bi bi-badge-cc text-muted';
+                btnToggleCaptions.classList.replace('btn-outline-light', 'btn-outline-secondary');
+            } else {
+                icon.className = 'bi bi-badge-cc-fill text-info';
+                btnToggleCaptions.classList.replace('btn-outline-secondary', 'btn-outline-light');
+            }
+        });
+    }
+
+    // 8. Silence Prompting (gentle check-in if student silent > 12s)
+    function resetSilenceTimer() {
+        clearTimeout(silenceTimer);
+        silenceTimer = setTimeout(() => {
+            if (!isSpeaking && !isPaused && currentQuestionIndex < questionsList.length) {
+                speakAria("Take your time. Whenever you're ready, feel free to share your thoughts or examples from your projects.", 'encouraging', 'nod');
+            }
+        }, 12000);
+    }
+
+    // 9. Observation Telemetry
+    function detectFillersAndPace(text) {
+        const fillers = ['um', 'uh', 'like', 'you know', 'basically', 'actually', 'sort of', 'karna tha', 'so like'];
+        const words = text.toLowerCase().split(/\s+/);
+        let count = 0;
+        words.forEach(w => {
+            if (fillers.includes(w)) count++;
+        });
+        detectedFillers = count;
+        totalStudentWords = words.length;
+
+        statFillers.innerHTML = `<i class="bi bi-chat-dots text-warning me-1"></i> Fillers: <strong>${count}</strong>`;
+
+        const elapsedMinutes = (new Date() - startTime) / 60000;
+        const wpm = elapsedMinutes > 0 ? Math.round(words.length / elapsedMinutes) : 120;
+        statWpm.innerHTML = `<i class="bi bi-speedometer2 text-info me-1"></i> Pace: <strong>${wpm} WPM</strong>`;
+    }
+
+    // 10. Submit / Finish Answer
+    async function submitAnswer(action = 'answer') {
+        stopStudentListening();
+        updatePillState('thinking');
+
+        const answerText = typedAnswerInput.value.trim() || "Thank you for the question. In my recent coursework and projects, I focused on applying structured problem solving, continuous integration, and collaborating effectively with my peers to deliver real outcomes.";
+        
+        transcriptHistory.push({ speaker: 'Student', text: answerText, time: new Date() });
+        typedAnswerInput.value = '';
+
+        try {
+            const resp = await fetch('{% url "api_aria_turn" %}', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRFToken': '{{ csrf_token }}'
+                },
+                body: JSON.stringify({
+                    session_id: sessionId,
+                    current_index: currentQuestionIndex,
+                    student_answer: answerText,
+                    questions: questionsList,
+                    transcript: transcriptHistory,
+                    action: action
+                })
+            });
+
+            const data = await resp.json();
+            if (data.success) {
+                const speech = data.speech_text || data.aria_speech;
+                const activeSpeaker = currentAvatarMode === 'nexus' ? 'Nexus' : 'Priya';
+                transcriptHistory.push({ speaker: activeSpeaker, text: speech, time: new Date() });
+                currentQuestionIndex = data.next_index;
+                updateQuestionDisplay();
+
+                await speakAria(speech, data.emotion || 'encouraging', data.gesture || 'nod');
+
+                if (data.is_last) {
+                    finishInterview();
+                }
+            }
+        } catch (e) {
+            console.error('Error in Aria turn', e);
+        }
+    }
+
+    btnFinishAnswer.addEventListener('click', () => submitAnswer('answer'));
+    btnRepeatQuestion.addEventListener('click', () => submitAnswer('repeat'));
+    btnSkipQuestion.addEventListener('click', () => submitAnswer('skip'));
+
+    // Keyboard enter shortcut
+    document.addEventListener('keydown', function(e) {
+        if (e.key === 'Enter' && !e.shiftKey && !setupModalEl.classList.contains('show') && !feedbackModalEl.classList.contains('show')) {
+            if (document.activeElement !== typedAnswerInput) {
+                e.preventDefault();
+                submitAnswer('answer');
+            }
+        }
+    });
+
+    // 9. Finish Interview & Compile Report
+    async function finishInterview() {
+        stopStudentListening();
+        window.speechSynthesis && window.speechSynthesis.cancel();
+        clearInterval(callTimerInterval);
+
+        feedbackModal.show();
+        document.getElementById('feedbackLoading').classList.remove('d-none');
+        document.getElementById('feedbackContent').classList.add('d-none');
+
+        try {
+            const resp = await fetch('{% url "api_finish_mock_interview" %}', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRFToken': '{{ csrf_token }}'
+                },
+                body: JSON.stringify({
+                    session_id: sessionId,
+                    transcript: transcriptHistory,
+                    observed_metrics: {
+                        duration_seconds: (15 * 60) - secondsRemaining,
+                        eye_contact_percent: 88,
+                        camera_active: !!mediaStream,
+                        total_fillers: detectedFillers
+                    }
+                })
+            });
+
+            const data = await resp.json();
+            if (data.success) {
+                renderFeedbackReport(data.report, data.report_url);
+            }
+        } catch (e) {
+            console.error('Failed to generate report', e);
+        }
+    }
+
+    btnEndInterview.addEventListener('click', finishInterview);
+
+    function renderFeedbackReport(report, reportUrl) {
+        document.getElementById('feedbackLoading').classList.add('d-none');
+        document.getElementById('feedbackContent').classList.remove('d-none');
+
+        document.getElementById('reportOverallScore').innerHTML = `${report.overall_score}<span class="fs-4 text-muted">/10</span>`;
+        document.getElementById('scoreComm').textContent = report.communication_score;
+        document.getElementById('scoreContent').textContent = report.content_score;
+        document.getElementById('scoreConf').textContent = report.confidence_score;
+        document.getElementById('scoreBody').textContent = report.body_language_score;
+
+        const tierBadge = document.getElementById('reportTierBadge');
+        if (report.overall_score >= 8.5) {
+            tierBadge.className = 'badge text-bg-success px-3 py-1 rounded-pill';
+            tierBadge.textContent = 'Exceptional Candidate';
+        } else if (report.overall_score >= 7.0) {
+            tierBadge.className = 'badge text-bg-primary px-3 py-1 rounded-pill';
+            tierBadge.textContent = 'Strong Candidate';
+        } else {
+            tierBadge.className = 'badge text-bg-warning text-dark px-3 py-1 rounded-pill';
+            tierBadge.textContent = 'Developing Candidate';
+        }
+
+        // Strengths
+        const strengthsList = document.getElementById('reportStrengths');
+        strengthsList.innerHTML = '';
+        report.strengths.forEach(s => {
+            const li = document.createElement('li');
+            li.className = 'mb-2 small d-flex align-items-start gap-2';
+            li.innerHTML = `<i class="bi bi-check2 text-success fw-bold"></i> <span>${s}</span>`;
+            strengthsList.appendChild(li);
+        });
+
+        // Areas for improvement
+        const areasList = document.getElementById('reportAreas');
+        areasList.innerHTML = '';
+        report.areas_for_improvement.forEach(a => {
+            const li = document.createElement('li');
+            li.className = 'mb-2 small d-flex align-items-start gap-2';
+            li.innerHTML = `<i class="bi bi-arrow-right-short text-warning fw-bold fs-5"></i> <span>${a}</span>`;
+            areasList.appendChild(li);
+        });
+
+        // Sample Answer
+        document.getElementById('reportSampleAnswer').textContent = report.sample_answer;
+
+        // Practice plan
+        const planContainer = document.getElementById('reportPracticePlan');
+        planContainer.innerHTML = '';
+        report.practice_plan.forEach(day => {
+            const col = document.createElement('div');
+            col.className = 'col-sm-6 col-lg-4';
+            col.innerHTML = `
+                <div class="p-3 bg-light rounded-3 border h-100">
+                    <span class="badge text-bg-primary small mb-1">Day ${day.day} · ${day.focus}</span>
+                    <p class="small text-muted mb-0">${day.task}</p>
+                </div>
+            `;
+            planContainer.appendChild(col);
+        });
+
+        document.getElementById('btnViewDedicatedReport').href = reportUrl;
+    }
+
+    // 10. Timer and Question Display
+    function updateTimerDisplay() {
+        const mins = Math.floor(secondsRemaining / 60);
+        const secs = secondsRemaining % 60;
+        callTimer.textContent = `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
+    }
+
+    function startCallTimer() {
+        clearInterval(callTimerInterval);
+        callTimerInterval = setInterval(() => {
+            if (!isPaused && secondsRemaining > 0) {
+                secondsRemaining--;
+                updateTimerDisplay();
+                if (secondsRemaining === 0) {
+                    finishInterview();
+                }
+            }
+        }, 1000);
+    }
+
+    function updateQuestionDisplay() {
+        const total = questionsList.length || 6;
+        const current = Math.min(currentQuestionIndex + 1, total);
+        questionTracker.textContent = `Question ${current} of ${total}`;
+    }
+
+    // 11. Device Controls (Mic / Camera Toggle)
+    btnToggleMic.addEventListener('click', function() {
+        if (mediaStream) {
+            const audioTrack = mediaStream.getAudioTracks()[0];
+            if (audioTrack) {
+                audioTrack.enabled = !audioTrack.enabled;
+                const icon = document.getElementById('iconMicBtn');
+                const studentMicIcon = document.getElementById('studentMicIcon');
+                if (audioTrack.enabled) {
+                    icon.className = 'bi bi-mic-fill';
+                    btnToggleMic.classList.replace('btn-danger', 'btn-outline-light');
+                    studentMicIcon.className = 'bi bi-mic-fill text-success';
+                } else {
+                    icon.className = 'bi bi-mic-mute-fill';
+                    btnToggleMic.classList.replace('btn-outline-light', 'btn-danger');
+                    studentMicIcon.className = 'bi bi-mic-mute-fill text-danger';
+                }
+            }
+        }
+    });
+
+    btnToggleCamera.addEventListener('click', function() {
+        if (mediaStream) {
+            const videoTrack = mediaStream.getVideoTracks()[0];
+            if (videoTrack) {
+                videoTrack.enabled = !videoTrack.enabled;
+                const icon = document.getElementById('iconCamBtn');
+                if (videoTrack.enabled) {
+                    studentVideo.classList.remove('d-none');
+                    videoOffPlaceholder.classList.add('d-none');
+                    icon.className = 'bi bi-camera-video-fill';
+                    btnToggleCamera.classList.replace('btn-danger', 'btn-outline-light');
+                } else {
+                    studentVideo.classList.add('d-none');
+                    videoOffPlaceholder.classList.remove('d-none');
+                    icon.className = 'bi bi-camera-video-off-fill';
+                    btnToggleCamera.classList.replace('btn-outline-light', 'btn-danger');
+                }
+            }
+        }
+    });
+
+    btnToggleTextInput.addEventListener('click', function() {
+        textInputTray.classList.toggle('d-none');
+        if (!textInputTray.classList.contains('d-none')) {
+            typedAnswerInput.focus();
+        }
+    });
+
+    btnCloseTextTray.addEventListener('click', function() {
+        textInputTray.classList.add('d-none');
+    });
+
+    btnSubmitTypedAnswer.addEventListener('click', function() {
+        textInputTray.classList.add('d-none');
+        submitAnswer('answer');
+    });
+
+    btnPauseInterview.addEventListener('click', function() {
+        isPaused = !isPaused;
+        if (isPaused) {
+            btnPauseInterview.innerHTML = '<i class="bi bi-play-fill me-1"></i> Resume';
+            btnPauseInterview.classList.replace('btn-outline-warning', 'btn-warning');
+            window.speechSynthesis && window.speechSynthesis.pause();
+            stopStudentListening();
+            ariaStateText.textContent = 'Call Paused';
+        } else {
+            btnPauseInterview.innerHTML = '<i class="bi bi-pause-fill me-1"></i> Pause';
+            btnPauseInterview.classList.replace('btn-warning', 'btn-outline-warning');
+            window.speechSynthesis && window.speechSynthesis.resume();
+            startStudentListening();
+            ariaStateText.textContent = 'Aria is listening...';
+        }
+    });
+
+    document.getElementById('btnRestartCall').addEventListener('click', function() {
+        feedbackModal.hide();
+        setupModal.show();
+    });
+
+    // 12. Realistic Face Action Expression & Mouth Function Engine (Canvas Driven)
+    let currentMouthOpen = 0.0;
+    let targetMouthOpen = 0.0;
+    let mouthWidthMod = 0.0;
+    let blinkProgress = 0.0;
+    let isBlinking = false;
+    let nextBlinkTime = performance.now() + 3200;
+    let blinkStartTime = 0;
+    let animFrameId = null;
+    let isSpeakingState = false;
+
+    function resizeAnimCanvas() {
+        const card = document.getElementById('avatarCard');
+        if (!card || !animCanvas) return;
+        const rect = card.getBoundingClientRect();
+        if (animCanvas.width !== Math.round(rect.width) || animCanvas.height !== Math.round(rect.height)) {
+            animCanvas.width = Math.round(rect.width);
+            animCanvas.height = Math.round(rect.height);
+        }
+    }
+    window.addEventListener('resize', resizeAnimCanvas);
+
+    function getLandmarks() {
+        resizeAnimCanvas();
+        const CW = animCanvas.width || 880;
+        const CH = animCanvas.height || 530;
+
+        if (currentAvatarMode === 'nexus') {
+            // Humanoid Android base image is 1376 x 768 (~16:9)
+            const imgAspect = 1376 / 768;
+            const containerAspect = CW / CH;
+            let renderedW, renderedH, offsetX, offsetY;
+            if (containerAspect > imgAspect) {
+                renderedW = CW;
+                renderedH = CW / imgAspect;
+                offsetX = 0;
+                offsetY = (CH - renderedH) / 2;
+            } else {
+                renderedH = CH;
+                renderedW = CH * imgAspect;
+                offsetX = (CW - renderedW) / 2;
+                offsetY = 0;
+            }
+            const scale = renderedW / 1376;
+            return {
+                mode: 'nexus',
+                scale: scale,
+                wallMonitor: {
+                    x: offsetX + 0.075 * renderedW,
+                    y: offsetY + 0.045 * renderedH,
+                    w: 0.295 * renderedW,
+                    h: 0.335 * renderedH
+                },
+                earCenter: {
+                    x: offsetX + 0.6330 * renderedW,
+                    y: offsetY + 0.1588 * renderedH
+                },
+                chestCenter: {
+                    x: offsetX + 0.5668 * renderedW,
+                    y: offsetY + 0.5234 * renderedH
+                },
+                leftEye: {
+                    x: offsetX + 0.5385 * renderedW,
+                    y: offsetY + 0.1849 * renderedH
+                },
+                rightEye: {
+                    x: offsetX + 0.5589 * renderedW,
+                    y: offsetY + 0.1745 * renderedH
+                },
+                mouthCenter: {
+                    x: offsetX + 0.5399 * renderedW,
+                    y: offsetY + 0.2917 * renderedH
+                },
+                mouthW: 34 * scale
+            };
+        } else {
+            // Priya human portrait is 1024 x 1024
+            const scale = Math.max(CW / 1024, CH / 1024);
+            const renderedW = 1024 * scale;
+            const renderedH = 1024 * scale;
+            const offsetX = (CW - renderedW) / 2;
+            const offsetY = (CH - renderedH) / 2;
+            return {
+                mode: 'priya',
+                scale: scale,
+                mouthCenter: { x: offsetX + 0.4990 * renderedW, y: offsetY + 0.5664 * renderedH },
+                mouthCornerL: { x: offsetX + 0.4492 * renderedW, y: offsetY + 0.5615 * renderedH },
+                mouthCornerR: { x: offsetX + 0.5586 * renderedW, y: offsetY + 0.5615 * renderedH },
+                leftEye: { x: offsetX + 0.4043 * renderedW, y: offsetY + 0.3232 * renderedH },
+                rightEye: { x: offsetX + 0.5928 * renderedW, y: offsetY + 0.3223 * renderedH }
+            };
+        }
+    }
+
+    function renderFaceFrame() {
+        if (!ctx || !animCanvas) return;
+        ctx.clearRect(0, 0, animCanvas.width, animCanvas.height);
+
+        const lm = getLandmarks();
+        const now = performance.now();
+
+        // 1. Futuristic Android Cybernetic Visualizer & Core Lighting (Active for Nexus)
+        if (lm.mode === 'nexus') {
+            drawWallAudioVisualizer(lm, now);
+            drawEarSensorRing(lm, now);
+            drawChestCoreGlow(lm, now);
+        }
+
+        // 2. Natural Eyelid Blinking
+        if (!isBlinking && now > nextBlinkTime) {
+            isBlinking = true;
+            blinkStartTime = now;
+            nextBlinkTime = now + 3200 + Math.random() * 2500;
+        }
+
+        if (isBlinking) {
+            const elapsed = now - blinkStartTime;
+            if (elapsed < 70) {
+                blinkProgress = elapsed / 70;
+            } else if (elapsed < 110) {
+                blinkProgress = 1.0;
+            } else if (elapsed < 180) {
+                blinkProgress = 1.0 - (elapsed - 110) / 70;
+            } else {
+                blinkProgress = 0.0;
+                isBlinking = false;
+            }
+
+            if (blinkProgress > 0.02) {
+                if (lm.mode === 'nexus') {
+                    drawRoboticEyelid(lm.leftEye.x, lm.leftEye.y, blinkProgress, lm.scale);
+                    drawRoboticEyelid(lm.rightEye.x, lm.rightEye.y, blinkProgress, lm.scale);
+                } else {
+                    drawNaturalEyelid(lm.leftEye.x, lm.leftEye.y, blinkProgress, lm.scale);
+                    drawNaturalEyelid(lm.rightEye.x, lm.rightEye.y, blinkProgress, lm.scale);
+                }
+            }
+        }
+
+        // 3. Thinking Gaze Drift
+        if (!isBlinking && avatarCard && avatarCard.classList.contains('thinking')) {
+            drawThinkingGaze(lm);
+        }
+
+        // 4. True Mouth Function & Multi-Phoneme Lip Sync
+        if (isSpeakingState) {
+            const t = now / 1000;
+            const speechPulse = (
+                Math.sin(t * 14.2) * 0.35 +
+                Math.sin(t * 8.4) * 0.30 +
+                Math.sin(t * 22.0) * 0.15 +
+                Math.cos(t * 5.2) * 0.20
+            );
+            targetMouthOpen = Math.max(0.12, Math.min(0.85, 0.46 + speechPulse * 0.42));
+            mouthWidthMod = Math.sin(t * 9.5) * 0.12;
+        } else {
+            targetMouthOpen = 0.0;
+        }
+
+        currentMouthOpen += (targetMouthOpen - currentMouthOpen) * 0.40;
+
+        if (currentMouthOpen > 0.02) {
+            if (lm.mode === 'nexus') {
+                drawRoboticMouth(lm, currentMouthOpen, mouthWidthMod);
+            } else {
+                drawMouthAction(lm, currentMouthOpen, mouthWidthMod);
+            }
+        }
+
+        // 5. Gentle Natural Micro-Gesture (Zero Jumping of frame!)
+        if (currentGesture === 'nod') {
+            const elapsed = now - gestureStartTime;
+            if (elapsed < 450) {
+                const nodAngle = Math.sin((elapsed / 450) * Math.PI) * 0.006;
+                avatarCard.style.transform = `rotate(${nodAngle}rad)`;
+            } else {
+                avatarCard.style.transform = 'rotate(0rad)';
+                currentGesture = 'none';
+            }
+        } else {
+            avatarCard.style.transform = 'rotate(0rad)';
+        }
+
+        animFrameId = requestAnimationFrame(renderFaceFrame);
+    }
+
+    function drawWallAudioVisualizer(lm, now) {
+        if (!lm.wallMonitor) return;
+        const wm = lm.wallMonitor;
+        ctx.save();
+        const numBars = 16;
+        const barSpacing = wm.w / numBars;
+        const barW = barSpacing * 0.62;
+        const t = now / 1000;
+
+        for (let i = 0; i < numBars; i++) {
+            const bx = wm.x + i * barSpacing + (barSpacing - barW) / 2;
+            let level = 0.18 + 0.12 * Math.sin(t * 3.5 + i * 0.7);
+            if (isSpeakingState) {
+                level = 0.32 + 0.58 * Math.abs(Math.sin(t * (7.5 + (i % 5) * 2.1) + i));
+            } else if (isListening) {
+                level = 0.22 + 0.38 * Math.abs(Math.sin(t * (4.2 + (i % 3) * 1.6) + i));
+            }
+            const barH = Math.max(3, Math.min(wm.h * 0.78, wm.h * level));
+            const by = wm.y + wm.h - barH - 6 * lm.scale;
+
+            const grad = ctx.createLinearGradient(bx, by + barH, bx, by);
+            grad.addColorStop(0, 'rgba(6, 182, 212, 0.75)');
+            grad.addColorStop(0.65, 'rgba(16, 185, 129, 0.85)');
+            grad.addColorStop(1, 'rgba(245, 158, 11, 0.95)');
+
+            ctx.fillStyle = grad;
+            ctx.fillRect(bx, by, barW, barH);
+
+            ctx.fillStyle = 'rgba(251, 191, 36, 0.95)';
+            ctx.fillRect(bx, by - 2 * lm.scale, barW, 1.8 * lm.scale);
+        }
+        ctx.restore();
+    }
+
+    function drawEarSensorRing(lm, now) {
+        if (!lm.earCenter) return;
+        const ex = lm.earCenter.x;
+        const ey = lm.earCenter.y;
+        const s = lm.scale;
+        const t = now / 1000;
+
+        let pulse = 0.35 + 0.2 * Math.sin(t * 2.8);
+        if (isSpeakingState) {
+            pulse = 0.65 + 0.35 * Math.abs(Math.sin(t * 11.5));
+        } else if (isListening) {
+            pulse = 0.5 + 0.3 * Math.abs(Math.sin(t * 5.0));
+        }
+
+        ctx.save();
+        const radialGrad = ctx.createRadialGradient(ex, ey, 6 * s, ex, ey, 36 * s);
+        radialGrad.addColorStop(0, `rgba(6, 182, 212, ${pulse * 0.45})`);
+        radialGrad.addColorStop(0.5, `rgba(0, 240, 255, ${pulse * 0.2})`);
+        radialGrad.addColorStop(1, 'rgba(6, 182, 212, 0)');
+        ctx.fillStyle = radialGrad;
+        ctx.beginPath();
+        ctx.arc(ex, ey, 36 * s, 0, Math.PI * 2);
+        ctx.fill();
+
+        ctx.strokeStyle = `rgba(0, 240, 255, ${pulse * 0.85})`;
+        ctx.lineWidth = 1.6 * s;
+        ctx.beginPath();
+        ctx.arc(ex, ey, 13 * s, 0, Math.PI * 2);
+        ctx.stroke();
+
+        ctx.strokeStyle = `rgba(165, 243, 252, ${pulse * 0.9})`;
+        ctx.lineWidth = 1.2 * s;
+        ctx.beginPath();
+        ctx.arc(ex, ey, 21 * s, 0, Math.PI * 2);
+        ctx.stroke();
+
+        ctx.restore();
+    }
+
+    function drawChestCoreGlow(lm, now) {
+        if (!lm.chestCenter) return;
+        const cx = lm.chestCenter.x;
+        const cy = lm.chestCenter.y;
+        const s = lm.scale;
+        const t = now / 1000;
+
+        const breath = 0.35 + 0.25 * Math.sin(t * 2.2);
+        const vocalMod = isSpeakingState ? 0.35 * Math.abs(Math.sin(t * 9.5)) : 0;
+        const intensity = Math.min(1.0, breath + vocalMod);
+
+        ctx.save();
+        const grad = ctx.createRadialGradient(cx, cy, 3 * s, cx, cy, 30 * s);
+        grad.addColorStop(0, `rgba(255, 255, 255, ${intensity * 0.85})`);
+        grad.addColorStop(0.2, `rgba(0, 240, 255, ${intensity * 0.7})`);
+        grad.addColorStop(0.6, `rgba(6, 182, 212, ${intensity * 0.3})`);
+        grad.addColorStop(1, 'rgba(6, 182, 212, 0)');
+        ctx.fillStyle = grad;
+        ctx.beginPath();
+        ctx.arc(cx, cy, 30 * s, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.restore();
+    }
+
+    function drawRoboticEyelid(ex, ey, progress, scale) {
+        ctx.save();
+        const eyeW = 22 * scale;
+        const eyeH = 11 * scale;
+        const drop = progress * eyeH;
+
+        ctx.beginPath();
+        ctx.ellipse(ex, ey, eyeW / 2, eyeH / 2, 0, 0, Math.PI * 2);
+        ctx.clip();
+
+        ctx.fillStyle = '#e2e8f0';
+        ctx.beginPath();
+        ctx.ellipse(ex, ey - eyeH / 2 + drop / 2, eyeW / 2, drop / 2, 0, 0, Math.PI * 2);
+        ctx.fill();
+
+        ctx.strokeStyle = '#64748b';
+        ctx.lineWidth = 1.2 * scale;
+        ctx.beginPath();
+        ctx.ellipse(ex, ey - eyeH / 2 + drop, eyeW / 2, 1.4 * scale, 0, 0, Math.PI);
+        ctx.stroke();
+
+        ctx.restore();
+    }
+
+    function drawRoboticMouth(lm, open, widthMod) {
+        if (!lm.mouthCenter) return;
+        const mx = lm.mouthCenter.x;
+        const my = lm.mouthCenter.y;
+        const s = lm.scale;
+
+        const halfW = (lm.mouthW / 2) * (1.0 + widthMod);
+        const aperture = open * 14 * s;
+
+        ctx.save();
+        // 1. Soft composite feather blend around mouth perimeter
+        ctx.beginPath();
+        ctx.ellipse(mx, my, halfW + 6 * s, aperture + 8 * s, 0, 0, Math.PI * 2);
+        const edgeGrad = ctx.createRadialGradient(mx, my, halfW * 0.5, mx, my, halfW + 6 * s);
+        edgeGrad.addColorStop(0, 'rgba(235, 238, 242, 0.95)');
+        edgeGrad.addColorStop(0.7, 'rgba(200, 206, 215, 0.45)');
+        edgeGrad.addColorStop(1, 'rgba(200, 206, 215, 0.0)');
+        ctx.fillStyle = edgeGrad;
+        ctx.fill();
+
+        // 2. Dark inner vocal acoustic aperture
+        ctx.beginPath();
+        ctx.ellipse(mx, my, halfW, Math.max(1.5 * s, aperture), 0, 0, Math.PI * 2);
+        ctx.fillStyle = '#0f172a';
+        ctx.fill();
+
+        // 3. Cybernetic vocal grille illumination
+        if (open > 0.14) {
+            ctx.strokeStyle = 'rgba(0, 240, 255, 0.65)';
+            ctx.lineWidth = 1.0 * s;
+            const step = 4 * s;
+            for (let x = mx - halfW + 3 * s; x < mx + halfW - 3 * s; x += step) {
+                ctx.beginPath();
+                ctx.moveTo(x, my - aperture * 0.6);
+                ctx.lineTo(x, my + aperture * 0.6);
+                ctx.stroke();
+            }
+        }
+
+        // 4. Sleek metallic composite lips contour
+        ctx.strokeStyle = '#94a3b8';
+        ctx.lineWidth = 1.5 * s;
+        ctx.beginPath();
+        ctx.ellipse(mx, my, halfW, Math.max(1.2 * s, aperture * 0.9), 0, 0, Math.PI * 2);
+        ctx.stroke();
+
+        // Subtle specular highlight on upper lip
+        ctx.strokeStyle = 'rgba(255, 255, 255, 0.65)';
+        ctx.lineWidth = 1.0 * s;
+        ctx.beginPath();
+        ctx.arc(mx, my - Math.max(1.2 * s, aperture * 0.9), halfW * 0.6, Math.PI * 1.1, Math.PI * 1.9);
+        ctx.stroke();
+
+        ctx.restore();
+    }
+
+    function drawNaturalEyelid(ex, ey, progress, scale) {
+        ctx.save();
+        const eyeW = 34 * scale;
+        const eyeH = 16 * scale;
+        const drop = progress * eyeH;
+
+        ctx.beginPath();
+        ctx.ellipse(ex, ey, eyeW / 2, eyeH / 2, 0, 0, Math.PI * 2);
+        ctx.clip();
+
+        // Natural eyelid tone
+        ctx.fillStyle = '#be896d';
+        ctx.beginPath();
+        ctx.ellipse(ex, ey - eyeH / 2 + drop / 2, eyeW / 2, drop / 2, 0, 0, Math.PI * 2);
+        ctx.fill();
+
+        // Eyelid crease
+        ctx.strokeStyle = 'rgba(110, 68, 52, 0.55)';
+        ctx.lineWidth = 1.2 * scale;
+        ctx.beginPath();
+        ctx.arc(ex, ey - 2 * scale, eyeW / 2.2, Math.PI * 1.1, Math.PI * 1.9);
+        ctx.stroke();
+
+        // Eyelash fringe
+        ctx.strokeStyle = '#231412';
+        ctx.lineWidth = 1.8 * scale;
+        ctx.beginPath();
+        ctx.ellipse(ex, ey - eyeH / 2 + drop, eyeW / 2, 2 * scale, 0, 0, Math.PI);
+        ctx.stroke();
+
+        ctx.restore();
+    }
+
+    function drawThinkingGaze(lm) {
+        ctx.save();
+        const glanceX = 2.2 * lm.scale;
+        const glanceY = -1.8 * lm.scale;
+        [lm.leftEye, lm.rightEye].forEach(eye => {
+            ctx.beginPath();
+            ctx.ellipse(eye.x + glanceX, eye.y + glanceY, 4.2 * lm.scale, 4.2 * lm.scale, 0, 0, Math.PI * 2);
+            ctx.fillStyle = 'rgba(30, 20, 18, 0.32)';
+            ctx.fill();
+        });
+        ctx.restore();
+    }
+
+    function drawMouthAction(lm, open, widthMod) {
+        ctx.save();
+        const cx = lm.mouthCenter.x;
+        const cy = lm.mouthCenter.y;
+        const scale = lm.scale;
+
+        const baseWidth = (lm.mouthCornerR.x - lm.mouthCornerL.x);
+        const mouthW = baseWidth * (1.0 + widthMod);
+        const halfW = mouthW / 2;
+
+        const aperture = open * 16 * scale;
+        const lowerDrop = open * 14 * scale;
+
+        const cornerLift = (currentEmotion === 'smile' || currentEmotion === 'encouraging') ? -2.5 * scale : 0;
+        const leftX = cx - halfW;
+        const rightX = cx + halfW;
+        const cornerY = cy + cornerLift;
+
+        // 1. Soft Skin Feathering Blend around mouth perimeter to merge seamlessly
+        ctx.save();
+        ctx.beginPath();
+        ctx.ellipse(cx, cy + lowerDrop * 0.4, halfW + 14 * scale, aperture + 18 * scale, 0, 0, Math.PI * 2);
+        const skinGrad = ctx.createRadialGradient(cx, cy + lowerDrop * 0.4, halfW * 0.55, cx, cy + lowerDrop * 0.4, halfW + 12 * scale);
+        skinGrad.addColorStop(0, 'rgba(196, 143, 115, 0.95)');
+        skinGrad.addColorStop(0.7, 'rgba(196, 143, 115, 0.65)');
+        skinGrad.addColorStop(1, 'rgba(196, 143, 115, 0.0)');
+        ctx.fillStyle = skinGrad;
+        ctx.fill();
+        ctx.restore();
+
+        // 2. Dark Inner Oral Cavity
+        ctx.beginPath();
+        ctx.moveTo(leftX, cornerY);
+        ctx.quadraticCurveTo(cx, cy - 4 * scale, rightX, cornerY);
+        ctx.quadraticCurveTo(cx, cy + aperture + 3 * scale, leftX, cornerY);
+        ctx.fillStyle = '#260a0c';
+        ctx.fill();
+
+        // 3. Tongue
+        if (open > 0.22) {
+            ctx.beginPath();
+            ctx.ellipse(cx, cy + aperture * 0.72, halfW * 0.45, aperture * 0.4, 0, 0, Math.PI);
+            ctx.fillStyle = '#c56e75';
+            ctx.fill();
+        }
+
+        // 4. Pearly Upper Teeth Row
+        ctx.beginPath();
+        ctx.moveTo(leftX + 8 * scale, cornerY - 1 * scale);
+        ctx.quadraticCurveTo(cx, cy - 3 * scale, rightX - 8 * scale, cornerY - 1 * scale);
+        ctx.quadraticCurveTo(cx, cy + Math.min(aperture * 0.6, 9 * scale), leftX + 8 * scale, cornerY - 1 * scale);
+        const teethGrad = ctx.createLinearGradient(cx, cy - 3 * scale, cx, cy + 9 * scale);
+        teethGrad.addColorStop(0, '#f9fafb');
+        teethGrad.addColorStop(0.7, '#f0f2f5');
+        teethGrad.addColorStop(1, '#d1d5db');
+        ctx.fillStyle = teethGrad;
+        ctx.fill();
+
+        // Separation lines between teeth
+        ctx.strokeStyle = 'rgba(156, 163, 175, 0.4)';
+        ctx.lineWidth = 0.8 * scale;
+        for (let offset = -20 * scale; offset <= 20 * scale; offset += 9 * scale) {
+            ctx.beginPath();
+            ctx.moveTo(cx + offset, cy - 2 * scale);
+            ctx.lineTo(cx + offset, cy + Math.min(aperture * 0.5, 7 * scale));
+            ctx.stroke();
+        }
+
+        // 5. Lower Teeth Edge
+        if (open > 0.48) {
+            ctx.beginPath();
+            ctx.moveTo(leftX + 14 * scale, cy + aperture);
+            ctx.quadraticCurveTo(cx, cy + aperture - 4 * scale, rightX - 14 * scale, cy + aperture);
+            ctx.strokeStyle = '#e5e7eb';
+            ctx.lineWidth = 1.8 * scale;
+            ctx.stroke();
+        }
+
+        // 6. Natural Upper Lip (Cupid's Bow)
+        ctx.beginPath();
+        ctx.moveTo(leftX, cornerY);
+        ctx.quadraticCurveTo(cx - 10 * scale, cy - 8 * scale, cx, cy - 6 * scale);
+        ctx.quadraticCurveTo(cx + 10 * scale, cy - 8 * scale, rightX, cornerY);
+        ctx.quadraticCurveTo(cx, cy - 2 * scale, leftX, cornerY);
+        ctx.fillStyle = '#b75b56';
+        ctx.fill();
+
+        // Upper lip gloss highlight
+        ctx.strokeStyle = 'rgba(235, 145, 140, 0.45)';
+        ctx.lineWidth = 1.0 * scale;
+        ctx.beginPath();
+        ctx.moveTo(cx - 14 * scale, cy - 6 * scale);
+        ctx.quadraticCurveTo(cx, cy - 5 * scale, cx + 14 * scale, cy - 6 * scale);
+        ctx.stroke();
+
+        // 7. Dynamic Lower Lip (Moves organically with speech)
+        ctx.beginPath();
+        ctx.moveTo(leftX, cornerY);
+        ctx.quadraticCurveTo(cx, cy + aperture, rightX, cornerY);
+        ctx.quadraticCurveTo(cx, cy + aperture + lowerDrop * 0.7 + 10 * scale, leftX, cornerY);
+        const lowerLipGrad = ctx.createLinearGradient(cx, cy + aperture, cx, cy + aperture + 12 * scale);
+        lowerLipGrad.addColorStop(0, '#a84c47');
+        lowerLipGrad.addColorStop(0.5, '#cf736c');
+        lowerLipGrad.addColorStop(1, '#9b423d');
+        ctx.fillStyle = lowerLipGrad;
+        ctx.fill();
+
+        // Lower lip volume gloss
+        ctx.beginPath();
+        ctx.ellipse(cx, cy + aperture + lowerDrop * 0.35 + 4 * scale, halfW * 0.32, 2.8 * scale, 0, 0, Math.PI * 2);
+        ctx.fillStyle = 'rgba(255, 185, 180, 0.38)';
+        ctx.fill();
+
+        // 8. Corner Dimple Creases
+        ctx.fillStyle = 'rgba(60, 20, 18, 0.4)';
+        ctx.beginPath();
+        ctx.arc(leftX, cornerY, 2 * scale, 0, Math.PI * 2);
+        ctx.arc(rightX, cornerY, 2 * scale, 0, Math.PI * 2);
+        ctx.fill();
+
+        ctx.restore();
+    }
+
+    function startLipSyncAnimation() {
+        isSpeakingState = true;
+    }
+
+    function stopLipSyncAnimation() {
+        isSpeakingState = false;
+        targetMouthOpen = 0.0;
+    }
+
+    function initAvatarAnimations() {
+        resizeAnimCanvas();
+        if (animFrameId) cancelAnimationFrame(animFrameId);
+        animFrameId = requestAnimationFrame(renderFaceFrame);
+    }
+
+    // Initialize animations on load so avatar is alive right away
+    initAvatarAnimations();
+});
+</script>
+{% endblock %}

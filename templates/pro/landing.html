@@ -1,0 +1,149 @@
+{% extends 'base.html' %}
+{% block title %}CampusLinkLearn PRO | Unlock Your Career Potential{% endblock %}
+{% block content %}
+<main class="pro-page">
+    <section class="pro-hero">
+        <div class="container">
+            <div class="pro-hero-content">
+                <span class="pro-badge">PRO ✦</span>
+                <span class="premium-eyebrow">CAMPUSLINKLEARN PRO</span>
+                <h1>Unlock your full career potential.</h1>
+                <p>Advanced AI-powered tools for serious career growth, from preparation to placement.</p>
+                <div class="d-flex flex-wrap justify-content-center gap-2">
+                    {% if membership and membership.is_active %}
+                        <a href="{% url 'career_match' %}" class="btn pro-btn">
+                            <i class="bi bi-stars me-2"></i>Launch AI Tools <i class="bi bi-arrow-right ms-2"></i>
+                        </a>
+                        <a href="{% url 'ai_mock_interview' %}" class="btn btn-outline-light">
+                            <i class="bi bi-camera-video me-2"></i>Practice with Aria
+                        </a>
+                    {% else %}
+                        <a href="{% url 'pro_checkout' %}" class="btn pro-btn">
+                            Unlock PRO for ₹1 <i class="bi bi-arrow-up-right ms-2"></i>
+                        </a>
+                    {% endif %}
+                </div>
+                <small>Built for serious career growth</small>
+            </div>
+        </div>
+    </section>
+
+    <section class="pro-benefits">
+        <div class="container">
+            <div class="section-heading-premium text-center">
+                <span class="premium-eyebrow">GO BEYOND BASIC CAREER TOOLS</span>
+                <h2>Everything you need to move from preparation to placement.</h2>
+            </div>
+            <div class="row g-3">
+                {% for icon, title, description, slug in pro_features %}
+                <div class="col-md-6 col-lg-4">
+                    <a href="{% if membership and membership.is_active %}{% if slug == 'resume-analyzer' %}{% url 'career_match' %}{% elif slug == 'mock-interview' %}{% url 'ai_mock_interview' %}{% elif slug == 'learning-hub' %}{% url 'course_list' %}{% elif slug == 'career-roadmap' %}{% url 'career_match' %}#skill-gap{% else %}{% url 'career_match' %}{% endif %}{% else %}{% url 'pro_feature' slug %}{% endif %}" class="premium-pro-card animated-card text-decoration-none d-flex flex-column h-100">
+                        <div class="premium-pro-card-top">
+                            <span class="premium-pro-icon"><i class="bi {{ icon }}"></i></span>
+                            <span class="premium-pro-badge">PRO ✦</span>
+                        </div>
+                        <div class="premium-pro-price">₹1 <span>/ month</span></div>
+                        <h3 class="text-dark">{{ title }}</h3>
+                        <p class="text-muted flex-grow-1">{{ description }}</p>
+                        <div class="premium-pro-link mt-3 pt-2">
+                            {% if membership and membership.is_active %}
+                                <span class="badge text-bg-success py-2 px-3 fw-bold shadow-sm">
+                                    <i class="bi bi-play-circle-fill me-1"></i> Launch Feature <i class="bi bi-arrow-right ms-1"></i>
+                                </span>
+                            {% else %}
+                                <span class="badge text-bg-primary py-2 px-3 fw-bold shadow-sm">
+                                    <i class="bi bi-lock-fill me-1"></i> Unlock with PRO <i class="bi bi-arrow-up-right ms-1"></i>
+                                </span>
+                            {% endif %}
+                        </div>
+                    </a>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+    </section>
+
+    <section class="plans-section">
+        <div class="container">
+            <div class="section-heading-premium text-center">
+                <span class="premium-eyebrow">SIMPLE MEMBERSHIP</span>
+                <h2>Choose your career experience.</h2>
+            </div>
+            <div class="row justify-content-center g-4">
+                <div class="col-lg-4">
+                    <article class="plan-card">
+                        <span class="plan-label">FREE</span>
+                        <h3>Start building</h3>
+                        <div class="plan-price">₹0 <small>forever</small></div>
+                        <ul>
+                            <li>Basic profile</li>
+                            <li>Basic job search</li>
+                            <li>Limited AI suggestions</li>
+                            <li>Basic career dashboard</li>
+                        </ul>
+                        <span class="btn btn-outline-secondary w-100">Current plan</span>
+                    </article>
+                </div>
+                <div class="col-lg-5">
+                    <article class="plan-card pro-plan">
+                        <span class="most-popular">MOST POPULAR</span>
+                        <span class="plan-label">PRO ✦</span>
+                        <h3>Unlock your advantage</h3>
+                        <div class="plan-price">₹1 <small>/ month</small></div>
+                        <p class="annual-price">or ₹1,999 / year</p>
+                        <ul>
+                            <li>Everything in Free</li>
+                            <li>Unlimited AI career tools</li>
+                            <li>AI resume analyzer and mock interviews</li>
+                            <li>Advanced job matching and roadmap</li>
+                            <li>Premium learning and career analytics</li>
+                            <li>Priority recommendations</li>
+                        </ul>
+                        {% if membership and membership.is_active %}
+                            <div class="alert alert-success text-center py-2 mb-3">
+                                <i class="bi bi-check-circle-fill text-success me-1"></i> Your PRO Membership is <strong>Active</strong>
+                            </div>
+                            <div class="d-grid gap-2">
+                                <a href="{% url 'ai_mock_interview' %}" class="btn btn-primary fw-bold">
+                                    <i class="bi bi-camera-video me-2"></i>Mock Interview with Aria
+                                </a>
+                                <a href="{% url 'career_match' %}" class="btn btn-outline-primary fw-bold">
+                                    <i class="bi bi-stars me-2"></i>AI Resume Analyzer
+                                </a>
+                            </div>
+                        {% else %}
+                            <div class="small text-muted mb-3 text-center bg-light py-2 rounded-2">
+                                <i class="bi bi-qr-code-scan text-primary me-1"></i> Scan & Pay ₹1 via UPI (<code>sambitmaharana92@naviaxis</code>)
+                            </div>
+                            <a href="{% url 'pro_checkout' %}" class="btn pro-btn w-100">
+                                Upgrade to PRO <i class="bi bi-arrow-up-right ms-2"></i>
+                            </a>
+                        {% endif %}
+                    </article>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="pro-locked-section">
+        <div class="container">
+            <div class="locked-feature">
+                <div>
+                    <span class="pro-mini-badge">PRO FEATURE</span>
+                    <h2>AI Resume Analyzer & Mock Interview with Aria</h2>
+                    <p>Upload your resume for ATS scoring and jump into a live voice & video mock interview with Aria.</p>
+                </div>
+                {% if membership and membership.is_active %}
+                    <a href="{% url 'ai_mock_interview' %}" class="btn pro-btn">
+                        <i class="bi bi-camera-video me-2"></i>Practice with Aria <i class="bi bi-arrow-right ms-2"></i>
+                    </a>
+                {% else %}
+                    <a href="{% url 'pro_feature' 'resume-analyzer' %}" class="btn pro-btn">
+                        Unlock with PRO <i class="bi bi-lock-fill ms-2"></i>
+                    </a>
+                {% endif %}
+            </div>
+        </div>
+    </section>
+</main>
+{% endblock %}

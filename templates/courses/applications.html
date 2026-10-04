@@ -1,0 +1,10 @@
+{% extends 'base.html' %}
+{% block title %}My Course Applications | CAMPUSLINK{% endblock %}
+{% block content %}
+<main class="marketplace-page"><div class="container py-5">
+    <div class="marketplace-heading"><div><span class="eyebrow">Learning journey</span><h1>My course applications</h1><p>Track the courses you have applied to.</p></div><a class="btn btn-primary" href="{% url 'course_list' %}">Explore courses</a></div>
+    <div class="row g-3">
+        {% for application in applications %}<div class="col-md-6 col-xl-4"><article class="job-card"><p class="job-company">{{ application.course.provider.name }}</p><h2>{{ application.course.title }}</h2><div class="job-match-row"><span>Applied {{ application.created_at|date:'M d, Y' }}</span><span class="status-pill status-{{ application.status|lower }}">{{ application.get_status_display }}</span></div><a class="btn btn-outline-primary mt-3" href="{% url 'course_detail' application.course.id %}">View course</a></article></div>{% empty %}<div class="col-12"><div class="empty-state"><i class="bi bi-journal-check"></i><strong>No course applications yet</strong><span>Explore courses and apply to start learning.</span><a class="btn btn-sm btn-primary" href="{% url 'course_list' %}">Browse courses</a></div></div>{% endfor %}
+    </div>
+</div></main>
+{% endblock %}

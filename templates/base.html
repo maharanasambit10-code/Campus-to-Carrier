@@ -1,0 +1,158 @@
+
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}CAMPUSLINK | AI Placement Platform{% endblock %}</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{% static 'css/style.css' %}?v=20260912">
+    <link rel="stylesheet" href="{% static 'css/premium_hero.css' %}?v=20260918_v2">
+    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+    <nav class="navbar navbar-expand-lg sticky-top app-navbar">
+        <div class="container px-3 px-lg-0">
+            <a class="premium-nav-brand" href="{% url 'home' %}">
+                <i class="bi bi-mortarboard-fill"></i>
+                Campus2Career
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#mainNavigation" aria-controls="mainNavigation" aria-expanded="false" aria-label="Toggle navigation"><i class="bi bi-list"></i></button>
+            <div class="collapse navbar-collapse" id="mainNavigation">
+            <div class="nav-actions d-flex align-items-center gap-3 ms-auto">
+                <button type="button" class="theme-toggle" aria-label="Toggle theme" title="Toggle light/dark mode">
+                    <i class="bi bi-moon-stars-fill theme-icon dark-icon"></i>
+                    <i class="bi bi-sun-fill theme-icon light-icon"></i>
+                </button>
+                {% if request.user.is_authenticated %}
+                <a href="{% url 'dashboard_redirect' %}" class="public-nav-link">Dashboard</a>
+                {% if request.resolver_match.url_name != 'student_profile' %}
+                <a href="{% url 'profile' %}" class="public-nav-link"><i class="bi bi-person me-1"></i>Profile</a>
+                {% endif %}
+                <a href="{% url 'job_list' %}" class="public-nav-link{% if request.resolver_match.url_name == 'student_profile' %} active{% endif %}">Jobs</a>
+                <a href="{% url 'job_list' %}" class="public-nav-link">Internships</a>
+                <a href="{% url 'job_list' %}" class="public-nav-link">Companies</a>
+                {% if request.resolver_match.url_name != 'student_profile' %}
+                {% if request.user.role == 'STUDENT' %}<a href="{% url 'student_applications' %}" class="public-nav-link">My Applications</a>{% endif %}
+                <a href="{% url 'interview_list' %}" class="public-nav-link">Interviews</a>
+                {% if request.user.role == 'RECRUITER' %}<a href="{% url 'recruiter_job_create' %}" class="public-nav-link">Post Job</a>{% endif %}
+                {% endif %}
+                <a href="{% url 'notification_list' %}" class="nav-icon-link" aria-label="Notifications"><i class="bi bi-bell fs-5"></i>{% if unread_notification_count %}<span class="notification-dot" aria-hidden="true"></span>{% endif %}</a>
+                {% if request.user.membership.is_active %}<a href="{% url 'pro_landing' %}" class="pro-nav-link"><i class="bi bi-stars"></i> PRO Member</a>{% else %}<a href="{% url 'pro_landing' %}" class="pro-nav-link"><i class="bi bi-stars"></i> Go PRO</a>{% endif %}
+                <div class="dropdown">
+                    <a href="#" class="user-menu d-flex align-items-center text-decoration-none dropdown-toggle" data-bs-toggle="dropdown" aria-label="Open profile menu">
+                        <span class="avatar avatar-sm me-2">{{ request.user.first_name|first|default:request.user.username|first|upper }}</span>
+                        <strong class="text-dark user-name">{{ request.user.get_full_name|default:request.user.username }}</strong>
+                    </a>
+                    <ul class="dropdown-menu dropdown-menu-end shadow border-0 rounded-3 mt-2">
+                        
+    <li><a class="dropdown-item" href="{% url 'dashboard_redirect' %}">Dashboard</a></li>
+    <li><a class="dropdown-item" href="{% url 'profile' %}">Profile</a></li>
+    
+                        <li><hr class="dropdown-divider"></li>
+                        <li><form method="post" action="{% url 'logout' %}" class="m-0">{% csrf_token %}<button type="submit" class="dropdown-item text-danger">Sign out</button></form></li>
+                    </ul>
+                </div>
+                {% else %}
+                <a href="{% url 'home' %}" class="premium-nav-link">Home</a>
+                <a href="{% url 'job_list' %}" class="premium-nav-link">Jobs</a>
+                <a href="{% url 'job_list' %}" class="premium-nav-link">Internships</a>
+                <a href="#" class="premium-nav-link">Resources</a>
+                <a href="{% url 'career_match' %}" class="premium-nav-link">AI Guidance</a>
+                <a href="#about" class="premium-nav-link">About</a>
+                <a class="btn-premium-login" href="{% url 'login' %}">Login</a>
+                <a class="btn-premium-signup" href="{% url 'student_register' %}">Sign Up</a>
+                {% endif %}
+            </div>
+        </div>
+            </div>
+            </div>
+        </nav>
+    {% block content %}{% endblock %}
+    <footer class="site-footer premium-footer">
+        <div class="footer-glow-left"></div>
+        <div class="footer-glow-right"></div>
+        <div class="container relative-z">
+            <div class="row g-5">
+                <div class="col-lg-4">
+                    <a class="footer-brand premium-footer-brand" href="{% url 'home' %}">
+                        <span class="brand-mark"><i class="bi bi-mortarboard-fill"></i></span>
+                        Campus2Career
+                    </a>
+                    <p class="mt-4 mb-4 footer-desc">The AI-powered bridge between campus talent and career opportunities. Built for the ambitious.</p>
+                    <div class="footer-social premium-social">
+                        <a href="#" aria-label="LinkedIn"><i class="bi bi-linkedin"></i></a>
+                        <a href="#" aria-label="GitHub"><i class="bi bi-github"></i></a>
+                        <a href="#" aria-label="Instagram"><i class="bi bi-instagram"></i></a>
+                        <a href="#" aria-label="Twitter"><i class="bi bi-twitter-x"></i></a>
+                    </div>
+                </div>
+                <div class="col-6 col-lg-2">
+                    <h2 class="footer-heading">Platform</h2>
+                    <div class="footer-links">
+                        <a href="{% url 'job_list' %}">Jobs</a>
+                        <a href="{% url 'job_list' %}">Internships</a>
+                        <a href="{% url 'job_list' %}">Companies</a>
+                        <a href="{% url 'career_match' %}">Career AI</a>
+                        <a href="{% url 'interview_list' %}">Learning</a>
+                    </div>
+                </div>
+                <div class="col-6 col-lg-2">
+                    <h2 class="footer-heading">For Students</h2>
+                    <div class="footer-links">
+                        <a href="{% url 'profile' %}">Career Profile</a>
+                        <a href="{% url 'career_match' %}">Resume Analysis</a>
+                        <a href="{% url 'interview_list' %}">Interview Prep</a>
+                        <a href="{% url 'career_match' %}">Skill Development</a>
+                    </div>
+                </div>
+                <div class="col-6 col-lg-2">
+                    <h2 class="footer-heading">For Recruiters</h2>
+                    <div class="footer-links">
+                        <a href="{% url 'recruiter_job_create' %}">Find Talent</a>
+                        <a href="{% url 'recruiter_job_create' %}">Post Jobs</a>
+                        <a href="{% url 'admin_login' %}">Campus Hiring</a>
+                        <a href="{% url 'admin_login' %}">Admin Login</a>
+                    </div>
+                </div>
+                <div class="col-6 col-lg-2">
+                    <h2 class="footer-heading">Company</h2>
+                    <div class="footer-links">
+                        <a href="{% url 'home' %}#about">About</a>
+                        <a href="mailto:hello@campuslink.local">Contact</a>
+                        <a href="#">Privacy</a>
+                        <a href="#">Terms</a>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="footer-bottom premium-footer-bottom">
+                <div class="d-flex flex-column flex-md-row justify-content-between align-items-center gap-3">
+                    <span>© 2026 Campus2Career. All rights reserved.</span>
+                    <div class="footer-bottom-links">
+                        <span>Connect. Learn. Apply. Grow.</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </footer>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="{% static 'js/main.js' %}?v=20260912"></script>
+    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            AOS.init({
+                duration: 800,
+                once: true,
+                offset: 50,
+            });
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,51 @@
+{% extends "admin/base_site.html" %}
+{% load i18n %}
+
+{% block bodyclass %}{{ block.super }} dashboard-body{% endblock %}
+
+{% block content %}
+<div class="dashboard-shell">
+  <div class="stats-grid">
+    <div class="stat-box">
+      <span class="label">Users</span>
+      <div class="value">{{ user_count|default:'0' }}</div>
+    </div>
+    <div class="stat-box">
+      <span class="label">Students</span>
+      <div class="value">{{ student_count|default:'0' }}</div>
+    </div>
+    <div class="stat-box">
+      <span class="label">Jobs</span>
+      <div class="value">{{ job_count|default:'0' }}</div>
+    </div>
+    <div class="stat-box">
+      <span class="label">Applications</span>
+      <div class="value">{{ application_count|default:'0' }}</div>
+    </div>
+  </div>
+
+  {% if app_list %}
+    <div class="app-list">
+      {% for app in app_list %}
+        <div class="dashboard-card">
+          <h2>{{ app.name }}</h2>
+          <ul>
+            {% for model in app.models %}
+              <li>
+                <a href="{{ model.admin_url }}">{{ model.name }}</a>
+                {% if model.add_url %}
+                  <a href="{{ model.add_url }}" title="Add">＋</a>
+                {% endif %}
+              </li>
+            {% endfor %}
+          </ul>
+        </div>
+      {% endfor %}
+    </div>
+  {% else %}
+    <div class="dashboard-card">
+      <p>No applications available.</p>
+    </div>
+  {% endif %}
+</div>
+{% endblock %}

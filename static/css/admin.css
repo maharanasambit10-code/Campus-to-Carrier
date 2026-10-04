@@ -1,0 +1,85 @@
+:root {
+    --admin-ink: #172033;
+    --admin-muted: #6b7280;
+    --admin-line: #e5e9f1;
+    --admin-blue: #2563eb;
+    --admin-navy: #172b4d;
+    --admin-canvas: #f4f7fb;
+}
+
+body {
+    position: relative;
+    min-height: 100vh;
+    background-color: var(--admin-canvas);
+    background-image:
+        linear-gradient(rgba(37, 99, 235, .035) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(37, 99, 235, .035) 1px, transparent 1px),
+        linear-gradient(135deg, rgba(255, 255, 255, .92), rgba(237, 243, 252, .8));
+    background-size: 32px 32px, 32px 32px, 100% 100%;
+    color: var(--admin-ink);
+}
+
+body::before {
+    position: fixed;
+    inset: 0;
+    z-index: -1;
+    content: "";
+    pointer-events: none;
+    opacity: .48;
+    background-image:
+        linear-gradient(115deg, transparent 0 46%, rgba(37, 99, 235, .07) 47%, transparent 48%),
+        linear-gradient(25deg, transparent 0 72%, rgba(16, 185, 129, .045) 73%, transparent 74%);
+    background-size: 720px 720px, 980px 980px;
+    animation: admin-background-drift 24s linear infinite;
+}
+
+#container { position: relative; z-index: 1; }
+
+#header {
+    position: relative;
+    overflow: hidden;
+    background: var(--admin-navy);
+    color: #fff;
+    padding: 18px 32px;
+    box-shadow: 0 8px 25px rgba(23, 43, 77, .16);
+}
+
+#header::after {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: -35%;
+    width: 28%;
+    content: "";
+    pointer-events: none;
+    background: linear-gradient(90deg, transparent, rgba(143, 224, 192, .14), transparent);
+    transform: skewX(-18deg);
+    animation: admin-header-sweep 9s ease-in-out infinite;
+}
+
+#branding h1 { margin: 0; font-size: 20px; font-weight: 800; letter-spacing: .01em; }
+#branding h1 a { color: #fff; display: flex; align-items: center; gap: 10px; }
+#branding h1 small { color: #aebdd5; font-size: 11px; font-weight: 600; letter-spacing: .08em; text-transform: uppercase; }
+.admin-brand-mark { display: inline-flex; align-items: center; justify-content: center; width: 34px; height: 34px; border-radius: 9px; color: var(--admin-navy); background: #8fe0c0; }
+#user-tools { color: #c5d0e2; font-size: 11px; line-height: 34px; }
+#user-tools a { color: #fff; border-bottom-color: rgba(255,255,255,.35); }
+
+#content { max-width: 1420px; padding: 34px 32px 60px; }
+#content h1 { color: var(--admin-ink); font-size: 26px; letter-spacing: -.03em; }
+.dashboard .module, .module { border: 1px solid var(--admin-line); border-radius: 12px; overflow: hidden; background: rgba(255,255,255,.92); box-shadow: 0 8px 24px rgba(31, 49, 82, .06); }
+.dashboard .module caption, .module caption { background: #edf3ff; color: var(--admin-navy); padding: 12px 16px; font-weight: 800; letter-spacing: .04em; }
+.dashboard .module th, .dashboard .module td { padding: 13px 16px; border-bottom: 1px solid var(--admin-line); }
+.dashboard .module tr:last-child td { border-bottom: 0; }
+.dashboard .module a { color: var(--admin-blue); font-weight: 600; }
+.object-tools a, input[type=submit], .submit-row input, .button { border-radius: 7px; background: var(--admin-blue); padding: 10px 15px; font-weight: 700; }
+input, textarea, select, .vTextField { border: 1px solid #d7deea; border-radius: 7px; padding: 9px 10px; }
+input:focus, textarea:focus, select:focus { border-color: var(--admin-blue); box-shadow: 0 0 0 3px rgba(37,99,235,.12); outline: 0; }
+#nav-sidebar { border-right: 1px solid var(--admin-line); background: rgba(255,255,255,.85); }
+#nav-sidebar .module { border: 0; box-shadow: none; background: transparent; }
+#nav-sidebar .module caption { background: transparent; border-bottom: 1px solid var(--admin-line); }
+#nav-sidebar a { color: var(--admin-navy); }
+.messagelist li { border-radius: 8px; box-shadow: 0 4px 15px rgba(0,0,0,.04); }
+@keyframes admin-background-drift { from { background-position: 0 0, 0 0; } to { background-position: 720px 360px, -490px 490px; } }
+@keyframes admin-header-sweep { 0%, 18% { left: -35%; } 58%, 100% { left: 125%; } }
+@media (prefers-reduced-motion: reduce) { body::before, #header::after { animation: none; } }
+@media (max-width: 767px) { #header { padding: 15px 18px; } #content { padding: 24px 16px 45px; } #branding h1 small { display: none; } #user-tools { margin-top: 8px; line-height: 20px; } }

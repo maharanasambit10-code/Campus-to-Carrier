@@ -1,0 +1,17 @@
+{% extends 'base.html' %}
+{% block title %}{{ course.title }} | CAMPUSLINK{% endblock %}
+{% block content %}
+<main class="job-detail-page">
+    <div class="container py-5">
+        <a class="back-link" href="{% url 'course_list' %}"><i class="bi bi-arrow-left"></i> Back to Courses</a>
+        <div class="job-detail-layout">
+            <article class="job-detail-card">
+                <div class="job-detail-company"><span class="company-mark">{{ course.provider.name|first|upper }}</span><div><p>{{ course.provider.name }}</p><h1>{{ course.title }}</h1></div></div>
+                <div class="job-detail-meta"><span><i class="bi bi-laptop"></i>{{ course.mode }}</span><span><i class="bi bi-clock"></i>{{ course.duration|default:'Self-paced' }}</span><span><i class="bi bi-bar-chart"></i>{{ course.level|default:'All levels' }}</span>{% if course.deadline %}<span><i class="bi bi-calendar3"></i>Apply by {{ course.deadline|date:'M d, Y' }}</span>{% endif %}</div>
+                <section><h2>About this course</h2><p>{{ course.description }}</p></section>
+            </article>
+            <aside class="job-apply-card"><span class="eyebrow">Your learning plan</span><h2>{{ course.title }}</h2>{% if application %}<div class="application-state"><i class="bi bi-check-circle-fill"></i><strong>Application submitted</strong><span>Status: {{ application.get_status_display }}</span></div>{% else %}<p>Apply with your CampusLink profile to join this course.</p><form method="post" action="{% url 'apply_course' course.id %}">{% csrf_token %}<button class="btn btn-primary w-100" type="submit">Apply to Course <i class="bi bi-arrow-up-right ms-2"></i></button></form>{% endif %}</aside>
+        </div>
+    </div>
+</main>
+{% endblock %}

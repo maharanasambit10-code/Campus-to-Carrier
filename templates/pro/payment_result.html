@@ -1,0 +1,137 @@
+{% extends 'base.html' %}
+{% block title %}Payment {{ result|title }} | CampusLinkLearn PRO{% endblock %}
+{% block content %}
+<main class="pro-feature-page py-5">
+    <div class="container">
+        <div class="card border-0 shadow-sm rounded-4 p-4 p-md-5 text-center mx-auto" style="max-width: 780px;">
+            <div class="mb-3">
+                <span class="badge text-bg-warning text-dark fw-bold px-3 py-1 rounded-pill">PRO ✦</span>
+            </div>
+
+            {% if result == 'success' %}
+                <div class="mb-3">
+                    <span class="badge rounded-circle bg-success text-white d-inline-flex align-items-center justify-content-center shadow" style="width: 72px; height: 72px;">
+                        <i class="bi bi-check-lg fs-1"></i>
+                    </span>
+                </div>
+                <h1 class="h2 fw-bold text-dark mb-2">Welcome to CampusLink PRO!</h1>
+                <p class="text-muted fs-6 mb-4">Your payment has been received and verified. All premium AI career tools are now fully unlocked for your account.</p>
+
+                <!-- Unlocked Tools Launchpad -->
+                <div class="row g-3 text-start mb-4">
+                    <div class="col-md-6">
+                        <div class="card h-100 p-3 border rounded-3 bg-light">
+                            <div class="d-flex align-items-center gap-2 mb-2">
+                                <i class="bi bi-file-earmark-check fs-4 text-primary"></i>
+                                <strong class="fs-6 text-dark">AI Resume Analyzer</strong>
+                            </div>
+                            <p class="small text-muted mb-3">Upload PDF/DOCX resumes for ATS scoring, keyword detection, and role alignment.</p>
+                            <a href="{% url 'career_match' %}" class="btn btn-primary btn-sm mt-auto">
+                                <i class="bi bi-stars me-1"></i> Launch Analyzer
+                            </a>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="card h-100 p-3 border rounded-3 bg-light">
+                            <div class="d-flex align-items-center gap-2 mb-2">
+                                <i class="bi bi-camera-video fs-4 text-primary"></i>
+                                <strong class="fs-6 text-dark">AI Mock Interviews</strong>
+                            </div>
+                            <p class="small text-muted mb-3">Practice real-time technical and HR questions with instant AI scoring and feedback.</p>
+                            <a href="{% url 'ai_mock_interview' %}" class="btn btn-primary btn-sm mt-auto">
+                                <i class="bi bi-camera-video me-1"></i> Practice with Aria
+                            </a>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="card h-100 p-3 border rounded-3 bg-light">
+                            <div class="d-flex align-items-center gap-2 mb-2">
+                                <i class="bi bi-graph-up-arrow fs-4 text-primary"></i>
+                                <strong class="fs-6 text-dark">Role & Company Match</strong>
+                            </div>
+                            <p class="small text-muted mb-3">See eligible live job listings and companies matching your specific skills.</p>
+                            <a href="{% url 'career_match' %}" class="btn btn-outline-primary btn-sm mt-auto">
+                                <i class="bi bi-search me-1"></i> View Matches
+                            </a>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="card h-100 p-3 border rounded-3 bg-light">
+                            <div class="d-flex align-items-center gap-2 mb-2">
+                                <i class="bi bi-map fs-4 text-primary"></i>
+                                <strong class="fs-6 text-dark">Personal Career Roadmap</strong>
+                            </div>
+                            <p class="small text-muted mb-3">Target high-growth skills and follow customized learning paths for your dream job.</p>
+                            <a href="{% url 'career_match' %}#skill-gap" class="btn btn-outline-primary btn-sm mt-auto">
+                                <i class="bi bi-compass me-1"></i> View Roadmap
+                            </a>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="card h-100 p-3 border rounded-3 bg-light">
+                            <div class="d-flex align-items-center gap-2 mb-2">
+                                <i class="bi bi-mortarboard fs-4 text-primary"></i>
+                                <strong class="fs-6 text-dark">Premium Learning Hub</strong>
+                            </div>
+                            <p class="small text-muted mb-3">Master DSA, system design, interview roadmaps, and career-boosting courses.</p>
+                            <a href="{% url 'course_list' %}" class="btn btn-outline-primary btn-sm mt-auto">
+                                <i class="bi bi-book me-1"></i> Browse Courses
+                            </a>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="card h-100 p-3 border rounded-3 bg-light">
+                            <div class="d-flex align-items-center gap-2 mb-2">
+                                <i class="bi bi-graph-up-arrow fs-4 text-primary"></i>
+                                <strong class="fs-6 text-dark">Career Intelligence</strong>
+                            </div>
+                            <p class="small text-muted mb-3">Gain salary insights, role benchmarks, industry demand trends, and career analytics.</p>
+                            <a href="{% url 'career_match' %}" class="btn btn-outline-primary btn-sm mt-auto">
+                                <i class="bi bi-pie-chart me-1"></i> View Intelligence
+                            </a>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="d-flex flex-wrap justify-content-center gap-2">
+                    <a href="{% url 'student_dashboard' %}" class="btn btn-primary px-4 py-2">
+                        <i class="bi bi-speedometer2 me-1"></i> Go to Student Dashboard
+                    </a>
+                    <a href="{% url 'career_match' %}" class="btn btn-outline-primary px-4 py-2">
+                        <i class="bi bi-stars me-1"></i> Open AI Career Match
+                    </a>
+                </div>
+
+            {% elif result == 'failed' %}
+                <div class="mb-3">
+                    <span class="badge rounded-circle bg-danger text-white d-inline-flex align-items-center justify-content-center shadow" style="width: 72px; height: 72px;">
+                        <i class="bi bi-exclamation-triangle-fill fs-1"></i>
+                    </span>
+                </div>
+                <h1 class="h2 fw-bold text-dark mb-2">Payment Incomplete</h1>
+                <p class="text-muted fs-6 mb-4">We could not confirm your payment. You can retry paying ₹1 via UPI QR Scanner or UPI ID.</p>
+                <a href="{% url 'pro_checkout' %}" class="btn btn-primary px-4 py-2">
+                    <i class="bi bi-arrow-repeat me-1"></i> Retry with UPI Scanner
+                </a>
+
+            {% else %}
+                <div class="mb-3">
+                    <span class="badge rounded-circle bg-secondary text-white d-inline-flex align-items-center justify-content-center shadow" style="width: 72px; height: 72px;">
+                        <i class="bi bi-x-lg fs-1"></i>
+                    </span>
+                </div>
+                <h1 class="h2 fw-bold text-dark mb-2">Payment Cancelled</h1>
+                <p class="text-muted fs-6 mb-4">No payment was processed. Your account remains on the free plan.</p>
+                <div class="d-flex justify-content-center gap-2">
+                    <a href="{% url 'pro_checkout' %}" class="btn btn-primary px-4 py-2">
+                        <i class="bi bi-arrow-up-right me-1"></i> Upgrade to PRO for ₹1
+                    </a>
+                    <a href="{% url 'student_dashboard' %}" class="btn btn-outline-secondary px-4 py-2">
+                        Return to Dashboard
+                    </a>
+                </div>
+            {% endif %}
+        </div>
+    </div>
+</main>
+{% endblock %}

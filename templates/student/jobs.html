@@ -1,0 +1,26 @@
+
+{% extends 'base.html' %}
+{% block title %}Find Opportunities | CAMPUSLINK{% endblock %}
+{% block content %}
+<main class="marketplace-page">
+<div class="container py-5">
+    <div class="marketplace-heading"><div><span class="eyebrow">Career marketplace</span><h1>Find Your Next Opportunity</h1><p>Discover roles matched to your skills, interests and career goals.</p></div><span class="marketplace-count">{{ job_matches|length }} opportunities</span></div>
+    {% if messages %}
+    <div class="mb-4">
+        {% for message in messages %}
+        <div class="alert alert-{{ message.tags }}">{{ message }}</div>
+        {% endfor %}
+    </div>
+    {% endif %}
+
+    <form class="job-filters" method="get"><div class="job-search"><i class="bi bi-search"></i><input type="search" name="q" value="{{ query }}" placeholder="Search jobs, skills or companies..." aria-label="Search jobs, skills or companies"></div><select name="role" aria-label="Filter by role"><option value="">All roles</option>{% for option in role_filters %}<option value="{{ option }}"{% if selected_role == option %} selected{% endif %}>{{ option }}</option>{% endfor %}</select><select name="experience" aria-label="Filter by experience"><option value="">All experience</option><option value="fresher"{% if selected_experience == 'fresher' %} selected{% endif %}>Fresher</option><option value="0-1"{% if selected_experience == '0-1' %} selected{% endif %}>0-1 years</option><option value="1-3"{% if selected_experience == '1-3' %} selected{% endif %}>1-3 years</option></select><select name="location" aria-label="Filter by location"><option value="">All locations</option>{% for option in location_filters %}<option value="{{ option }}"{% if selected_location == option %} selected{% endif %}>{{ option }}</option>{% endfor %}</select><select name="job_type" aria-label="Filter by job type"><option value="">All job types</option><option value="Full-Time"{% if selected_job_type == 'Full-Time' %} selected{% endif %}>Full Time</option><option value="Internship"{% if selected_job_type == 'Internship' %} selected{% endif %}>Internship</option></select><button class="btn btn-primary" type="submit">Apply filters</button></form>
+
+    <div class="row g-4 job-grid">
+        {% for match in job_matches %}
+        <div class="col-md-6 col-xl-4 d-flex"><article class="job-card"><div class="job-card-top"><span class="company-mark">{{ match.job.company.name|first|upper }}</span><span class="job-type-badge">{{ match.job.job_type }}</span></div><p class="job-company">{{ match.job.company.name }}</p><h2>{{ match.job.title }}</h2><div class="job-meta"><span><i class="bi bi-geo-alt"></i>{{ match.job.location }}</span><span><i class="bi bi-cash-stack"></i>{{ match.job.salary|default:'Package disclosed in details' }}</span></div><div class="job-skill-list">{% for skill in match.job.required_skills.all %}<span>{{ skill.name }}</span>{% endfor %}</div><div class="job-match-row"><span><i class="bi bi-stars"></i>{% if match.score %}{{ match.score }}% skill match{% else %}Career opportunity{% endif %}</span><span>{{ match.job.created_at|timesince }} ago</span></div><div class="job-card-actions"><a class="btn btn-outline-primary" href="{% url 'job_detail' match.job.id %}">View Details</a>{% if match.job.id in applied_ids %}<span class="btn btn-light disabled">Applied</span>{% else %}<form method="post" action="{% url 'apply_job' match.job.id %}">{% csrf_token %}<button class="btn btn-primary" type="submit">Apply Now</button></form>{% endif %}</div></article></div>
+        {% empty %}<div class="col-12"><div class="empty-state marketplace-empty"><i class="bi bi-search"></i><strong>No matching opportunities</strong><span>Try adjusting your search or filters.</span></div></div>
+        {% endfor %}
+    </div>
+</div>
+</main>
+{% endblock %}

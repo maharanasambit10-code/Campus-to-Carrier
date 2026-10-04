@@ -1,0 +1,79 @@
+
+{% extends 'base.html' %}
+{% block content %}
+<div class="container-fluid bg-light min-vh-100 p-5">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2 class="fw-bold"><i class="bi bi-speedometer text-primary me-2"></i> CAMPUSLINK COMMAND CENTER</h2>
+    </div>
+    
+    <div class="row g-4 mb-5">
+        <div class="col-md-3">
+            <div class="card p-4 text-center">
+                <h6 class="text-muted fw-bold">Total Students</h6>
+                <h2 class="fw-bold text-primary">{{ total_students }}</h2>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card p-4 text-center">
+                <h6 class="text-muted fw-bold">Eligible Students</h6>
+                <h2 class="fw-bold text-success">{{ eligible_students }}</h2>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card p-4 text-center">
+                <h6 class="text-muted fw-bold">Placement Rate</h6>
+                <h2 class="fw-bold text-warning">{{ placement_rate }}%</h2>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card p-4 text-center">
+                <h6 class="text-muted fw-bold">Average Package</h6>
+                <h2 class="fw-bold text-danger">{% if average_package %}{{ average_package }} LPA{% else %}--{% endif %}</h2>
+                <small class="text-muted">{% if highest_package %}Highest: {{ highest_package }} LPA{% else %}No selected package data{% endif %}</small>
+            </div>
+        </div>
+    </div>
+
+    <div class="row g-4 mb-5">
+        <div class="col-lg-6"><div class="card p-4 h-100"><div class="d-flex justify-content-between align-items-center mb-3"><h5 class="fw-bold mb-0">Company verification queue</h5><span class="badge bg-warning-subtle text-warning-emphasis">{{ pending_companies|length }} pending</span></div><div class="list-group list-group-flush">{% for company in pending_companies %}<div class="list-group-item px-0 d-flex justify-content-between align-items-center"><div><strong>{{ company.name }}</strong><div class="small text-muted">{{ company.industry|default:'Industry not provided' }}</div></div><form method="post" action="{% url 'verify_company' company.id %}" class="d-flex gap-2">{% csrf_token %}<button name="status" value="VERIFIED" class="btn btn-sm btn-success">Verify</button><button name="status" value="REJECTED" class="btn btn-sm btn-outline-danger">Reject</button></form></div>{% empty %}<div class="text-muted py-3">No companies are waiting for review.</div>{% endfor %}</div></div></div>
+        <div class="col-lg-6"><div class="card p-4 h-100"><h5 class="fw-bold mb-3">Recent placement activity</h5><div class="list-group list-group-flush">{% for application in recent_applications %}<div class="list-group-item px-0 d-flex justify-content-between"><div><strong>{{ application.student.user.username }}</strong><div class="small text-muted">{{ application.job.title }} at {{ application.job.company.name }}</div></div><span class="badge bg-primary align-self-start">{{ application.get_status_display }}</span></div>{% empty %}<div class="text-muted py-3">No application activity yet.</div>{% endfor %}</div></div></div>
+    </div>
+    
+    <div class="row">
+        <div class="col-md-8">
+            <div class="card p-4 h-100">
+                <h5 class="fw-bold mb-4">Placement by Department</h5>
+                <canvas id="placementChart"></canvas>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card p-4 h-100 bg-primary text-white">
+                <h5 class="fw-bold mb-4"><i class="bi bi-lightbulb me-2"></i> AI Insights</h5>
+                <ul class="list-unstyled mt-3">
+                    <li class="mb-4"><strong>Insight 1:</strong> Python is the most required skill across 65% of active jobs.</li>
+                    <li class="mb-4"><strong>Insight 2:</strong> 120 eligible students have not applied to matching jobs yet.</li>
+                    <li><strong>Insight 3:</strong> REST API is missing from 40% of student profiles.</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    const ctx = document.getElementById('placementChart').getContext('2d');
+    new Chart(ctx, {
+        type: 'bar',
+        data: {
+            labels: ['CSE', 'IT', 'ECE', 'EEE', 'MECH'],
+            datasets: [{
+                label: 'Placed Students',
+                data: [150, 120, 90, 45, 30],
+                backgroundColor: 'rgba(13, 110, 253, 0.5)',
+                borderColor: 'rgba(13, 110, 253, 1)',
+                borderWidth: 1
+            }]
+        },
+        options: { responsive: true }
+    });
+</script>
+{% endblock %}

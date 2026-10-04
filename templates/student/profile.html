@@ -1,0 +1,162 @@
+{% extends 'base.html' %}
+{% block title %}Student Profile | CAMPUSLINK{% endblock %}
+{% block content %}
+<div class="profile-page profile-reference container py-4 py-lg-5">
+    {% if messages %}
+    {% for message in messages %}
+    <div class="alert alert-{{ message.tags|default:'info' }} alert-dismissible fade show" role="alert">
+        {{ message }}
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    </div>
+    {% endfor %}
+    {% endif %}
+
+    <div class="profile-page-heading d-flex flex-wrap justify-content-between align-items-end gap-3 mb-4">
+        <div>
+            <p class="text-primary fw-semibold mb-1">Student profile</p>
+            <h1 class="h2 fw-bold mb-1">Build your professional story</h1>
+            <p class="text-muted mb-0">Keep your profile current so recruiters can find the right fit.</p>
+        </div>
+        <a href="{% url 'student_dashboard' %}" class="btn btn-outline-primary"><i class="bi bi-arrow-left me-2"></i>Dashboard</a>
+    </div>
+
+    <div class="profile-command-center mb-4">
+        <div class="d-flex flex-wrap justify-content-between align-items-center gap-3 mb-3">
+            <div><span class="eyebrow">Profile command center</span><h2 class="h5 fw-bold mb-0">Everything recruiters need to know</h2></div>
+            <span class="profile-command-note"><i class="bi bi-check-circle me-1"></i>{{ profile_completion }}% complete</span>
+        </div>
+        <div class="row g-2">{% for icon, label, value, anchor in profile_stats %}<div class="col-6 col-md-4 col-xl-2"><a href="{{ anchor }}" class="profile-stat-link"><i class="bi {{ icon }}"></i><strong>{{ value }}</strong><span>{{ label }}</span></a></div>{% endfor %}</div>
+        <div class="profile-quick-links mt-3 pt-3 border-top"><a href="#personal-information"><i class="bi bi-pencil-square me-1"></i>Edit information</a><a href="#resume"><i class="bi bi-file-earmark-arrow-up me-1"></i>Manage resume</a><a href="{% url 'recruiter_preview' %}"><i class="bi bi-eye me-1"></i>Recruiter preview</a><a href="{% url 'career_match' %}"><i class="bi bi-stars me-1"></i>Career matches</a></div>
+    </div>
+
+    <div class="row g-4">
+        <aside class="col-lg-4">
+            <div class="profile-card card border-0 shadow-sm p-4 text-center h-100">
+                <div class="d-flex flex-column align-items-center mb-3">
+                    <div class="position-relative mb-3">
+                        {% if profile.profile_photo %}
+                        <img src="{{ profile.profile_photo.url }}" alt="Profile photo" class="rounded-circle border border-3 border-white shadow-sm" width="144" height="144" style="object-fit: cover;">
+                        {% else %}
+                        <div class="rounded-circle bg-primary text-white d-flex align-items-center justify-content-center border border-3 border-white shadow-sm" style="width:144px;height:144px;font-size:3rem;">{{ profile.user.first_name|first|default:profile.user.username|first|upper }}</div>
+                        {% endif %}
+                        <label for="{{ profile_form.profile_photo.id_for_label }}" class="position-absolute bottom-0 end-0 btn btn-sm btn-primary rounded-circle border border-2 border-white shadow-sm d-flex align-items-center justify-content-center" style="width:38px;height:38px; cursor:pointer;" title="Upload photo">
+                            <i class="bi bi-camera-fill"></i>
+                        </label>
+                    </div>
+                    <div class="w-100">
+                        <label for="{{ profile_form.profile_photo.id_for_label }}" class="btn btn-outline-primary btn-sm w-100 mb-2">
+                            {% if profile.profile_photo %}Change Photo{% else %}Upload Photo{% endif %}
+                        </label>
+                        <div class="d-none">{{ profile_form.profile_photo }}</div>
+                    </div>
+                </div>
+                <h2 class="h4 fw-bold mb-1">{{ profile.user.get_full_name|default:profile.user.username }}</h2>
+                <p class="text-muted mb-1">{{ profile.department|default:'Department not set' }}</p>
+                <div class="d-flex justify-content-center gap-2 mb-4">
+                    {% if profile.linkedin %}<a href="{{ profile.linkedin }}" target="_blank" rel="noopener" class="btn btn-sm btn-outline-primary" aria-label="LinkedIn"><i class="bi bi-linkedin"></i></a>{% endif %}
+                    {% if profile.github %}<a href="{{ profile.github }}" target="_blank" rel="noopener" class="btn btn-sm btn-outline-dark" aria-label="GitHub"><i class="bi bi-github"></i></a>{% endif %}
+                    {% if profile.portfolio %}<a href="{{ profile.portfolio }}" target="_blank" rel="noopener" class="btn btn-sm btn-outline-secondary" aria-label="Portfolio"><i class="bi bi-globe2"></i></a>{% endif %}
+                </div>
+                <div class="text-start">
+                    <div class="d-flex justify-content-between mb-2"><span class="fw-semibold">Profile completion</span><strong>{{ profile_completion }}%</strong></div>
+                    <div class="progress" style="height: 10px;"><div class="progress-bar bg-success" style="width: {{ profile_completion }}%" role="progressbar" aria-valuenow="{{ profile_completion }}" aria-valuemin="0" aria-valuemax="100"></div></div>
+                    <p class="small text-muted mt-2 mb-0">Complete your details to stand out to recruiters.</p>
+                </div>
+                <hr class="my-4">
+                <div class="text-start small">
+                    <p class="mb-2"><i class="bi bi-envelope me-2 text-primary"></i>{{ profile.user.email|default:'Email not set' }}</p>
+                    <p class="mb-2"><i class="bi bi-telephone me-2 text-primary"></i>{{ profile.phone|default:'Phone not set' }}</p>
+                    <p class="mb-0"><i class="bi bi-geo-alt me-2 text-primary"></i>{{ profile.location|default:'Location not set' }}</p>
+                </div>
+            </div>
+        </aside>
+
+        <main class="col-lg-8">
+            <div id="personal-information" class="profile-card profile-form-card card border-0 shadow-sm p-4 mb-4">
+                <div class="d-flex justify-content-between align-items-center mb-2"><h2 class="h5 fw-bold mb-0">Personal information</h2><span class="profile-email-badge">{{ profile.user.email }}</span></div><p class="small text-muted mb-4">Profile visibility: {{ profile.get_profile_visibility_display }}. Allow verified recruiters to discover your profile for relevant opportunities.</p>
+                <form method="post" enctype="multipart/form-data" novalidate>
+                    {% csrf_token %}
+                    {% if profile_form.non_field_errors %}<div class="alert alert-danger">{{ profile_form.non_field_errors }}</div>{% endif %}
+                    <div class="row g-3">
+                        {% for field in profile_form %}
+                        {% if field.name == 'profile_photo' %}
+                        {% else %}
+                        <div class="{% if field.name == 'about_me' or field.name == 'career_objective' %}col-12{% else %}col-md-6{% endif %}">
+                            <label for="{{ field.id_for_label }}" class="form-label small fw-semibold">{{ field.label }}</label>
+                            {{ field }}
+                            {% for error in field.errors %}<div class="text-danger small mt-1">{{ error }}</div>{% endfor %}
+                        </div>
+                        {% endif %}
+                        {% endfor %}
+                    </div>
+                    <div class="text-end mt-4"><button class="btn btn-primary px-4" type="submit"><i class="bi bi-check2 me-2"></i>Save Changes</button></div>
+                </form>
+            </div>
+
+            <div id="skills" class="profile-card card border-0 shadow-sm p-4 mb-4">
+                <div class="d-flex justify-content-between align-items-center mb-3"><h2 class="h5 fw-bold mb-0">Skills</h2><span class="text-muted small">{{ student_skills|length }} added</span></div>
+                {% for student_skill in student_skills %}
+                <div class="mb-3">
+                    <div class="d-flex justify-content-between align-items-center mb-1"><span class="fw-semibold">{{ student_skill.skill.name }}</span><span class="small text-muted">{{ student_skill.proficiency }}%</span></div>
+                    <div class="progress mb-2"><div class="progress-bar" style="width:{{ student_skill.proficiency }}%" role="progressbar"></div></div>
+                    <div class="d-flex gap-2">
+                        <form method="post" action="{% url 'update_skill' student_skill.id %}" class="d-flex gap-2">
+                            {% csrf_token %}<select name="proficiency" class="form-select form-select-sm" style="width:145px" aria-label="{{ student_skill.skill.name }} proficiency"><option value="25" {% if student_skill.proficiency <= 25 %}selected{% endif %}>Beginner</option><option value="50" {% if student_skill.proficiency > 25 and student_skill.proficiency <= 50 %}selected{% endif %}>Intermediate</option><option value="75" {% if student_skill.proficiency > 50 and student_skill.proficiency <= 75 %}selected{% endif %}>Advanced</option><option value="100" {% if student_skill.proficiency > 75 %}selected{% endif %}>Expert</option></select><button class="btn btn-sm btn-outline-primary" type="submit">Update</button>
+                        </form>
+                        <form method="post" action="{% url 'delete_skill' student_skill.id %}">{% csrf_token %}<button class="btn btn-sm btn-outline-danger" type="submit" aria-label="Remove {{ student_skill.skill.name }}"><i class="bi bi-trash"></i></button></form>
+                    </div>
+                </div>
+                {% empty %}<p class="text-muted mb-3">Add your strongest skills to show your level at a glance.</p>{% endfor %}
+                <form method="post" action="{% url 'add_skill' %}" class="row g-2 align-items-end border-top pt-3">
+                    {% csrf_token %}<div class="col-md-4"><label class="form-label small fw-semibold">Existing skill</label><select name="existing_skill" class="form-select"><option value="">Choose a skill</option>{% for skill in available_skills %}<option value="{{ skill.id }}">{{ skill.name }}</option>{% endfor %}</select></div>
+                    <div class="col-md-4"><label class="form-label small fw-semibold">Or add a skill</label><input name="skill_name" class="form-control" placeholder="e.g. REST APIs"></div>
+                    <div class="col-md-2"><label class="form-label small fw-semibold">Level</label><select name="proficiency" class="form-select"><option value="25">Beginner</option><option value="50" selected>Intermediate</option><option value="75">Advanced</option><option value="100">Expert</option></select></div>
+                    <div class="col-md-2 d-grid"><button class="btn btn-outline-primary" type="submit"><i class="bi bi-plus-lg me-1"></i>Add</button></div>
+                </form>
+            </div>
+
+            <div id="projects" class="profile-card card border-0 shadow-sm p-4">
+                <div class="d-flex justify-content-between align-items-center mb-3"><div><h2 class="h5 fw-bold mb-1">Projects</h2><p class="text-muted small mb-0">Show the work you are proud of.</p></div><button class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#projectModal"><i class="bi bi-plus-lg me-1"></i>Add project</button></div>
+                <div class="row g-3">
+                    {% for project in projects %}
+                    <div class="col-md-6"><article class="border rounded-3 p-3 h-100">
+                        {% if project.image %}<img src="{{ project.image.url }}" alt="{{ project.name }}" class="w-100 rounded mb-3" style="height:130px;object-fit:cover;">{% endif %}
+                        <h3 class="h6 fw-bold">{{ project.name }}</h3><p class="small text-muted">{{ project.description|truncatewords:25 }}</p><p class="small mb-1"><span class="badge text-bg-light">{{ project.technologies }}</span></p>{% if project.project_type or project.role %}<p class="small text-muted mb-3">{{ project.project_type }}{% if project.project_type and project.role %} · {% endif %}{{ project.role }}</p>{% endif %}
+                        <div class="d-flex justify-content-between align-items-center"><div>{% if project.github_url %}<a href="{{ project.github_url }}" target="_blank" rel="noopener" class="btn btn-sm btn-outline-dark"><i class="bi bi-github"></i></a>{% endif %}{% if project.live_demo_url %}<a href="{{ project.live_demo_url }}" target="_blank" rel="noopener" class="btn btn-sm btn-outline-primary ms-1"><i class="bi bi-box-arrow-up-right"></i></a>{% endif %}</div><div class="d-flex gap-2 align-items-center"><a href="{% url 'edit_project' project.id %}" class="small">Edit</a><form method="post" action="{% url 'delete_project' project.id %}">{% csrf_token %}<button type="submit" class="btn btn-sm btn-outline-danger" aria-label="Delete {{ project.name }}"><i class="bi bi-trash"></i></button></form></div></div>
+                    </article></div>
+                    {% empty %}<div class="col-12"><div class="text-center border rounded-3 p-4 text-muted"><i class="bi bi-kanban fs-2 d-block mb-2"></i>No projects yet. Add one to strengthen your profile.</div></div>{% endfor %}
+                </div>
+            </div>
+
+            <div class="profile-card card border-0 shadow-sm p-4 mt-4">
+                <div class="d-flex justify-content-between align-items-center mb-3"><div><span class="eyebrow">Profile strength</span><h2 class="h5 fw-bold mb-0">Recruiter-ready checklist</h2></div><strong class="text-primary">{{ profile_completion }}%</strong></div>
+                <div class="progress mb-4" style="height:10px"><div class="progress-bar" style="width:{{ profile_completion }}%"></div></div>
+                <div class="row g-2 small"><div class="col-md-6">Basic information {% if profile_strength.basic_information %}<span class="text-success">✓</span>{% else %}<span class="text-warning">⚠</span>{% endif %}</div><div class="col-md-6">Education {% if profile_strength.education %}<span class="text-success">✓</span>{% else %}<span class="text-warning">⚠</span>{% endif %}</div><div class="col-md-6">Skills {% if profile_strength.skills %}<span class="text-success">✓</span>{% else %}<span class="text-warning">⚠</span>{% endif %}</div><div class="col-md-6">Projects {% if profile_strength.projects %}<span class="text-success">✓</span>{% else %}<span class="text-warning">⚠</span>{% endif %}</div><div class="col-md-6">Resume {% if profile_strength.resume %}<span class="text-success">✓</span>{% else %}<span class="text-warning">⚠</span>{% endif %}</div><div class="col-md-6">Certifications {% if profile_strength.certifications %}<span class="text-success">✓</span>{% else %}<span class="text-warning">⚠</span>{% endif %}</div><div class="col-md-6">Experience {% if profile_strength.experience %}<span class="text-success">✓</span>{% else %}<span class="text-warning">⚠</span>{% endif %}</div><div class="col-md-6">Professional links {% if profile_strength.professional_links %}<span class="text-success">✓</span>{% else %}<span class="text-warning">⚠</span>{% endif %}</div></div>
+            </div>
+
+            <div class="profile-card card border-0 shadow-sm p-4 mt-4">
+                <div class="d-flex justify-content-between align-items-center mb-3"><div><span class="eyebrow">AI career profile</span><h2 class="h5 fw-bold mb-0">Career insights</h2></div><strong class="text-primary">{{ career_readiness }}/100</strong></div>
+                <p class="text-muted small">Your readiness score combines academic performance, profile quality, skills, resume, and project evidence.</p>
+                <div class="row g-3"><div class="col-md-6"><strong class="small d-block mb-2">Recommended roles</strong>{% for match in career_matches %}<span class="badge text-bg-light me-1 mb-1">{{ match.job.title }}</span>{% empty %}<span class="text-muted small">Add skills to receive role matches.</span>{% endfor %}</div><div class="col-md-6"><strong class="small d-block mb-2">Skill gaps</strong>{% for match in career_matches|slice:':1' %}{% for skill in match.missing_skills %}<span class="badge text-bg-warning me-1 mb-1">{{ skill }}</span>{% empty %}<span class="text-success small">No major gaps in the current matches.</span>{% endfor %}{% endfor %}</div></div>
+            </div>
+
+            <div class="profile-card card border-0 shadow-sm p-4 mt-4">
+                <div class="d-flex justify-content-between align-items-center mb-3"><div><span class="eyebrow">Education</span><h2 class="h5 fw-bold mb-0">Academic record</h2></div></div>
+                <div class="row g-3"><div class="col-md-6"><div class="border rounded-3 p-3 h-100"><strong>{{ profile.degree|default:'Graduation' }}</strong><p class="small text-muted mb-1">{{ profile.department|default:'Branch not added' }} · {{ profile.college|default:'College not added' }}</p><span class="small">{{ profile.education_start_year|default:'Start year not set' }} - {{ profile.graduation_year|default:'Not set' }} · CGPA {{ profile.cgpa|default:'Not set' }}</span></div></div><div class="col-md-3"><div class="border rounded-3 p-3 h-100"><strong>10th</strong><p class="small text-muted mb-1">{{ profile.tenth_school|default:'School not added' }}</p><span class="small">{{ profile.tenth_percentage|default:'Not set' }}% · {{ profile.tenth_year|default:'Year not set' }}</span></div></div><div class="col-md-3"><div class="border rounded-3 p-3 h-100"><strong>12th</strong><p class="small text-muted mb-1">{{ profile.twelfth_college|default:'College not added' }}</p><span class="small">{{ profile.twelfth_percentage|default:'Not set' }}% · {{ profile.twelfth_year|default:'Year not set' }}</span></div></div></div>
+            </div>
+
+            <div class="profile-card card border-0 shadow-sm p-4 mt-4"><div class="d-flex justify-content-between align-items-center"><div><span class="eyebrow">Professional document</span><h2 class="h5 fw-bold mb-1">Resume</h2><p class="small text-muted mb-0">PDF or DOCX, up to 10 MB.</p></div>{% if profile.resume %}<div class="d-flex gap-2"><a href="{% url 'resume_download' %}" target="_blank" class="btn btn-sm btn-outline-primary">View resume</a><a href="{% url 'resume_download' %}" download class="btn btn-sm btn-primary">Download</a></div>{% endif %}</div>{% if profile.resume %}<div class="d-flex justify-content-between align-items-center border-top mt-3 pt-3"><span class="small">{{ profile.resume.name|cut:'resumes/' }}</span><strong class="text-primary">ATS Score: {{ resume_analysis.ats_score|default:0 }}/100</strong></div>{% else %}<p class="text-muted mt-3 mb-0">Upload a resume in Personal Information to improve recruiter visibility.</p>{% endif %}</div>
+
+            <div class="profile-card card border-0 shadow-sm p-4 mt-4"><span class="eyebrow">Professional links</span><h2 class="h5 fw-bold mb-3">Find me online</h2><div class="d-flex flex-wrap gap-2">{% if profile.linkedin %}<a class="btn btn-sm btn-outline-primary" href="{{ profile.linkedin }}" target="_blank">LinkedIn</a>{% endif %}{% if profile.github %}<a class="btn btn-sm btn-outline-dark" href="{{ profile.github }}" target="_blank">GitHub</a>{% endif %}{% if profile.portfolio %}<a class="btn btn-sm btn-outline-secondary" href="{{ profile.portfolio }}" target="_blank">Portfolio</a>{% endif %}{% if profile.leetcode %}<a class="btn btn-sm btn-outline-warning" href="{{ profile.leetcode }}" target="_blank">LeetCode</a>{% endif %}{% if profile.codechef %}<a class="btn btn-sm btn-outline-danger" href="{{ profile.codechef }}" target="_blank">CodeChef</a>{% endif %}{% if profile.hackerrank %}<a class="btn btn-sm btn-outline-success" href="{{ profile.hackerrank }}" target="_blank">HackerRank</a>{% endif %}{% if profile.twitter %}<a class="btn btn-sm btn-outline-info" href="{{ profile.twitter }}" target="_blank">X / Twitter</a>{% endif %}{% if not profile.linkedin and not profile.github and not profile.portfolio and not profile.leetcode and not profile.codechef and not profile.hackerrank and not profile.twitter %}<span class="text-muted small">Add professional links in Personal Information.</span>{% endif %}</div></div>
+
+            <div class="profile-card card border-0 shadow-sm p-4 mt-4"><div class="d-flex justify-content-between align-items-center mb-3"><div><span class="eyebrow">Credentials</span><h2 class="h5 fw-bold mb-0">Certifications</h2></div><a href="{% url 'save_certification' %}" class="btn btn-primary btn-sm">+ Add certification</a></div>{% for item in certifications %}<div class="border-bottom py-3 d-flex justify-content-between gap-3"><div><strong>{{ item.name }}</strong><p class="small text-muted mb-1">{{ item.issuer }}{% if item.issue_date %} · {{ item.issue_date|date:'M Y' }}{% endif %}</p>{% if item.credential_id %}<span class="small">Credential ID: {{ item.credential_id }}</span>{% endif %}</div><div class="d-flex gap-2 align-items-start">{% if item.credential_url %}<a href="{{ item.credential_url }}" target="_blank" class="btn btn-sm btn-outline-primary">Verify</a>{% endif %}<a href="{% url 'edit_certification' item.id %}" class="btn btn-sm btn-outline-secondary">Edit</a><form method="post" action="{% url 'delete_certification' item.id %}">{% csrf_token %}<button class="btn btn-sm btn-outline-danger" type="submit">Delete</button></form></div></div>{% empty %}<p class="text-muted mb-0">Add certificates, courses, and verified credentials.</p>{% endfor %}</div>
+
+            <div class="profile-card card border-0 shadow-sm p-4 mt-4"><div class="d-flex justify-content-between align-items-center mb-3"><div><span class="eyebrow">Experience</span><h2 class="h5 fw-bold mb-0">Internships and work</h2></div><a href="{% url 'save_internship' %}" class="btn btn-primary btn-sm">+ Add experience</a></div>{% for item in internships %}<div class="border-bottom py-3 d-flex justify-content-between gap-3"><div><strong>{{ item.role }} · {{ item.company }}</strong><p class="small text-muted mb-1">{{ item.get_employment_type_display }}{% if item.location %} · {{ item.location }}{% endif %}</p><p class="small mb-0">{{ item.description }}</p></div><div class="d-flex gap-2 align-items-start"><a href="{% url 'edit_internship' item.id %}" class="btn btn-sm btn-outline-secondary">Edit</a><form method="post" action="{% url 'delete_internship' item.id %}">{% csrf_token %}<button class="btn btn-sm btn-outline-danger" type="submit">Delete</button></form></div></div>{% empty %}<p class="text-muted mb-0">Add internships, freelance work, or full-time experience.</p>{% endfor %}</div>
+
+            <div class="profile-card card border-0 shadow-sm p-4 mt-4"><div class="d-flex justify-content-between align-items-center mb-3"><div><span class="eyebrow">Highlights</span><h2 class="h5 fw-bold mb-0">Achievements</h2></div><a href="{% url 'save_achievement' %}" class="btn btn-primary btn-sm">+ Add achievement</a></div>{% for item in achievements %}<div class="border-bottom py-3 d-flex justify-content-between gap-3"><div><strong>{{ item.title }}</strong><p class="small text-muted mb-0">{{ item.organization }}{% if item.achieved_on %} · {{ item.achieved_on|date:'d M Y' }}{% endif %}</p><p class="small mb-0">{{ item.description }}</p></div><div class="d-flex gap-2 align-items-start"><a href="{% url 'edit_achievement' item.id %}" class="btn btn-sm btn-outline-secondary">Edit</a><form method="post" action="{% url 'delete_achievement' item.id %}">{% csrf_token %}<button class="btn btn-sm btn-outline-danger" type="submit">Delete</button></form></div></div>{% empty %}<p class="text-muted mb-0">Add hackathons, awards, scholarships, and coding achievements.</p>{% endfor %}</div>
+        </main>
+    </div>
+</div>
+
+<div class="modal fade" id="projectModal" tabindex="-1" aria-labelledby="projectModalLabel" aria-hidden="true"><div class="modal-dialog modal-lg"><div class="modal-content"><div class="modal-header"><h2 class="modal-title h5" id="projectModalLabel">Add project</h2><button type="button" class="btn-close" data-bs-dismiss="modal"></button></div><form method="post" action="{% url 'save_project' %}" enctype="multipart/form-data"><div class="modal-body">{% csrf_token %}<div class="row g-3">{% for field in project_form %}<div class="{% if field.name == 'description' %}col-12{% else %}col-md-6{% endif %}"><label class="form-label small fw-semibold" for="{{ field.id_for_label }}">{{ field.label }}</label>{{ field }}{% for error in field.errors %}<div class="text-danger small">{{ error }}</div>{% endfor %}</div>{% endfor %}</div></div><div class="modal-footer"><button type="button" class="btn btn-light" data-bs-dismiss="modal">Cancel</button><button type="submit" class="btn btn-primary">Save project</button></div></form></div></div></div>
+{% endblock %}

@@ -1,0 +1,534 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %}CampusLinkLearn | Connect. Learn. Apply. Grow.{% endblock %}
+{% block content %}
+<main>
+    <section class="premium-hero-section">
+        <!-- Background Animation Layer -->
+        <div class="hero-animation-layer">
+            <div class="hero-orb orb-1"></div>
+            <div class="hero-orb orb-2"></div>
+            <div class="hero-orb orb-3"></div>
+        </div>
+        
+        <div class="container">
+            <div class="row align-items-center">
+                <div class="col-lg-6 position-relative z-1" data-aos="fade-right">
+                    <span class="premium-hero-badge" data-aos="fade-up" data-aos-delay="100"><i class="bi bi-stars me-2"></i> AI-POWERED CAREER PLATFORM</span>
+                    <h1 class="premium-hero-title" data-aos="fade-up" data-aos-delay="200">From Campus Talent to<br><span class="text-blue">Corporate Opportunity</span></h1>
+                    <p class="premium-hero-desc">Discover job openings, internships, AI career guidance, and the right opportunities to grow from campus to career.</p>
+                    
+                    <div class="premium-hero-actions">
+                        <a href="{% url 'job_list' %}" class="btn-premium-primary">Explore Opportunities <i class="bi bi-arrow-right ms-2"></i></a>
+                        <a href="{% url 'career_match' %}" class="btn-premium-secondary">Get AI Career Guidance</a>
+                    </div>
+                    
+                    <div class="premium-hero-features mt-4">
+                        <div class="row g-3">
+                            <div class="col-6">
+                                <div class="premium-feature-item">
+                                    <div class="premium-feature-icon"><i class="bi bi-briefcase"></i></div>
+                                    <div class="premium-feature-text">
+                                        <strong>Jobs</strong>
+                                        <span>Top companies</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-6">
+                                <div class="premium-feature-item">
+                                    <div class="premium-feature-icon"><i class="bi bi-award"></i></div>
+                                    <div class="premium-feature-text">
+                                        <strong>Internships</strong>
+                                        <span>Gain real experience</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-6">
+                                <div class="premium-feature-item">
+                                    <div class="premium-feature-icon"><i class="bi bi-compass"></i></div>
+                                    <div class="premium-feature-text">
+                                        <strong>AI Guidance</strong>
+                                        <span>Personalized advice</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-6">
+                                <div class="premium-feature-item">
+                                    <div class="premium-feature-icon"><i class="bi bi-graph-up-arrow"></i></div>
+                                    <div class="premium-feature-text">
+                                        <strong>Career Growth</strong>
+                                        <span>Build your future</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-6" data-aos="fade-left" data-aos-delay="300">
+                    <div class="premium-hero-visual">
+                        <div style="width: 100%; height: 500px; background: linear-gradient(135deg, #eef5ff 0%, #dbeafe 100%); border-radius: 24px; position: relative; overflow: hidden; display: flex; align-items: center; justify-content: center; box-shadow: 0 20px 40px rgba(23, 105, 255, 0.05);">
+                            <i class="bi bi-laptop text-blue" style="font-size: 8rem; opacity: 0.1; position: absolute;"></i>
+                            <img src="{% static 'images/student-hero.png' %}" alt="Student" class="premium-student-img" onerror="this.style.display='none'">
+                        </div>
+                        
+                        <div class="floating-card card-1">
+                            <div class="fc-icon blue"><i class="bi bi-briefcase"></i></div>
+                            <div class="fc-text">
+                                <h4>Job Openings</h4>
+                                <p>Top Companies</p>
+                            </div>
+                        </div>
+                        
+                        <div class="floating-card card-2">
+                            <div class="fc-icon purple"><i class="bi bi-award"></i></div>
+                            <div class="fc-text">
+                                <h4>Internships</h4>
+                                <p>Gain Experience</p>
+                            </div>
+                        </div>
+                        
+                        <div class="floating-card card-3">
+                            <div class="fc-icon chart"><i class="bi bi-stars"></i></div>
+                            <div class="fc-text">
+                                <h4>AI Guidance</h4>
+                                <p>Personalized Advice</p>
+                            </div>
+                        </div>
+                        
+                        <div class="floating-card card-4">
+                            <div class="fc-icon blue"><i class="bi bi-graph-up-arrow"></i></div>
+                            <div class="fc-text">
+                                <h4>Career Growth</h4>
+                                <p>Build Future</p>
+                            </div>
+                        </div>
+                        
+                        <div class="decorative-text dt-1">Your Career Starts Here</div>
+                        <div class="decorative-text dt-2">Dream Learn Achieve</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="premium-pro-grid-section">
+        <div class="container">
+            <div class="premium-pro-header text-center" data-aos="fade-up">
+                <h2>Everything you need to move<br>from preparation to placement.</h2>
+            </div>
+
+            <div class="row g-4 premium-pro-grid">
+                <div class="col-md-6 col-xl-4" data-aos="fade-up" data-aos-delay="100">
+                    <a href="{% if is_pro %}{% url 'career_match' %}{% else %}{% url 'pro_feature' 'resume-analyzer' %}{% endif %}" class="premium-pro-card">
+                        <div class="premium-pro-card-top">
+                            <div class="premium-pro-icon"><i class="bi bi-file-earmark-check"></i></div>
+                            <span class="premium-pro-badge">PRO +</span>
+                        </div>
+                        <div class="premium-pro-price">₹1 <span>/ month</span></div>
+                        <h3>AI Resume Analyzer</h3>
+                        <p>ATS compatibility, improvement suggestions, and job-specific optimization.</p>
+                        <div class="premium-pro-link">{% if is_pro %}Launch <i class="bi bi-arrow-right"></i>{% else %}Explore <i class="bi bi-arrow-up-right"></i>{% endif %}</div>
+                    </a>
+                </div>
+
+                <div class="col-md-6 col-xl-4" data-aos="fade-up" data-aos-delay="200">
+                    <a href="{% if is_pro %}{% url 'ai_mock_interview' %}{% else %}{% url 'pro_feature' 'mock-interview' %}{% endif %}" class="premium-pro-card">
+                        <div class="premium-pro-card-top">
+                            <div class="premium-pro-icon"><i class="bi bi-camera-video"></i></div>
+                            <span class="premium-pro-badge">PRO +</span>
+                        </div>
+                        <div class="premium-pro-price">₹1 <span>/ month</span></div>
+                        <h3>AI Mock Interview</h3>
+                        <p>Realistic technical and HR practice with personalized feedback.</p>
+                        <div class="premium-pro-link">{% if is_pro %}Launch <i class="bi bi-arrow-right"></i>{% else %}Explore <i class="bi bi-arrow-up-right"></i>{% endif %}</div>
+                    </a>
+                </div>
+
+                <div class="col-md-6 col-xl-4" data-aos="fade-up" data-aos-delay="300">
+                    <a href="{% if is_pro %}{% url 'career_match' %}{% else %}{% url 'pro_feature' 'job-matching' %}{% endif %}" class="premium-pro-card">
+                        <div class="premium-pro-card-top">
+                            <div class="premium-pro-icon"><i class="bi bi-bullseye"></i></div>
+                            <span class="premium-pro-badge">PRO +</span>
+                        </div>
+                        <div class="premium-pro-price">₹1 <span>/ month</span></div>
+                        <h3>Advanced Job Matching</h3>
+                        <p>Compatibility scores and recommendations based on your actual skills.</p>
+                        <div class="premium-pro-link">{% if is_pro %}Launch <i class="bi bi-arrow-right"></i>{% else %}Explore <i class="bi bi-arrow-up-right"></i>{% endif %}</div>
+                    </a>
+                </div>
+
+                <div class="col-md-6 col-xl-4" data-aos="fade-up" data-aos-delay="100">
+                    <a href="{% if is_pro %}{% url 'career_match' %}#skill-gap{% else %}{% url 'pro_feature' 'career-roadmap' %}{% endif %}" class="premium-pro-card">
+                        <div class="premium-pro-card-top">
+                            <div class="premium-pro-icon"><i class="bi bi-map"></i></div>
+                            <span class="premium-pro-badge">PRO +</span>
+                        </div>
+                        <div class="premium-pro-price">₹1 <span>/ month</span></div>
+                        <h3>Personal Career Roadmap</h3>
+                        <p>Target roles, skill gaps, learning steps, and progress tracking.</p>
+                        <div class="premium-pro-link">{% if is_pro %}Launch <i class="bi bi-arrow-right"></i>{% else %}Explore <i class="bi bi-arrow-up-right"></i>{% endif %}</div>
+                    </a>
+                </div>
+
+                <div class="col-md-6 col-xl-4" data-aos="fade-up" data-aos-delay="200">
+                    <a href="{% if is_pro %}{% url 'course_list' %}{% else %}{% url 'pro_feature' 'learning-hub' %}{% endif %}" class="premium-pro-card">
+                        <div class="premium-pro-card-top">
+                            <div class="premium-pro-icon"><i class="bi bi-mortarboard"></i></div>
+                            <span class="premium-pro-badge">PRO +</span>
+                        </div>
+                        <div class="premium-pro-price">₹1 <span>/ month</span></div>
+                        <h3>Premium Learning Hub</h3>
+                        <p>Exclusive interview preparation, DSA resources, and career content.</p>
+                        <div class="premium-pro-link">{% if is_pro %}Launch <i class="bi bi-arrow-right"></i>{% else %}Explore <i class="bi bi-arrow-up-right"></i>{% endif %}</div>
+                    </a>
+                </div>
+
+                <div class="col-md-6 col-xl-4" data-aos="fade-up" data-aos-delay="300">
+                    <a href="{% if is_pro %}{% url 'career_match' %}{% else %}{% url 'pro_feature' 'career-intelligence' %}{% endif %}" class="premium-pro-card">
+                        <div class="premium-pro-card-top">
+                            <div class="premium-pro-icon"><i class="bi bi-graph-up-arrow"></i></div>
+                            <span class="premium-pro-badge">PRO +</span>
+                        </div>
+                        <div class="premium-pro-price">₹1 <span>/ month</span></div>
+                        <h3>Career Intelligence</h3>
+                        <p>Salary insights, skill demand, trends, and role comparisons.</p>
+                        <div class="premium-pro-link">{% if is_pro %}Launch <i class="bi bi-arrow-right"></i>{% else %}Explore <i class="bi bi-arrow-up-right"></i>{% endif %}</div>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="graph-features-section">
+        <div class="container">
+            <div class="row align-items-center g-4">
+                <div class="col-lg-7" data-aos="fade-up">
+                    <div class="graph-panel">
+                        <div class="graph-panel-header">
+                            <div>
+                                <span class="eyebrow text-uppercase">Platform overview</span>
+                                <h3>Career growth in real time</h3>
+                            </div>
+                            <span class="graph-pill">+18.4%</span>
+                        </div>
+
+                        <div class="chart-wrap">
+                            <div class="chart-grid"></div>
+                            <div class="chart-line">
+                                <span style="--i: 0"></span>
+                                <span style="--i: 1"></span>
+                                <span style="--i: 2"></span>
+                                <span style="--i: 3"></span>
+                                <span style="--i: 4"></span>
+                                <span style="--i: 5"></span>
+                                <span style="--i: 6"></span>
+                            </div>
+                        </div>
+
+                        <div class="metric-row">
+                            <div class="mini-metric">
+                                <span>Applications</span>
+                                <strong>1,284</strong>
+                            </div>
+                            <div class="mini-metric">
+                                <span>Interviews</span>
+                                <strong>186</strong>
+                            </div>
+                            <div class="mini-metric">
+                                <span>Offers</span>
+                                <strong>49</strong>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-lg-5" data-aos="fade-left" data-aos-delay="200">
+                    <div class="insight-stack">
+                        <div class="insight-card insight-primary">
+                            <div class="insight-icon"><i class="bi bi-graph-up-arrow"></i></div>
+                            <div>
+                                <small>Role fit score</small>
+                                <strong>94%</strong>
+                                <p>Best match: Backend Developer</p>
+                            </div>
+                        </div>
+
+                        <div class="insight-card">
+                            <div class="insight-icon alt"><i class="bi bi-lightning-charge"></i></div>
+                            <div>
+                                <small>Skill momentum</small>
+                                <strong>+12.8%</strong>
+                                <p>Python and SQL gaining fast</p>
+                            </div>
+                        </div>
+
+                        <div class="insight-card">
+                            <div class="insight-icon alt-two"><i class="bi bi-target"></i></div>
+                            <div>
+                                <small>Target readiness</small>
+                                <strong>86%</strong>
+                                <p>Ready for top campus roles</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="landing-section">
+        <div class="container">
+            <div class="section-intro text-start" data-aos="fade-up">
+                <span class="eyebrow text-uppercase">One intelligent platform</span>
+                <h2>Your Career. Powered by<br>Intelligence.</h2>
+                <p>Every signal, opportunity and next step in one place.</p>
+            </div>
+
+            <div class="row g-4">
+                <div class="col-md-6 col-xl-3" data-aos="fade-up" data-aos-delay="100">
+                    <article class="feature-card feature-card-clean">
+                        <div class="feature-icon feature-icon-blue"><i class="bi bi-search"></i></div>
+                        <h3>Smart job discovery</h3>
+                        <p>Find relevant opportunities based on your skills and interests.</p>
+                        <a href="#" class="feature-link">Explore <i class="bi bi-arrow-up-right"></i></a>
+                    </article>
+                </div>
+                <div class="col-md-6 col-xl-3" data-aos="fade-up" data-aos-delay="200">
+                    <article class="feature-card feature-card-clean">
+                        <div class="feature-icon feature-icon-blue"><i class="bi bi-stars"></i></div>
+                        <h3>AI career assistant</h3>
+                        <p>Get personalized guidance for your next career move.</p>
+                        <a href="#" class="feature-link">Explore <i class="bi bi-arrow-up-right"></i></a>
+                    </article>
+                </div>
+                <div class="col-md-6 col-xl-3" data-aos="fade-up" data-aos-delay="300">
+                    <article class="feature-card feature-card-clean">
+                        <div class="feature-icon feature-icon-blue"><i class="bi bi-file-earmark-text"></i></div>
+                        <h3>Resume analyzer</h3>
+                        <p>Improve your resume with focused, actionable suggestions.</p>
+                        <a href="#" class="feature-link">Explore <i class="bi bi-arrow-up-right"></i></a>
+                    </article>
+                </div>
+                <div class="col-md-6 col-xl-3" data-aos="fade-up" data-aos-delay="400">
+                    <article class="feature-card feature-card-clean">
+                        <div class="feature-icon feature-icon-blue"><i class="bi bi-diagram-3"></i></div>
+                        <h3>Skill gap analysis</h3>
+                        <p>Identify the capabilities required for your target role.</p>
+                        <a href="#" class="feature-link">Explore <i class="bi bi-arrow-up-right"></i></a>
+                    </article>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="section-block opportunities-block">
+        <div class="container">
+            <div class="section-intro text-start" data-aos="fade-up">
+                <span class="eyebrow text-uppercase">Curated for you</span>
+                <div class="d-flex justify-content-between align-items-end gap-3 flex-wrap">
+                    <h2>Opportunities Built For You</h2>
+                    <a href="#" class="view-link">View all opportunities <i class="bi bi-arrow-up-right"></i></a>
+                </div>
+            </div>
+
+            <div class="tab-row mb-4">
+                <a href="#" class="tab-link active">Jobs</a>
+                <a href="#" class="tab-link">Internships</a>
+                <a href="#" class="tab-link">Hackathons</a>
+                <a href="#" class="tab-link">Courses</a>
+            </div>
+
+            <div class="row g-4">
+                {% for job in featured_jobs %}
+                <div class="col-lg-4" data-aos="fade-up" data-aos-delay="{{ forloop.counter }}00">
+                    <a href="{% url 'job_detail' job.id %}" class="premium-opp-card text-decoration-none">
+                        <div class="card-glow"></div>
+                        <div class="card-content">
+                            <div class="card-header-row">
+                                <span class="mini-badge {% if forloop.counter == 1 %}badge-blue{% elif forloop.counter == 2 %}badge-purple{% else %}badge-green{% endif %}"><i class="bi bi-briefcase"></i></span>
+                                <span class="card-tag">{{ job.job_type|default:"Full-Time" }}</span>
+                            </div>
+                            <h3 class="card-title">{{ job.title|truncatechars:25 }}</h3>
+                            <p class="card-company text-muted mb-3"><i class="bi bi-building me-1"></i>{{ job.company.name|default:"Company" }} • <i class="bi bi-geo-alt me-1"></i>{{ job.location|truncatechars:20 }}</p>
+                            
+                            <div class="tag-list">
+                                {% if job.required_skills.all %}
+                                    {% for skill in job.required_skills.all|slice:":3" %}
+                                    <span>{{ skill.name }}</span>
+                                    {% endfor %}
+                                {% else %}
+                                    <span>Python</span>
+                                    <span>Django</span>
+                                {% endif %}
+                            </div>
+                            
+                            <div class="card-foot mt-4">
+                                <div class="match-indicator">
+                                    <small>{% if forloop.counter == 1 %}92%{% elif forloop.counter == 2 %}89%{% else %}85%{% endif %} Match</small>
+                                    <div class="progress-line"><div class="fill" style="width: {% if forloop.counter == 1 %}92%{% elif forloop.counter == 2 %}89%{% else %}85%{% endif %};"></div></div>
+                                </div>
+                                <span class="salary fw-bold text-dark">{{ job.salary|default:"Rs. 8-12 LPA" }}</span>
+                            </div>
+                            
+                            <div class="card-action mt-3 border-top pt-3 d-flex justify-content-between align-items-center">
+                                <span class="view-text fw-semibold text-primary">View Opportunity</span>
+                                <div class="action-icon text-primary"><i class="bi bi-arrow-right"></i></div>
+                            </div>
+                        </div>
+                    </a>
+                </div>
+                {% empty %}
+                <div class="col-12 text-center py-5">
+                    <div class="text-muted"><i class="bi bi-inbox display-4"></i></div>
+                    <p class="mt-3 text-muted">No active opportunities right now.</p>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+    </section>
+
+    <section class="career-fit-section">
+        <div class="container">
+            <div class="row align-items-center g-5">
+                <div class="col-lg-5" data-aos="fade-right">
+                    <span class="eyebrow text-uppercase">Career AI</span>
+                    <h2>Know Where You Fit<br>Before You Apply.</h2>
+                    <p>Your skills, analyzed against thousands of career opportunities so every application is more intentional.</p>
+                    <a href="#" class="btn btn-light btn-lg">Explore My Matches <i class="bi bi-arrow-up-right"></i></a>
+                </div>
+                <div class="col-lg-7" data-aos="fade-left" data-aos-delay="200">
+                    <div class="skills-panel">
+                        <div class="skills-panel-header">
+                            <span>Your skills</span>
+                            <span>AI analysis</span>
+                            <span>Best opportunities</span>
+                        </div>
+
+                        <div class="skill-meter">
+                            <div class="skill-label">Python</div>
+                            <div class="meter-track"><span style="width:95%"></span></div>
+                            <div class="skill-percent">95%</div>
+                        </div>
+                        <div class="skill-meter">
+                            <div class="skill-label">Django</div>
+                            <div class="meter-track"><span style="width:88%"></span></div>
+                            <div class="skill-percent">88%</div>
+                        </div>
+                        <div class="skill-meter">
+                            <div class="skill-label">SQL</div>
+                            <div class="meter-track"><span style="width:82%"></span></div>
+                            <div class="skill-percent">82%</div>
+                        </div>
+                        <div class="skill-meter">
+                            <div class="skill-label">REST API</div>
+                            <div class="meter-track"><span style="width:76%"></span></div>
+                            <div class="skill-percent">76%</div>
+                        </div>
+
+                        <div class="top-match-row">
+                            <div class="mini-match-icon">✦</div>
+                            <div class="top-match-copy">
+                                <span>Top career match</span>
+                                <strong>Backend Developer</strong>
+                                <small>Recommended because your skills align with 18 active opportunities.</small>
+                            </div>
+                            <div class="match-score-large">94%</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="premium-recruiter-section">
+        <div class="container">
+            <div class="premium-recruiter-card">
+                <div class="pr-background-elements">
+                    <div class="pr-glow-1"></div>
+                    <div class="pr-glow-2"></div>
+                    <div class="pr-grid-pattern"></div>
+                </div>
+                
+                <div class="row align-items-center position-relative z-1">
+                    <div class="col-lg-6 pr-copy" data-aos="fade-up">
+                        <div class="pr-badge"><i class="bi bi-briefcase-fill me-2"></i> FOR RECRUITERS</div>
+                        <h2 class="pr-title">Source top 1% campus talent, <span>instantly.</span></h2>
+                        <p class="pr-desc">Stop waiting for applications. Use our AI-driven matching engine to discover, evaluate, and hire the most qualified emerging talent before your competitors do.</p>
+                        
+                        <div class="pr-actions">
+                            <a href="{% url 'admin_login' %}" class="btn-pr-primary">Start Hiring <i class="bi bi-arrow-right ms-2"></i></a>
+                            <a href="{% url 'admin_login' %}" class="btn-pr-secondary">View Talent Pipeline</a>
+                        </div>
+                        
+                        <div class="pr-metrics mt-5">
+                            <div class="metric">
+                                <strong>10k+</strong>
+                                <span>Verified Students</span>
+                            </div>
+                            <div class="metric">
+                                <strong>95%</strong>
+                                <span>Match Accuracy</span>
+                            </div>
+                            <div class="metric">
+                                <strong>48h</strong>
+                                <span>Avg. Time to Hire</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="col-lg-6 pr-visual" data-aos="zoom-in" data-aos-delay="200">
+                        <div class="pr-talent-dashboard">
+                            <div class="dash-header">
+                                <div class="dots"><span></span><span></span><span></span></div>
+                                <div class="title">Live Talent Pipeline</div>
+                                <div class="status"><span class="pulse"></span> Monitoring</div>
+                            </div>
+                            
+                            <div class="dash-body">
+                                <div class="candidate-row elite-match">
+                                    <div class="cand-avatar cand-1">AS</div>
+                                    <div class="cand-details">
+                                        <h4>Aarav Sharma</h4>
+                                        <p>Backend Developer • Python, Django</p>
+                                    </div>
+                                    <div class="cand-score">
+                                        <div class="score-ring">98%</div>
+                                        <span>Elite Match</span>
+                                    </div>
+                                    <button class="cand-action"><i class="bi bi-chat-text"></i></button>
+                                </div>
+                                
+                                <div class="candidate-row">
+                                    <div class="cand-avatar cand-2">NP</div>
+                                    <div class="cand-details">
+                                        <h4>Neha Patel</h4>
+                                        <p>Full Stack • React, Node.js</p>
+                                    </div>
+                                    <div class="cand-score">
+                                        <div class="score-ring">94%</div>
+                                        <span>Great Match</span>
+                                    </div>
+                                    <button class="cand-action"><i class="bi bi-chat-text"></i></button>
+                                </div>
+                                
+                                <div class="candidate-row">
+                                    <div class="cand-avatar cand-3">RK</div>
+                                    <div class="cand-details">
+                                        <h4>Rohan Kumar</h4>
+                                        <p>Data Scientist • Python, ML</p>
+                                    </div>
+                                    <div class="cand-score">
+                                        <div class="score-ring">91%</div>
+                                        <span>Good Match</span>
+                                    </div>
+                                    <button class="cand-action"><i class="bi bi-chat-text"></i></button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+</main>
+{% endblock %}

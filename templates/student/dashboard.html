@@ -1,0 +1,386 @@
+{% extends 'base.html' %}
+{% block title %}Dashboard | CAMPUSLINK{% endblock %}
+{% block content %}
+<div class="dashboard-shell">
+    <aside class="dashboard-sidebar">
+        <div class="sidebar-label">Workspace</div>
+        <nav class="nav flex-column gap-1">
+            <a class="dashboard-nav-link active" href="{% url 'student_dashboard' %}"><i class="bi bi-grid-1x2-fill"></i>Overview</a>
+            <a class="dashboard-nav-link" href="{% url 'profile' %}"><i class="bi bi-person"></i>My profile</a>
+            <a class="dashboard-nav-link" href="{% url 'job_list' %}"><i class="bi bi-briefcase"></i>Find opportunities</a>
+            <a class="dashboard-nav-link" href="{% url 'student_applications' %}"><i class="bi bi-file-earmark-text"></i>My applications</a>
+            <a class="dashboard-nav-link" href="{% url 'career_match' %}"><i class="bi bi-stars"></i>AI Career Match</a>
+            <a class="dashboard-nav-link" href="{% url 'ai_mock_interview' %}"><i class="bi bi-camera-video"></i>AI Mock Interview</a>
+            <a class="dashboard-nav-link" href="{% url 'course_list' %}"><i class="bi bi-mortarboard"></i>Learning Hub</a>
+        </nav>
+        <div class="sidebar-bottom"><span class="status-dot"></span>Placement season 2026</div>
+    </aside>
+
+    <main class="dashboard-main">
+        <div class="dashboard-heading">
+            <div>
+                <p class="eyebrow live-date-wrap">
+                    <span id="live-dashboard-date">{{ current_server_time|date:'l, F j, Y' }}</span>
+                    <span id="live-dashboard-time" class="live-time-badge">{{ current_server_time|time:'g:i:s A' }}</span>
+                    <span id="dashboard-last-update" class="dashboard-live-status"><span class="status-pulse"></span>Updated just now</span>
+                </p>
+                <h1><span id="dashboard-greeting">Good morning</span>, {{ request.user.first_name|default:request.user.username }}.</h1>
+                <p class="text-muted mb-0">Here is your placement progress at a glance.</p>
+            </div>
+            <a href="{% url 'profile' %}" class="btn btn-primary"><i class="bi bi-pencil-square me-2"></i>Update profile</a>
+        </div>
+
+        <section class="profile-banner mb-4">
+            <div><span class="eyebrow text-white-50">Profile strength</span><h2>{{ profile_completion }}% ready for recruiter review</h2><p class="mb-0 text-white-50">Complete your profile to make every application count.</p></div>
+            <div class="profile-ring" style="--progress: {{ profile_completion }}%"><strong>{{ profile_completion }}%</strong></div>
+        </section>
+
+        <section class="membership-banner mb-4 {% if membership.is_active %}membership-active{% endif %}">
+            <div>
+                <span class="eyebrow">CampusLinkLearn membership</span>
+                <h2>{% if membership.is_active %}PRO Career Intelligence is active{% else %}Unlock your PRO career advantage{% endif %}</h2>
+                <p>{% if membership.is_active %}All 6 advanced AI tools (Resume Analyzer, Aria Mock Interview, Job Matching, Roadmap) are enabled.{% else %}Get unlimited AI career tools, advanced matching, and personalized roadmaps.{% endif %}</p>
+            </div>
+            <div class="d-flex flex-wrap gap-2">
+                {% if membership.is_active %}
+                    <a href="{% url 'ai_mock_interview' %}" class="btn btn-light"><i class="bi bi-camera-video me-1"></i> Mock Interview</a>
+                    <a href="{% url 'career_match' %}" class="btn btn-light"><i class="bi bi-stars me-1"></i> Resume Analyzer</a>
+                    <a href="{% url 'pro_landing' %}" class="btn btn-outline-light">All PRO Tools <i class="bi bi-arrow-right ms-1"></i></a>
+                {% else %}
+                    <a href="{% url 'pro_landing' %}" class="btn btn-light">Explore PRO <i class="bi bi-arrow-up-right ms-1"></i></a>
+                {% endif %}
+        </section>
+
+        <!-- PRO Premium Career Suite (3 Cards from prompt) -->
+        <section class="dashboard-pro-suite mb-4">
+            <div class="d-flex flex-wrap justify-content-between align-items-center mb-3">
+                <div>
+                    <span class="eyebrow text-uppercase">PRO Career Accelerators</span>
+                    <h2 class="h4 fw-bold mb-0 text-dark">Premium Placement Features</h2>
+                </div>
+                {% if membership.is_active %}
+                    <span class="badge text-bg-success px-3 py-2 rounded-pill fw-bold shadow-sm">
+                        <i class="bi bi-shield-check me-1"></i> PRO Active until {{ membership.current_period_end|date:'M d, Y'|default:'Active' }}
+                    </span>
+                {% else %}
+                    <span class="badge text-bg-primary px-3 py-2 rounded-pill fw-bold shadow-sm">
+                        <i class="bi bi-stars me-1"></i> Unlock for ₹1 / month
+                    </span>
+                {% endif %}
+            </div>
+
+            <div class="row g-3">
+                <!-- 1. Personal Career Roadmap -->
+                <div class="col-md-6 col-xl-4">
+                    <div class="dashboard-pro-card h-100 p-4 rounded-4 border bg-white shadow-sm d-flex flex-column" style="transition: transform 0.25s ease, box-shadow 0.25s ease;">
+                        <div class="d-flex align-items-center justify-content-between mb-3">
+                            <div class="dashboard-pro-icon rounded-3 d-flex align-items-center justify-content-center shadow-sm" style="width: 48px; height: 48px; background: #e0f2fe; color: #0284c7; font-size: 1.4rem;">
+                                <i class="bi bi-map"></i>
+                            </div>
+                            <span class="badge fw-bold px-3 py-1 rounded-pill" style="background: #4f46e5; color: #fff; box-shadow: 0 2px 8px rgba(79, 70, 229, 0.25);">PRO ✦</span>
+                        </div>
+                        <div class="mb-2">
+                            {% if membership.is_active %}
+                                <span class="badge text-bg-success-subtle text-success border border-success-subtle py-1 px-2 fw-semibold small">
+                                    <i class="bi bi-calendar-check me-1"></i> Active until {{ membership.current_period_end|date:'M d, Y' }}
+                                </span>
+                            {% else %}
+                                <div class="fs-4 fw-bold text-dark">₹1 <span class="text-muted fw-normal fs-6">/ month</span></div>
+                            {% endif %}
+                        </div>
+                        <h3 class="h5 fw-bold text-dark mb-1">Personal Career Roadmap</h3>
+                        <p class="text-muted small mb-4 flex-grow-1">Target roles, skill gaps, learning steps, and progress tracking.</p>
+                        <div class="mt-auto">
+                            {% if membership.is_active %}
+                                <a href="{% url 'career_match' %}#skill-gap" class="btn btn-success fw-bold px-4 py-2 rounded-pill text-white shadow-sm d-inline-flex align-items-center gap-1" style="background-color: #059669; border-color: #059669;">
+                                    <i class="bi bi-box-arrow-up-right"></i> Open Feature →
+                                </a>
+                            {% else %}
+                                <button type="button" class="btn btn-success fw-bold px-4 py-2 rounded-pill text-white shadow-sm d-inline-flex align-items-center gap-1" style="background-color: #059669; border-color: #059669;" onclick="openProUpgradeModal('Personal Career Roadmap', 'Target roles, skill gaps, learning steps, and progress tracking.', 'roadmap')">
+                                    <i class="bi bi-play-circle-fill"></i> Launch Feature →
+                                </button>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 2. Premium Learning Hub -->
+                <div class="col-md-6 col-xl-4">
+                    <div class="dashboard-pro-card h-100 p-4 rounded-4 border bg-white shadow-sm d-flex flex-column" style="transition: transform 0.25s ease, box-shadow 0.25s ease;">
+                        <div class="d-flex align-items-center justify-content-between mb-3">
+                            <div class="dashboard-pro-icon rounded-3 d-flex align-items-center justify-content-center shadow-sm" style="width: 48px; height: 48px; background: #e0f2fe; color: #0284c7; font-size: 1.4rem;">
+                                <i class="bi bi-mortarboard"></i>
+                            </div>
+                            <span class="badge fw-bold px-3 py-1 rounded-pill" style="background: #4f46e5; color: #fff; box-shadow: 0 2px 8px rgba(79, 70, 229, 0.25);">PRO ✦</span>
+                        </div>
+                        <div class="mb-2">
+                            {% if membership.is_active %}
+                                <span class="badge text-bg-success-subtle text-success border border-success-subtle py-1 px-2 fw-semibold small">
+                                    <i class="bi bi-calendar-check me-1"></i> Active until {{ membership.current_period_end|date:'M d, Y' }}
+                                </span>
+                            {% else %}
+                                <div class="fs-4 fw-bold text-dark">₹1 <span class="text-muted fw-normal fs-6">/ month</span></div>
+                            {% endif %}
+                        </div>
+                        <h3 class="h5 fw-bold text-dark mb-1">Premium Learning Hub</h3>
+                        <p class="text-muted small mb-4 flex-grow-1">Exclusive interview preparation, DSA resources, and career content.</p>
+                        <div class="mt-auto">
+                            {% if membership.is_active %}
+                                <a href="{% url 'course_list' %}" class="btn btn-success fw-bold px-4 py-2 rounded-pill text-white shadow-sm d-inline-flex align-items-center gap-1" style="background-color: #059669; border-color: #059669;">
+                                    <i class="bi bi-box-arrow-up-right"></i> Open Feature →
+                                </a>
+                            {% else %}
+                                <button type="button" class="btn btn-success fw-bold px-4 py-2 rounded-pill text-white shadow-sm d-inline-flex align-items-center gap-1" style="background-color: #059669; border-color: #059669;" onclick="openProUpgradeModal('Premium Learning Hub', 'Exclusive interview preparation, DSA resources, and career content.', 'learning')">
+                                    <i class="bi bi-play-circle-fill"></i> Launch Feature →
+                                </button>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 3. Career Intelligence -->
+                <div class="col-md-6 col-xl-4">
+                    <div class="dashboard-pro-card h-100 p-4 rounded-4 border bg-white shadow-sm d-flex flex-column" style="transition: transform 0.25s ease, box-shadow 0.25s ease;">
+                        <div class="d-flex align-items-center justify-content-between mb-3">
+                            <div class="dashboard-pro-icon rounded-3 d-flex align-items-center justify-content-center shadow-sm" style="width: 48px; height: 48px; background: #e0f2fe; color: #0284c7; font-size: 1.4rem;">
+                                <i class="bi bi-graph-up-arrow"></i>
+                            </div>
+                            <span class="badge fw-bold px-3 py-1 rounded-pill" style="background: #4f46e5; color: #fff; box-shadow: 0 2px 8px rgba(79, 70, 229, 0.25);">PRO ✦</span>
+                        </div>
+                        <div class="mb-2">
+                            {% if membership.is_active %}
+                                <span class="badge text-bg-success-subtle text-success border border-success-subtle py-1 px-2 fw-semibold small">
+                                    <i class="bi bi-calendar-check me-1"></i> Active until {{ membership.current_period_end|date:'M d, Y' }}
+                                </span>
+                            {% else %}
+                                <div class="fs-4 fw-bold text-dark">₹1 <span class="text-muted fw-normal fs-6">/ month</span></div>
+                            {% endif %}
+                        </div>
+                        <h3 class="h5 fw-bold text-dark mb-1">Career Intelligence</h3>
+                        <p class="text-muted small mb-4 flex-grow-1">Salary insights, skill demand, trends, and role comparisons.</p>
+                        <div class="mt-auto">
+                            {% if membership.is_active %}
+                                <a href="{% url 'career_match' %}" class="btn btn-success fw-bold px-4 py-2 rounded-pill text-white shadow-sm d-inline-flex align-items-center gap-1" style="background-color: #059669; border-color: #059669;">
+                                    <i class="bi bi-box-arrow-up-right"></i> Open Feature →
+                                </a>
+                            {% else %}
+                                <button type="button" class="btn btn-success fw-bold px-4 py-2 rounded-pill text-white shadow-sm d-inline-flex align-items-center gap-1" style="background-color: #059669; border-color: #059669;" onclick="openProUpgradeModal('Career Intelligence', 'Salary insights, skill demand, trends, and role comparisons.', 'intelligence')">
+                                    <i class="bi bi-play-circle-fill"></i> Launch Feature →
+                                </button>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="row g-3 mb-4">
+            <div class="col-sm-6 col-xl-3"><div class="metric-card"><span class="metric-icon blue"><i class="bi bi-send"></i></span><span class="metric-label">Applications</span><strong>{{ applications_count }}</strong><small>All submitted applications</small></div></div>
+            <div class="col-sm-6 col-xl-3"><div class="metric-card"><span class="metric-icon amber"><i class="bi bi-lightning-charge"></i></span><span class="metric-label">Shortlisted</span><strong>{{ shortlisted_count }}</strong><small>Moving to the next stage</small></div></div>
+            <div class="col-sm-6 col-xl-3"><div class="metric-card"><span class="metric-icon green"><i class="bi bi-trophy"></i></span><span class="metric-label">Selected</span><strong>{{ selected_count }}</strong><small>Offers secured</small></div></div>
+            <div class="col-sm-6 col-xl-3"><div class="metric-card"><span class="metric-icon violet"><i class="bi bi-compass"></i></span><span class="metric-label">New opportunities</span><strong>{{ recommended_count }}</strong><small>Latest roles to explore</small></div></div>
+        </section>
+
+        <div class="row g-4">
+            <section class="col-xl-7"><div class="panel-card h-100"><div class="section-heading"><div><span class="eyebrow">Your pipeline</span><h2>Recent applications</h2></div><span class="soft-badge">Live data</span></div>
+                {% for application in recent_apps %}<div class="application-row"><div class="company-mark">{{ application.job.company.name|first|upper }}</div><div class="flex-grow-1"><strong>{{ application.job.title }}</strong><span>{{ application.job.company.name }} · {{ application.job.location }}</span></div><span class="status-pill status-{{ application.status|lower }}">{{ application.get_status_display }}</span></div>{% empty %}<div class="empty-state"><i class="bi bi-inbox"></i><strong>Your pipeline is clear.</strong><span>Explore current opportunities and submit your first application.</span><a href="{% url 'job_list' %}" class="btn btn-sm btn-outline-primary">Browse jobs</a></div>{% endfor %}
+            </div></section>
+            <section class="col-xl-5"><div class="panel-card h-100"><div class="section-heading"><div><span class="eyebrow">Curated for you</span><h2>Latest opportunities</h2></div><a href="{% url 'job_list' %}" class="text-link">View all</a></div>
+                {% for job in top_jobs %}<a class="opportunity-row" href="{% url 'job_list' %}"><div><strong>{{ job.title }}</strong><span>{{ job.company.name }}</span></div><i class="bi bi-arrow-up-right"></i></a>{% empty %}<div class="empty-state"><i class="bi bi-briefcase"></i><strong>No roles posted yet.</strong><span>New jobs will appear here when recruiters publish them.</span></div>{% endfor %}
+            </div></section>
+        </div>
+
+        <section class="panel-card mt-4">
+            <div class="section-heading"><div><span class="eyebrow">AI career match</span><h2>Find roles that fit your profile</h2></div><a href="{% url 'career_match' %}" class="btn btn-primary">{% if profile.resume %}View recommendations{% else %}Analyze resume{% endif %}</a></div>
+            {% if top_career_match %}<p class="mb-0">{{ career_match_count }} role{{ career_match_count|pluralize }} currently meet the configured requirements. Your strongest match is <strong>{{ top_career_match.job.title }}</strong> at {{ top_career_match.job.company.name }} ({{ top_career_match.score }}%).</p>{% else %}<p class="text-muted mb-0">Upload your resume to see matched companies, missing skills, and a learning path.</p>{% endif %}
+        </section>
+
+        <section class="row g-4 mt-1">
+            <div class="col-lg-7"><div class="panel-card h-100"><div class="section-heading"><div><span class="eyebrow">Resume intelligence</span><h2>ATS readiness</h2></div><strong class="text-primary fs-4">{% if resume_analysis %}{{ resume_analysis.ats_score }}/100{% else %}--{% endif %}</strong></div>{% if resume_analysis and not resume_analysis.parse_error %}<p class="text-muted mb-3">Your resume has been analyzed for skills, keywords and role alignment.</p>{% if resume_analysis.improvement_suggestions %}<div class="small p-3 rounded-3 bg-light"><strong>Next improvement:</strong> {{ resume_analysis.improvement_suggestions }}</div>{% endif %}{% else %}<p class="text-muted mb-3">Upload a PDF or DOCX resume to receive an ATS score and targeted suggestions.</p>{% endif %}<a href="{% url 'career_match' %}" class="btn btn-outline-primary btn-sm mt-3"><i class="bi bi-file-earmark-check me-1"></i>{% if resume_analysis %}Review analysis{% else %}Analyze resume{% endif %}</a></div></div>
+            <div class="col-lg-5"><div class="panel-card h-100"><div class="section-heading"><div><span class="eyebrow">Next steps</span><h2>Profile checklist</h2></div><span class="soft-badge">{{ profile_completion }}%</span></div>{% if missing_profile_items %}<p class="text-muted small">Complete these areas to improve job matches:</p><div class="d-flex flex-wrap gap-2 mb-3">{% for item in missing_profile_items %}<span class="badge text-bg-light">{{ item }}</span>{% endfor %}</div>{% else %}<p class="text-success mb-3"><i class="bi bi-check-circle me-1"></i>Your profile is ready for recruiter review.</p>{% endif %}<a href="{% url 'student_profile' %}" class="btn btn-outline-primary btn-sm"><i class="bi bi-person-gear me-1"></i>Manage profile</a></div></div>
+        </section>
+    </main>
+</div>
+
+<!-- PRO Upgrade Modal -->
+<div class="modal fade" id="proUpgradeModal" tabindex="-1" aria-labelledby="proModalFeatureTitle" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-lg">
+        <div class="modal-content rounded-4 border-0 shadow-lg overflow-hidden">
+            <div class="modal-header border-0 pb-0 pt-4 px-4 align-items-start">
+                <div class="d-flex align-items-center gap-3">
+                    <div id="proModalIconBox" class="rounded-3 d-flex align-items-center justify-content-center shadow-sm" style="width: 48px; height: 48px; background: #e0f2fe; color: #0284c7; font-size: 1.5rem;">
+                        <i id="proModalIcon" class="bi bi-map"></i>
+                    </div>
+                    <div>
+                        <div class="d-flex align-items-center gap-2 mb-1">
+                            <h4 class="modal-title fw-bold text-dark mb-0" id="proModalFeatureTitle">Personal Career Roadmap</h4>
+                            <span class="badge fw-bold px-2 py-1 rounded-pill" style="background: #4f46e5; color: #fff; font-size: 0.75rem;">PRO ✦</span>
+                        </div>
+                        <p class="text-muted small mb-0" id="proModalFeatureDesc">Target roles, skill gaps, learning steps, and progress tracking.</p>
+                    </div>
+                </div>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body p-4">
+                <!-- Pricing & Promo Callout -->
+                <div class="p-3 rounded-3 mb-3 d-flex flex-wrap align-items-center justify-content-between" style="background: linear-gradient(135deg, #f0fdf4 0%, #e0f2fe 100%); border: 1px solid #bbf7d0;">
+                    <div class="d-flex align-items-baseline gap-2">
+                        <span class="fs-2 fw-bold text-dark">₹1</span>
+                        <span class="text-muted fw-semibold">/ month</span>
+                        <span class="badge bg-success text-white ms-2 px-2 py-1 rounded-pill small">Student Pro Offer</span>
+                    </div>
+                    <div class="small text-muted">
+                        <i class="bi bi-shield-check text-success me-1"></i> Instant access · Cancel anytime · UPI & Cards supported
+                    </div>
+                </div>
+
+                <!-- Feature Benefits List -->
+                <div class="row g-2 mb-4" id="proModalBenefits">
+                    <div class="col-sm-6">
+                        <div class="d-flex align-items-center gap-2 small text-secondary">
+                            <i class="bi bi-check-circle-fill text-success fs-6"></i>
+                            <span id="benefit-1">Deep role & skill-gap analysis (50+ tech roles)</span>
+                        </div>
+                    </div>
+                    <div class="col-sm-6">
+                        <div class="d-flex align-items-center gap-2 small text-secondary">
+                            <i class="bi bi-check-circle-fill text-success fs-6"></i>
+                            <span id="benefit-2">Curated milestone projects & week-by-week tasks</span>
+                        </div>
+                    </div>
+                    <div class="col-sm-6">
+                        <div class="d-flex align-items-center gap-2 small text-secondary">
+                            <i class="bi bi-check-circle-fill text-success fs-6"></i>
+                            <span id="benefit-3">Personalized AI advice engine & weekly focus tips</span>
+                        </div>
+                    </div>
+                    <div class="col-sm-6">
+                        <div class="d-flex align-items-center gap-2 small text-secondary">
+                            <i class="bi bi-check-circle-fill text-success fs-6"></i>
+                            <span id="benefit-4">ATS checklist, interview bank & real salary insights</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Blurred Preview of Locked Content -->
+                <div class="position-relative rounded-3 border overflow-hidden p-3" style="background: #f8fafc; min-height: 180px;">
+                    <div id="proModalPreviewBlurred" style="filter: blur(4.5px); opacity: 0.55; user-select: none; pointer-events: none;">
+                        <div class="d-flex justify-content-between align-items-center mb-2">
+                            <span class="badge bg-primary">Target: Full-Stack Developer</span>
+                            <span class="fw-bold text-success">82% Skill Match</span>
+                        </div>
+                        <div class="progress mb-3" style="height: 8px;"><div class="progress-bar bg-success" style="width: 82%"></div></div>
+                        <div class="row g-2">
+                            <div class="col-4"><div class="p-2 border rounded bg-white small"><strong>Phase 1</strong><br>Foundations (HTML/CSS/JS)</div></div>
+                            <div class="col-4"><div class="p-2 border rounded bg-white small"><strong>Phase 2</strong><br>React + Django APIs</div></div>
+                            <div class="col-4"><div class="p-2 border rounded bg-white small"><strong>Phase 3</strong><br>Cloud Deployment & CI/CD</div></div>
+                        </div>
+                    </div>
+                    <div class="position-absolute top-50 start-50 translate-middle text-center w-100 px-3">
+                        <div class="d-inline-flex align-items-center gap-2 px-3 py-2 rounded-pill bg-white shadow-sm border border-secondary-subtle mb-2">
+                            <i class="bi bi-lock-fill text-warning fs-5"></i>
+                            <span class="fw-bold text-dark small">Premium Content Locked</span>
+                        </div>
+                        <p class="text-muted small fw-medium mb-0">Join CampusLink PRO to unlock customized recommendations, interactive roadmaps, and full problem banks.</p>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer border-0 pt-0 px-4 pb-4 d-flex justify-content-between align-items-center">
+                <button type="button" class="btn btn-outline-secondary rounded-pill px-4" data-bs-dismiss="modal">Maybe later</button>
+                <a href="{% url 'pro_checkout' %}" id="proModalUpgradeBtn" class="btn btn-success fw-bold px-4 py-2 rounded-pill text-white shadow-sm d-inline-flex align-items-center gap-2" style="background-color: #059669; border-color: #059669;">
+                    <span>Upgrade Now for ₹1</span>
+                    <i class="bi bi-arrow-right"></i>
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+function openProUpgradeModal(title, desc, key) {
+    var titleEl = document.getElementById('proModalFeatureTitle');
+    var descEl = document.getElementById('proModalFeatureDesc');
+    var iconEl = document.getElementById('proModalIcon');
+    var previewEl = document.getElementById('proModalPreviewBlurred');
+    var b1 = document.getElementById('benefit-1');
+    var b2 = document.getElementById('benefit-2');
+    var b3 = document.getElementById('benefit-3');
+    var b4 = document.getElementById('benefit-4');
+
+    if (titleEl) titleEl.innerText = title;
+    if (descEl) descEl.innerText = desc;
+
+    // Analytics event
+    if (window.dataLayer) {
+        window.dataLayer.push({ event: 'upgrade_clicked', feature: key });
+    }
+
+    if (key === 'roadmap') {
+        if (iconEl) iconEl.className = 'bi bi-map';
+        if (b1) b1.innerText = '50+ Career roles & comprehensive skill-gap analysis';
+        if (b2) b2.innerText = 'Phased roadmaps: Foundation, Core, Projects & Interviews';
+        if (b3) b3.innerText = 'Milestone badges, progress streaks & weekly check-ins';
+        if (b4) b4.innerText = 'AI advice: What to focus on & next best action';
+        if (previewEl) {
+            previewEl.innerHTML = `
+                <div class="d-flex justify-content-between align-items-center mb-2">
+                    <span class="badge bg-primary">Target: Full-Stack Developer</span>
+                    <span class="fw-bold text-success">82% Skill Match</span>
+                </div>
+                <div class="progress mb-3" style="height: 8px;"><div class="progress-bar bg-success" style="width: 82%"></div></div>
+                <div class="row g-2">
+                    <div class="col-4"><div class="p-2 border rounded bg-white small"><strong>Phase 1</strong><br>Foundations (HTML/CSS/JS)</div></div>
+                    <div class="col-4"><div class="p-2 border rounded bg-white small"><strong>Phase 2</strong><br>React + Django APIs</div></div>
+                    <div class="col-4"><div class="p-2 border rounded bg-white small"><strong>Phase 3</strong><br>Cloud Deployment & CI/CD</div></div>
+                </div>
+            `;
+        }
+    } else if (key === 'learning') {
+        if (iconEl) iconEl.className = 'bi bi-mortarboard';
+        if (b1) b1.innerText = 'Curated 150+ DSA problems categorized by topic & pattern';
+        if (b2) b2.innerText = 'Role-wise interview question bank with model answers';
+        if (b3) b3.innerText = 'ATS resume templates & GitHub/LinkedIn optimization';
+        if (b4) b4.innerText = 'Personalized AI study plan & solution explainer helper';
+        if (previewEl) {
+            previewEl.innerHTML = `
+                <div class="table-responsive">
+                    <table class="table table-sm mb-0">
+                        <thead><tr><th>Problem</th><th>Topic</th><th>Difficulty</th><th>Status</th></tr></thead>
+                        <tbody>
+                            <tr><td>Two Sum & 3Sum</td><td>Arrays & Hashing</td><td><span class="badge bg-success">Easy</span></td><td>Solved ✓</td></tr>
+                            <tr><td>LRU Cache Design</td><td>Linked List</td><td><span class="badge bg-warning text-dark">Medium</span></td><td>Revision</td></tr>
+                            <tr><td>Course Schedule II</td><td>Graphs & Topo</td><td><span class="badge bg-danger">Hard</span></td><td>Unsolved</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            `;
+        }
+    } else {
+        if (iconEl) iconEl.className = 'bi bi-graph-up-arrow';
+        if (b1) b1.innerText = 'Fresher, Mid & Senior salary ranges by city & company type';
+        if (b2) b2.innerText = 'Top in-demand skills per role and 6-12 month market outlook';
+        if (b3) b3.innerText = 'Side-by-side multi-role comparison tool with salary charts';
+        if (b4) b4.innerText = 'AI Role-Fit recommendations based on your resume & goals';
+        if (previewEl) {
+            previewEl.innerHTML = `
+                <div class="d-flex justify-content-between align-items-center mb-2">
+                    <strong>Market Salary Comparison (₹ LPA)</strong>
+                    <small class="text-muted">Updated Oct 2026</small>
+                </div>
+                <div class="row g-2 text-center">
+                    <div class="col-4"><div class="p-2 border rounded bg-white"><strong>Software Engineer</strong><br><span class="text-success fw-bold">₹7 - ₹18 LPA</span></div></div>
+                    <div class="col-4"><div class="p-2 border rounded bg-white"><strong>Data Scientist</strong><br><span class="text-success fw-bold">₹8 - ₹22 LPA</span></div></div>
+                    <div class="col-4"><div class="p-2 border rounded bg-white"><strong>DevOps Engineer</strong><br><span class="text-success fw-bold">₹7.5 - ₹19 LPA</span></div></div>
+                </div>
+            `;
+        }
+    }
+
+    var modalElement = document.getElementById('proUpgradeModal');
+    if (modalElement && window.bootstrap) {
+        var modal = bootstrap.Modal.getOrCreateInstance(modalElement);
+        modal.show();
+    }
+}
+</script>
+{% endblock %}

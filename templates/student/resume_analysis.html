@@ -1,0 +1,23 @@
+{% extends 'base.html' %}
+{% block title %}AI Resume Analyzer | CAMPUSLINK{% endblock %}
+{% block content %}
+<main class="profile-page container py-4 py-lg-5">
+    <div class="profile-page-heading d-flex flex-wrap justify-content-between align-items-end gap-3 mb-4">
+        <div><p class="text-primary fw-semibold mb-1">AI resume analyzer</p><h1 class="h2 fw-bold mb-1">Turn your resume into an advantage</h1><p class="text-muted mb-0">Get an explainable ATS score, skill extraction and clear next steps.</p></div>
+        <a href="{% url 'student_profile' %}" class="btn btn-outline-primary"><i class="bi bi-arrow-left me-2"></i>Back to profile</a>
+    </div>
+    {% if messages %}{% for message in messages %}<div class="alert alert-{{ message.tags }}">{{ message }}</div>{% endfor %}{% endif %}
+    {% if not profile.resume %}
+    <div class="profile-card card border-0 shadow-sm p-4"><h2 class="h5 fw-bold">Upload a PDF resume first</h2><p class="text-muted mb-3">Upload your resume from the Personal Information section to start the analysis.</p><a class="btn btn-primary" href="{% url 'student_profile' %}#resume">Open profile</a></div>
+    {% else %}
+    <div class="row g-4">
+        <div class="col-lg-4"><div class="profile-card card border-0 shadow-sm p-4 h-100"><span class="eyebrow">ATS readiness</span><div class="display-3 fw-bold text-primary my-3">{{ analysis.ats_score|default:0 }}<small class="fs-5 text-muted">/100</small></div><p class="text-muted">Based on contact completeness, sections, keywords and normalized technical skills.</p><form method="post">{% csrf_token %}<button class="btn btn-outline-primary w-100" type="submit"><i class="bi bi-arrow-repeat me-2"></i>Analyze again</button></form></div></div>
+        <div class="col-lg-8"><div class="profile-card card border-0 shadow-sm p-4 mb-4"><span class="eyebrow">Detected skills</span><h2 class="h5 fw-bold mb-3">Your technical profile</h2>{% for category, skills in result.skills.items %}<div class="mb-3"><strong class="small d-block mb-2">{{ category }}</strong>{% for skill in skills %}<span class="badge text-bg-light me-1 mb-1">{{ skill }}</span>{% endfor %}</div>{% empty %}<p class="text-muted mb-0">No normalized skills were detected yet.</p>{% endfor %}</div></div>
+        <div class="col-md-6"><div class="profile-card card border-0 shadow-sm p-4 h-100"><h2 class="h5 fw-bold">Strengths</h2>{% for item in result.strengths %}<p class="small mb-2 text-success"><i class="bi bi-check-circle me-2"></i>{{ item }}</p>{% empty %}<p class="text-muted">Add more evidence to your resume.</p>{% endfor %}</div></div>
+        <div class="col-md-6"><div class="profile-card card border-0 shadow-sm p-4 h-100"><h2 class="h5 fw-bold">Improve next</h2>{% for item in result.weaknesses %}<p class="small mb-2 text-warning-emphasis"><i class="bi bi-exclamation-circle me-2"></i>{{ item }}</p>{% empty %}<p class="text-success">No major weaknesses detected.</p>{% endfor %}</div></div>
+        <div class="col-md-6"><div class="profile-card card border-0 shadow-sm p-4 h-100"><h2 class="h5 fw-bold">Missing information</h2>{% for item in result.missing_information %}<span class="badge text-bg-warning me-1 mb-1">{{ item }}</span>{% empty %}<p class="text-success mb-0">Core resume information is present.</p>{% endfor %}</div></div>
+        <div class="col-md-6"><div class="profile-card card border-0 shadow-sm p-4 h-100"><h2 class="h5 fw-bold">Recommended keywords</h2>{% for item in result.missing_keywords %}<span class="badge text-bg-light me-1 mb-1">{{ item }}</span>{% empty %}<p class="text-success mb-0">Your resume covers the current keyword set.</p>{% endfor %}</div></div>
+    </div>
+    {% endif %}
+</main>
+{% endblock %}

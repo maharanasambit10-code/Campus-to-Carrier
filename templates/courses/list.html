@@ -1,0 +1,31 @@
+{% extends 'base.html' %}
+{% block title %}Courses | CAMPUSLINK{% endblock %}
+{% block content %}
+<main class="marketplace-page">
+    <div class="container py-5">
+        <div class="marketplace-heading">
+            <div><span class="eyebrow">Learning marketplace</span><h1>Build skills for your next opportunity</h1><p>Explore courses from trusted providers and apply with your CampusLink profile.</p></div>
+            <span class="marketplace-count">{{ courses|length }} courses</span>
+        </div>
+        <form class="job-filters" method="get">
+            <div class="job-search"><i class="bi bi-search"></i><input type="search" name="q" value="{{ query }}" placeholder="Search courses or providers..." aria-label="Search courses or providers"></div>
+            <button class="btn btn-primary" type="submit">Search courses</button>
+        </form>
+        <div class="row g-4 job-grid">
+            {% for course in courses %}
+            <div class="col-md-6 col-xl-4 d-flex">
+                <article class="job-card">
+                    <div class="job-card-top"><span class="company-mark">{{ course.provider.name|first|upper }}</span><span class="job-type-badge">{{ course.mode }}</span></div>
+                    <p class="job-company">{{ course.provider.name }}</p>
+                    <h2>{{ course.title }}</h2>
+                    <p class="text-muted small">{{ course.description|truncatewords:22 }}</p>
+                    <div class="job-meta"><span><i class="bi bi-clock"></i>{{ course.duration|default:'Self-paced' }}</span><span><i class="bi bi-bar-chart"></i>{{ course.level|default:'All levels' }}</span></div>
+                    {% if course.deadline %}<div class="job-match-row"><span><i class="bi bi-calendar3"></i>Apply by {{ course.deadline|date:'M d, Y' }}</span></div>{% endif %}
+                    <div class="job-card-actions"><a class="btn btn-outline-primary" href="{% url 'course_detail' course.id %}">View Details</a>{% if course.id in applied_ids %}<span class="btn btn-light disabled">Applied</span>{% else %}<form method="post" action="{% url 'apply_course' course.id %}">{% csrf_token %}<button class="btn btn-primary" type="submit">Apply Now</button></form>{% endif %}</div>
+                </article>
+            </div>
+            {% empty %}<div class="col-12"><div class="empty-state marketplace-empty"><i class="bi bi-book"></i><strong>No courses found</strong><span>Try another course or provider search.</span></div></div>{% endfor %}
+        </div>
+    </div>
+</main>
+{% endblock %}

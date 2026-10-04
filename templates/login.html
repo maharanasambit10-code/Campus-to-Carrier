@@ -1,0 +1,48 @@
+
+{% extends 'base.html' %}
+{% block title %}Welcome to CampusLinkLearn | User Login{% endblock %}
+{% block content %}
+<div class="auth-shell">
+    <div class="auth-glow auth-glow-one"></div>
+    <div class="auth-glow auth-glow-two"></div>
+
+    <div class="container py-5">
+        <div class="row justify-content-center">
+            <div class="col-md-8 col-lg-6">
+                <div class="auth-card">
+                    <div class="auth-brand text-center">
+                        <div class="auth-logo"><i class="bi bi-rocket-takeoff-fill"></i></div>
+                        <p class="auth-kicker">Choose your access</p>
+                        <h3 class="fw-bold mb-2">Welcome to CampusLinkLearn</h3>
+                        <p class="text-light opacity-75 mb-4">Choose your account to continue</p>
+                    </div>
+
+                    <div class="row g-3 mb-4">
+                        <div class="col-sm-6"><a class="auth-option auth-option-active" href="{% url 'login' %}"><i class="bi bi-mortarboard-fill"></i><strong>Student / User Login</strong><span>For students and normal users</span></a></div>
+                        <div class="col-sm-6"><a class="auth-option" href="{% url 'admin_login' %}"><i class="bi bi-shield-lock"></i><strong>Admin Login</strong><span>For administrators and website management</span></a></div>
+                    </div>
+
+                    <form class="auth-form" method="post" action="{% url 'login' %}" novalidate>
+                        {% csrf_token %}
+                        {% if messages %}
+                            {% for message in messages %}
+                                <div class="alert auth-alert" role="alert">{{ message }}</div>
+                            {% endfor %}
+                        {% endif %}
+                        <div class="mb-3 field-wrapper">
+                            <label class="form-label auth-label">Username</label>
+                            <input type="text" name="username" class="form-control auth-input" placeholder="Enter your username" required aria-required="true">
+                        </div>
+                        <div class="mb-3 field-wrapper">
+                            <label class="form-label auth-label">Password</label>
+                            <input type="password" name="password" class="form-control auth-input" placeholder="Enter your password" required aria-required="true">
+                        </div>
+                        <button type="submit" class="btn auth-btn w-100 fw-bold"><i class="bi bi-box-arrow-in-right me-2"></i>Login as User</button>
+                    </form>
+                    <p class="text-center text-light opacity-75 small mt-4 mb-0">New student? <a href="{% url 'student_register' %}" class="link-light fw-semibold">Create an account</a></p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

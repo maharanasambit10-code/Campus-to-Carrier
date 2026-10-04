@@ -1,0 +1,9 @@
+{% extends 'base.html' %}
+{% block title %}Admin Login | CampusLinkLearn{% endblock %}
+{% block content %}
+<div class="auth-shell"><div class="container py-5"><div class="row justify-content-center"><div class="col-md-5"><div class="auth-card">
+    <div class="auth-brand text-center"><div class="auth-logo auth-logo-admin"><i class="bi bi-shield-lock-fill"></i></div><p class="auth-kicker">CampusLinkLearn control center</p><h3 class="fw-bold mb-2">Admin Login</h3><p class="text-light opacity-75 mb-4">Website management and administration</p></div>
+    <form class="auth-form" method="post" action="{% url 'admin_login' %}" novalidate>{% csrf_token %}{% if messages %}{% for message in messages %}<div class="alert auth-alert" role="alert">{{ message }}</div>{% endfor %}{% endif %}<div class="mb-3 field-wrapper"><label class="form-label auth-label">Admin username</label><input type="text" name="username" class="form-control auth-input" required aria-required="true" autofocus></div><div class="mb-3 field-wrapper"><label class="form-label auth-label">Admin password</label><input type="password" name="password" class="form-control auth-input" required aria-required="true"></div><button type="submit" class="btn auth-btn w-100 fw-bold"><i class="bi bi-shield-check me-2"></i>Enter Admin Dashboard</button></form>
+    <p class="text-center text-light opacity-75 small mt-4 mb-0">Need a user account? <a href="{% url 'login' %}" class="link-light fw-semibold">Use User Login</a></p>
+</div></div></div></div></div>
+{% endblock %}

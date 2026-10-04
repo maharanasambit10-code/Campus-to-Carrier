@@ -1,0 +1,61 @@
+{% extends 'base.html' %}
+{% block title %}Student Registration | CAMPUSLINK{% endblock %}
+{% block content %}
+<div class="auth-shell registration-shell">
+    <div class="auth-glow auth-glow-one"></div>
+    <div class="auth-glow auth-glow-two"></div>
+    <div class="container py-5">
+        <div class="row justify-content-center">
+            <div class="col-lg-8 col-xl-7">
+                <div class="auth-card registration-card">
+                    <div class="auth-brand text-center">
+                        <div class="auth-logo"><i class="bi bi-person-plus-fill"></i></div>
+                        <p class="auth-kicker">CampusLink onboarding</p>
+                        <h1 class="h3 fw-bold mb-2">Student Registration</h1>
+                        <p class="text-light opacity-75 mb-4">Create your account, then build a profile that helps the right opportunities find you.</p>
+                    </div>
+                    <div class="registration-progress mb-4" aria-label="Registration progress">
+                        <div class="registration-step {% if current_step == 'account' %}active{% else %}complete{% endif %}"><span>01</span><strong>Account</strong></div>
+                        <div class="registration-progress-line"></div>
+                        <div class="registration-step {% if current_step == 'profile' %}active{% endif %}"><span>02</span><strong>Student Profile</strong></div>
+                    </div>
+                    {% if current_step == 'profile' %}
+                    <form method="post" enctype="multipart/form-data" novalidate>
+                        {% csrf_token %}<input type="hidden" name="step" value="profile">
+                        {% if profile_form.non_field_errors %}<div class="alert auth-alert">{{ profile_form.non_field_errors }}</div>{% endif %}
+                        <div class="registration-section-title"><i class="bi bi-mortarboard me-2"></i>Academic details</div>
+                        <div class="row g-3">
+                            {% for field in profile_form %}
+                            <div class="{% if field.name == 'skills' or field.name == 'linkedin' or field.name == 'github' or field.name == 'portfolio' or field.name == 'resume' or field.name == 'profile_photo' %}col-12{% else %}col-md-6{% endif %}">
+                                <label class="form-label auth-label" for="{{ field.id_for_label }}">{{ field.label }}{% if field.field.required %} <span class="text-warning">*</span>{% else %} <small class="opacity-75">(optional)</small>{% endif %}</label>
+                                {{ field }}
+                                {% for error in field.errors %}<div class="text-warning small mt-1">{{ error }}</div>{% endfor %}
+                            </div>
+                            {% endfor %}
+                        </div>
+                        <button type="submit" class="btn auth-btn w-100 fw-bold mt-4"><i class="bi bi-check2-circle me-2"></i>Complete Registration <i class="bi bi-arrow-right ms-1"></i></button>
+                    </form>
+                    {% else %}
+                    <form method="post" novalidate>
+                        {% csrf_token %}<input type="hidden" name="step" value="account">
+                        {% if account_form.non_field_errors %}<div class="alert auth-alert">{{ account_form.non_field_errors }}</div>{% endif %}
+                        <div class="registration-section-title"><i class="bi bi-person-badge me-2"></i>Create account</div>
+                        <div class="row g-3">
+                            {% for field in account_form %}
+                            <div class="{% if field.name == 'username' or field.name == 'email' %}col-12{% else %}col-md-6{% endif %}">
+                                <label class="form-label auth-label" for="{{ field.id_for_label }}">{{ field.label }}{% if field.field.required %} <span class="text-warning">*</span>{% endif %}</label>
+                                {{ field }}
+                                {% for error in field.errors %}<div class="text-warning small mt-1">{{ error }}</div>{% endfor %}
+                            </div>
+                            {% endfor %}
+                        </div>
+                        <button type="submit" class="btn auth-btn w-100 fw-bold mt-4">Continue <span class="visually-hidden">Create Student Account</span> <i class="bi bi-arrow-right ms-1"></i></button>
+                    </form>
+                    {% endif %}
+                    <p class="text-center text-light opacity-75 small mt-4 mb-0">Already have an account? <a href="{% url 'login' %}" class="link-light fw-semibold">Login</a></p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
