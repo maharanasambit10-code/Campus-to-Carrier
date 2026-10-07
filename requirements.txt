@@ -6,3 +6,7 @@ djangorestframework
 pymupdf
 python-docx
 pypdf
+faster-whisper==1.2.1
+kokoro==0.9.4
+silero-vad==6.2.3
+soundfile

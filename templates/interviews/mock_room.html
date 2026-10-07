@@ -1,6 +1,6 @@
 {% extends 'base.html' %}
 {% load static %}
-{% block title %}Live AI Mock Interview with Aria & Nexus AI Robot | CampusLink{% endblock %}
+{% block title %}Live AI Mock Interview with Priya & Nexus AI Robot | CampusLink{% endblock %}
 
 {% block content %}
 <main class="mock-interview-room bg-dark text-white position-relative" style="min-height: calc(100vh - 70px); overflow: hidden; background: radial-gradient(circle at 50% 25%, #0f1c2e 0%, #070b12 100%);">
@@ -210,9 +210,11 @@
                 <div class="d-flex align-items-center gap-3">
                     <span class="small text-muted" id="statWpm"><i class="bi bi-speedometer2 text-info me-1"></i> <strong>120 WPM</strong></span>
                     <span class="small text-muted" id="statFillers"><i class="bi bi-chat-dots text-warning me-1"></i> Fillers: <strong>0</strong></span>
+                    <span class="small text-muted" id="statStar"><i class="bi bi-star-half text-warning me-1"></i> STAR: <strong>-</strong></span>
                 </div>
             </div>
             <p class="small text-light mb-0 font-monospace text-start text-truncate" id="captionText">"Initializing your customized mock interview session..."</p>
+            <p class="small text-info text-start text-break mt-2 mb-0 d-none" id="starFeedbackText"></p>
         </div>
 
     </div>
@@ -1286,15 +1288,86 @@ document.addEventListener('DOMContentLoaded', function() {
         statWpm.innerHTML = `<i class="bi bi-speedometer2 text-info me-1"></i> <strong>${wpm} WPM</strong>`;
     }
 
+
+    // Speech-X and Adaptive Interview state
+    let speechXMetrics = {};
+    let speechXActive = false;
+    let speechXSpeechEnded = true;
+    let speechXTurnPending = false;
+    const starFeedbackText = document.getElementById('starFeedbackText');
+    const statStar = document.getElementById('statStar');
+
+    function handleSpeechXSpeechEnd(event) {
+        const detail = event.detail || {};
+        const text = typeof detail.text === 'string' ? detail.text.trim() : '';
+        if (text) {
+            typedAnswerInput.value = text;
+            captionSpeaker.textContent = 'You (Student)';
+            captionText.textContent = `"${text}"`;
+        }
+        if (detail.metrics && typeof detail.metrics === 'object') {
+            speechXMetrics = { ...speechXMetrics, ...detail.metrics };
+        }
+        speechXActive = true;
+        speechXSpeechEnded = true;
+        if (!typedAnswerInput.value.trim()) {
+            captionSpeaker.textContent = 'Nexus AI Robot';
+            captionText.textContent = 'I did not catch a response. Please speak again.';
+            return;
+        }
+        speechXTurnPending = true;
+        submitAnswer('answer');
+    }
+
+    window.addEventListener('speechx:transcript', function(event) {
+        const detail = event.detail || {};
+        speechXActive = true;
+        speechXSpeechEnded = false;
+        if (typeof detail.text === 'string') {
+            typedAnswerInput.value = detail.text;
+            captionSpeaker.textContent = 'You (Student)';
+            captionText.textContent = `"${detail.text}"`;
+        }
+        if (detail.metrics && typeof detail.metrics === 'object') {
+            speechXMetrics = { ...speechXMetrics, ...detail.metrics };
+            const fillerCount = Number(speechXMetrics.filler_count ?? speechXMetrics.total_fillers);
+            const eyeContact = Number(speechXMetrics.eye_contact_percent);
+            const pace = Number(speechXMetrics.speaking_pace_wpm ?? speechXMetrics.pace_wpm);
+            if (Number.isFinite(fillerCount) && statFillers) {
+                statFillers.innerHTML = `<i class="bi bi-chat-dots text-warning me-1"></i> Fillers: <strong>${fillerCount}</strong>`;
+            }
+            if (Number.isFinite(pace) && statWpm) {
+                statWpm.innerHTML = `<i class="bi bi-speedometer2 text-info me-1"></i> <strong>${pace} WPM</strong>`;
+            }
+        }
+    });
+
+    window.addEventListener('speechx:speech_end', handleSpeechXSpeechEnd);
+    window.addEventListener('speech_end', handleSpeechXSpeechEnd);
+
     // 9. Submit / Finish Answer
     async function submitAnswer(action = 'answer') {
+        if (action === 'answer' && speechXActive && !speechXSpeechEnded) {
+            captionSpeaker.textContent = 'Nexus AI Robot';
+            captionText.textContent = 'Please finish your response before I reply.';
+            return;
+        }
         stopStudentListening();
         window.speechSynthesis && window.speechSynthesis.cancel();
         updatePillState('thinking');
 
-        const answerText = typedAnswerInput.value.trim() || "Thank you. In my recent engineering projects, I applied structured problem solving, clean architecture, and collaborated with my team to deliver measurable outcomes.";
-        
-        transcriptHistory.push({ speaker: 'Student', text: answerText, time: new Date() });
+        const answerText = typedAnswerInput.value.trim();
+        if (action === 'answer' && !answerText) {
+            captionSpeaker.textContent = 'Nexus AI Robot';
+            captionText.textContent = 'I did not catch a response. Please speak or type your answer.';
+            updatePillState('listening');
+            startStudentListening();
+            return;
+        }
+
+        if (answerText) {
+            transcriptHistory.push({ speaker: 'Student', text: answerText, time: new Date() });
+        }
         typedAnswerInput.value = '';
 
         try {
@@ -1310,15 +1383,32 @@ document.addEventListener('DOMContentLoaded', function() {
                     student_answer: answerText,
                     questions: questionsList,
                     transcript: transcriptHistory,
+                    speech_metrics: speechXMetrics,
+                    speechx_active: speechXActive,
+                    speech_end: speechXSpeechEnded,
                     action: action
                 })
             });
 
             const data = await resp.json();
             if (data.success) {
+                speechXTurnPending = false;
+                speechXSpeechEnded = false;
+                if (Array.isArray(data.questions)) questionsList = data.questions;
                 const speech = data.speech_text || data.aria_speech;
                 transcriptHistory.push({ speaker: 'Nexus', text: speech, time: new Date() });
                 currentQuestionIndex = data.next_index;
+
+                if (data.star_feedback && starFeedbackText) {
+                    const components = data.star_feedback.components || {};
+                    const labels = [['situation', 'S'], ['task', 'T'], ['action', 'A'], ['result', 'R']];
+                    const coverage = labels.map(([key, label]) => `${label}: ${components[key] ? 'covered' : 'add detail'}`).join(' | ');
+                    const coaching = (data.star_feedback.feedback || []).join(' ');
+                    const metrics = (data.star_feedback.metrics_feedback || []).join(' ');
+                    starFeedbackText.textContent = `STAR (${data.star_feedback.score}/4): ${coverage}. ${coaching} ${metrics}`.trim();
+                    starFeedbackText.classList.remove('d-none');
+                    if (statStar) statStar.innerHTML = `<i class="bi bi-star-half text-warning me-1"></i> STAR: <strong>${data.star_feedback.score}/4</strong>`;
+                }
 
                 // Show conversational follow-up
                 if (data.speech_text && !data.is_last) {
@@ -1336,6 +1426,8 @@ document.addEventListener('DOMContentLoaded', function() {
                 }
             }
         } catch (e) {
+            speechXTurnPending = false;
+            if (speechXActive) speechXSpeechEnded = true;
             console.error('Error in AI turn', e);
         }
     }
@@ -1376,9 +1468,13 @@ document.addEventListener('DOMContentLoaded', function() {
                     transcript: transcriptHistory,
                     observed_metrics: {
                         duration_seconds: (15 * 60) - secondsRemaining,
-                        eye_contact_percent: 88,
                         camera_active: !!mediaStream,
-                        total_fillers: detectedFillers
+                        total_fillers: Number.isFinite(Number(speechXMetrics.filler_count ?? speechXMetrics.total_fillers))
+                            ? Number(speechXMetrics.filler_count ?? speechXMetrics.total_fillers)
+                            : detectedFillers,
+                        ...(speechXMetrics.eye_contact_percent !== undefined && speechXMetrics.eye_contact_percent !== null
+                            ? { eye_contact_percent: Number(speechXMetrics.eye_contact_percent) }
+                            : { eye_contact_percent: 88 })
                     }
                 })
             });

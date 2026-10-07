@@ -9,14 +9,14 @@
         <div>
             <span class="badge text-bg-primary px-3 py-1 rounded-pill mb-2">CAMPUSLINK AI EVALUATION</span>
             <h1 class="h2 fw-bold text-dark mb-1">Mock Interview Performance Report</h1>
-            <p class="text-muted mb-0">Detailed diagnostic analysis and feedback from your session with Aria.</p>
+            <p class="text-muted mb-0">Detailed diagnostic analysis and feedback from your session with Priya.</p>
         </div>
         <div class="d-flex align-items-center gap-2">
             <button onclick="window.print()" class="btn btn-outline-secondary">
                 <i class="bi bi-printer me-1"></i> Print / Save PDF
             </button>
             <a href="{% url 'ai_mock_interview' %}" class="btn btn-primary fw-bold">
-                <i class="bi bi-arrow-repeat me-1"></i> Practice Again with Aria
+                <i class="bi bi-arrow-repeat me-1"></i> Practice Again with Priya
             </a>
         </div>
     </div>
@@ -24,10 +24,10 @@
     <!-- Executive Overview Card -->
     <div class="card border-0 shadow-sm rounded-4 p-4 mb-4">
         <div class="row align-items-center g-4">
-            <!-- Left: Aria Avatar & Candidate Meta -->
+            <!-- Left: Priya Avatar & Candidate Meta -->
             <div class="col-lg-4 text-center border-end-lg">
                 <div class="position-relative d-inline-block mb-3">
-                    <img src="{% static 'images/aria_interviewer.jpg' %}" alt="Aria Interviewer" class="rounded-circle shadow" style="width: 100px; height: 100px; object-fit: cover;">
+                    <img src="{% static 'images/aria_interviewer.jpg' %}" alt="Priya, Senior Technical HR Partner" class="rounded-circle shadow" style="width: 100px; height: 100px; object-fit: cover;">
                     <span class="position-absolute bottom-0 end-0 badge rounded-circle p-2 bg-success border border-white" title="Verified AI Evaluation">
                         <i class="bi bi-patch-check-fill text-white"></i>
                     </span>
@@ -71,7 +71,7 @@
                     </div>
                     <div class="d-flex justify-content-between py-1">
                         <span class="text-muted small">AI Interviewer</span>
-                        <strong class="small text-primary">Aria (CampusLink)</strong>
+                        <strong class="small text-primary">Priya (CampusLink)</strong>
                     </div>
                 </div>
             </div>
@@ -172,7 +172,7 @@
             <i class="bi bi-lightbulb-fill text-warning fs-4"></i>
             <h3 class="h5 fw-bold text-dark mb-0">Exemplary Model Answer (STAR Method)</h3>
         </div>
-        <p class="small text-muted mb-3">Aria's recommendation for elevating your weakest or most challenging response:</p>
+        <p class="small text-muted mb-3">Priya's recommendation for elevating your weakest or most challenging response:</p>
         <div class="p-3 bg-white rounded-3 border text-dark font-monospace small" style="white-space: pre-line; line-height: 1.6;">
             {{ session.sample_answer }}
         </div>
@@ -208,7 +208,7 @@
             <div class="col-6 col-md-3">
                 <div class="p-3 bg-white rounded-3 border">
                     <span class="small text-muted d-block mb-1">Total Words Spoken</span>
-                    <strong class="fs-4 text-dark">{{ observations.total_words|default:'180' }}</strong>
+                    <strong class="fs-4 text-dark">{{ observations.total_words|default:'0' }}</strong>
                 </div>
             </div>
             <div class="col-6 col-md-3">
@@ -220,13 +220,17 @@
             <div class="col-6 col-md-3">
                 <div class="p-3 bg-white rounded-3 border">
                     <span class="small text-muted d-block mb-1">Average Speaking Pace</span>
-                    <strong class="fs-4 text-info">{{ observations.speaking_pace_wpm|default:'125' }} WPM</strong>
+                    <strong class="fs-4 text-info">{{ observations.speaking_pace_wpm|default:'Not measured' }}{% if observations.speaking_pace_wpm %} WPM{% endif %}</strong>
                 </div>
             </div>
             <div class="col-6 col-md-3">
                 <div class="p-3 bg-white rounded-3 border">
                     <span class="small text-muted d-block mb-1">Eye Contact Score</span>
-                    <strong class="fs-4 text-success">{{ observations.eye_contact_percent|default:'88' }}%</strong>
+                    {% if observations.eye_contact_percent != None %}
+                    <strong class="fs-4 text-success">{{ observations.eye_contact_percent }}%</strong>
+                    {% else %}
+                    <strong class="fs-6 text-muted">Not measured</strong>
+                    {% endif %}
                 </div>
             </div>
         </div>
@@ -240,10 +244,10 @@
         <div class="interview-transcript-box bg-light p-3 rounded-3 border" style="max-height: 400px; overflow-y: auto;">
             {% for turn in transcript %}
             <div class="mb-3">
-                <strong class="small d-block {% if turn.speaker == 'Aria' %}text-primary{% else %}text-success{% endif %}">
-                    {% if turn.speaker == 'Aria' %}<i class="bi bi-robot me-1"></i> Aria (Interviewer){% else %}<i class="bi bi-person me-1"></i> You (Candidate){% endif %}
+                <strong class="small d-block {% if turn.speaker == 'Aria' or turn.speaker == 'Priya' %}text-primary{% else %}text-success{% endif %}">
+                    {% if turn.speaker == 'Aria' or turn.speaker == 'Priya' %}<i class="bi bi-robot me-1"></i> Priya (Interviewer){% else %}<i class="bi bi-person me-1"></i> You (Candidate){% endif %}
                 </strong>
-                <p class="small text-dark mb-0 ps-3 border-start border-2 {% if turn.speaker == 'Aria' %}border-primary{% else %}border-success{% endif %}">
+                <p class="small text-dark mb-0 ps-3 border-start border-2 {% if turn.speaker == 'Aria' or turn.speaker == 'Priya' %}border-primary{% else %}border-success{% endif %}">
                     {{ turn.text }}
                 </p>
             </div>
