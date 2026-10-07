@@ -9,6 +9,7 @@ from django.urls import reverse
 from django.utils import timezone
 
 from applications.models import Application
+from jobs.models import Job
 from notifications.models import Notification
 from .models import Interview, MockInterviewSession
 from .services import (
@@ -19,6 +20,7 @@ from .services import (
     synthesize_neural_tts,
     create_avatar_streaming_session,
     generate_mock_interview_report,
+    has_neural_tts,
 )
 
 
@@ -49,7 +51,7 @@ def interview_list(request):
 
 @login_required
 def ai_mock_interview(request):
-    """Interactive Video-Call AI Mock Interview Room with Aria."""
+    """Interactive Video-Call AI Mock Interview Room with Nexus AI Robot."""
     membership = getattr(request.user, 'membership', None)
     is_pro = bool(membership and membership.is_active)
     profile = getattr(request.user, 'student_profile', None)
@@ -57,18 +59,44 @@ def ai_mock_interview(request):
 
     past_sessions = MockInterviewSession.objects.filter(user=request.user, status='COMPLETED').order_by('-created_at')[:5]
 
+    # Fetch verified jobs available on CampusLink for job-wise practice
+    jobs_qs = Job.objects.filter(is_verified=True).select_related('company').prefetch_related('required_skills').order_by('-created_at')[:40]
+    available_jobs = []
+    for j in jobs_qs:
+        skills = [s.name for s in j.required_skills.all()]
+        available_jobs.append({
+            'id': j.id,
+            'title': j.title,
+            'company': j.company.name if j.company else 'Campus Partner',
+            'location': j.location,
+            'job_type': j.job_type,
+            'work_mode': j.work_mode,
+            'skills': skills,
+            'description': j.description[:220] if j.description else '',
+        })
+
+    # Check if a specific job_id was requested via URL (e.g. from job detail page)
+    selected_job_id = None
+    raw_job_id = request.GET.get('job_id')
+    if raw_job_id and raw_job_id.isdigit():
+        selected_job_id = int(raw_job_id)
+
     return render(request, 'interviews/mock_room.html', {
         'student_name': student_name,
         'profile': profile,
         'is_pro': is_pro,
         'membership': membership,
         'past_sessions': past_sessions,
+        'available_jobs': available_jobs,
+        'available_jobs_json': json.dumps(available_jobs),
+        'selected_job_id': selected_job_id,
+        'has_neural_tts': has_neural_tts(),
     })
 
 
 @login_required
 def api_start_mock_interview(request):
-    """Initialize a new mock interview session and return questions."""
+    """Initialize a new mock interview session and return job-tailored questions."""
     if request.method != 'POST':
         return JsonResponse({'error': 'Method not allowed'}, status=405)
 
@@ -80,6 +108,7 @@ def api_start_mock_interview(request):
     except Exception:
         data = request.POST
 
+    job_id = data.get('job_id')
     role_target = data.get('role_target', 'Software Engineer Intern').strip()
     company_type = data.get('company_type', 'Tech Product Company').strip()
     interview_type = data.get('interview_type', 'HR').strip().upper()
@@ -91,7 +120,21 @@ def api_start_mock_interview(request):
 
     student_name = request.user.first_name or request.user.username
 
-    questions = get_interview_questions(role_target, company_type, interview_type, difficulty)
+    # If job_id was provided, verify and bind to that job
+    job = None
+    job_skills = []
+    if job_id:
+        try:
+            job = Job.objects.filter(id=job_id).select_related('company').prefetch_related('required_skills').first()
+            if job:
+                role_target = job.title
+                if job.company and job.company.name:
+                    company_type = job.company.name
+                job_skills = [s.name for s in job.required_skills.all()]
+        except Exception:
+            job = None
+
+    questions = get_interview_questions(role_target, company_type, interview_type, difficulty, job_id=job_id, job=job)
     greeting = get_aria_greeting(student_name, role_target, company_type, interview_type, difficulty.title(), duration_minutes)
 
     session = MockInterviewSession.objects.create(
@@ -102,7 +145,7 @@ def api_start_mock_interview(request):
         difficulty=difficulty,
         duration_minutes=duration_minutes,
         status='IN_PROGRESS',
-        transcript=[{'speaker': 'Aria', 'text': greeting, 'time': 0}]
+        transcript=[{'speaker': 'Nexus', 'text': greeting, 'time': 0}]
     )
 
     return JsonResponse({
@@ -113,6 +156,15 @@ def api_start_mock_interview(request):
         'questions': questions,
         'student_name': student_name,
         'is_pro': is_pro,
+        'has_neural_tts': has_neural_tts(),
+        'job_info': {
+            'id': job.id if job else None,
+            'title': role_target,
+            'company': company_type,
+            'skills': job_skills,
+            'interview_type': interview_type,
+            'difficulty': difficulty,
+        }
     })
 
 
@@ -140,6 +192,7 @@ def api_aria_turn(request):
 
     session = MockInterviewSession.objects.filter(pk=session_id, user=request.user).first()
     role_target = session.role_target if session else "Software Engineer Intern"
+    company_type = session.company_type if session else "Tech Product Company"
     interview_type = session.interview_type if session else "HR"
     difficulty = session.difficulty if session else "BEGINNER"
     user_name = request.user.first_name or request.user.username
@@ -182,7 +235,8 @@ def api_aria_turn(request):
             difficulty=difficulty,
             transcript=transcript,
             current_question=current_q,
-            student_answer=student_answer
+            student_answer=student_answer,
+            company_type=company_type
         )
         follow_up = turn_data.get('speech_text', '')
         emotion = turn_data.get('emotion', 'encouraging')
@@ -292,6 +346,7 @@ def api_finish_mock_interview(request):
             'sample_answer': report['sample_answer'],
             'practice_plan': report['practice_plan'],
             'observations': report['observations'],
+            'big_tech_evaluation': report.get('big_tech_evaluation'),
         },
         'report_url': reverse('mock_interview_report', kwargs={'session_id': session.pk}),
     })

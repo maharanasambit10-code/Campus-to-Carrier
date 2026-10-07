@@ -6,7 +6,9 @@ from django.urls import reverse
 User = get_user_model()
 
 from accounts.models import Membership
-from students.models import StudentProfile
+from companies.models import Company
+from jobs.models import Job
+from students.models import StudentProfile, Skill
 from interviews.models import MockInterviewSession
 from interviews.services import (
     get_aria_greeting,
@@ -278,6 +280,68 @@ class AriaMockInterviewViewsTest(TestCase):
         self.assertIn('provider', data)
         self.assertTrue('fallback' in data or 'success' in data)
 
+    def test_api_start_mock_interview_job_wise(self):
+        """Verify that starting an interview for a specific Job tailors questions and returns job_info."""
+        self.client.force_login(self.user)
+        company = Company.objects.create(name='Tech Innovations Inc.', industry='Technology')
+        from django.utils import timezone
+        import datetime
+        job = Job.objects.create(
+            title='Python Backend Developer',
+            company=company,
+            description='Build scalable REST APIs using Python, Django, and PostgreSQL.',
+            location='Bengaluru, India',
+            application_deadline=timezone.now() + datetime.timedelta(days=30),
+            is_verified=True
+        )
+        skill_py, _ = Skill.objects.get_or_create(name='Python')
+        skill_dj, _ = Skill.objects.get_or_create(name='Django')
+        job.required_skills.add(skill_py, skill_dj)
+
+        payload = {
+            'job_id': job.id,
+            'interview_type': 'TECHNICAL',
+            'difficulty': 'INTERMEDIATE',
+            'duration_minutes': 15,
+        }
+        response = self.client.post(
+            reverse('api_start_mock_interview'),
+            data=json.dumps(payload),
+            content_type='application/json',
+        )
+        self.assertEqual(response.status_code, 200)
+        data = response.json()
+        self.assertTrue(data['success'])
+        self.assertIn('job_info', data)
+        self.assertEqual(data['job_info']['title'], 'Python Backend Developer')
+        self.assertEqual(data['job_info']['company'], 'Tech Innovations Inc.')
+        self.assertTrue(len(data['questions']) >= 4)
+        
+        # Verify questions specifically mention backend concepts or the company
+        all_q_text = " ".join(data['questions']).lower()
+        self.assertTrue('python' in all_q_text or 'backend' in all_q_text or 'tech innovations' in all_q_text or 'database' in all_q_text or 'api' in all_q_text)
+
+    def test_mock_room_with_selected_job(self):
+        """Verify mock room renders with available jobs and preselected job_id."""
+        self.client.force_login(self.user)
+        company = Company.objects.create(name='Alpha Labs', industry='Cloud')
+        from django.utils import timezone
+        import datetime
+        job = Job.objects.create(
+            title='Cloud SRE Engineer',
+            company=company,
+            description='Manage Kubernetes and AWS infrastructure.',
+            location='Remote',
+            application_deadline=timezone.now() + datetime.timedelta(days=30),
+            is_verified=True
+        )
+        resp = self.client.get(f"{reverse('ai_mock_interview')}?job_id={job.id}")
+        self.assertEqual(resp.status_code, 200)
+        self.assertContains(resp, 'Alpha Labs')
+        self.assertContains(resp, 'Cloud SRE Engineer')
+        self.assertIn('available_jobs', resp.context)
+        self.assertEqual(resp.context['selected_job_id'], job.id)
+
 
 class AriaServicesTest(TestCase):
     def test_greeting_format(self):
@@ -328,3 +392,104 @@ class AriaServicesTest(TestCase):
         self.assertIn(turn['emotion'], ['neutral', 'smile', 'curious', 'serious', 'encouraging'])
         self.assertIn(turn['gesture'], ['none', 'nod', 'explain', 'emphasize'])
         self.assertTrue(len(turn['speech_text']) > 15)
+
+    def test_big_tech_greetings(self):
+        """Test tailored greetings for Google, Amazon Bar Raiser, and Microsoft."""
+        google_greet = get_aria_greeting('Aarav', 'Software Engineer', 'Google', 'HR', 'Beginner')
+        self.assertIn('Google', google_greet)
+        self.assertIn('Hiring Committee', google_greet)
+        self.assertIn('ambiguity', google_greet.lower())
+
+        amazon_greet = get_aria_greeting('Neha', 'SDE I', 'Amazon', 'BEHAVIORAL', 'Intermediate')
+        self.assertIn('Amazon', amazon_greet)
+        self.assertIn('Bar Raiser', amazon_greet)
+        self.assertIn('16 Leadership Principles', amazon_greet)
+
+        msft_greet = get_aria_greeting('Rohan', 'Cloud Engineer', 'Microsoft', 'TECHNICAL', 'Advanced')
+        self.assertIn('Microsoft', msft_greet)
+        self.assertIn('Growth Mindset', msft_greet)
+
+    def test_big_tech_question_banks(self):
+        """Verify authentic Big Tech questions returned for Google, Amazon, and Microsoft."""
+        # Google
+        google_qs = get_interview_questions('Software Engineer', 'Google', 'HR', 'BEGINNER')
+        google_text = " ".join(google_qs).lower()
+        self.assertTrue('google' in google_text or 'ambiguity' in google_text or 'humility' in google_text)
+
+        # Amazon
+        amazon_qs = get_interview_questions('Software Development Engineer', 'Amazon', 'HR', 'BEGINNER')
+        amazon_text = " ".join(amazon_qs).lower()
+        self.assertTrue('amazon' in amazon_text or 'leadership principles' in amazon_text or 'customer obsession' in amazon_text)
+
+        # Microsoft
+        msft_qs = get_interview_questions('Software Engineer', 'Microsoft', 'HR', 'BEGINNER')
+        msft_text = " ".join(msft_qs).lower()
+        self.assertTrue('microsoft' in msft_text or 'growth mindset' in msft_text or 'others' in msft_text)
+
+    def test_big_tech_interviewer_probing(self):
+        """Verify authentic interviewer follow-ups (Amazon Bar Raiser ownership/metrics, Google ambiguity, Microsoft growth mindset)."""
+        # Amazon: probes individual ownership when candidate says 'we' without 'i'
+        amazon_turn = generate_priya_interviewer_turn(
+            user_name='Candidate',
+            role_target='SDE',
+            interview_type='HR',
+            difficulty='BEGINNER',
+            transcript=[],
+            current_question='Tell me about a challenging project.',
+            student_answer='We launched a large data service and we managed all the customer deployments together.',
+            company_type='Amazon'
+        )
+        self.assertIn('personal ownership', amazon_turn['speech_text'].lower())
+        self.assertIn('individual contribution', amazon_turn['speech_text'].lower())
+
+        # Google: probes 10x scalability or collaborative consensus
+        google_turn = generate_priya_interviewer_turn(
+            user_name='Candidate',
+            role_target='Software Engineer',
+            interview_type='TECHNICAL',
+            difficulty='INTERMEDIATE',
+            transcript=[],
+            current_question='Design a distributed storage cache.',
+            student_answer='I designed a distributed cache architecture with sharded redis database clusters.',
+            company_type='Google'
+        )
+        self.assertIn('scale', google_turn['speech_text'].lower())
+
+        # Microsoft: probes learning from failure
+        msft_turn = generate_priya_interviewer_turn(
+            user_name='Candidate',
+            role_target='Software Engineer',
+            interview_type='BEHAVIORAL',
+            difficulty='BEGINNER',
+            transcript=[],
+            current_question='Tell me about a failure.',
+            student_answer='We had a critical bug that caused a database fail and service outage during release.',
+            company_type='Microsoft'
+        )
+        self.assertIn('lesson', msft_turn['speech_text'].lower())
+
+    def test_big_tech_report_generation(self):
+        """Verify performance report includes Big Tech evaluations for Google, Amazon, and Microsoft."""
+        session_amazon = MockInterviewSession(company_type='Amazon', role_target='SDE')
+        transcript = [
+            {'speaker': 'Nexus', 'text': 'Tell me about yourself.'},
+            {'speaker': 'Student', 'text': 'I built a high-throughput payment processor that reduced latency by 35% and handled 1000 transactions per second.'}
+        ]
+        report_amazon = generate_mock_interview_report(session_amazon, transcript)
+        self.assertIsNotNone(report_amazon['big_tech_evaluation'])
+        self.assertEqual(report_amazon['big_tech_evaluation']['company'], 'Amazon')
+        self.assertIn('Bar Raiser', report_amazon['big_tech_evaluation']['track'])
+        self.assertIn('Amazon', report_amazon['sample_answer'])
+
+        session_google = MockInterviewSession(company_type='Google', role_target='Software Engineer')
+        report_google = generate_mock_interview_report(session_google, transcript)
+        self.assertIsNotNone(report_google['big_tech_evaluation'])
+        self.assertEqual(report_google['big_tech_evaluation']['company'], 'Google')
+        self.assertIn('Googleyness', report_google['big_tech_evaluation']['track'])
+
+        session_msft = MockInterviewSession(company_type='Microsoft', role_target='Software Engineer')
+        report_msft = generate_mock_interview_report(session_msft, transcript)
+        self.assertIsNotNone(report_msft['big_tech_evaluation'])
+        self.assertEqual(report_msft['big_tech_evaluation']['company'], 'Microsoft')
+        self.assertIn('Growth Mindset', report_msft['big_tech_evaluation']['track'])
+
