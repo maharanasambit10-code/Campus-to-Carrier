@@ -1,0 +1,169 @@
+{% extends 'base.html' %}
+{% block title %}My Saved Jobs | CAMPUSLINK{% endblock %}
+{% block content %}
+<main class="marketplace-page py-5">
+<div class="container">
+    <div class="d-flex align-items-center justify-content-between mb-4 pb-3 border-bottom">
+        <div>
+            <nav class="mb-2">
+                <a class="text-decoration-none text-muted small" href="{% url 'job_list' %}">
+                    <i class="bi bi-arrow-left me-1"></i>Back to All Opportunities
+                </a>
+            </nav>
+            <h1 class="fw-bold mb-1"><i class="bi bi-bookmark-heart-fill text-danger me-2"></i>Saved Opportunities</h1>
+            <p class="text-muted mb-0">Track and apply to your shortlisted companies and job roles.</p>
+        </div>
+        <span class="badge bg-primary-subtle text-primary border border-primary-subtle rounded-pill px-3 py-2 fw-bold">
+            <i class="bi bi-briefcase me-1"></i>{{ total_saved }} Bookmarked Roles
+        </span>
+    </div>
+
+    {% if messages %}
+    <div class="mb-4">
+        {% for message in messages %}
+        <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+            {{ message }}
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+        {% endfor %}
+    </div>
+    {% endif %}
+
+    <div class="row g-4 job-grid">
+        {% for match in job_matches %}
+        <div class="col-md-6 col-xl-4 d-flex" id="job-card-{{ match.job.id }}">
+            <article class="job-card-premium shadow-sm w-100 d-flex flex-column">
+                <div class="d-flex align-items-start justify-content-between gap-3 mb-3">
+                    <div class="d-flex align-items-center gap-3">
+                        <div class="company-logo-container">
+                            <img src="{{ match.job.company.get_logo_url }}" 
+                                 alt="{{ match.job.company.name }} logo" 
+                                 class="company-logo-img"
+                                 onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+                            <div class="company-fallback-badge" style="display: none;">
+                                {{ match.job.company.initials }}
+                            </div>
+                        </div>
+                        <div>
+                            <div class="d-flex align-items-center gap-1">
+                                <span class="badge bg-light text-dark border rounded-pill" style="font-size: 0.68rem;">{{ match.job.company.company_type }}</span>
+                                <i class="bi bi-patch-check-fill text-primary" title="Verified Hiring Partner"></i>
+                            </div>
+                            <span class="text-muted small fw-medium">{{ match.job.company.name }}</span>
+                        </div>
+                    </div>
+
+                    <button type="button" 
+                            class="btn-save-job active" 
+                            data-job-id="{{ match.job.id }}"
+                            title="Remove from saved">
+                        <i class="bi bi-bookmark-fill text-primary"></i>
+                    </button>
+                </div>
+
+                <h3 class="fs-5 fw-bold mb-2">
+                    <a href="{% url 'job_detail' match.job.id %}" class="text-decoration-none text-dark hover-primary">{{ match.job.title }}</a>
+                </h3>
+
+                <p class="text-muted small mb-3 flex-grow-1" style="line-height: 1.5;">
+                    {{ match.job.description|truncatewords:20 }}
+                </p>
+
+                <div class="d-flex flex-wrap gap-2 text-muted small mb-3">
+                    <div><i class="bi bi-geo-alt-fill text-primary me-1"></i>{{ match.job.location }}</div>
+                    <div><i class="bi bi-briefcase-fill text-info me-1"></i>{{ match.job.job_type }}</div>
+                    <div><i class="bi bi-cash-stack text-success me-1"></i>{{ match.job.salary|default:'Disclosed upon shortlist' }}</div>
+                </div>
+
+                <!-- Technical Skills Required Section -->
+                <div class="mb-3">
+                    <div class="d-flex align-items-center justify-content-between mb-1">
+                        <span class="technical-skills-title"><i class="bi bi-code-slash me-1"></i>Technical Skills Required:</span>
+                    </div>
+                    <div class="d-flex flex-wrap gap-1">
+                        {% for skill in match.job.all_skills_list|slice:":5" %}
+                        <span class="skill-badge-pill">{{ skill }}</span>
+                        {% empty %}
+                        <span class="skill-badge-pill">Software Engineering</span>
+                        {% endfor %}
+                    </div>
+                </div>
+
+                <!-- Job Match Indicator -->
+                <div class="match-score-bar-container mb-3">
+                    <div class="d-flex justify-content-between align-items-center small mb-1">
+                        <span class="fw-semibold text-dark"><i class="bi bi-stars text-warning me-1"></i>Skill Match Score</span>
+                        <span class="fw-bold {% if match.score >= 70 %}text-success{% elif match.score >= 40 %}text-primary{% else %}text-muted{% endif %}">{{ match.score }}%</span>
+                    </div>
+                    <div class="progress" style="height: 6px; border-radius: 99px;">
+                        <div class="progress-bar {% if match.score >= 70 %}bg-success{% elif match.score >= 40 %}bg-primary{% else %}bg-secondary{% endif %}" 
+                             role="progressbar" 
+                             style="width: {{ match.score }}%;" 
+                             aria-valuenow="{{ match.score }}" 
+                             aria-valuemin="0" 
+                             aria-valuemax="100"></div>
+                    </div>
+                </div>
+
+                <div class="d-flex gap-2 pt-3 border-top mt-auto">
+                    <a href="{% url 'job_detail' match.job.id %}" class="btn btn-outline-primary btn-sm flex-fill">
+                        View Details
+                    </a>
+                    {% if match.job.id in applied_ids %}
+                    <button class="btn btn-outline-success btn-sm flex-fill disabled" disabled>
+                        <i class="bi bi-check-circle-fill me-1"></i>Applied
+                    </button>
+                    {% else %}
+                    <a href="{% url 'apply_job' match.job.id %}" class="btn btn-primary btn-sm flex-fill fw-bold">
+                        Apply Now
+                    </a>
+                    {% endif %}
+                </div>
+            </article>
+        </div>
+        {% empty %}
+        <div class="col-12">
+            <div class="text-center p-5 bg-white rounded-4 border shadow-sm">
+                <i class="bi bi-bookmark text-muted fs-1 d-block mb-3"></i>
+                <h4 class="fw-bold">No saved opportunities yet</h4>
+                <p class="text-muted">Browse the Jobs directory and click the bookmark icon on any opportunity to save it here.</p>
+                <a href="{% url 'job_list' %}" class="btn btn-primary px-4 py-2 mt-2">
+                    <i class="bi bi-search me-1"></i>Explore Jobs & Internships
+                </a>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+</main>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    document.querySelectorAll('.btn-save-job').forEach(btn => {
+        btn.addEventListener('click', function() {
+            const jobId = this.getAttribute('data-job-id');
+            const cardCol = document.getElementById('job-card-' + jobId);
+            
+            fetch('/jobs/api/save/' + jobId + '/', {
+                method: 'POST',
+                headers: {
+                    'X-CSRFToken': '{{ csrf_token }}',
+                    'X-Requested-With': 'XMLHttpRequest'
+                }
+            })
+            .then(res => res.json())
+            .then(data => {
+                if (data.success && !data.saved) {
+                    if (cardCol) {
+                        cardCol.style.transition = 'all 0.3s ease';
+                        cardCol.style.opacity = '0';
+                        cardCol.style.transform = 'scale(0.95)';
+                        setTimeout(() => cardCol.remove(), 300);
+                    }
+                }
+            });
+        });
+    });
+});
+</script>
+{% endblock %}

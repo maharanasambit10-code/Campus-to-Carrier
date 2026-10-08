@@ -1,0 +1,170 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Live College Readiness Radar | CampusLink{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <!-- Header (Slide 7) -->
+    <div class="p-4 mb-4 rounded-4 shadow-sm border bg-dark text-white d-flex flex-wrap justify-content-between align-items-center gap-3">
+        <div>
+            <span class="badge text-bg-primary px-3 py-1 rounded-pill fw-bold text-uppercase mb-2">06 • COLLEGE IMPACT</span>
+            <h2 class="h3 fw-bold text-white mb-1">Live College Readiness Radar</h2>
+            <p class="text-secondary mb-0">Placement teams get a live readiness radar. Instead of training everyone the same way, colleges can target the top gaps before placement season.</p>
+        </div>
+        <div class="text-end">
+            <span class="badge bg-secondary text-white px-3 py-2 rounded-pill"><i class="bi bi-mortarboard me-1"></i> {{ radar.college_name }}</span>
+            <div class="text-secondary small mt-1">{{ radar.total_students_tracked }} students tracked</div>
+        </div>
+    </div>
+
+    <!-- Main Radar Grid -->
+    <div class="row g-4 mb-5">
+        <!-- Live Skill Distribution Bars matching Slide 7 -->
+        <div class="col-lg-7">
+            <div class="card border-0 shadow-sm rounded-4 p-4 bg-white h-100">
+                <div class="d-flex justify-content-between align-items-center mb-4">
+                    <h4 class="fw-bold mb-0"><i class="bi bi-radar text-primary me-2"></i>Campus Skill Readiness Distribution</h4>
+                    <span class="badge bg-danger-subtle text-danger fw-bold"><i class="bi bi-exclamation-triangle-fill me-1"></i>SQL Bottleneck Detected</span>
+                </div>
+
+                <!-- Skill 1: SQL 38% (Flagged) -->
+                <div class="mb-4">
+                    <div class="d-flex justify-content-between align-items-center mb-1">
+                        <strong class="text-danger"><i class="bi bi-exclamation-circle-fill me-1"></i>SQL</strong>
+                        <span class="fw-bold text-danger fs-5">{{ radar.sql_avg }}%</span>
+                    </div>
+                    <div class="progress" style="height: 14px;">
+                        <div class="progress-bar bg-danger progress-bar-striped progress-bar-animated" role="progressbar" style="width: {{ radar.sql_avg }}%"></div>
+                    </div>
+                    <small class="text-danger fw-semibold">Critical Bottleneck: 62% of students lack verifiable SQL queries.</small>
+                </div>
+
+                <!-- Skill 2: Communication 52% -->
+                <div class="mb-4">
+                    <div class="d-flex justify-content-between align-items-center mb-1">
+                        <strong class="text-dark">Communication</strong>
+                        <span class="fw-bold text-dark fs-5">{{ radar.communication_avg }}%</span>
+                    </div>
+                    <div class="progress" style="height: 12px;">
+                        <div class="progress-bar bg-warning" role="progressbar" style="width: {{ radar.communication_avg }}%"></div>
+                    </div>
+                    <small class="text-muted">Moderate gap in executive case presentations.</small>
+                </div>
+
+                <!-- Skill 3: Excel/BI 64% -->
+                <div class="mb-4">
+                    <div class="d-flex justify-content-between align-items-center mb-1">
+                        <strong class="text-dark">Excel / BI</strong>
+                        <span class="fw-bold text-dark fs-5">{{ radar.excel_bi_avg }}%</span>
+                    </div>
+                    <div class="progress" style="height: 12px;">
+                        <div class="progress-bar bg-info" role="progressbar" style="width: {{ radar.excel_bi_avg }}%"></div>
+                    </div>
+                    <small class="text-muted">Acceptable spreadsheet foundations.</small>
+                </div>
+
+                <!-- Skill 4: Python 71% -->
+                <div class="mb-4">
+                    <div class="d-flex justify-content-between align-items-center mb-1">
+                        <strong class="text-dark">Python</strong>
+                        <span class="fw-bold text-dark fs-5">{{ radar.python_avg }}%</span>
+                    </div>
+                    <div class="progress" style="height: 12px;">
+                        <div class="progress-bar bg-primary" role="progressbar" style="width: {{ radar.python_avg }}%"></div>
+                    </div>
+                    <small class="text-muted">Strong programming & data manipulation base.</small>
+                </div>
+
+                <!-- Skill 5: Problem Solving 78% -->
+                <div class="mb-3">
+                    <div class="d-flex justify-content-between align-items-center mb-1">
+                        <strong class="text-dark">Problem Solving</strong>
+                        <span class="fw-bold text-dark fs-5">{{ radar.problem_solving_avg }}%</span>
+                    </div>
+                    <div class="progress" style="height: 12px;">
+                        <div class="progress-bar bg-success" role="progressbar" style="width: {{ radar.problem_solving_avg }}%"></div>
+                    </div>
+                    <small class="text-muted">High cognitive and algorithmic aptitude.</small>
+                </div>
+            </div>
+        </div>
+
+        <!-- Targeted Intervention & Outcome Panel (Slide 7) -->
+        <div class="col-lg-5">
+            <div class="card border-0 shadow-sm rounded-4 p-4 bg-white h-100 d-flex flex-column justify-content-between">
+                <div>
+                    <span class="badge bg-warning-subtle text-warning-emphasis fw-bold px-3 py-1 rounded-pill mb-2">TARGETED INTERVENTION</span>
+                    <h4 class="fw-bold text-dark mb-2">Launch Targeted Sprint</h4>
+                    <p class="text-muted small mb-4">Instead of blanket lectures, deploy a targeted sprint to the bottom 30% of students before recruiter screening starts.</p>
+
+                    <div class="p-3 rounded-4 bg-light border mb-4">
+                        <div class="d-flex justify-content-between align-items-center mb-2">
+                            <strong class="text-dark small">PROPOSED INTERVENTION</strong>
+                            <span class="badge bg-danger rounded-pill">HIGH ROI</span>
+                        </div>
+                        <h5 class="fw-bold text-danger mb-1">Launch a targeted SQL sprint for the bottom 30%.</h5>
+                        <p class="small text-muted mb-0">Dispatches the 15-minute Role Mission directly to 84 students with SQL readiness under 50%.</p>
+                    </div>
+
+                    <form method="post" action="{% url 'college_launch_intervention' %}">
+                        {% csrf_token %}
+                        <input type="hidden" name="skill_target" value="SQL">
+                        <input type="hidden" name="target_cohort" value="Bottom 30%">
+                        <input type="hidden" name="students_count" value="84">
+                        <button type="submit" class="btn btn-danger btn-lg w-100 rounded-pill fw-bold shadow-sm">
+                            <i class="bi bi-send-fill me-2"></i>Launch Targeted SQL Sprint (Bottom 30%)
+                        </button>
+                    </form>
+                </div>
+
+                <!-- OUTCOME SECTION MATCHING SLIDE 7 -->
+                <div class="mt-4 pt-4 border-top">
+                    <span class="badge bg-success-subtle text-success fw-bold px-3 py-1 rounded-pill mb-2">OUTCOME</span>
+                    <h5 class="fw-bold text-dark mb-1">Measure improvement before recruiter assessments.</h5>
+                    <p class="text-muted small mb-2">Real-time telemetry proves readiness gains prior to campus placement drives.</p>
+                    <div class="p-3 rounded-3 bg-success-subtle text-success fw-bold d-flex justify-content-between align-items-center">
+                        <span>Projected / Measured Uplift:</span>
+                        <span class="fs-5">+26% Improvement</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Active Interventions History Table -->
+    <div class="card border-0 shadow-sm rounded-4 p-4 bg-white">
+        <h5 class="fw-bold mb-3"><i class="bi bi-clock-history text-primary me-2"></i>Active Placement Team Interventions</h5>
+        <div class="table-responsive">
+            <table class="table table-hover align-middle mb-0">
+                <thead class="table-light small text-uppercase">
+                    <tr>
+                        <th>Target Skill</th>
+                        <th>Target Cohort</th>
+                        <th>Students Enrolled</th>
+                        <th>Assigned Role Mission</th>
+                        <th>Status</th>
+                        <th>Measured Improvement</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for inv in interventions %}
+                    <tr>
+                        <td><strong class="text-danger">{{ inv.skill_target }}</strong></td>
+                        <td>{{ inv.target_cohort }}</td>
+                        <td><span class="badge bg-light text-dark border">{{ inv.targeted_students_count }} Students</span></td>
+                        <td>{{ inv.mission_assigned }}</td>
+                        <td><span class="badge bg-success rounded-pill">{{ inv.status }}</span></td>
+                        <td><span class="fw-bold text-success">+{{ inv.measured_improvement_pct }}% verified lift</span></td>
+                    </tr>
+                    {% empty %}
+                    <tr>
+                        <td colspan="6" class="text-center text-muted py-3">No interventions launched yet.</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% endblock %}

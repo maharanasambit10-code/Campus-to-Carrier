@@ -8,14 +8,28 @@
             <h5 class="fw-bold px-3 mb-4 text-primary">Recruiter Panel</h5>
             <ul class="nav flex-column gap-2">
                 <li class="nav-item"><a class="nav-link active fw-bold text-dark" href="#"><i class="bi bi-grid me-2"></i> Dashboard</a></li>
+                <li class="nav-item"><a class="nav-link text-primary fw-bold" href="{% url 'recruiter_proof_shortlist' %}"><i class="bi bi-award me-2"></i> Shortlist by Proof</a></li>
+                <li class="nav-item"><a class="nav-link text-muted" href="{% url 'role_decoder' %}"><i class="bi bi-cpu me-2"></i> Role Decoder</a></li>
                 <li class="nav-item"><a class="nav-link text-muted" href="#jobs"><i class="bi bi-briefcase me-2"></i> Active Jobs</a></li>
                 <li class="nav-item"><a class="nav-link text-muted" href="#applicants"><i class="bi bi-people me-2"></i> Applicants</a></li>
-                <li class="nav-item"><a class="nav-link text-muted" href="#applicants"><i class="bi bi-robot me-2"></i> AI Shortlist</a></li>
             </ul>
         </div>
         <!-- Main Content -->
         <div class="col-md-10 p-5">
-            <div class="d-flex justify-content-between align-items-center mb-4"><div><h2 class="mb-1">Recruiter Dashboard</h2><p class="text-muted mb-0">Manage opportunities and move the strongest candidates forward.</p></div><a href="{% url 'recruiter_job_create' %}" class="btn btn-primary"><i class="bi bi-plus-lg me-2"></i>Post opportunity</a></div>
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <div>
+                    <h2 class="mb-1">Recruiter Dashboard</h2>
+                    <p class="text-muted mb-0">Manage opportunities and move the strongest candidates forward.</p>
+                </div>
+                <div class="d-flex gap-2">
+                    <a href="{% url 'recruiter_proof_shortlist' %}" class="btn btn-outline-success fw-bold">
+                        <i class="bi bi-award me-1"></i> Shortlist by Proof (Slide 8)
+                    </a>
+                    <a href="{% url 'recruiter_job_create' %}" class="btn btn-primary">
+                        <i class="bi bi-plus-lg me-1"></i> Post opportunity
+                    </a>
+                </div>
+            </div>
             <div class="row g-4 mb-5">
                 <div class="col-md-3">
                     <div class="card p-4 border-start border-primary border-4">

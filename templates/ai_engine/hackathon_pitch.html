@@ -1,0 +1,116 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Hackathon Pitch Deck | CampusLink Final Presentation{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <!-- Pitch Deck Header -->
+    <div class="p-4 mb-4 rounded-4 shadow-sm border bg-dark text-white d-flex flex-wrap justify-content-between align-items-center gap-3">
+        <div>
+            <div class="d-flex align-items-center gap-2 mb-2">
+                <span class="badge text-bg-warning text-dark px-3 py-1 rounded-pill fw-bold text-uppercase">10 • WHY IT CAN WIN</span>
+                <span class="badge bg-primary text-white px-3 py-1 rounded-pill">FINAL HACKATHON PITCH</span>
+            </div>
+            <h1 class="h2 fw-bold text-white mb-1">Strong Hackathon Story = Impact + AI + Proof + Feasibility</h1>
+            <p class="text-secondary mb-0">The project is designed to score well because every feature supports a visible real-world outcome.</p>
+        </div>
+        <div class="d-flex gap-2">
+            <a href="{% url 'hackathon_demo' %}" class="btn btn-warning text-dark fw-bold rounded-pill px-4">
+                <i class="bi bi-play-circle-fill me-1"></i> Launch 3-Min Live Demo
+            </a>
+        </div>
+    </div>
+
+    <!-- The 4 Hackathon Winning Pillars (Slide 11) -->
+    <div class="row g-4 mb-5">
+        <div class="col-md-3">
+            <div class="card p-4 rounded-4 border-0 shadow-sm bg-white h-100 border-top border-primary border-4">
+                <div class="badge bg-primary-subtle text-primary rounded-pill px-3 py-1 mb-2 fw-bold align-self-start">PILLAR 1</div>
+                <h4 class="fw-bold mb-2 text-dark">REAL PROBLEM</h4>
+                <p class="text-muted small mb-0">Placement mismatch is costly for students, colleges, and employers. Everyone loses time because the strongest signal is hidden.</p>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card p-4 rounded-4 border-0 shadow-sm bg-white h-100 border-top border-warning border-4">
+                <div class="badge bg-warning-subtle text-warning-emphasis rounded-pill px-3 py-1 mb-2 fw-bold align-self-start">PILLAR 2</div>
+                <h4 class="fw-bold mb-2 text-dark">VISIBLE AI</h4>
+                <p class="text-muted small mb-0">AI parses roles, maps skills, evaluates evidence and recommends next actions. Not a static chatbot—a verifiable intelligence engine.</p>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card p-4 rounded-4 border-0 shadow-sm bg-white h-100 border-top border-success border-4">
+                <div class="badge bg-success-subtle text-success rounded-pill px-3 py-1 mb-2 fw-bold align-self-start">PILLAR 3</div>
+                <h4 class="fw-bold mb-2 text-dark">TRUST</h4>
+                <p class="text-muted small mb-0">Explainability + evidence trail reduces the “black box” feeling. Inferred skill ≠ demonstrated skill: UI always separates the two.</p>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card p-4 rounded-4 border-0 shadow-sm bg-white h-100 border-top border-danger border-4">
+                <div class="badge bg-danger-subtle text-danger rounded-pill px-3 py-1 mb-2 fw-bold align-self-start">PILLAR 4</div>
+                <h4 class="fw-bold mb-2 text-dark">FEASIBLE</h4>
+                <p class="text-muted small mb-0">MVP can be demonstrated end-to-end with one role and one candidate in 3 minutes flat. Highly polished, fully responsive, zero mocks.</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- The One-Line Pitch Banner (Slide 11) -->
+    <div class="card border-0 shadow-sm rounded-4 p-4 p-md-5 bg-dark text-white text-center mb-5">
+        <span class="badge bg-warning text-dark fw-bold px-3 py-1 rounded-pill mb-3">THE ONE-LINE PITCH</span>
+        <blockquote class="display-6 fw-bold mb-3 text-white">
+            “CampusLink proves whether a student is ready for a role—and tells them exactly what to do next.”
+        </blockquote>
+        <p class="text-secondary small mb-4" style="max-width: 700px; margin: 0 auto;">
+            Not another job portal. CampusLink turns learning activity into decision-ready evidence.
+        </p>
+        <div class="d-flex justify-content-center gap-3">
+            <a href="{% url 'role_decoder' %}" class="btn btn-outline-light rounded-pill px-4">Engine 1: Role Decoder</a>
+            <a href="{% url 'role_mission_default' %}" class="btn btn-primary rounded-pill px-4">15-Minute Role Mission</a>
+            <a href="{% url 'recruiter_proof_shortlist' %}" class="btn btn-success rounded-pill px-4">Recruiter View</a>
+        </div>
+    </div>
+
+    <!-- Judge Q&A Defense Sheet -->
+    <div class="card border-0 shadow-sm rounded-4 p-4 bg-white">
+        <h4 class="fw-bold mb-3"><i class="bi bi-patch-question text-primary me-2"></i>Hackathon Judge Q&A Defense Matrix</h4>
+        <div class="accordion rounded-3 overflow-hidden border" id="pitchAccordion">
+            <div class="accordion-item border-0 border-bottom">
+                <h2 class="accordion-header">
+                    <button class="accordion-button fw-bold" type="button" data-bs-toggle="collapse" data-bs-target="#q1">
+                        1. Why won't recruiters just rely on existing platforms like LinkedIn or ATS?
+                    </button>
+                </h2>
+                <div id="q1" class="accordion-collapse collapse show">
+                    <div class="accordion-body text-dark small bg-light">
+                        <strong>Answer:</strong> Existing ATS platforms measure <em>keyword density</em>, not candidate readiness. A candidate can paste keywords all over a resume without knowing how to write a simple SQL cohort query. CampusLink introduces the <strong>Anti-Black-Box Rule</strong>: every score has an explicit evidence trail (e.g., Python: ML repo + assessment [Strong, 2 weeks]). Recruiters can click <em>View Proof</em> or <em>Send Mission</em> with one click.
+                    </div>
+                </div>
+            </div>
+            <div class="accordion-item border-0 border-bottom">
+                <h2 class="accordion-header">
+                    <button class="accordion-button collapsed fw-bold" type="button" data-bs-toggle="collapse" data-bs-target="#q2">
+                        2. How does the 15-Minute Role Mission prevent cheating or superficial answers?
+                    </button>
+                </h2>
+                <div id="q2" class="accordion-collapse collapse">
+                    <div class="accordion-body text-dark small bg-light">
+                        <strong>Answer:</strong> The Role Mission evaluates candidates across <strong>Logic, SQL, and Business Thinking</strong> simultaneously. The scenario is grounded in ambiguous workplace telemetry (e.g. 12% repeat purchase drop), requiring the candidate to synthesize metric diagnosis, query mechanics, and operational next steps.
+                    </div>
+                </div>
+            </div>
+            <div class="accordion-item border-0">
+                <h2 class="accordion-header">
+                    <button class="accordion-button collapsed fw-bold" type="button" data-bs-toggle="collapse" data-bs-target="#q3">
+                        3. What is the institutional value for college placement cells?
+                    </button>
+                </h2>
+                <div id="q3" class="accordion-collapse collapse">
+                    <div class="accordion-body text-dark small bg-light">
+                        <strong>Answer:</strong> Instead of generic blanket training, placement officers get a <strong>Live Readiness Radar</strong>. When the radar flags that SQL readiness is at 38%, the college launches a targeted sprint for the bottom 30%, achieving a +26% measured uplift before recruiters visit campus.
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

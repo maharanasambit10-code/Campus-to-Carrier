@@ -1,0 +1,98 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Complete Ecosystem | Student → College → Recruiter{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <!-- Header -->
+    <div class="p-4 mb-4 rounded-4 shadow-sm border bg-dark text-white d-flex flex-wrap justify-content-between align-items-center gap-3">
+        <div>
+            <span class="badge text-bg-primary px-3 py-1 rounded-pill fw-bold text-uppercase mb-2">COMPLETE ECOSYSTEM</span>
+            <h1 class="h2 fw-bold text-white mb-1">Student → College → Recruiter Ecosystem</h1>
+            <p class="text-secondary mb-0">One continuous feedback loop connecting learning activity, institutional interventions, and verified recruiter hiring decisions.</p>
+        </div>
+        <div class="d-flex gap-2">
+            <a href="{% url 'hackathon_demo' %}" class="btn btn-warning text-dark fw-bold rounded-pill px-3">
+                <i class="bi bi-play-circle-fill me-1"></i> 3-Min Demo
+            </a>
+            <a href="{% url 'final_hackathon_pitch' %}" class="btn btn-outline-light rounded-pill px-3">
+                <i class="bi bi-file-earmark-slides me-1"></i> Pitch Mode
+            </a>
+        </div>
+    </div>
+
+    <!-- The 3 Pillars Architecture -->
+    <div class="row g-4 mb-5">
+        <!-- 1. Student Ecosystem -->
+        <div class="col-lg-4">
+            <div class="card border-0 shadow-sm rounded-4 p-4 bg-white h-100 border-top border-primary border-4">
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                    <span class="badge bg-primary text-white rounded-pill px-3 py-1 fw-bold">01 • STUDENT PORTAL</span>
+                    <span class="badge bg-success-subtle text-success">Live Sync</span>
+                </div>
+                <h4 class="fw-bold text-dark mb-2">From "Claims" to "Proof"</h4>
+                <p class="text-muted small mb-4">Students decode target job descriptions, mine multi-source code proofs, and take 15-minute missions to close high-weight skill gaps.</p>
+
+                <div class="p-3 rounded-4 bg-light border mb-4 small">
+                    <div class="d-flex justify-content-between py-1"><span>Current Role Fit:</span><strong>{{ summary.student_ecosystem.role_fit_avg }}</strong></div>
+                    <div class="d-flex justify-content-between py-1"><span>Verified Proof Rate:</span><strong>{{ summary.student_ecosystem.verified_proof_rate }}</strong></div>
+                    <div class="d-flex justify-content-between py-1"><span>Role Missions Completed:</span><strong>{{ summary.student_ecosystem.completed_missions_count }}</strong></div>
+                </div>
+
+                <div class="d-grid gap-2 mt-auto">
+                    <a href="{% url 'role_decoder' %}" class="btn btn-outline-primary rounded-pill py-2 fw-semibold">Open Role Decoder</a>
+                    <a href="{% url 'role_mission_default' %}" class="btn btn-primary rounded-pill py-2 fw-semibold">Take 15-min Mission</a>
+                </div>
+            </div>
+        </div>
+
+        <!-- 2. College Ecosystem -->
+        <div class="col-lg-4">
+            <div class="card border-0 shadow-sm rounded-4 p-4 bg-white h-100 border-top border-warning border-4">
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                    <span class="badge bg-warning text-dark rounded-pill px-3 py-1 fw-bold">02 • COLLEGE RADAR</span>
+                    <span class="badge bg-danger-subtle text-danger">Targeted Sprints</span>
+                </div>
+                <h4 class="fw-bold text-dark mb-2">Live Institutional Radar</h4>
+                <p class="text-muted small mb-4">Placement officers track live skill bottlenecks (e.g. SQL 38%), trigger targeted intervention sprints, and measure outcome improvements.</p>
+
+                <div class="p-3 rounded-4 bg-light border mb-4 small">
+                    <div class="d-flex justify-content-between py-1"><span>Institutional Network:</span><strong>{{ summary.college_ecosystem.college_name }}</strong></div>
+                    <div class="d-flex justify-content-between py-1"><span>SQL Readiness Bottleneck:</span><strong class="text-danger">{{ summary.college_ecosystem.sql_bottleneck_rate }}</strong></div>
+                    <div class="d-flex justify-content-between py-1"><span>Targeted Students:</span><strong>{{ summary.college_ecosystem.students_intervened }}</strong></div>
+                    <div class="d-flex justify-content-between py-1"><span>Measured Lift:</span><strong class="text-success">{{ summary.college_ecosystem.measured_improvement }}</strong></div>
+                </div>
+
+                <div class="d-grid gap-2 mt-auto">
+                    <a href="{% url 'college_readiness_radar' %}" class="btn btn-outline-warning text-dark rounded-pill py-2 fw-semibold">Open Readiness Radar</a>
+                    <a href="{% url 'placement_risk_early_warning' %}" class="btn btn-warning text-dark rounded-pill py-2 fw-semibold">Early-Warning System</a>
+                </div>
+            </div>
+        </div>
+
+        <!-- 3. Recruiter Ecosystem -->
+        <div class="col-lg-4">
+            <div class="card border-0 shadow-sm rounded-4 p-4 bg-white h-100 border-top border-success border-4">
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                    <span class="badge bg-success text-white rounded-pill px-3 py-1 fw-bold">03 • RECRUITER VIEW</span>
+                    <span class="badge bg-success-subtle text-success">Proof Ranking</span>
+                </div>
+                <h4 class="fw-bold text-dark mb-2">Shortlist by Verified Proof</h4>
+                <p class="text-muted small mb-4">Recruiters bypass keyword spam. Candidates are ranked by verified skill coverage, explainable recommendations, and direct evidence links.</p>
+
+                <div class="p-3 rounded-4 bg-light border mb-4 small">
+                    <div class="d-flex justify-content-between py-1"><span>Ranked Candidates:</span><strong>{{ summary.recruiter_ecosystem.comparable_candidates_ranked }}</strong></div>
+                    <div class="d-flex justify-content-between py-1"><span>Top Candidate:</span><strong>{{ summary.recruiter_ecosystem.top_candidate_label }}</strong></div>
+                    <div class="d-flex justify-content-between py-1"><span>Shortlist Basis:</span><strong>{{ summary.recruiter_ecosystem.shortlist_criteria }}</strong></div>
+                </div>
+
+                <div class="d-grid gap-2 mt-auto">
+                    <a href="{% url 'recruiter_proof_shortlist' %}" class="btn btn-outline-success rounded-pill py-2 fw-semibold">Open Proof Shortlist</a>
+                    <a href="{% url 'recruiter_dashboard' %}" class="btn btn-success rounded-pill py-2 fw-semibold">Recruiter Dashboard</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

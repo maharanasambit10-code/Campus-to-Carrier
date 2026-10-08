@@ -1,0 +1,380 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}3-Minute "Wow" Journey | CampusLink Hackathon Demo{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <!-- Top Demo Banner (Slide 9 & 13) -->
+    <div class="p-4 mb-4 rounded-4 shadow-sm border bg-dark text-white d-flex flex-wrap justify-content-between align-items-center gap-3">
+        <div>
+            <div class="d-flex align-items-center gap-2 mb-2">
+                <span class="badge text-bg-warning text-dark px-3 py-1 rounded-pill fw-bold text-uppercase">08 • HACKATHON DEMO</span>
+                <span class="badge bg-secondary text-white px-3 py-1 rounded-pill">READY TO DEMO</span>
+            </div>
+            <h1 class="h2 fw-bold text-white mb-1">The 3-minute “wow” journey.</h1>
+            <p class="text-secondary mb-0">One student. One job. One proof loop. Judges understand the value without a long explanation.</p>
+        </div>
+        <div class="text-end">
+            <span class="badge bg-primary fs-6 px-3 py-2 rounded-pill"><i class="bi bi-stopwatch me-1"></i> Interactive Proof Loop</span>
+        </div>
+    </div>
+
+    <!-- Stepper Navigation Bar (Slides 9 & 13) -->
+    <div class="card border-0 shadow-sm rounded-4 p-3 mb-4 bg-white">
+        <div class="row g-2 text-center align-items-center" id="demoStepper">
+            <!-- 0:00 PASTE JOB -->
+            <div class="col">
+                <button type="button" class="btn w-100 rounded-3 py-2 btn-step active" id="stepBtn1" onclick="switchStep(1)">
+                    <span class="badge bg-primary text-white rounded-pill mb-1">0:00</span>
+                    <strong class="d-block small">PASTE JOB</strong>
+                    <span class="text-muted" style="font-size: 0.7rem;">Role Decoder (9 skills)</span>
+                </button>
+            </div>
+            <div class="col-auto text-muted small d-none d-md-block">→</div>
+
+            <!-- 0:40 UPLOAD PROOF -->
+            <div class="col">
+                <button type="button" class="btn w-100 rounded-3 py-2 btn-step" id="stepBtn2" onclick="switchStep(2)">
+                    <span class="badge bg-secondary text-white rounded-pill mb-1">0:40</span>
+                    <strong class="d-block small">UPLOAD PROOF</strong>
+                    <span class="text-muted" style="font-size: 0.7rem;">Project + GitHub + test</span>
+                </button>
+            </div>
+            <div class="col-auto text-muted small d-none d-md-block">→</div>
+
+            <!-- 1:20 READINESS -->
+            <div class="col">
+                <button type="button" class="btn w-100 rounded-3 py-2 btn-step" id="stepBtn3" onclick="switchStep(3)">
+                    <span class="badge bg-secondary text-white rounded-pill mb-1">1:20</span>
+                    <strong class="d-block small">READINESS</strong>
+                    <span class="text-muted" style="font-size: 0.7rem;">AI shows 82% fit</span>
+                </button>
+            </div>
+            <div class="col-auto text-muted small d-none d-md-block">→</div>
+
+            <!-- 2:00 LIVE MISSION -->
+            <div class="col">
+                <button type="button" class="btn w-100 rounded-3 py-2 btn-step" id="stepBtn4" onclick="switchStep(4)">
+                    <span class="badge bg-secondary text-white rounded-pill mb-1">2:00</span>
+                    <strong class="d-block small">LIVE MISSION</strong>
+                    <span class="text-muted" style="font-size: 0.7rem;">Solves 10-15m task</span>
+                </button>
+            </div>
+            <div class="col-auto text-muted small d-none d-md-block">→</div>
+
+            <!-- 2:40 RE-SCORE -->
+            <div class="col">
+                <button type="button" class="btn w-100 rounded-3 py-2 btn-step" id="stepBtn5" onclick="switchStep(5)">
+                    <span class="badge bg-secondary text-white rounded-pill mb-1">2:40</span>
+                    <strong class="d-block small">RE-SCORE</strong>
+                    <span class="text-muted" style="font-size: 0.7rem;">Fit jumps to 91%</span>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- STEP 1 CONTENT: 0:00 PASTE JOB (Role Decoder) -->
+    <div id="stepContent1" class="demo-step-pane">
+        <div class="card border-0 shadow-sm rounded-4 p-4 p-md-5 bg-white mb-4">
+            <div class="d-flex justify-content-between align-items-center mb-3">
+                <span class="badge bg-primary text-white px-3 py-1 rounded-pill fw-bold">STEP 01 • 0:00</span>
+                <span class="text-muted small">Role Decoder Engine</span>
+            </div>
+            <h3 class="fw-bold mb-2">Paste Job Description → AI Role Decoder Extracts 9 Skills</h3>
+            <p class="text-muted mb-4">Demonstrating how raw job requirements convert immediately into normalized skill priorities and must-have constraints.</p>
+
+            <div class="row g-4">
+                <div class="col-lg-6">
+                    <div class="p-3 rounded-4 bg-light border">
+                        <div class="d-flex justify-content-between align-items-center mb-2">
+                            <strong class="small text-uppercase text-secondary">Target Role Description:</strong>
+                            <span class="badge bg-white text-dark border">Junior Data Analyst</span>
+                        </div>
+                        <pre class="bg-white p-3 rounded-3 border text-dark font-monospace small mb-3" style="max-height: 250px; overflow-y: auto;">{{ default_jd }}</pre>
+                        <button type="button" class="btn btn-primary w-100 rounded-pill fw-bold" onclick="simulateDecode()">
+                            <i class="bi bi-lightning-charge-fill me-1"></i> Decode Skills & Priorities
+                        </button>
+                    </div>
+                </div>
+
+                <div class="col-lg-6">
+                    <div class="p-3 rounded-4 bg-white border h-100" id="step1Output">
+                        <div class="d-flex justify-content-between align-items-center mb-2">
+                            <strong class="small text-uppercase text-success">Extracted 9 Skills & Weights:</strong>
+                            <span class="badge bg-success-subtle text-success">Normalized 100%</span>
+                        </div>
+                        <ul class="list-group list-group-flush small mb-3">
+                            <li class="list-group-item d-flex justify-content-between px-0">
+                                <span><strong class="text-danger">SQL (25%)</strong> • Critical [Must-Have]</span>
+                                <span class="badge bg-danger rounded-pill">Critical</span>
+                            </li>
+                            <li class="list-group-item d-flex justify-content-between px-0">
+                                <span><strong class="text-primary">Python (15%)</strong> • High [Must-Have]</span>
+                                <span class="badge bg-primary rounded-pill">High</span>
+                            </li>
+                            <li class="list-group-item d-flex justify-content-between px-0">
+                                <span><strong class="text-primary">Power BI (15%)</strong> • High [Must-Have]</span>
+                                <span class="badge bg-primary rounded-pill">High</span>
+                            </li>
+                            <li class="list-group-item d-flex justify-content-between px-0">
+                                <span><strong class="text-danger">Cohort Retention (15%)</strong> • Critical [Must-Have]</span>
+                                <span class="badge bg-danger rounded-pill">Critical</span>
+                            </li>
+                            <li class="list-group-item d-flex justify-content-between px-0">
+                                <span><strong>Communication (10%)</strong> • Medium [Must-Have]</span>
+                                <span class="badge bg-secondary rounded-pill">Medium</span>
+                            </li>
+                            <li class="list-group-item d-flex justify-content-between px-0">
+                                <span><strong>Problem Solving (8%)</strong> • High</span>
+                                <span class="badge bg-secondary rounded-pill">High</span>
+                            </li>
+                            <li class="list-group-item d-flex justify-content-between px-0 text-muted">
+                                <span>Excel / BI (5%), Statistics (4%), Git (3%) [Nice-to-Have]</span>
+                                <span class="badge bg-light text-dark border">Optional</span>
+                            </li>
+                        </ul>
+                        <button type="button" class="btn btn-outline-primary w-100 rounded-pill fw-bold" onclick="switchStep(2)">
+                            Proceed to Upload Proof (0:40) <i class="bi bi-arrow-right ms-1"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- STEP 2 CONTENT: 0:40 UPLOAD PROOF (Proof Miner) -->
+    <div id="stepContent2" class="demo-step-pane d-none">
+        <div class="card border-0 shadow-sm rounded-4 p-4 p-md-5 bg-white mb-4">
+            <div class="d-flex justify-content-between align-items-center mb-3">
+                <span class="badge bg-success text-white px-3 py-1 rounded-pill fw-bold">STEP 02 • 0:40</span>
+                <span class="text-muted small">Proof Miner Engine</span>
+            </div>
+            <h3 class="fw-bold mb-2">Upload Proof: Connect Project + GitHub + Assessment</h3>
+            <p class="text-muted mb-4">Mines tangible artifacts instead of resume claims. Demonstrates multi-source proof linking.</p>
+
+            <div class="row g-3 mb-4">
+                <div class="col-md-3">
+                    <div class="p-3 rounded-4 bg-light text-center border">
+                        <i class="bi bi-github fs-3 text-dark mb-1 d-block"></i>
+                        <strong class="d-block small">GitHub Telemetry</strong>
+                        <span class="badge bg-success rounded-pill mt-1">Strong (2 weeks)</span>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="p-3 rounded-4 bg-light text-center border">
+                        <i class="bi bi-file-earmark-code fs-3 text-primary mb-1 d-block"></i>
+                        <strong class="d-block small">ML Churn Model</strong>
+                        <span class="badge bg-success rounded-pill mt-1">Strong (1 month)</span>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="p-3 rounded-4 bg-light text-center border">
+                        <i class="bi bi-easel fs-3 text-info mb-1 d-block"></i>
+                        <strong class="d-block small">Power BI Dashboard</strong>
+                        <span class="badge bg-success rounded-pill mt-1">Strong (1 month)</span>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="p-3 rounded-4 bg-light text-center border border-warning">
+                        <i class="bi bi-exclamation-triangle fs-3 text-warning mb-1 d-block"></i>
+                        <strong class="d-block small text-warning">SQL Queries</strong>
+                        <span class="badge bg-warning text-dark rounded-pill mt-1">Unverified Claim</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="d-flex justify-content-between align-items-center">
+                <button type="button" class="btn btn-outline-secondary rounded-pill px-4" onclick="switchStep(1)">Back</button>
+                <button type="button" class="btn btn-success rounded-pill px-4 fw-bold" onclick="switchStep(3)">
+                    Proceed to Readiness Score (1:20) <i class="bi bi-arrow-right ms-1"></i>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- STEP 3 CONTENT: 1:20 READINESS (Readiness Score: 82%) -->
+    <div id="stepContent3" class="demo-step-pane d-none">
+        <div class="card border-0 shadow-sm rounded-4 p-4 p-md-5 bg-white mb-4">
+            <div class="d-flex justify-content-between align-items-center mb-3">
+                <span class="badge bg-warning text-dark px-3 py-1 rounded-pill fw-bold">STEP 03 • 1:20</span>
+                <span class="text-muted small">Readiness Score Engine</span>
+            </div>
+            <h3 class="fw-bold mb-2">Readiness: AI Shows 82% With Evidence Trail</h3>
+            <p class="text-muted mb-4">Anti-Black-Box separation distinguishes demonstrated skills from inferred claims.</p>
+
+            <!-- Slide 1 Top Metric Strip Simulation -->
+            <div class="p-3 rounded-4 bg-dark text-white d-flex justify-content-around text-center mb-4">
+                <div>
+                    <span class="text-secondary small d-block">ROLE FIT</span>
+                    <strong class="fs-4 text-primary">82% • Data Analyst</strong>
+                </div>
+                <div>
+                    <span class="text-secondary small d-block">PROOF COVERAGE</span>
+                    <strong class="fs-4 text-success">7 / 9 skills verified</strong>
+                </div>
+                <div>
+                    <span class="text-secondary small d-block">NEXT ACTION</span>
+                    <strong class="fs-4 text-warning">15-min SQL mission</strong>
+                </div>
+            </div>
+
+            <!-- Slide 6 Evidence Trail Table Snapshot -->
+            <div class="table-responsive mb-4">
+                <table class="table table-hover align-middle mb-0">
+                    <thead class="table-light small">
+                        <tr><th>SKILL</th><th>EVIDENCE</th><th>STRENGTH</th><th>FRESHNESS</th></tr>
+                    </thead>
+                    <tbody>
+                        <tr><td><strong>Python</strong></td><td>ML project + assessment</td><td><span class="badge bg-success rounded-pill">Strong</span></td><td>2 weeks</td></tr>
+                        <tr><td><strong>SQL</strong></td><td><span class="text-warning">Missing verified proof</span></td><td><span class="badge bg-warning text-dark rounded-pill">Medium/Inferred</span></td><td>Today</td></tr>
+                        <tr><td><strong>Power BI</strong></td><td>Dashboard project</td><td><span class="badge bg-success rounded-pill">Strong</span></td><td>1 month</td></tr>
+                        <tr><td><strong>Communication</strong></td><td>Case explanation</td><td><span class="badge bg-success rounded-pill">Medium</span></td><td>3 weeks</td></tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="d-flex justify-content-between align-items-center">
+                <button type="button" class="btn btn-outline-secondary rounded-pill px-4" onclick="switchStep(2)">Back</button>
+                <button type="button" class="btn btn-warning text-dark fw-bold rounded-pill px-4" onclick="switchStep(4)">
+                    Launch Live Mission (2:00) <i class="bi bi-arrow-right ms-1"></i>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- STEP 4 CONTENT: 2:00 LIVE MISSION (Solve 15-min SQL task) -->
+    <div id="stepContent4" class="demo-step-pane d-none">
+        <div class="card border-0 shadow-sm rounded-4 p-4 p-md-5 bg-white mb-4">
+            <div class="d-flex justify-content-between align-items-center mb-3">
+                <span class="badge bg-danger text-white px-3 py-1 rounded-pill fw-bold">STEP 04 • 2:00</span>
+                <span class="text-muted small">AI Feature: 15-Minute Role Mission</span>
+            </div>
+            <h3 class="fw-bold mb-2">Live Mission: Student Solves a 10-15 Min Task</h3>
+            <p class="text-muted mb-4">Instead of asking "Do you know SQL?", CampusLink asks the candidate to prove it.</p>
+
+            <div class="p-3 rounded-4 bg-light border mb-4">
+                <h6 class="fw-bold text-dark mb-1">MISSION • JUNIOR DATA ANALYST</h6>
+                <p class="small text-muted mb-0"><strong>Scenario:</strong> An e-commerce team sees a 12% drop in repeat purchases.</p>
+            </div>
+
+            <div class="row g-3 mb-4">
+                <div class="col-md-4">
+                    <div class="p-3 rounded-3 bg-white border">
+                        <strong class="d-block small text-primary mb-1">TASK 1: Metrics Inspected</strong>
+                        <p class="small text-muted mb-0">Cohort Repeat Rate & Time-to-Second-Order.</p>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="p-3 rounded-3 bg-white border">
+                        <strong class="d-block small text-primary mb-1">TASK 2: SQL Query</strong>
+                        <p class="small text-muted mb-0"><code>SELECT cohort_month, COUNT(DISTINCT user_id)...</code></p>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="p-3 rounded-3 bg-white border">
+                        <strong class="d-block small text-primary mb-1">TASK 3: Business Action</strong>
+                        <p class="small text-muted mb-0">Automated Day 14 re-engagement incentive.</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="alert alert-info rounded-4 d-flex justify-content-between align-items-center p-3 mb-4">
+                <div>
+                    <strong class="d-block">AI Evaluation: Logic • SQL • Business Thinking</strong>
+                    <span class="small">Graded with multi-dimensional rubrics on actual candidate work.</span>
+                </div>
+                <span class="badge bg-primary fs-5 px-3 py-2 rounded-pill">78 / 100 • Evidence captured</span>
+            </div>
+
+            <div class="d-flex justify-content-between align-items-center">
+                <button type="button" class="btn btn-outline-secondary rounded-pill px-4" onclick="switchStep(3)">Back</button>
+                <button type="button" class="btn btn-primary rounded-pill px-4 fw-bold" onclick="switchStep(5)">
+                    See Re-Score Outcome (2:40) <i class="bi bi-arrow-right ms-1"></i>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- STEP 5 CONTENT: 2:40 RE-SCORE & RECRUITER OUTCOME -->
+    <div id="stepContent5" class="demo-step-pane d-none">
+        <div class="card border-0 shadow-sm rounded-4 p-4 p-md-5 bg-white mb-4">
+            <div class="d-flex justify-content-between align-items-center mb-3">
+                <span class="badge bg-success text-white px-3 py-1 rounded-pill fw-bold">STEP 05 • 2:40</span>
+                <span class="text-muted small">Re-Score & Recruiter Shortlist Loop</span>
+            </div>
+            <h3 class="fw-bold mb-2">Re-Score: Gap Closes → Recruiter-Ready Proof (91%)</h3>
+            <p class="text-muted mb-4">The verified mission response attaches to candidate evidence trail, triggering automatic recruiter shortlist eligibility.</p>
+
+            <div class="row g-4 align-items-center mb-5">
+                <div class="col-lg-6">
+                    <div class="p-4 rounded-4 bg-success bg-opacity-10 border border-success text-center">
+                        <span class="badge bg-success text-white px-3 py-1 rounded-pill fw-bold mb-2">UPDATED READINESS</span>
+                        <div class="display-3 fw-bold text-success mb-1">91%</div>
+                        <h5 class="fw-bold text-dark mb-1">Candidate A (Data Analyst)</h5>
+                        <p class="small text-muted mb-0"><strong>PROOF: 9 / 10 skills proven</strong> • Why: strong evidence on highest-weight skills.</p>
+                    </div>
+                </div>
+                <div class="col-lg-6">
+                    <h5 class="fw-bold mb-3"><i class="bi bi-building-check text-primary me-2"></i>Recruiter Action Unlocked:</h5>
+                    <div class="p-3 rounded-4 bg-light border mb-3">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <div>
+                                <strong class="d-block">Recruiter View: Shortlist by Proof</strong>
+                                <span class="small text-muted">Recruiter sees comparable evidence and explainable recommendation.</span>
+                            </div>
+                            <span class="badge bg-success px-3 py-2 rounded-pill"><i class="bi bi-check2"></i> SHORTLISTED</span>
+                        </div>
+                    </div>
+                    <div class="d-flex gap-2">
+                        <a href="{% url 'recruiter_proof_shortlist' %}" class="btn btn-outline-primary rounded-pill px-4 flex-grow-1 fw-bold">
+                            Open Recruiter View
+                        </a>
+                        <a href="{% url 'college_readiness_radar' %}" class="btn btn-primary rounded-pill px-4 flex-grow-1 fw-bold">
+                            Open College Radar
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- JUDGE TAKEAWAY BANNER (Slide 9 & 11) -->
+            <div class="p-4 rounded-4 bg-dark text-white text-center shadow-lg">
+                <span class="badge bg-warning text-dark fw-bold px-3 py-1 rounded-pill mb-2">JUDGE TAKEAWAY</span>
+                <blockquote class="fs-4 fw-bold mb-2 fst-italic">
+                    “I can see the problem, the AI, the evidence and the business outcome.”
+                </blockquote>
+                <p class="text-secondary small mb-0">
+                    CampusLink proves whether a student is ready for a role—and tells them exactly what to do next.
+                </p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+function switchStep(stepNum) {
+    for (let i = 1; i <= 5; i++) {
+        const pane = document.getElementById(`stepContent${i}`);
+        const btn = document.getElementById(`stepBtn${i}`);
+        if (pane) pane.classList.add('d-none');
+        if (btn) {
+            btn.classList.remove('btn-primary', 'text-white', 'active');
+            btn.classList.add('btn-light', 'text-dark');
+        }
+    }
+    const targetPane = document.getElementById(`stepContent${stepNum}`);
+    const targetBtn = document.getElementById(`stepBtn${stepNum}`);
+    if (targetPane) targetPane.classList.remove('d-none');
+    if (targetBtn) {
+        targetBtn.classList.remove('btn-light', 'text-dark');
+        targetBtn.classList.add('btn-primary', 'text-white', 'active');
+    }
+    window.scrollTo({ top: 100, behavior: 'smooth' });
+}
+
+function simulateDecode() {
+    alert("Role Decoded! 9 skills extracted with normalized weights. Proceeding to Upload Proof.");
+    switchStep(2);
+}
+</script>
+{% endblock %}

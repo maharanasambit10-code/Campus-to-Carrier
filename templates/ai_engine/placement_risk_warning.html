@@ -1,0 +1,148 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Placement Risk Early-Warning | CampusLink Command Center{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <!-- Header -->
+    <div class="p-4 mb-4 rounded-4 shadow-sm border bg-dark text-white d-flex flex-wrap justify-content-between align-items-center gap-3">
+        <div>
+            <div class="d-flex align-items-center gap-2 mb-2">
+                <span class="badge text-bg-danger px-3 py-1 rounded-pill fw-bold text-uppercase">PROACTIVE RADAR</span>
+                <span class="badge bg-secondary text-white px-3 py-1 rounded-pill">EARLY-WARNING</span>
+            </div>
+            <h1 class="h2 fw-bold text-white mb-1">Placement Risk Early-Warning System</h1>
+            <p class="text-secondary mb-0">Identify vulnerable students 60 days before campus placement drives. Turn reactive training into automated, targeted interventions.</p>
+        </div>
+        <div class="d-flex gap-2">
+            <a href="{% url 'college_readiness_radar' %}" class="btn btn-outline-light rounded-pill px-3">
+                <i class="bi bi-radar me-1"></i> Live Readiness Radar
+            </a>
+            <a href="{% url 'officer_dashboard' %}" class="btn btn-primary rounded-pill px-3">
+                <i class="bi bi-speedometer2 me-1"></i> Officer Dashboard
+            </a>
+        </div>
+    </div>
+
+    <!-- Cohort Stat Cards -->
+    <div class="row g-4 mb-5">
+        <div class="col-md-4">
+            <div class="card p-4 rounded-4 border-0 shadow-sm border-start border-danger border-4 bg-white">
+                <div class="d-flex justify-content-between align-items-center mb-2">
+                    <span class="text-muted fw-bold small text-uppercase">High-Risk Cohort</span>
+                    <span class="badge bg-danger rounded-pill">Urgent</span>
+                </div>
+                <h2 class="display-5 fw-bold text-danger mb-1">{{ high_risk_count }}</h2>
+                <small class="text-muted">Zero verified work artifacts or low proof coverage.</small>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card p-4 rounded-4 border-0 shadow-sm border-start border-warning border-4 bg-white">
+                <div class="d-flex justify-content-between align-items-center mb-2">
+                    <span class="text-muted fw-bold small text-uppercase">Moderate-Risk Cohort</span>
+                    <span class="badge bg-warning text-dark rounded-pill">Targeted</span>
+                </div>
+                <h2 class="display-5 fw-bold text-warning mb-1">{{ moderate_risk_count }}</h2>
+                <small class="text-muted">Missing 1-2 critical requirements (e.g. SQL / Power BI).</small>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card p-4 rounded-4 border-0 shadow-sm border-start border-success border-4 bg-white">
+                <div class="d-flex justify-content-between align-items-center mb-2">
+                    <span class="text-muted fw-bold small text-uppercase">Placement-Ready</span>
+                    <span class="badge bg-success rounded-pill">Role-Ready</span>
+                </div>
+                <h2 class="display-5 fw-bold text-success mb-1">{{ ready_count }}</h2>
+                <small class="text-muted">Robust evidence trail & completed 15-min role missions.</small>
+            </div>
+        </div>
+    </div>
+
+    <!-- Batch Dispatch Intervention Banner -->
+    <div class="card border-0 shadow-sm rounded-4 p-4 bg-white mb-5">
+        <div class="row align-items-center g-3">
+            <div class="col-lg-8">
+                <h5 class="fw-bold mb-1"><i class="bi bi-send-check text-primary me-2"></i>One-Click Batch Intervention Dispatch</h5>
+                <p class="text-muted small mb-0">Push the 15-minute SQL Telemetry Mission and peer mentor pairing to all {{ high_risk_count }} high-risk candidates simultaneously.</p>
+            </div>
+            <div class="col-lg-4 text-lg-end">
+                <form method="post" action="{% url 'placement_risk_dispatch' %}">
+                    {% csrf_token %}
+                    <button type="submit" class="btn btn-danger btn-lg rounded-pill px-4 fw-bold shadow-sm">
+                        <i class="bi bi-lightning-charge-fill me-1"></i> Dispatch Batch Interventions
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Student Risk Roster Table -->
+    <div class="card border-0 shadow-sm rounded-4 p-4 bg-white">
+        <div class="d-flex justify-content-between align-items-center mb-3">
+            <h5 class="fw-bold mb-0">Student Placement Risk Roster</h5>
+            <span class="badge bg-light text-dark border small">{{ profiles|length }} Students Evaluated</span>
+        </div>
+
+        <div class="table-responsive">
+            <table class="table table-hover align-middle mb-0">
+                <thead class="table-light small text-uppercase">
+                    <tr>
+                        <th>Student</th>
+                        <th>Risk Level</th>
+                        <th>Proof Coverage</th>
+                        <th>Primary Risk Factors</th>
+                        <th>Recommended Intervention</th>
+                        <th>Status</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for p in profiles %}
+                    <tr>
+                        <td>
+                            <strong>{{ p.student.user.get_full_name|default:p.student.user.username }}</strong>
+                            <div class="small text-muted">CGPA: {{ p.student.cgpa|default:'7.2' }} • {{ p.student.department|default:'CSE' }}</div>
+                        </td>
+                        <td>
+                            {% if p.risk_level == 'HIGH_RISK' %}
+                            <span class="badge bg-danger rounded-pill px-3 py-1">High Risk</span>
+                            {% elif p.risk_level == 'MODERATE_RISK' %}
+                            <span class="badge bg-warning text-dark rounded-pill px-3 py-1">Moderate Risk</span>
+                            {% else %}
+                            <span class="badge bg-success rounded-pill px-3 py-1">Placement Ready</span>
+                            {% endif %}
+                        </td>
+                        <td>
+                            <strong class="{% if '9' in p.proof_coverage_ratio %}text-success{% else %}text-danger{% endif %}">{{ p.proof_coverage_ratio }}</strong>
+                        </td>
+                        <td class="small">
+                            <ul class="mb-0 ps-3 text-muted">
+                                {% for factor in p.primary_risk_factors %}
+                                <li>{{ factor }}</li>
+                                {% empty %}
+                                <li>None identified</li>
+                                {% endfor %}
+                            </ul>
+                        </td>
+                        <td class="small fw-semibold text-primary">
+                            {{ p.recommended_intervention }}
+                        </td>
+                        <td>
+                            {% if p.intervention_dispatched %}
+                            <span class="badge bg-success-subtle text-success"><i class="bi bi-check2-circle me-1"></i>Dispatched</span>
+                            {% else %}
+                            <span class="badge bg-secondary-subtle text-secondary">Pending</span>
+                            {% endif %}
+                        </td>
+                    </tr>
+                    {% empty %}
+                    <tr>
+                        <td colspan="6" class="text-center text-muted py-4">No risk profiles recorded.</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% endblock %}

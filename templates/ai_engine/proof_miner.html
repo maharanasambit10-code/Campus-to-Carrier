@@ -1,0 +1,280 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Proof Miner | CampusLink Proof Intelligence{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <!-- Top Metric Status Bar (Slide 1) -->
+    <div class="p-3 mb-4 rounded-4 shadow-sm border bg-dark text-white d-flex flex-wrap justify-content-between align-items-center gap-3">
+        <div class="d-flex align-items-center gap-3">
+            <span class="badge text-bg-success px-3 py-2 rounded-pill fw-bold text-uppercase">ENGINE 02</span>
+            <div>
+                <h5 class="mb-0 fw-bold">PROOF MINER</h5>
+                <small class="text-secondary">AI Placement Readiness & Proof Intelligence Platform</small>
+            </div>
+        </div>
+        <div class="d-flex flex-wrap gap-4 align-items-center">
+            <div class="text-center px-2 border-end border-secondary border-opacity-50">
+                <div class="text-secondary small fw-semibold text-uppercase">Role Fit</div>
+                <div class="fs-6 fw-bold text-primary">82% • Data Analyst</div>
+            </div>
+            <div class="text-center px-2 border-end border-secondary border-opacity-50">
+                <div class="text-secondary small fw-semibold text-uppercase">Proof Coverage</div>
+                <div class="fs-6 fw-bold text-success">7 / 9 skills verified</div>
+            </div>
+            <div class="text-center px-2">
+                <div class="text-secondary small fw-semibold text-uppercase">Next Action</div>
+                <a href="{% url 'role_mission_default' %}" class="fs-6 fw-bold text-warning text-decoration-none">15-min SQL mission <i class="bi bi-arrow-right"></i></a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Intro Header & 5 Evidence Sources (Slide 4) -->
+    <div class="card border-0 shadow-sm rounded-4 mb-5 overflow-hidden bg-white">
+        <div class="card-body p-4 p-md-5">
+            <div class="d-flex justify-content-between align-items-center flex-wrap gap-2 mb-2">
+                <span class="badge bg-success-subtle text-success fw-bold px-3 py-1 rounded-pill">04 • EVIDENCE CONNECTORS</span>
+                <span class="small text-muted fw-semibold">From "I have skills" → "Here is the evidence."</span>
+            </div>
+            <h2 class="fw-bold mb-2">Proof Miner: Connect Decision-Ready Evidence</h2>
+            <p class="text-muted mb-4">Recruiters don't trust resume keyword density. Proof Miner links verified repository artifacts, timed simulations, credentials, and peer reviews.</p>
+
+            <div class="row g-3 text-center">
+                <div class="col-6 col-md">
+                    <div class="p-3 rounded-4 bg-light border h-100">
+                        <i class="bi bi-github fs-3 text-dark mb-2 d-block"></i>
+                        <strong class="d-block small">GitHub / Repos</strong>
+                        <span class="text-muted" style="font-size: 0.75rem;">Commits & Code</span>
+                    </div>
+                </div>
+                <div class="col-6 col-md">
+                    <div class="p-3 rounded-4 bg-light border h-100">
+                        <i class="bi bi-patch-check-fill fs-3 text-primary mb-2 d-block"></i>
+                        <strong class="d-block small">Certificates</strong>
+                        <span class="text-muted" style="font-size: 0.75rem;">Credentials</span>
+                    </div>
+                </div>
+                <div class="col-6 col-md">
+                    <div class="p-3 rounded-4 bg-light border h-100">
+                        <i class="bi bi-stopwatch fs-3 text-warning mb-2 d-block"></i>
+                        <strong class="d-block small">Mini-Tests</strong>
+                        <span class="text-muted" style="font-size: 0.75rem;">Timed Missions</span>
+                    </div>
+                </div>
+                <div class="col-6 col-md">
+                    <div class="p-3 rounded-4 bg-light border h-100">
+                        <i class="bi bi-file-earmark-code fs-3 text-info mb-2 d-block"></i>
+                        <strong class="d-block small">Project Files</strong>
+                        <span class="text-muted" style="font-size: 0.75rem;">Capstones</span>
+                    </div>
+                </div>
+                <div class="col-6 col-md">
+                    <div class="p-3 rounded-4 bg-light border h-100">
+                        <i class="bi bi-people fs-3 text-success mb-2 d-block"></i>
+                        <strong class="d-block small">Mentor Validation</strong>
+                        <span class="text-muted" style="font-size: 0.75rem;">Peer Endorsement</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Live GitHub Evidence Parser Tool (Slide 10 Bonus) -->
+    <div class="card border-0 shadow-sm rounded-4 mb-5 p-4 bg-dark text-white">
+        <div class="row align-items-center g-4">
+            <div class="col-lg-6">
+                <span class="badge text-bg-warning text-dark px-3 py-1 rounded-pill fw-bold text-uppercase mb-2">BONUS FEATURE • SLIDE 10</span>
+                <h4 class="fw-bold mb-2"><i class="bi bi-github me-2"></i>Live GitHub Evidence Parser</h4>
+                <p class="text-secondary small mb-3">Connect a public repository URL to parse commits, test coverage, and extract verified proof signals automatically.</p>
+                <div class="input-group">
+                    <input type="url" id="githubRepoInput" class="form-control rounded-start-pill bg-white text-dark" placeholder="https://github.com/username/project-repo" value="https://github.com/campuslink/ml-churn-predictor">
+                    <button class="btn btn-primary rounded-end-pill px-4 fw-bold" type="button" onclick="runGitHubParser()">
+                        <i class="bi bi-search me-1"></i> Parse Repo
+                    </button>
+                </div>
+            </div>
+            <div class="col-lg-6">
+                <div id="githubParserResult" class="p-3 rounded-4 bg-white bg-opacity-10 border border-white border-opacity-10">
+                    <div class="d-flex justify-content-between align-items-center mb-2">
+                        <strong class="text-white small"><i class="bi bi-check2-circle text-success me-1"></i>Parser Telemetry</strong>
+                        <span class="badge bg-success">Strong Evidence</span>
+                    </div>
+                    <div class="row g-2 small text-light">
+                        <div class="col-6"><strong>Primary:</strong> Python (68%)</div>
+                        <div class="col-6"><strong>Secondary:</strong> SQL (24%)</div>
+                        <div class="col-6"><strong>Commits:</strong> 47 Analyzed</div>
+                        <div class="col-6"><strong>Tests:</strong> 84% Coverage</div>
+                    </div>
+                    <div class="mt-2 text-secondary" style="font-size: 0.8rem;">
+                        Repository demonstrates disciplined modular structure, active commits, and unit tests.
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row g-4">
+        <!-- Add Evidence Form -->
+        <div class="col-lg-4">
+            <div class="card border-0 shadow-sm rounded-4 p-4 bg-white h-100">
+                <h4 class="fw-bold mb-3"><i class="bi bi-link-45deg text-success me-1"></i>Connect New Evidence</h4>
+                <p class="text-muted small mb-4">Attach your practical proof to turn inferred skills into demonstrated evidence.</p>
+
+                <form method="post" action="{% url 'proof_miner' %}">
+                    {% csrf_token %}
+                    <div class="mb-3">
+                        <label class="form-label small fw-semibold">Evidence Source Type</label>
+                        <select name="proof_type" class="form-select rounded-3">
+                            <option value="GITHUB">GitHub Repository / Code Link</option>
+                            <option value="PROJECT_FILE">Project Files / Capstone Artifact</option>
+                            <option value="MINI_TEST">Mini-Test / Timed Mission</option>
+                            <option value="CERTIFICATE">Verified Certificate / Credential</option>
+                            <option value="MENTOR">Peer / Mentor Validation</option>
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label small fw-semibold">Artifact Title</label>
+                        <input type="text" name="title" class="form-control rounded-3" placeholder="e.g. Cohort Churn Dashboard" required>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label small fw-semibold">URL or Reference</label>
+                        <input type="text" name="url_or_ref" class="form-control rounded-3" placeholder="https://... or Project File">
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label small fw-semibold">Skills Evidenced (comma-separated)</label>
+                        <input type="text" name="skills_connected" class="form-control rounded-3" placeholder="e.g. Python, SQL, Power BI" required>
+                    </div>
+                    <div class="row g-2 mb-3">
+                        <div class="col-6">
+                            <label class="form-label small fw-semibold">Strength</label>
+                            <select name="strength" class="form-select rounded-3">
+                                <option value="Strong">Strong</option>
+                                <option value="Medium">Medium</option>
+                            </select>
+                        </div>
+                        <div class="col-6">
+                            <label class="form-label small fw-semibold">Freshness</label>
+                            <select name="freshness_label" class="form-select rounded-3">
+                                <option value="Today">Today</option>
+                                <option value="2 weeks">2 weeks</option>
+                                <option value="3 weeks">3 weeks</option>
+                                <option value="1 month">1 month</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label small fw-semibold">Evidence Summary / Details</label>
+                        <textarea name="evidence_details" rows="3" class="form-control rounded-3 small" placeholder="Describe the problem solved and measurable impact..."></textarea>
+                    </div>
+
+                    <div class="d-grid">
+                        <button type="submit" class="btn btn-success rounded-pill py-2 fw-bold">
+                            <i class="bi bi-plus-circle me-1"></i> Connect Evidence
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <!-- Mined Evidence Records List -->
+        <div class="col-lg-8">
+            <div class="card border-0 shadow-sm rounded-4 p-4 bg-white">
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                    <div>
+                        <h4 class="fw-bold mb-0">Active Evidence Trail</h4>
+                        <span class="text-muted small">Mined proof items linked to your candidate profile</span>
+                    </div>
+                    <a href="{% url 'readiness_score' %}" class="btn btn-primary btn-sm rounded-pill px-3 fw-semibold">
+                        View Readiness Score <i class="bi bi-arrow-right ms-1"></i>
+                    </a>
+                </div>
+
+                <div class="table-responsive">
+                    <table class="table table-hover align-middle mb-0">
+                        <thead class="table-light small text-uppercase">
+                            <tr>
+                                <th>Evidence Artifact</th>
+                                <th>Source</th>
+                                <th>Skills Connected</th>
+                                <th>Strength</th>
+                                <th>Freshness</th>
+                                <th>Status</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for item in proof_items %}
+                            <tr>
+                                <td>
+                                    <strong>{{ item.title }}</strong>
+                                    {% if item.url_or_ref %}
+                                    <div class="small text-muted text-truncate" style="max-width: 200px;">{{ item.url_or_ref }}</div>
+                                    {% endif %}
+                                </td>
+                                <td><span class="badge bg-light text-dark border small">{{ item.get_proof_type_display }}</span></td>
+                                <td>
+                                    <div class="d-flex flex-wrap gap-1">
+                                        {% for s in item.skills_connected %}
+                                        <span class="badge bg-primary-subtle text-primary" style="font-size: 0.7rem;">{{ s }}</span>
+                                        {% endfor %}
+                                    </div>
+                                </td>
+                                <td>
+                                    <span class="badge {% if item.strength == 'Strong' %}bg-success{% else %}bg-warning text-dark{% endif %} rounded-pill">
+                                        {{ item.strength }}
+                                    </span>
+                                </td>
+                                <td><span class="badge bg-light text-secondary border small">{{ item.freshness_label }}</span></td>
+                                <td><span class="badge bg-success-subtle text-success small"><i class="bi bi-patch-check-fill me-1"></i>Verified</span></td>
+                            </tr>
+                            {% empty %}
+                            <tr>
+                                <td colspan="6" class="text-center text-muted py-4">No proofs connected yet. Use the form on the left.</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+
+                <!-- Anti-Black-Box Callout -->
+                <div class="mt-4 p-3 rounded-4 bg-light border d-flex align-items-center gap-3">
+                    <div class="badge bg-dark rounded-circle p-3"><i class="bi bi-shield-lock text-warning fs-5"></i></div>
+                    <div>
+                        <strong class="d-block text-dark">Anti-Black-Box Principle (Slide 6)</strong>
+                        <span class="text-muted small">Inferred skill ≠ demonstrated skill. Every score item shown to recruiters carries the exact link and proof artifact above.</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+function runGitHubParser() {
+    const input = document.getElementById('githubRepoInput').value;
+    const box = document.getElementById('githubParserResult');
+    box.innerHTML = `<div class="text-center py-3"><div class="spinner-border spinner-border-sm text-light" role="status"></div><span class="ms-2 text-light small">Inspecting commits and repo telemetry...</span></div>`;
+
+    fetch(`/api/proof/parse-github/?url=${encodeURIComponent(input)}`)
+        .then(res => res.json())
+        .then(data => {
+            box.innerHTML = `
+                <div class="d-flex justify-content-between align-items-center mb-2">
+                    <strong class="text-white small"><i class="bi bi-check2-circle text-success me-1"></i>Parsed: ${data.repository}</strong>
+                    <span class="badge bg-success">${data.evidence_strength} Evidence</span>
+                </div>
+                <div class="row g-2 small text-light">
+                    <div class="col-6"><strong>Primary:</strong> ${data.primary_language}</div>
+                    <div class="col-6"><strong>Secondary:</strong> ${data.secondary_language}</div>
+                    <div class="col-6"><strong>Commits:</strong> ${data.commits_analyzed} Analyzed</div>
+                    <div class="col-6"><strong>Tests:</strong> ${data.test_coverage} Coverage</div>
+                </div>
+                <div class="mt-2 text-secondary" style="font-size: 0.8rem;">${data.summary}</div>
+            `;
+        })
+        .catch(() => {
+            box.innerHTML = `<div class="text-danger small">Error parsing repo. Checked simulated repo.</div>`;
+        });
+}
+</script>
+{% endblock %}

@@ -1,0 +1,83 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Action Coach | CampusLink Proof Intelligence{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <!-- Top Metric Status Bar (Slide 1) -->
+    <div class="p-3 mb-4 rounded-4 shadow-sm border bg-dark text-white d-flex flex-wrap justify-content-between align-items-center gap-3">
+        <div class="d-flex align-items-center gap-3">
+            <span class="badge text-bg-info px-3 py-2 rounded-pill fw-bold text-uppercase">ENGINE 04</span>
+            <div>
+                <h5 class="mb-0 fw-bold">ACTION COACH</h5>
+                <small class="text-secondary">AI Placement Readiness & Proof Intelligence Platform</small>
+            </div>
+        </div>
+        <div class="d-flex flex-wrap gap-4 align-items-center">
+            <div class="text-center px-2 border-end border-secondary border-opacity-50">
+                <div class="text-secondary small fw-semibold text-uppercase">Role Fit</div>
+                <div class="fs-6 fw-bold text-primary">{{ readiness.role_fit_percentage }}% • {{ readiness.role_title }}</div>
+            </div>
+            <div class="text-center px-2 border-end border-secondary border-opacity-50">
+                <div class="text-secondary small fw-semibold text-uppercase">Proof Coverage</div>
+                <div class="fs-6 fw-bold text-success">{{ readiness.proof_coverage }}</div>
+            </div>
+            <div class="text-center px-2">
+                <div class="text-secondary small fw-semibold text-uppercase">Next Action</div>
+                <a href="{% url 'role_mission_default' %}" class="fs-6 fw-bold text-warning text-decoration-none">{{ readiness.next_action }} <i class="bi bi-arrow-right"></i></a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Header (Slide 4) -->
+    <div class="card border-0 shadow-sm rounded-4 mb-5 p-4 p-md-5 bg-white">
+        <span class="badge bg-info-subtle text-info-emphasis fw-bold px-3 py-1 rounded-pill mb-2 align-self-start">04 • ACTION COACH ENGINE</span>
+        <h2 class="display-6 fw-bold text-dark mb-2">Find the Highest-Impact Gap. Generate One Next Mission.</h2>
+        <p class="lead text-muted mb-4">Instead of endless courses, Action Coach pinpoints the single skill gap with the highest interview leverage, serves a 10–20 minute mission, and re-scores your readiness immediately.</p>
+
+        <!-- Highest-Impact Gap Spotlight -->
+        <div class="p-4 rounded-4 border border-warning bg-warning bg-opacity-10 mb-4">
+            <div class="row align-items-center g-4">
+                <div class="col-lg-8">
+                    <span class="badge bg-warning text-dark fw-bold px-3 py-1 rounded-pill mb-2">HIGHEST-IMPACT GAP IDENTIFIED</span>
+                    <h3 class="fw-bold text-dark mb-2">{{ highest_gap.skill }}</h3>
+                    <p class="text-dark opacity-80 mb-3">{{ highest_gap.gap_reason }} Completing this 15-minute challenge will close the evidence gap and boost candidate role fit.</p>
+                    <div class="d-flex flex-wrap gap-3 align-items-center">
+                        <span class="badge bg-dark text-white px-3 py-2 rounded-pill"><i class="bi bi-graph-up-arrow me-1"></i> {{ highest_gap.impact }}</span>
+                        <span class="badge bg-light text-dark border px-3 py-2 rounded-pill"><i class="bi bi-clock me-1"></i> {{ highest_gap.estimated_minutes }} Minutes</span>
+                    </div>
+                </div>
+                <div class="col-lg-4 text-center">
+                    <a href="{% url 'role_mission_workspace' slug=highest_gap.mission_slug %}" class="btn btn-warning btn-lg text-dark fw-bold rounded-pill px-4 py-3 shadow">
+                        <i class="bi bi-play-circle-fill me-2"></i>Start 15-min Mission
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Before vs After Re-Scoring Simulation -->
+        <h5 class="fw-bold mb-3">Re-Score Feedback Loop (Slide 4 & 9)</h5>
+        <div class="row g-3">
+            <div class="col-md-6">
+                <div class="p-3 rounded-4 bg-light border">
+                    <div class="d-flex justify-content-between align-items-center mb-2">
+                        <span class="badge bg-secondary text-white rounded-pill">BEFORE MISSION</span>
+                        <span class="fw-bold text-secondary">82% Role Fit</span>
+                    </div>
+                    <p class="small text-muted mb-0">SQL and Cohort Queries are unverified claims. Proof coverage is 7 / 9 skills verified.</p>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="p-3 rounded-4 bg-success-subtle border border-success border-opacity-25">
+                    <div class="d-flex justify-content-between align-items-center mb-2">
+                        <span class="badge bg-success text-white rounded-pill">AFTER MISSION COMPLETION</span>
+                        <span class="fw-bold text-success">91% Role Fit (+9% Boost)</span>
+                    </div>
+                    <p class="small text-muted mb-0">Evaluated SQL query & cohort metrics captured. Candidate unlocks recruiter shortlist eligibility!</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

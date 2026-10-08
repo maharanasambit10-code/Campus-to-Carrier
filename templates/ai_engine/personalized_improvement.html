@@ -1,0 +1,55 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Next-Best Action & Personalized Improvement | CampusLink{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <!-- Header -->
+    <div class="p-4 mb-4 rounded-4 shadow-sm border bg-dark text-white d-flex flex-wrap justify-content-between align-items-center gap-3">
+        <div>
+            <span class="badge text-bg-warning text-dark px-3 py-1 rounded-pill fw-bold text-uppercase mb-2">PERSONALIZED COACHING</span>
+            <h1 class="h2 fw-bold text-white mb-1">Next-Best Action Hub</h1>
+            <p class="text-secondary mb-0">High-leverage micro-actions prioritized by interview shortlist ROI. Maximize your readiness in minutes, not months.</p>
+        </div>
+        <div class="text-end">
+            <span class="text-secondary small d-block">Current Role Fit</span>
+            <strong class="fs-4 text-primary">{{ readiness.role_fit_percentage }}% • {{ readiness.role_title }}</strong>
+        </div>
+    </div>
+
+    <!-- Actions Ranked by ROI -->
+    <div class="card border-0 shadow-sm rounded-4 p-4 p-md-5 bg-white mb-5">
+        <h4 class="fw-bold mb-3"><i class="bi bi-bullseye text-primary me-2"></i>Prioritized Actions Ranked by Placement ROI</h4>
+        <p class="text-muted small mb-4">Each action targets the exact skill gap detected by the Role Decoder, attaching verified artifacts directly to your Evidence Trail.</p>
+
+        <div class="row g-4">
+            {% for act in actions %}
+            <div class="col-md-6">
+                <div class="p-4 rounded-4 border bg-light h-100 d-flex flex-column justify-content-between">
+                    <div>
+                        <div class="d-flex justify-content-between align-items-center mb-2">
+                            <span class="badge bg-primary text-white rounded-pill px-3 py-1">PRIORITY #{{ act.priority_order }}</span>
+                            <span class="badge bg-success-subtle text-success fw-bold fs-6">{{ act.expected_roi_boost }}</span>
+                        </div>
+                        <h5 class="fw-bold text-dark mb-2">{{ act.title }}</h5>
+                        <div class="d-flex flex-wrap gap-2 text-muted small mb-3">
+                            <span><i class="bi bi-wrench-adjustable me-1"></i>Target Skill: <strong>{{ act.target_skill }}</strong></span>
+                            <span>•</span>
+                            <span><i class="bi bi-clock me-1"></i>{{ act.estimated_minutes }} Minutes</span>
+                            <span>•</span>
+                            <span><i class="bi bi-tag me-1"></i>{{ act.get_category_display }}</span>
+                        </div>
+                    </div>
+                    <div>
+                        <a href="{{ act.action_url }}" class="btn btn-primary rounded-pill w-100 fw-bold">
+                            Execute Action Now <i class="bi bi-arrow-right ms-1"></i>
+                        </a>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+{% endblock %}

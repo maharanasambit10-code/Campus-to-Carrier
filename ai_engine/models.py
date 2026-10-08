@@ -188,3 +188,270 @@ class PeerContributionReview(models.Model):
     def __str__(self):
         return f"Review by {self.reviewer_name} for {self.student.user.username}"
 
+
+# =========================================================================
+# CAMPUSLINK PROOF INTELLIGENCE PLATFORM (From PDF Presentation)
+# =========================================================================
+
+class RoleDecoderAnalysis(models.Model):
+    """
+    ENGINE 01: ROLE DECODER (Slide 4 & 9)
+    Extracts skills, normalized priority weights, experience signals, and must-have vs nice-to-have.
+    """
+    student = models.ForeignKey(StudentProfile, null=True, blank=True, on_delete=models.CASCADE, related_name='decoded_roles')
+    job = models.ForeignKey('jobs.Job', null=True, blank=True, on_delete=models.SET_NULL, related_name='decoder_analyses')
+    job_title = models.CharField(max_length=200, default='Junior Data Analyst')
+    company_name = models.CharField(max_length=200, blank=True, default='CampusLink Partner Company')
+    job_description_raw = models.TextField()
+    extracted_skills = models.JSONField(default=list, blank=True)
+    must_have_skills = models.JSONField(default=list, blank=True)
+    nice_to_have_skills = models.JSONField(default=list, blank=True)
+    experience_signals = models.JSONField(default=list, blank=True)
+    normalized_weights = models.JSONField(default=dict, blank=True)
+    total_skills_count = models.PositiveIntegerField(default=9)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        ordering = ['-created_at']
+
+    def __str__(self):
+        return f"Role Decoder: {self.job_title} ({len(self.extracted_skills)} skills)"
+
+
+class ProofMinerItem(models.Model):
+    """
+    ENGINE 02: PROOF MINER (Slide 4, 6 & 10)
+    Connects GitHub repos, certificates, mini-tests, project files, and peer/mentor validations.
+    """
+    PROOF_TYPE_CHOICES = (
+        ('GITHUB', 'GitHub Repository / Code Link'),
+        ('PROJECT_FILE', 'Project Files / Capstone Artifact'),
+        ('CERTIFICATE', 'Verified Certificate / Credential'),
+        ('MINI_TEST', 'Mini-Test / Timed Mission'),
+        ('MENTOR', 'Peer / Mentor Validation'),
+    )
+    STRENGTH_CHOICES = (
+        ('Strong', 'Strong'),
+        ('Medium', 'Medium'),
+        ('Inferred', 'Inferred'),
+    )
+
+    student = models.ForeignKey(StudentProfile, on_delete=models.CASCADE, related_name='proof_miner_items')
+    proof_type = models.CharField(max_length=30, choices=PROOF_TYPE_CHOICES, default='GITHUB')
+    title = models.CharField(max_length=255)
+    url_or_ref = models.CharField(max_length=500, blank=True)
+    skills_connected = models.JSONField(default=list, blank=True)
+    evidence_details = models.TextField(blank=True)
+    strength = models.CharField(max_length=20, choices=STRENGTH_CHOICES, default='Strong')
+    freshness_label = models.CharField(max_length=50, default='Today')  # e.g., "Today", "2 weeks", "1 month", "3 weeks"
+    is_demonstrated = models.BooleanField(default=True)
+    verified = models.BooleanField(default=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        ordering = ['-created_at']
+
+    def __str__(self):
+        return f"{self.title} [{self.get_proof_type_display()}] - {self.student.user.username}"
+
+
+class RoleMission(models.Model):
+    """
+    AI FEATURE: THE 15-MINUTE ROLE MISSION (Slide 5)
+    Instead of asking 'Do you know SQL?', asks the candidate to prove it.
+    """
+    title = models.CharField(max_length=200, default='The 15-minute Role Mission: Junior Data Analyst')
+    slug = models.SlugField(max_length=200, unique=True, default='junior-data-analyst-15m')
+    target_role = models.CharField(max_length=150, default='Junior Data Analyst')
+    estimated_minutes = models.PositiveIntegerField(default=15)
+    scenario_brief = models.TextField(
+        default="An e-commerce team sees a 12% drop in repeat purchases. You are tasked with analyzing the drop, inspecting telemetry metrics, and prescribing high-ROI operational interventions."
+    )
+    task1_prompt = models.TextField(default="TASK 1. Identify 2 metrics you would inspect.")
+    task2_prompt = models.TextField(default="TASK 2. Write one SQL query or explain the logic.")
+    task3_prompt = models.TextField(default="TASK 3. Give one business action based on the result.")
+    skills_tested = models.JSONField(default=list, blank=True)
+    default_next_gap = models.CharField(max_length=255, default="JOINs need practice -> 12-min mission")
+    is_active = models.BooleanField(default=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f"{self.title} ({self.target_role})"
+
+
+class RoleMissionSubmission(models.Model):
+    """
+    Evaluation for 15-minute Role Mission:
+    Grades across Logic, SQL, and Business thinking, captures evidence, and identifies next gap.
+    """
+    student = models.ForeignKey(StudentProfile, on_delete=models.CASCADE, related_name='mission_submissions')
+    mission = models.ForeignKey(RoleMission, on_delete=models.CASCADE, related_name='submissions')
+    task1_answer = models.TextField()
+    task2_answer = models.TextField()
+    task3_answer = models.TextField()
+    logic_score = models.PositiveIntegerField(default=80)
+    sql_score = models.PositiveIntegerField(default=75)
+    business_thinking_score = models.PositiveIntegerField(default=80)
+    overall_score = models.PositiveIntegerField(default=78)
+    evidence_captured = models.BooleanField(default=True)
+    next_gap = models.CharField(max_length=255, default='JOINs need practice -> 12-min mission')
+    ai_evaluation_summary = models.TextField(blank=True)
+    submitted_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        ordering = ['-submitted_at']
+
+    def __str__(self):
+        return f"{self.student.user.username} - {self.mission.title} ({self.overall_score}/100)"
+
+
+class CollegeReadinessRadar(models.Model):
+    """
+    COLLEGE IMPACT: LIVE READINESS RADAR (Slide 7)
+    Live distribution of skills across student body for proactive placement training.
+    """
+    college_name = models.CharField(max_length=200, default='CampusLink University Network')
+    department = models.CharField(max_length=100, default='All Departments')
+    sql_avg = models.PositiveIntegerField(default=38)  # 38%
+    communication_avg = models.PositiveIntegerField(default=52)  # 52%
+    python_avg = models.PositiveIntegerField(default=71)  # 71%
+    excel_bi_avg = models.PositiveIntegerField(default=64)  # 64%
+    problem_solving_avg = models.PositiveIntegerField(default=78)  # 78%
+    total_students_tracked = models.PositiveIntegerField(default=280)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    def __str__(self):
+        return f"{self.college_name} Readiness Radar"
+
+
+class CollegeTargetedIntervention(models.Model):
+    """
+    Targeted intervention sprint launched by placement team (Slide 7)
+    """
+    radar = models.ForeignKey(CollegeReadinessRadar, on_delete=models.CASCADE, related_name='interventions', null=True, blank=True)
+    skill_target = models.CharField(max_length=100, default='SQL')
+    target_cohort = models.CharField(max_length=100, default='Bottom 30%')
+    targeted_students_count = models.PositiveIntegerField(default=84)
+    mission_assigned = models.CharField(max_length=255, default='Targeted SQL Sprint: 15-min Query & Cohort Challenge')
+    status = models.CharField(max_length=50, default='ACTIVE')
+    measured_improvement_pct = models.PositiveIntegerField(default=26)
+    launched_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        ordering = ['-launched_at']
+
+    def __str__(self):
+        return f"Intervention: {self.skill_target} Sprint ({self.target_cohort})"
+
+
+class RecruiterCandidateProof(models.Model):
+    """
+    RECRUITER VIEW: SHORTLIST BY PROOF, NOT KEYWORD DENSITY (Slide 8)
+    Comparable evidence and explainable recommendations.
+    """
+    candidate_name = models.CharField(max_length=150)
+    candidate_label = models.CharField(max_length=50, default='Candidate A')  # Candidate A, Candidate B, Candidate C
+    target_role = models.CharField(max_length=150, default='Data Analyst')
+    role_fit_percentage = models.PositiveIntegerField(default=91)  # 91%, 84%, 76%
+    proof_skills_proven = models.CharField(max_length=50, default='9 / 10')  # 9/10, 7/10, 6/10 skills proven
+    why_recommended = models.TextField(default='strong evidence on highest-weight skills.')
+    evidence_trail = models.JSONField(default=list, blank=True)
+    is_shortlisted = models.BooleanField(default=False)
+    mission_sent = models.BooleanField(default=False)
+    student = models.ForeignKey(StudentProfile, null=True, blank=True, on_delete=models.SET_NULL)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        ordering = ['-role_fit_percentage']
+
+    def __str__(self):
+        return f"{self.candidate_label} ({self.candidate_name}) - {self.target_role} ({self.role_fit_percentage}%)"
+
+
+class PlacementRiskProfile(models.Model):
+    """
+    FEATURE: PLACEMENT RISK EARLY-WARNING
+    Proactively flags at-risk candidates before campus placement season.
+    """
+    RISK_LEVEL_CHOICES = (
+        ('HIGH_RISK', 'High Risk (Immediate Intervention Required)'),
+        ('MODERATE_RISK', 'Moderate Risk (Targeted Gaps)'),
+        ('PLACEMENT_READY', 'Placement Ready (Strong Evidence Base)'),
+    )
+
+    student = models.OneToOneField(StudentProfile, on_delete=models.CASCADE, related_name='placement_risk_profile')
+    risk_level = models.CharField(max_length=30, choices=RISK_LEVEL_CHOICES, default='MODERATE_RISK')
+    risk_score = models.PositiveIntegerField(default=55)  # 0 to 100, higher = higher risk
+    primary_risk_factors = models.JSONField(default=list, blank=True)
+    recommended_intervention = models.CharField(max_length=255, default='Targeted SQL Sprint + 15-min Mission')
+    intervention_dispatched = models.BooleanField(default=False)
+    proof_coverage_ratio = models.CharField(max_length=50, default='4/9 skills verified')
+    updated_at = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        ordering = ['-risk_score']
+
+    def __str__(self):
+        return f"Risk: {self.student.user.username} ({self.get_risk_level_display()})"
+
+
+class InterviewArenaSession(models.Model):
+    """
+    FEATURE: AI INTERVIEW ARENA
+    Interactive real-time interview simulator evaluating Technical Rigor,
+    Communication Clarity, Problem Structuring, and Executive Presence.
+    Syncs directly to Proof Passport as verified interview proof.
+    """
+    student = models.ForeignKey(StudentProfile, on_delete=models.CASCADE, related_name='interview_arena_sessions')
+    target_role = models.CharField(max_length=150, default='Junior Data Analyst')
+    interview_mode = models.CharField(max_length=50, default='Technical & Scenario Deep Dive')
+    question_prompt = models.TextField(default='Explain how you would diagnose a 12% drop in repeat purchases using SQL and cohort analysis.')
+    candidate_response = models.TextField()
+    technical_rigor_score = models.PositiveIntegerField(default=84)
+    communication_clarity_score = models.PositiveIntegerField(default=88)
+    problem_structuring_score = models.PositiveIntegerField(default=82)
+    overall_score = models.PositiveIntegerField(default=85)
+    ai_feedback = models.TextField(blank=True)
+    key_strengths = models.JSONField(default=list, blank=True)
+    improvement_areas = models.JSONField(default=list, blank=True)
+    verified_in_passport = models.BooleanField(default=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        ordering = ['-created_at']
+
+    def __str__(self):
+        return f"Arena: {self.student.user.username} - {self.target_role} ({self.overall_score}/100)"
+
+
+class PersonalizedImprovementAction(models.Model):
+    """
+    FEATURE: NEXT-BEST ACTION / PERSONALIZED IMPROVEMENT
+    Prioritized high-leverage micro-actions ranked by placement ROI.
+    """
+    CATEGORY_CHOICES = (
+        ('ROLE_MISSION', '15-min Role Mission'),
+        ('PROOF_MINER', 'Proof Miner Upload'),
+        ('INTERVIEW_ARENA', 'AI Interview Arena'),
+        ('PEER_REVIEW', 'Mentor Validation'),
+    )
+
+    student = models.ForeignKey(StudentProfile, on_delete=models.CASCADE, related_name='improvement_actions')
+    title = models.CharField(max_length=200)
+    category = models.CharField(max_length=30, choices=CATEGORY_CHOICES, default='ROLE_MISSION')
+    target_skill = models.CharField(max_length=100, default='SQL')
+    expected_roi_boost = models.CharField(max_length=50, default='+9% Role Fit')
+    estimated_minutes = models.PositiveIntegerField(default=15)
+    action_url = models.CharField(max_length=255, default='/role-mission/')
+    is_completed = models.BooleanField(default=False)
+    priority_order = models.PositiveIntegerField(default=1)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        ordering = ['priority_order', '-created_at']
+
+    def __str__(self):
+        return f"{self.title} ({self.expected_roi_boost}) for {self.student.user.username}"
+
+
+

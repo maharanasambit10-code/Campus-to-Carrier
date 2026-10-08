@@ -489,3 +489,601 @@ def proof_passport_update_settings(request):
 
     messages.success(request, "Proof Passport visibility and sharing settings updated.")
     return redirect('proof_passport_dashboard')
+
+
+# =========================================================================
+# CAMPUSLINK PROOF INTELLIGENCE PLATFORM VIEWS (From PDF Presentation)
+# =========================================================================
+
+def role_decoder_view(request):
+    """
+    ENGINE 01: ROLE DECODER (Slide 4 & 9)
+    Paste a job description -> AI extracts:
+    • 9 skills • priority & normalized weights • experience signals • must-have vs nice-to-have.
+    Displays the live Career Readiness Graph: Job Post -> Skill Graph -> Proof -> Readiness -> Action.
+    """
+    from .services import decode_job_description, DEFAULT_DATA_ANALYST_JD
+    from .models import RoleDecoderAnalysis
+    from jobs.models import Job
+
+    student = getattr(request.user, 'student_profile', None) if request.user.is_authenticated else None
+    active_jobs = Job.objects.filter(is_active=True).select_related('company')[:10]
+
+    latest_analysis = None
+    if student:
+        latest_analysis = RoleDecoderAnalysis.objects.filter(student=student).first()
+    if not latest_analysis:
+        latest_analysis = RoleDecoderAnalysis.objects.first()
+
+    if request.method == 'POST':
+        raw_text = request.POST.get('job_description', '').strip()
+        job_id = request.POST.get('job_id')
+        custom_title = request.POST.get('job_title', 'Junior Data Analyst').strip()
+        custom_company = request.POST.get('company_name', 'CloudCart').strip()
+
+        latest_analysis = decode_job_description(
+            raw_text=raw_text or DEFAULT_DATA_ANALYST_JD,
+            student=student,
+            job_id=job_id if job_id and job_id.isdigit() else None,
+            custom_title=custom_title,
+            custom_company=custom_company
+        )
+        messages.success(request, f"Role Decoded! Extracted {len(latest_analysis.extracted_skills)} skills with normalized priority weights.")
+
+    if not latest_analysis:
+        latest_analysis = decode_job_description(DEFAULT_DATA_ANALYST_JD, student=student)
+
+    context = {
+        'analysis': latest_analysis,
+        'active_jobs': active_jobs,
+        'default_jd': DEFAULT_DATA_ANALYST_JD,
+        'student': student,
+    }
+    return render(request, 'ai_engine/role_decoder.html', context)
+
+
+def proof_miner_view(request):
+    """
+    ENGINE 02: PROOF MINER (Slide 4, 6 & 10)
+    Connect multi-source evidence:
+    GitHub repos • certificates • mini-tests • project files • peer/mentor validation.
+    """
+    from .models import ProofMinerItem
+    from .services import seed_proof_miner_defaults
+    from students.models import StudentProfile
+
+    student = getattr(request.user, 'student_profile', None) if request.user.is_authenticated else None
+    if not student:
+        # Fallback to demo student for showcase
+        student = StudentProfile.objects.first()
+
+    seed_proof_miner_defaults(student)
+
+    if request.method == 'POST':
+        proof_type = request.POST.get('proof_type', 'GITHUB')
+        title = request.POST.get('title', '').strip()
+        url_or_ref = request.POST.get('url_or_ref', '').strip()
+        skills_raw = request.POST.get('skills_connected', '')
+        strength = request.POST.get('strength', 'Strong')
+        freshness = request.POST.get('freshness_label', 'Today')
+        evidence_details = request.POST.get('evidence_details', '').strip()
+
+        skills = [s.strip() for s in skills_raw.split(',') if s.strip()]
+
+        if title:
+            ProofMinerItem.objects.create(
+                student=student,
+                proof_type=proof_type,
+                title=title,
+                url_or_ref=url_or_ref,
+                skills_connected=skills or ['Python', 'Problem Solving'],
+                strength=strength,
+                freshness_label=freshness,
+                evidence_details=evidence_details,
+                is_demonstrated=True,
+                verified=True,
+            )
+            messages.success(request, f"Proof Mined: '{title}' connected with {strength} strength.")
+
+    proof_items = ProofMinerItem.objects.filter(student=student).order_by('-created_at') if student else []
+
+    context = {
+        'student': student,
+        'proof_items': proof_items,
+    }
+    return render(request, 'ai_engine/proof_miner.html', context)
+
+
+def api_parse_github_repo(request):
+    """
+    BONUS FEATURE (Slide 10): GitHub Evidence Parser API
+    Simulates / performs deep repository analysis: commits, language distribution, and evidence tags.
+    """
+    repo_url = request.GET.get('url', '').strip()
+    if not repo_url:
+        return JsonResponse({'error': 'Repo URL required'}, status=400)
+
+    # Simulated intelligent parsing
+    repo_name = repo_url.rstrip('/').split('/')[-1] if '/' in repo_url else 'Repository'
+    data = {
+        'repository': repo_name,
+        'primary_language': 'Python (68%)',
+        'secondary_language': 'SQL (24%)',
+        'commits_analyzed': 47,
+        'has_readme': True,
+        'has_unit_tests': True,
+        'test_coverage': '84%',
+        'skills_detected': ['Python', 'SQL', 'Data Modeling', 'Git Collaboration'],
+        'evidence_strength': 'Strong',
+        'freshness': '2 weeks',
+        'summary': f"Repository '{repo_name}' exhibits disciplined modularity, commit frequency, and unit test suites.",
+    }
+    return JsonResponse(data)
+
+
+def readiness_score_view(request):
+    """
+    ENGINE 03: READINESS SCORE & EVIDENCE TRAIL (Slide 1, 4 & 6)
+    Explainable score built from:
+    • skill coverage • evidence strength • assessment result • freshness.
+    ANTI-BLACK-BOX RULE: Inferred skill ≠ demonstrated skill. The UI always separates the two!
+    Shows the complete Evidence Trail table (Python, SQL, Power BI, Communication).
+    """
+    from .services import calculate_explainable_readiness_score
+    from students.models import StudentProfile
+
+    student = getattr(request.user, 'student_profile', None) if request.user.is_authenticated else None
+    if not student:
+        student = StudentProfile.objects.first()
+
+    readiness_data = calculate_explainable_readiness_score(student)
+
+    context = {
+        'student': student,
+        'readiness': readiness_data,
+        'has_completed_mission': readiness_data['has_completed_mission'],
+    }
+    return render(request, 'ai_engine/readiness_score.html', context)
+
+
+def action_coach_view(request):
+    """
+    ENGINE 04: ACTION COACH (Slide 4)
+    Find the highest-impact gap -> Generate a 10–20 min mission -> Re-score after completion.
+    """
+    from .services import calculate_explainable_readiness_score, seed_default_role_missions
+    from students.models import StudentProfile
+
+    student = getattr(request.user, 'student_profile', None) if request.user.is_authenticated else None
+    if not student:
+        student = StudentProfile.objects.first()
+
+    readiness_data = calculate_explainable_readiness_score(student)
+    mission = seed_default_role_missions()
+
+    highest_gap = {
+        'skill': 'SQL & Cohort Queries',
+        'impact': '+9% Role Fit boost (from 82% to 91%)',
+        'gap_reason': 'SQL is a Critical 25%-weight requirement for Junior Data Analyst.',
+        'action_name': 'The 15-minute Role Mission: Junior Data Analyst',
+        'mission_slug': mission.slug,
+        'estimated_minutes': 15,
+    }
+
+    context = {
+        'student': student,
+        'readiness': readiness_data,
+        'highest_gap': highest_gap,
+        'mission': mission,
+    }
+    return render(request, 'ai_engine/action_coach.html', context)
+
+
+def role_mission_workspace(request, slug='junior-data-analyst-15m'):
+    """
+    AI FEATURE: THE 15-MINUTE ROLE MISSION (Slide 5)
+    Instead of asking 'Do you know SQL?', CampusLink asks the candidate to prove it.
+    Mission: Junior Data Analyst
+    Scenario: E-commerce team sees a 12% drop in repeat purchases.
+    TASK 1: Identify 2 metrics you would inspect.
+    TASK 2: Write one SQL query or explain the logic.
+    TASK 3: Give one business action based on the result.
+    AI Evaluation: Logic • SQL • Business thinking -> Result: 78 / 100 • Evidence captured.
+    Next Gap: JOINs need practice -> 12-min mission.
+    """
+    from .services import seed_default_role_missions, evaluate_role_mission_submission
+    from .models import RoleMission, RoleMissionSubmission
+    from students.models import StudentProfile
+
+    mission = seed_default_role_missions()
+    student = getattr(request.user, 'student_profile', None) if request.user.is_authenticated else None
+    if not student:
+        student = StudentProfile.objects.first()
+
+    if request.method == 'POST':
+        task1 = request.POST.get('task1_answer', '').strip()
+        task2 = request.POST.get('task2_answer', '').strip()
+        task3 = request.POST.get('task3_answer', '').strip()
+
+        if not (task1 and task2 and task3):
+            messages.error(request, "Please provide responses for all three tasks to submit for AI evaluation.")
+            return render(request, 'ai_engine/role_mission_workspace.html', {'mission': mission, 'student': student})
+
+        submission = evaluate_role_mission_submission(
+            student=student,
+            mission=mission,
+            task1_answer=task1,
+            task2_answer=task2,
+            task3_answer=task3
+        )
+        messages.success(request, f"Mission Evaluated! Result: {submission.overall_score}/100 • Evidence Captured. Fit re-scored to 91%!")
+        return redirect('role_mission_result', submission_id=submission.id)
+
+    previous_submission = RoleMissionSubmission.objects.filter(student=student, mission=mission).first() if student else None
+
+    context = {
+        'mission': mission,
+        'student': student,
+        'previous_submission': previous_submission,
+    }
+    return render(request, 'ai_engine/role_mission_workspace.html', context)
+
+
+def role_mission_result(request, submission_id):
+    """
+    Displays the AI Evaluation report for the 15-minute Role Mission (Slide 5):
+    Logic • SQL • Business thinking
+    Result: 78 / 100 • Evidence captured
+    Next Gap: JOINs need practice -> 12-min mission
+    """
+    from .models import RoleMissionSubmission
+    from .services import calculate_explainable_readiness_score
+
+    submission = get_object_or_404(
+        RoleMissionSubmission.objects.select_related('mission', 'student__user'),
+        id=submission_id
+    )
+
+    readiness = calculate_explainable_readiness_score(submission.student)
+
+    context = {
+        'submission': submission,
+        'mission': submission.mission,
+        'readiness': readiness,
+    }
+    return render(request, 'ai_engine/role_mission_result.html', context)
+
+
+def college_readiness_radar_view(request):
+    """
+    COLLEGE IMPACT: LIVE READINESS RADAR (Slide 7)
+    Placement teams get a live 'readiness radar':
+    • SQL: 38%
+    • Communication: 52%
+    • Python: 71%
+    • Excel/BI: 64%
+    • Problem Solving: 78%
+    Intervention: Launch a targeted SQL sprint for the bottom 30%.
+    Outcome: Measure improvement before recruiter assessments.
+    """
+    from .services import seed_college_readiness_radar
+    from .models import CollegeReadinessRadar, CollegeTargetedIntervention
+
+    radar = seed_college_readiness_radar()
+    interventions = radar.interventions.all().order_by('-launched_at')
+
+    context = {
+        'radar': radar,
+        'interventions': interventions,
+    }
+    return render(request, 'ai_engine/college_readiness_radar.html', context)
+
+
+def college_launch_intervention(request):
+    """
+    Placement officer triggers targeted sprint intervention (Slide 7)
+    """
+    from .models import CollegeReadinessRadar, CollegeTargetedIntervention
+    from .services import seed_college_readiness_radar
+
+    if request.method != 'POST':
+        return redirect('college_readiness_radar')
+
+    radar = seed_college_readiness_radar()
+    skill_target = request.POST.get('skill_target', 'SQL')
+    target_cohort = request.POST.get('target_cohort', 'Bottom 30%')
+    students_count = int(request.POST.get('students_count', 84) or 84)
+
+    intervention = CollegeTargetedIntervention.objects.create(
+        radar=radar,
+        skill_target=skill_target,
+        target_cohort=target_cohort,
+        targeted_students_count=students_count,
+        mission_assigned=f"Targeted {skill_target} Sprint: 15-min Telemetry & Optimization Mission",
+        status='ACTIVE',
+        measured_improvement_pct=26,
+    )
+
+    messages.success(request, f"Targeted {skill_target} Sprint launched for {target_cohort} ({students_count} students notified)!")
+    return redirect('college_readiness_radar')
+
+
+def recruiter_proof_shortlist_view(request):
+    """
+    RECRUITER VIEW: SHORTLIST BY PROOF, NOT KEYWORD DENSITY (Slide 8)
+    A recruiter sees comparable evidence and an explainable recommendation in one screen:
+    • Candidate A: Data Analyst, ROLE FIT 91%, PROOF 9/10 skills proven
+    • Candidate B: Data Analyst, ROLE FIT 84%, PROOF 7/10 skills proven
+    • Candidate C: Data Analyst, ROLE FIT 76%, PROOF 6/10 skills proven
+    Actions: VIEW PROOF | SEND MISSION | SHORTLIST
+    """
+    from .services import seed_recruiter_proof_candidates
+    from .models import RecruiterCandidateProof
+
+    candidates = seed_recruiter_proof_candidates()
+    candidate_list = RecruiterCandidateProof.objects.all().order_by('-role_fit_percentage')
+
+    context = {
+        'candidates': candidate_list,
+    }
+    return render(request, 'ai_engine/recruiter_proof_shortlist.html', context)
+
+
+def recruiter_toggle_shortlist(request, candidate_id):
+    """
+    One-click shortlist action for recruiter (Slide 8)
+    """
+    from .models import RecruiterCandidateProof
+
+    if request.method != 'POST':
+        return redirect('recruiter_proof_shortlist')
+
+    candidate = get_object_or_404(RecruiterCandidateProof, id=candidate_id)
+    candidate.is_shortlisted = not candidate.is_shortlisted
+    candidate.save(update_fields=['is_shortlisted'])
+
+    status_str = "shortlisted" if candidate.is_shortlisted else "removed from shortlist"
+    messages.success(request, f"{candidate.candidate_label} ({candidate.candidate_name}) {status_str} based on verified proof.")
+    return redirect('recruiter_proof_shortlist')
+
+
+def recruiter_send_mission(request, candidate_id):
+    """
+    One-click send 15-minute mission to candidate (Slide 8)
+    """
+    from .models import RecruiterCandidateProof
+
+    if request.method != 'POST':
+        return redirect('recruiter_proof_shortlist')
+
+    candidate = get_object_or_404(RecruiterCandidateProof, id=candidate_id)
+    candidate.mission_sent = True
+    candidate.save(update_fields=['mission_sent'])
+
+    messages.success(request, f"15-Minute Role Mission sent to {candidate.candidate_label} ({candidate.candidate_name})! Evidence will stream back upon completion.")
+    return redirect('recruiter_proof_shortlist')
+
+
+def hackathon_demo_journey(request):
+    """
+    HACKATHON DEMO: THE 3-MINUTE 'WOW' JOURNEY (Slide 9 & 13)
+    One student. One job. One proof loop.
+    0:00 PASTE JOB (Role Decoder extracts 9 skills)
+    0:40 UPLOAD PROOF (Project + GitHub + assessment)
+    1:20 READINESS (AI shows 82% with evidence)
+    2:00 LIVE MISSION (Student solves 10-15 min task -> AI evaluation 78/100)
+    2:40 RE-SCORE (Gap closes -> Role Fit jumps to 91% -> recruiter-ready proof)
+    Judges understand the value without a long explanation.
+    """
+    from .services import (
+        calculate_explainable_readiness_score,
+        DEFAULT_DATA_ANALYST_JD,
+        seed_proof_miner_defaults,
+        seed_default_role_missions,
+        seed_recruiter_proof_candidates,
+    )
+    from .models import RoleDecoderAnalysis
+    from students.models import StudentProfile
+
+    student = getattr(request.user, 'student_profile', None) if request.user.is_authenticated else None
+    if not student:
+        student = StudentProfile.objects.first()
+
+    readiness = calculate_explainable_readiness_score(student)
+    mission = seed_default_role_missions()
+    seed_recruiter_proof_candidates()
+
+    step = int(request.GET.get('step', 1))
+
+    context = {
+        'step': step,
+        'student': student,
+        'readiness': readiness,
+        'mission': mission,
+        'default_jd': DEFAULT_DATA_ANALYST_JD,
+    }
+    return render(request, 'ai_engine/hackathon_demo.html', context)
+
+
+# =========================================================================
+# ADVANCED ECOSYSTEM & HACKATHON VIEWS
+# =========================================================================
+
+def career_skill_graph_view(request):
+    """
+    FEATURE: CAREER SKILL GRAPH (Slide 3)
+    Visualizes the live Career Readiness Graph with interactive nodes and edges:
+    Role -> Normalized Skills -> Verified Artifacts -> Next-Best Actions.
+    """
+    from .services import get_career_skill_graph_data, calculate_explainable_readiness_score
+    from students.models import StudentProfile
+
+    student = getattr(request.user, 'student_profile', None) if request.user.is_authenticated else None
+    if not student:
+        student = StudentProfile.objects.first()
+
+    graph_data = get_career_skill_graph_data(student)
+    readiness = calculate_explainable_readiness_score(student)
+
+    context = {
+        'student': student,
+        'graph_data': graph_data,
+        'readiness': readiness,
+    }
+    return render(request, 'ai_engine/career_skill_graph.html', context)
+
+
+def interview_arena_view(request):
+    """
+    FEATURE: AI INTERVIEW ARENA
+    Interactive live interview arena for candidate defense and capability proof.
+    """
+    from .models import InterviewArenaSession
+    from students.models import StudentProfile
+
+    student = getattr(request.user, 'student_profile', None) if request.user.is_authenticated else None
+    if not student:
+        student = StudentProfile.objects.first()
+
+    sessions = InterviewArenaSession.objects.filter(student=student) if student else []
+    default_question = "Explain how you would diagnose a 12% drop in repeat purchases using SQL and cohort analysis. What metrics would you prioritize and why?"
+
+    context = {
+        'student': student,
+        'sessions': sessions,
+        'default_question': default_question,
+        'target_role': 'Junior Data Analyst',
+    }
+    return render(request, 'ai_engine/interview_arena.html', context)
+
+
+def interview_arena_submit(request):
+    """
+    Processes candidate answer in the AI Interview Arena, generates multidimensional scores,
+    and synchronizes proof to Proof Passport.
+    """
+    from .services import evaluate_interview_arena_session
+    from students.models import StudentProfile
+
+    if request.method != 'POST':
+        return redirect('interview_arena')
+
+    student = getattr(request.user, 'student_profile', None) if request.user.is_authenticated else None
+    if not student:
+        student = StudentProfile.objects.first()
+
+    target_role = request.POST.get('target_role', 'Junior Data Analyst')
+    question = request.POST.get('question_prompt', 'Explain how you would diagnose a 12% drop in repeat purchases.')
+    response = request.POST.get('candidate_response', '').strip()
+
+    if not response:
+        messages.error(request, "Please enter your interview defense response.")
+        return redirect('interview_arena')
+
+    session = evaluate_interview_arena_session(
+        student=student,
+        target_role=target_role,
+        question=question,
+        candidate_response=response
+    )
+
+    messages.success(request, f"Interview Arena Defense Evaluated! Overall Score: {session.overall_score}/100. Proof verified in Passport.")
+    return redirect('interview_arena')
+
+
+def placement_risk_early_warning_view(request):
+    """
+    FEATURE: PLACEMENT RISK EARLY-WARNING
+    College placement radar dashboard for proactive intervention before placement drives.
+    """
+    from .services import seed_or_scan_placement_risk_profiles
+    from .models import PlacementRiskProfile
+
+    seed_or_scan_placement_risk_profiles()
+    profiles = PlacementRiskProfile.objects.all().select_related('student__user')
+
+    high_risk_count = profiles.filter(risk_level='HIGH_RISK').count()
+    moderate_risk_count = profiles.filter(risk_level='MODERATE_RISK').count()
+    ready_count = profiles.filter(risk_level='PLACEMENT_READY').count()
+
+    context = {
+        'profiles': profiles,
+        'high_risk_count': high_risk_count,
+        'moderate_risk_count': moderate_risk_count,
+        'ready_count': ready_count,
+    }
+    return render(request, 'ai_engine/placement_risk_warning.html', context)
+
+
+def placement_risk_dispatch_intervention(request):
+    """
+    Dispatches automated intervention to all high-risk students with one click.
+    """
+    from .models import PlacementRiskProfile
+
+    if request.method != 'POST':
+        return redirect('placement_risk_early_warning')
+
+    high_risk_qs = PlacementRiskProfile.objects.filter(risk_level='HIGH_RISK')
+    updated = high_risk_qs.update(intervention_dispatched=True)
+
+    messages.success(request, f"Targeted Interventions dispatched to {updated} high-risk students! 15-minute missions assigned.")
+    return redirect('placement_risk_early_warning')
+
+
+def personalized_improvement_view(request):
+    """
+    FEATURE: NEXT-BEST ACTION / PERSONALIZED IMPROVEMENT
+    Prioritized action hub ranked by ROI (+9% fit, +6% fit, etc.).
+    """
+    from .services import get_personalized_improvement_actions, calculate_explainable_readiness_score
+    from students.models import StudentProfile
+
+    student = getattr(request.user, 'student_profile', None) if request.user.is_authenticated else None
+    if not student:
+        student = StudentProfile.objects.first()
+
+    actions = get_personalized_improvement_actions(student)
+    readiness = calculate_explainable_readiness_score(student)
+
+    context = {
+        'student': student,
+        'actions': actions,
+        'readiness': readiness,
+    }
+    return render(request, 'ai_engine/personalized_improvement.html', context)
+
+
+def ecosystem_hub_view(request):
+    """
+    FEATURE: COMPLETE STUDENT → COLLEGE → RECRUITER ECOSYSTEM
+    Live cross-stakeholder dashboard showing unified evidence flow and synchronizations.
+    """
+    from .services import get_ecosystem_status_summary
+    from students.models import StudentProfile
+
+    summary = get_ecosystem_status_summary()
+
+    context = {
+        'summary': summary,
+    }
+    return render(request, 'ai_engine/ecosystem_hub.html', context)
+
+
+def final_hackathon_pitch_view(request):
+    """
+    FEATURE: STRONG FINAL HACKATHON PITCH
+    Interactive presentation deck and judge defense hub.
+    """
+    from .services import calculate_explainable_readiness_score
+    from students.models import StudentProfile
+
+    student = StudentProfile.objects.first()
+    readiness = calculate_explainable_readiness_score(student)
+
+    context = {
+        'readiness': readiness,
+    }
+    return render(request, 'ai_engine/hackathon_pitch.html', context)
+
+

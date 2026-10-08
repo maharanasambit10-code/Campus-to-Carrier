@@ -1,5 +1,5 @@
 {% extends 'base.html' %}
-{% block title %}Find Opportunities & Connect with Startups | CAMPUSLINK{% endblock %}
+{% block title %}Find Opportunities & Connect with Top Companies | CAMPUSLINK{% endblock %}
 {% block content %}
 <main class="marketplace-page py-5">
 <div class="container">
@@ -11,15 +11,18 @@
                     <i class="bi bi-rocket-takeoff-fill me-1"></i>Campus-to-Career Launchpad
                 </span>
                 <span class="badge bg-success-subtle text-success border border-success-subtle rounded-pill px-3 py-1 fw-bold">
-                    <i class="bi bi-shield-check me-1"></i>Verified Hiring Partners
+                    <i class="bi bi-shield-check me-1"></i>Verified Enterprise & Startup Partners
                 </span>
             </div>
-            <h1 class="fw-bold mb-2">Find Opportunities & Connect with Startups</h1>
-            <p class="text-muted mb-0">Discover high-impact roles at India's fastest-growing AI startups, unicorns, and global technology innovators.</p>
+            <h1 class="fw-bold mb-2">Find Opportunities & Connect with Top Companies</h1>
+            <p class="text-muted mb-0">Discover verified campus openings, internships, and high-impact roles at top enterprises, tech giants, and high-growth startups.</p>
         </div>
         <div class="d-flex flex-wrap gap-2 align-items-center">
             <span class="marketplace-count"><i class="bi bi-briefcase-fill me-1 text-primary"></i>{{ job_matches|length }} Active Roles</span>
-            <span class="marketplace-count"><i class="bi bi-building-fill me-1 text-info"></i>{{ companies|length }} Top Companies & Startups</span>
+            <span class="marketplace-count"><i class="bi bi-building-fill me-1 text-info"></i>{{ companies|length }} Top Companies</span>
+            <a href="{% url 'saved_jobs_list' %}" class="btn btn-sm btn-outline-danger rounded-pill px-3 py-1 fw-semibold text-decoration-none">
+                <i class="bi bi-bookmark-heart-fill me-1"></i>Saved Jobs ({{ saved_job_ids|length }})
+            </a>
         </div>
     </div>
 
@@ -45,7 +48,7 @@
         <li class="nav-item" role="presentation">
             <a class="nav-link rounded-3 px-4 py-2 fw-bold d-flex align-items-center gap-2 {% if active_tab == 'companies' %}active{% endif %}" 
                href="{% url 'job_list' %}?tab=companies{% if query %}&q={{ query }}{% endif %}">
-                <i class="bi bi-buildings"></i> Connect with Startups & Companies ({{ companies|length }})
+                <i class="bi bi-buildings"></i> Top Companies & Startups ({{ companies|length }})
             </a>
         </li>
     </ul>
@@ -53,147 +56,255 @@
     {% if active_tab != 'companies' %}
     <!-- ================= JOBS VIEW ================= -->
 
-    <!-- Filters Bar -->
-    <form class="job-filters mb-4" method="get" action="{% url 'job_list' %}">
+    <!-- Global Search & Faceted Filters Form -->
+    <form class="card border-0 shadow-sm rounded-4 p-4 mb-4" method="get" action="{% url 'job_list' %}" id="jobFilterForm">
         <input type="hidden" name="tab" value="jobs">
-        <div class="job-search">
-            <i class="bi bi-search"></i>
-            <input type="search" name="q" value="{{ query }}" placeholder="Search role, startup, tech stack, or city..." aria-label="Search jobs">
-        </div>
         
-        <select name="company_type" aria-label="Filter by company type">
-            <option value="">All Company Types</option>
-            {% for ct in company_types %}
-            <option value="{{ ct }}"{% if selected_company_type == ct %} selected{% endif %}>{{ ct }}</option>
-            {% endfor %}
-        </select>
+        <!-- Search bar -->
+        <div class="row g-3 mb-3">
+            <div class="col-lg-5">
+                <div class="position-relative">
+                    <i class="bi bi-search position-absolute top-50 start-0 translate-middle-y ms-3 text-muted"></i>
+                    <input type="search" name="q" value="{{ query }}" class="form-control ps-5 py-2 rounded-3" placeholder="Search role title, enterprise, skill, or keyword..." aria-label="Search jobs">
+                </div>
+            </div>
+            <div class="col-sm-6 col-lg-2">
+                <select name="company_type" class="form-select py-2 rounded-3" aria-label="Filter by company type">
+                    <option value="">All Company Types</option>
+                    {% for ct in company_types %}
+                    <option value="{{ ct }}"{% if selected_company_type == ct %} selected{% endif %}>{{ ct }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="col-sm-6 col-lg-2">
+                <select name="job_type" class="form-select py-2 rounded-3" aria-label="Filter by job type">
+                    <option value="">All Job Types</option>
+                    {% for jt in job_types %}
+                    <option value="{{ jt }}"{% if selected_job_type == jt %} selected{% endif %}>{{ jt }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="col-sm-6 col-lg-2">
+                <select name="work_mode" class="form-select py-2 rounded-3" aria-label="Filter by work mode">
+                    <option value="">All Work Modes</option>
+                    {% for wm in work_modes %}
+                    <option value="{{ wm }}"{% if selected_work_mode == wm %} selected{% endif %}>{{ wm }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="col-sm-6 col-lg-1">
+                <button class="btn btn-primary w-100 py-2 rounded-3 fw-bold" type="submit">Filter</button>
+            </div>
+        </div>
 
-        <select name="role" aria-label="Filter by role">
-            <option value="">All Tech Skills</option>
-            {% for option in role_filters %}
-            <option value="{{ option }}"{% if selected_role == option %} selected{% endif %}>{{ option }}</option>
-            {% endfor %}
-        </select>
+        <!-- Secondary Filters Row -->
+        <div class="row g-3 align-items-center">
+            <div class="col-md-3">
+                <select name="location" class="form-select form-select-sm" aria-label="Filter by location">
+                    <option value="">All Locations</option>
+                    {% for loc in location_filters %}
+                    <option value="{{ loc }}"{% if selected_location == loc %} selected{% endif %}>{{ loc }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="col-md-3">
+                <select name="experience" class="form-select form-select-sm" aria-label="Filter by experience">
+                    <option value="">All Experience Levels</option>
+                    <option value="fresher"{% if selected_experience == 'fresher' %} selected{% endif %}>Fresher / Campus Batch</option>
+                    <option value="0-1"{% if selected_experience == '0-1' %} selected{% endif %}>0 - 1 Years</option>
+                    <option value="1-3"{% if selected_experience == '1-3' %} selected{% endif %}>1 - 3 Years</option>
+                    <option value="3+"{% if selected_experience == '3+' %} selected{% endif %}>3+ Years</option>
+                </select>
+            </div>
+            <div class="col-md-3">
+                <select name="role" class="form-select form-select-sm" aria-label="Filter by role family">
+                    <option value="">All Role Tracks</option>
+                    {% for opt in role_filters %}
+                    <option value="{{ opt }}"{% if selected_role == opt %} selected{% endif %}>{{ opt }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="col-md-3 text-md-end">
+                {% if query or selected_role or selected_skills or selected_company_type or selected_job_type or selected_work_mode or selected_location or selected_experience or selected_company_id %}
+                <a href="{% url 'job_list' %}?tab=jobs" class="btn btn-sm btn-outline-secondary">
+                    <i class="bi bi-x-circle me-1"></i>Reset All Filters
+                </a>
+                {% endif %}
+            </div>
+        </div>
 
-        <select name="job_type" aria-label="Filter by job type">
-            <option value="">All Types</option>
-            <option value="Full-Time"{% if selected_job_type == 'Full-Time' %} selected{% endif %}>Full Time</option>
-            <option value="Internship"{% if selected_job_type == 'Internship' %} selected{% endif %}>Internship</option>
-        </select>
+        <!-- Technical Skills Filter Chips Section -->
+        <div class="pt-3 mt-3 border-top">
+            <div class="d-flex align-items-center justify-content-between mb-2">
+                <span class="small fw-bold text-dark d-flex align-items-center gap-1">
+                    <i class="bi bi-cpu-fill text-primary"></i> Filter by Technical Skills Required:
+                </span>
+                {% if selected_skills %}
+                <span class="badge bg-primary-subtle text-primary border border-primary-subtle rounded-pill">
+                    {{ selected_skills|length }} skill(s) selected
+                </span>
+                {% endif %}
+            </div>
 
-        <select name="location" aria-label="Filter by location">
-            <option value="">All Locations</option>
-            {% for option in location_filters %}
-            <option value="{{ option }}"{% if selected_location == option %} selected{% endif %}>{{ option }}</option>
-            {% endfor %}
-        </select>
-
-        <select name="experience" aria-label="Filter by experience">
-            <option value="">All Experience</option>
-            <option value="fresher"{% if selected_experience == 'fresher' %} selected{% endif %}>Fresher</option>
-            <option value="0-1"{% if selected_experience == '0-1' %} selected{% endif %}>0-1 years</option>
-        </select>
-
-        <button class="btn btn-primary" type="submit">Filter Roles</button>
-        {% if query or selected_role or selected_company_type or selected_job_type or selected_location or selected_experience or selected_company_id %}
-        <a href="{% url 'job_list' %}?tab=jobs" class="btn btn-outline-secondary">Reset</a>
-        {% endif %}
+            <!-- Skill Filter Pills Container -->
+            <div class="d-flex flex-wrap gap-2 align-items-center" id="skillChipsContainer">
+                {% for skill_item in popular_skills %}
+                <label class="skill-filter-chip {% if skill_item in selected_skills %}active{% endif %} mb-0">
+                    <input type="checkbox" name="skills" value="{{ skill_item }}" class="d-none skill-checkbox" {% if skill_item in selected_skills %}checked{% endif %} onchange="document.getElementById('jobFilterForm').submit();">
+                    {% if skill_item in selected_skills %}
+                    <i class="bi bi-check-circle-fill"></i>
+                    {% else %}
+                    <i class="bi bi-plus"></i>
+                    {% endif %}
+                    {{ skill_item }}
+                </label>
+                {% endfor %}
+            </div>
+        </div>
     </form>
 
-    <!-- Quick Pill Badges for Quick Filtering -->
-    <div class="d-flex flex-wrap gap-2 align-items-center mb-4">
-        <span class="small fw-bold text-muted me-1">Quick Filters:</span>
-        <a href="{% url 'job_list' %}?tab=jobs&company_type=Startup" class="badge rounded-pill {% if selected_company_type == 'Startup' %}bg-primary text-white{% else %}bg-white text-dark border{% endif %} text-decoration-none px-3 py-2">
-            🚀 High-Growth Startups
-        </a>
-        <a href="{% url 'job_list' %}?tab=jobs&company_type=Unicorn" class="badge rounded-pill {% if selected_company_type == 'Unicorn' %}bg-primary text-white{% else %}bg-white text-dark border{% endif %} text-decoration-none px-3 py-2">
-            🦄 Tech Unicorns
-        </a>
-        <a href="{% url 'job_list' %}?tab=jobs&job_type=Internship" class="badge rounded-pill {% if selected_job_type == 'Internship' %}bg-primary text-white{% else %}bg-white text-dark border{% endif %} text-decoration-none px-3 py-2">
-            🎓 Internships
-        </a>
-        <a href="{% url 'job_list' %}?tab=jobs&role=AI" class="badge rounded-pill {% if selected_role == 'AI' %}bg-primary text-white{% else %}bg-white text-dark border{% endif %} text-decoration-none px-3 py-2">
-            🤖 AI & Machine Learning
-        </a>
-        <a href="{% url 'job_list' %}?tab=jobs&location=Remote" class="badge rounded-pill {% if selected_location == 'Remote' %}bg-primary text-white{% else %}bg-white text-dark border{% endif %} text-decoration-none px-3 py-2">
-            🌐 Remote Roles
-        </a>
+    <!-- Active Filters Indicators (if any) -->
+    {% if selected_skills or query or selected_location or selected_job_type %}
+    <div class="d-flex flex-wrap gap-2 align-items-center mb-3">
+        <span class="small text-muted fw-bold">Active Filters:</span>
+        {% for sk in selected_skills %}
+        <span class="badge bg-primary text-white rounded-pill px-3 py-1">
+            Skill: {{ sk }}
+        </span>
+        {% endfor %}
+        {% if query %}
+        <span class="badge bg-light text-dark border rounded-pill px-3 py-1">Query: "{{ query }}"</span>
+        {% endif %}
+        {% if selected_location %}
+        <span class="badge bg-light text-dark border rounded-pill px-3 py-1">City: {{ selected_location }}</span>
+        {% endif %}
+        {% if selected_job_type %}
+        <span class="badge bg-light text-dark border rounded-pill px-3 py-1">Type: {{ selected_job_type }}</span>
+        {% endif %}
+        <a href="{% url 'job_list' %}?tab=jobs" class="small text-danger text-decoration-none ms-2 fw-semibold">Clear All</a>
     </div>
+    {% endif %}
 
     <!-- Job Cards Grid -->
     <div class="row g-4 job-grid">
         {% for match in job_matches %}
         <div class="col-md-6 col-xl-4 d-flex">
-            <article class="job-card shadow-sm position-relative">
-                <div class="job-card-top">
-                    <div class="d-flex align-items-center gap-2">
-                        <span class="company-mark">{{ match.job.company.name|first|upper }}</span>
+            <article class="job-card-premium shadow-sm w-100 d-flex flex-column position-relative">
+                <!-- Card Top: Logo, Company & Save Bookmark -->
+                <div class="d-flex align-items-start justify-content-between gap-3 mb-3">
+                    <div class="d-flex align-items-center gap-3">
+                        <!-- Official Company Logo Container -->
+                        <div class="company-logo-container">
+                            <img src="{{ match.job.company.get_logo_url }}" 
+                                 alt="{{ match.job.company.name }} logo" 
+                                 class="company-logo-img" 
+                                 loading="lazy"
+                                 onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+                            <div class="company-fallback-badge" style="display: none;">
+                                {{ match.job.company.initials }}
+                            </div>
+                        </div>
+
                         <div>
-                            <span class="badge {% if match.job.company.company_type == 'Startup' %}bg-warning-subtle text-warning-emphasis border border-warning-subtle{% elif match.job.company.company_type == 'Unicorn' %}bg-purple-subtle text-purple border{% else %}bg-primary-subtle text-primary border border-primary-subtle{% endif %} rounded-pill px-2 py-0" style="font-size: 0.65rem;">
-                                {{ match.job.company.company_type }}
-                            </span>
+                            <div class="d-flex align-items-center gap-1 mb-1">
+                                <span class="badge {% if match.job.company.company_type == 'Enterprise' %}bg-primary-subtle text-primary border border-primary-subtle{% elif match.job.company.company_type == 'Unicorn' %}bg-purple-subtle text-purple border{% else %}bg-warning-subtle text-warning-emphasis border border-warning-subtle{% endif %} rounded-pill px-2 py-0" style="font-size: 0.65rem;">
+                                    {{ match.job.company.company_type }}
+                                </span>
+                                <i class="bi bi-patch-check-fill text-primary" title="Verified Hiring Partner"></i>
+                            </div>
+                            <span class="text-muted small fw-bold">{{ match.job.company.name }}</span>
                         </div>
                     </div>
-                    <span class="job-type-badge">{{ match.job.job_type }}</span>
+
+                    <!-- Bookmark / Save Job Button -->
+                    <button type="button" 
+                            class="btn-save-job {% if match.job.id in saved_job_ids %}active{% endif %}" 
+                            data-job-id="{{ match.job.id }}"
+                            title="{% if match.job.id in saved_job_ids %}Remove Bookmark{% else %}Save this job{% endif %}">
+                        <i class="bi {% if match.job.id in saved_job_ids %}bi-bookmark-fill text-primary{% else %}bi-bookmark{% endif %}"></i>
+                    </button>
                 </div>
 
-                <div class="d-flex align-items-baseline justify-content-between mb-1">
-                    <p class="job-company mb-0">{{ match.job.company.name }}</p>
-                    <span class="badge bg-light text-secondary border rounded-pill" style="font-size: 0.68rem;">{{ match.job.work_mode }}</span>
-                </div>
-
+                <!-- Job Title -->
                 <h2 class="fs-5 fw-bold mb-2">
                     <a href="{% url 'job_detail' match.job.id %}" class="text-decoration-none text-dark hover-primary">{{ match.job.title }}</a>
                 </h2>
 
-                <div class="job-meta">
-                    <span><i class="bi bi-geo-alt"></i>{{ match.job.location }}</span>
-                    <span><i class="bi bi-cash-stack text-success"></i>{{ match.job.salary|default:'Disclosed upon shortlist' }}</span>
+                <!-- Key Meta Chips -->
+                <div class="d-flex flex-wrap gap-2 text-muted small mb-3">
+                    <div><i class="bi bi-geo-alt-fill text-primary me-1"></i>{{ match.job.location }} ({{ match.job.work_mode }})</div>
+                    <div><i class="bi bi-cash-stack text-success me-1"></i>{{ match.job.salary|default:'Disclosed upon shortlist' }}</div>
+                    <div><i class="bi bi-briefcase-fill text-info me-1"></i>{{ match.job.job_type }}</div>
                 </div>
 
-                <div class="job-skill-list">
-                    {% for skill in match.job.required_skills.all %}
-                    <span>{{ skill.name }}</span>
-                    {% empty %}
-                    <span>Software Engineering</span>
-                    {% endfor %}
-                </div>
+                <!-- Short Description snippet -->
+                <p class="text-muted small mb-3 flex-grow-1" style="line-height: 1.55;">
+                    {{ match.job.description|truncatewords:20 }}
+                </p>
 
-                <div class="job-match-row">
-                    <span>
-                        <i class="bi bi-stars"></i>
-                        {% if match.score %}
-                            <strong>{{ match.score }}%</strong> skill match
-                        {% else %}
-                            Eligible role
-                        {% endif %}
+                <!-- Dedicated Technical Skills Required Section -->
+                <div class="mb-3">
+                    <span class="technical-skills-title d-block mb-1">
+                        <i class="bi bi-code-slash me-1 text-primary"></i>Technical Skills Required:
                     </span>
-                    <span><i class="bi bi-clock me-1"></i>{{ match.job.created_at|timesince }} ago</span>
+                    <div class="d-flex flex-wrap gap-1">
+                        {% for skill in match.job.all_skills_list|slice:":5" %}
+                        <span class="skill-badge-pill">{{ skill }}</span>
+                        {% empty %}
+                        <span class="skill-badge-pill">Software Engineering</span>
+                        {% endfor %}
+                    </div>
                 </div>
 
-                <div class="job-card-actions">
-                    <a class="btn btn-outline-primary" href="{% url 'job_detail' match.job.id %}">
+                <!-- Skill Match Score Indicator -->
+                <div class="match-score-bar-container mb-3">
+                    <div class="d-flex justify-content-between align-items-center small mb-1">
+                        <span class="fw-semibold text-dark"><i class="bi bi-stars text-warning me-1"></i>Skill Match Score</span>
+                        <span class="fw-bold {% if match.score >= 70 %}text-success{% elif match.score >= 40 %}text-primary{% else %}text-muted{% endif %}">
+                            {{ match.score }}% Match
+                        </span>
+                    </div>
+                    <div class="progress" style="height: 6px; border-radius: 99px;">
+                        <div class="progress-bar {% if match.score >= 70 %}bg-success{% elif match.score >= 40 %}bg-primary{% else %}bg-secondary{% endif %}" 
+                             role="progressbar" 
+                             style="width: {{ match.score }}%;" 
+                             aria-valuenow="{{ match.score }}" 
+                             aria-valuemin="0" 
+                             aria-valuemax="100"></div>
+                    </div>
+                </div>
+
+                <!-- Card Actions: View Details & Apply Now -->
+                <div class="d-flex gap-2 pt-3 border-top mt-auto">
+                    <a class="btn btn-outline-primary btn-sm flex-fill fw-medium" href="{% url 'job_detail' match.job.id %}">
                         View Details
                     </a>
-                    <a class="btn btn-outline-info" href="{% url 'ai_mock_interview' %}?job_id={{ match.job.id }}" title="Practice AI Mock Interview">
+                    
+                    <a class="btn btn-outline-info btn-sm px-2" href="{% url 'ai_mock_interview' %}?job_id={{ match.job.id }}" title="Practice AI Interview with Priya">
                         <i class="bi bi-robot"></i> Practice
                     </a>
                     
                     {% if match.job.id in applied_ids %}
-                    <button class="btn btn-outline-success disabled" disabled>
+                    <button class="btn btn-outline-success btn-sm flex-fill disabled" disabled>
                         <i class="bi bi-check-circle-fill me-1"></i>Applied
                     </button>
                     {% else %}
                     <button type="button" 
-                            class="btn btn-primary open-apply-modal-btn" 
+                            class="btn btn-primary btn-sm flex-fill fw-bold open-apply-modal-btn" 
                             data-job-id="{{ match.job.id }}"
                             data-job-title="{{ match.job.title }}"
                             data-company="{{ match.job.company.name }}"
+                            data-company-logo="{{ match.job.company.get_logo_url }}"
+                            data-company-initials="{{ match.job.company.initials }}"
                             data-company-type="{{ match.job.company.company_type }}"
                             data-location="{{ match.job.location }}"
                             data-salary="{{ match.job.salary|default:'Disclosed upon shortlist' }}"
                             data-job-type="{{ match.job.job_type }}"
                             data-work-mode="{{ match.job.work_mode }}"
+                            data-experience="{{ match.job.experience_text|default:match.job.experience_required }}"
+                            data-qualifications="{{ match.job.qualifications|default:match.job.eligible_degree|default:'Engineering Degree' }}"
+                            data-deadline="{{ match.job.application_deadline|date:'M d, Y' }}"
+                            data-skills="{{ match.job.all_skills_list|join:',' }}"
                             data-apply-url="{% url 'apply_job' match.job.id %}">
                         <i class="bi bi-send-fill me-1"></i>Apply Now
                     </button>
@@ -203,7 +314,7 @@
         </div>
         {% empty %}
         <div class="col-12">
-            <div class="empty-state marketplace-empty text-center p-5">
+            <div class="empty-state marketplace-empty text-center p-5 bg-white rounded-4 border">
                 <i class="bi bi-search fs-1 text-muted d-block mb-3"></i>
                 <h4 class="fw-bold">No matching opportunities found</h4>
                 <p class="text-muted">Try adjusting your filters, searching for a different skill, or clearing the search terms.</p>
@@ -214,7 +325,7 @@
     </div>
 
     {% else %}
-    <!-- ================= STARTUPS & COMPANIES DIRECTORY ================= -->
+    <!-- ================= TOP COMPANIES & STARTUPS DIRECTORY ================= -->
 
     <!-- Companies Search Bar -->
     <div class="card border-0 shadow-sm rounded-4 p-4 mb-4">
@@ -222,38 +333,50 @@
             <input type="hidden" name="tab" value="companies">
             <div class="flex-grow-1 position-relative">
                 <i class="bi bi-search position-absolute top-50 start-0 translate-middle-y ms-3 text-muted"></i>
-                <input type="search" name="q" value="{{ query }}" class="form-control ps-5 py-2" placeholder="Search startup name, domain (AI, FinTech, SaaS), or tech stack...">
+                <input type="search" name="q" value="{{ query }}" class="form-control ps-5 py-2 rounded-3" placeholder="Search company name, domain (AI, Cloud, FinTech, E-Commerce), or tech stack...">
             </div>
-            <select name="company_type" class="form-select py-2" style="width: auto; min-width: 180px;">
+            <select name="company_type" class="form-select py-2 rounded-3" style="width: auto; min-width: 180px;">
                 <option value="">All Partner Types</option>
                 {% for ct in company_types %}
                 <option value="{{ ct }}"{% if selected_company_type == ct %} selected{% endif %}>{{ ct }}</option>
                 {% endfor %}
             </select>
-            <button type="submit" class="btn btn-primary px-4 py-2">Search Startups</button>
+            <button type="submit" class="btn btn-primary px-4 py-2 rounded-3 fw-bold">Search Partners</button>
             {% if query or selected_company_type %}
-            <a href="{% url 'job_list' %}?tab=companies" class="btn btn-outline-secondary py-2">Clear</a>
+            <a href="{% url 'job_list' %}?tab=companies" class="btn btn-outline-secondary py-2 rounded-3">Clear</a>
             {% endif %}
         </form>
     </div>
 
-    <!-- Startups Grid -->
+    <!-- Companies Cards Grid -->
     <div class="row g-4">
         {% for comp in companies %}
         <div class="col-md-6 col-xl-4 d-flex">
-            <div class="card border-0 shadow-sm rounded-4 p-4 w-100 d-flex flex-column h-100 position-relative transition-hover">
+            <div class="job-card-premium shadow-sm w-100 d-flex flex-column">
+                <!-- Company Header -->
                 <div class="d-flex align-items-start justify-content-between gap-3 mb-3">
                     <div class="d-flex align-items-center gap-3">
-                        <span class="company-mark fs-4 fw-bold" style="width: 48px; height: 48px;">{{ comp.name|first|upper }}</span>
+                        <div class="company-logo-container lg">
+                            <img src="{{ comp.get_logo_url }}" 
+                                 alt="{{ comp.name }} logo" 
+                                 class="company-logo-img"
+                                 loading="lazy"
+                                 onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+                            <div class="company-fallback-badge" style="display: none;">
+                                {{ comp.initials }}
+                            </div>
+                        </div>
+
                         <div>
-                            <h3 class="fs-5 fw-bold mb-0 text-dark">
-                                {{ comp.name }}
+                            <div class="d-flex align-items-center gap-1">
+                                <h3 class="fs-5 fw-bold mb-0 text-dark">{{ comp.name }}</h3>
                                 <i class="bi bi-patch-check-fill text-primary" title="Verified Hiring Partner"></i>
-                            </h3>
-                            <span class="small text-muted">{{ comp.industry }}</span>
+                            </div>
+                            <span class="small text-muted fw-medium">{{ comp.industry }}</span>
                         </div>
                     </div>
-                    <span class="badge {% if comp.company_type == 'Startup' %}bg-warning-subtle text-warning-emphasis border border-warning-subtle{% elif comp.company_type == 'Unicorn' %}bg-info-subtle text-info-emphasis border border-info-subtle{% else %}bg-primary-subtle text-primary border border-primary-subtle{% endif %} rounded-pill px-3 py-1 fw-bold">
+
+                    <span class="badge {% if comp.company_type == 'Enterprise' %}bg-primary-subtle text-primary border border-primary-subtle{% elif comp.company_type == 'Unicorn' %}bg-info-subtle text-info-emphasis border border-info-subtle{% else %}bg-warning-subtle text-warning-emphasis border border-warning-subtle{% endif %} rounded-pill px-3 py-1 fw-bold">
                         {{ comp.company_type }}
                     </span>
                 </div>
@@ -262,12 +385,13 @@
                 <p class="text-dark small fw-medium mb-2">{{ comp.tagline }}</p>
                 {% endif %}
 
-                <p class="text-muted small mb-3 flex-grow-1" style="line-height: 1.6;">
-                    {{ comp.description|truncatewords:24 }}
+                <p class="text-muted small mb-3 flex-grow-1" style="line-height: 1.55;">
+                    {{ comp.description|truncatewords:22 }}
                 </p>
 
-                <div class="d-flex flex-wrap gap-2 mb-3 text-muted" style="font-size: 0.72rem;">
-                    <div><i class="bi bi-geo-alt-fill text-primary me-1"></i>{{ comp.locations }}</div>
+                <!-- Company Specs -->
+                <div class="d-flex flex-wrap gap-2 mb-3 text-muted" style="font-size: 0.73rem;">
+                    <div><i class="bi bi-geo-alt-fill text-primary me-1"></i>{{ comp.headquarters|default:comp.locations }}</div>
                     {% if comp.funding_stage %}
                     <div><i class="bi bi-cash-coin text-success me-1"></i>{{ comp.funding_stage }}</div>
                     {% endif %}
@@ -276,46 +400,54 @@
                     {% endif %}
                 </div>
 
-                {% if comp.tech_stack %}
+                <!-- Technical Skills Required by this Company -->
                 <div class="mb-3">
-                    <span class="text-muted d-block mb-1" style="font-size: 0.68rem; font-weight: 700; text-transform: uppercase;">Tech Stack:</span>
+                    <span class="technical-skills-title d-block mb-1">
+                        <i class="bi bi-code-slash me-1 text-primary"></i>Technical Skills Required:
+                    </span>
                     <div class="d-flex flex-wrap gap-1">
-                        {% for tech in comp.tech_stack.split %}
-                        <span class="badge bg-light text-secondary border rounded-pill" style="font-size: 0.65rem;">{{ tech|cut:"," }}</span>
+                        {% for tech in comp.get_required_skills|slice:":5" %}
+                        <span class="skill-badge-pill">{{ tech }}</span>
+                        {% empty %}
+                        <span class="skill-badge-pill">Software Engineering</span>
                         {% endfor %}
                     </div>
                 </div>
-                {% endif %}
 
+                <!-- Open Jobs Counter Banner -->
                 <div class="p-2 bg-light rounded-3 d-flex align-items-center justify-content-between mb-3 border">
                     <span class="small fw-semibold text-dark">
                         <i class="bi bi-briefcase text-primary me-1"></i>
-                        {{ comp.open_positions }} Full-Time &middot; {{ comp.internship_opportunities }} Internships
+                        {{ comp.total_jobs|default:comp.open_positions }} Verified Opening(s)
                     </span>
                     <a href="{% url 'job_list' %}?tab=jobs&company_id={{ comp.id }}" class="small fw-bold text-primary text-decoration-none">
                         View Jobs &rarr;
                     </a>
                 </div>
 
+                <!-- Action Buttons: View Details & Connect -->
                 <div class="d-flex gap-2 pt-2 border-top mt-auto">
+                    <!-- Trigger Detailed Modal -->
+                    <button type="button" 
+                            class="btn btn-outline-primary btn-sm flex-fill open-company-details-btn"
+                            data-company-id="{{ comp.id }}">
+                        <i class="bi bi-info-circle me-1"></i>View Details
+                    </button>
+
                     {% if comp.id in connected_company_ids %}
-                    <button class="btn btn-outline-success btn-sm w-100 disabled" disabled>
-                        <i class="bi bi-check-circle-fill me-1"></i>Connected to Network
+                    <button class="btn btn-outline-success btn-sm flex-fill disabled" disabled>
+                        <i class="bi bi-check-circle-fill me-1"></i>Connected
                     </button>
                     {% else %}
                     <button type="button" 
-                            class="btn btn-outline-primary btn-sm flex-grow-1 open-connect-modal-btn"
+                            class="btn btn-primary btn-sm flex-fill open-connect-modal-btn"
                             data-company-id="{{ comp.id }}"
                             data-company-name="{{ comp.name }}"
                             data-industry="{{ comp.industry }}"
                             data-connect-url="{% url 'connect_company' comp.id %}">
-                        <i class="bi bi-person-plus-fill me-1"></i>Connect with {{ comp.name }}
+                        <i class="bi bi-person-plus-fill me-1"></i>Connect
                     </button>
                     {% endif %}
-                    
-                    <a href="{% url 'company_detail' comp.id %}" class="btn btn-light btn-sm border" title="View Full Company Profile">
-                        <i class="bi bi-arrow-up-right"></i>
-                    </a>
                 </div>
             </div>
         </div>
@@ -323,7 +455,7 @@
         <div class="col-12">
             <div class="empty-state text-center p-5 bg-white rounded-4 border">
                 <i class="bi bi-buildings fs-1 text-muted d-block mb-3"></i>
-                <h4 class="fw-bold">No startups or companies found</h4>
+                <h4 class="fw-bold">No companies found</h4>
                 <p class="text-muted">Try clearing your search query or company type filter.</p>
                 <a href="{% url 'job_list' %}?tab=companies" class="btn btn-outline-primary">View All Partners</a>
             </div>
@@ -334,16 +466,19 @@
 </div>
 </main>
 
-<!-- ================= MODAL 1: JOB APPLICATION FORM MODAL ================= -->
+<!-- ================= MODAL 1: JOB APPLICATION & RESUME MATCH MODAL ================= -->
 <div class="modal fade" id="jobApplicationModal" tabindex="-1" aria-labelledby="jobApplicationModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable">
         <div class="modal-content border-0 shadow-lg rounded-4">
             <div class="modal-header border-bottom bg-light px-4 py-3 rounded-top-4">
                 <div class="d-flex align-items-center gap-3">
-                    <span class="company-mark fw-bold" id="modalCompanyMark">C</span>
+                    <div class="company-logo-container" id="modalLogoContainer">
+                        <img src="" alt="Company logo" id="modalCompanyLogoImg" class="company-logo-img">
+                        <div class="company-fallback-badge" id="modalCompanyFallback" style="display: none;">CO</div>
+                    </div>
                     <div>
                         <div class="d-flex align-items-center gap-2">
-                            <span class="badge bg-primary-subtle text-primary border border-primary-subtle rounded-pill px-2 py-0" style="font-size: 0.65rem;" id="modalCompanyType">Startup</span>
+                            <span class="badge bg-primary-subtle text-primary border border-primary-subtle rounded-pill px-2 py-0" style="font-size: 0.65rem;" id="modalCompanyType">Enterprise</span>
                             <span class="small text-muted fw-bold" id="modalCompanyName">Company Name</span>
                         </div>
                         <h4 class="modal-title fs-5 fw-bold mb-0" id="modalJobTitle">Apply for Position</h4>
@@ -357,6 +492,25 @@
                 <div><i class="bi bi-geo-alt-fill text-primary me-1"></i><span id="modalJobLocation">Location</span> (<span id="modalJobWorkMode">Work Mode</span>)</div>
                 <div><i class="bi bi-cash-stack text-success me-1"></i><span id="modalJobSalary">Salary</span></div>
                 <div><i class="bi bi-briefcase-fill text-info me-1"></i><span id="modalJobType">Full-Time</span></div>
+                <div><i class="bi bi-calendar-event text-danger me-1"></i>Deadline: <span id="modalJobDeadline">Application Deadline</span></div>
+            </div>
+
+            <!-- Pre-Application Summary: Technical Skills, Qualifications, Experience -->
+            <div class="px-4 py-3 bg-white border-bottom">
+                <div class="row g-2">
+                    <div class="col-md-6">
+                        <span class="technical-skills-title d-block mb-1"><i class="bi bi-code-slash text-primary me-1"></i>Required Technical Skills:</span>
+                        <div class="d-flex flex-wrap gap-1" id="modalRequiredSkillsBadges">
+                            <!-- Populated dynamically via JS -->
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="small text-muted">
+                            <div><strong>Eligibility / Degree:</strong> <span id="modalQualificationsText">B.Tech / M.Tech in CS/IT</span></div>
+                            <div><strong>Experience Required:</strong> <span id="modalExperienceText">Fresher</span></div>
+                        </div>
+                    </div>
+                </div>
             </div>
 
             <div class="modal-body p-4">
@@ -371,7 +525,7 @@
                     <div class="mb-4">
                         <div class="d-flex align-items-center justify-content-between mb-3">
                             <h6 class="fw-bold text-dark mb-0"><i class="bi bi-person-badge text-primary me-2"></i>1. Candidate Profile</h6>
-                            <span class="badge bg-light text-muted border">Pre-filled from your account</span>
+                            <span class="badge bg-light text-muted border">Pre-filled from your profile</span>
                         </div>
                         <div class="row g-3">
                             <div class="col-md-6">
@@ -391,7 +545,7 @@
                                 <input type="text" name="college" class="form-control" value="{{ student_profile.college|default:'BPUT University' }}" required>
                             </div>
                             <div class="col-md-8">
-                                <label class="form-label small fw-semibold">Degree & Department *</label>
+                                <label class="form-label small fw-semibold">Degree & Major *</label>
                                 <input type="text" name="degree_major" class="form-control" value="{{ student_profile.degree|default:student_profile.department|default:'B.Tech Computer Science & Engineering' }}" required>
                             </div>
                             <div class="col-md-4">
@@ -401,30 +555,64 @@
                         </div>
                     </div>
 
-                    <!-- Section 2: Resume & Links -->
+                    <!-- Section 2: Resume Upload & Selection -->
                     <div class="mb-4 pt-3 border-top">
-                        <h6 class="fw-bold text-dark mb-3"><i class="bi bi-file-earmark-pdf text-danger me-2"></i>2. Resume & Professional Links</h6>
-                        
-                        <div class="mb-3">
-                            <label class="form-label small fw-semibold">Resume Attachment *</label>
-                            {% if student_profile.resume %}
-                            <div class="p-2 bg-light rounded-3 border mb-2 d-flex align-items-center justify-content-between">
-                                <div class="d-flex align-items-center gap-2">
-                                    <i class="bi bi-file-earmark-check-fill text-success fs-5"></i>
-                                    <div>
-                                        <div class="small fw-semibold">Profile Resume Attached</div>
-                                        <div class="text-muted" style="font-size: 0.72rem;">Default resume from your student profile</div>
-                                    </div>
-                                </div>
-                                <a href="{{ student_profile.resume.url }}" target="_blank" class="btn btn-sm btn-outline-primary py-1 px-2" style="font-size: 0.75rem;">
-                                    <i class="bi bi-eye"></i> View
-                                </a>
-                            </div>
-                            {% endif %}
-                            <input type="file" name="custom_resume" class="form-control" accept=".pdf,.doc,.docx">
-                            <div class="form-text" style="font-size: 0.75rem;">Upload custom PDF resume (optional if profile resume attached).</div>
+                        <div class="d-flex align-items-center justify-content-between mb-3">
+                            <h6 class="fw-bold text-dark mb-0"><i class="bi bi-file-earmark-pdf-fill text-danger me-2"></i>2. Resume Selection & Upload</h6>
+                            <span class="badge bg-light text-muted border">Accepts PDF, DOC, DOCX</span>
                         </div>
 
+                        {% if student_profile.resume %}
+                        <!-- Option A: Use Profile Resume -->
+                        <div class="p-3 bg-light rounded-3 border mb-3">
+                            <div class="form-check d-flex align-items-center justify-content-between">
+                                <div>
+                                    <input class="form-check-input" type="radio" name="resume_choice" id="useProfileResumeRadio" value="profile" checked onchange="toggleResumeUploadMode()">
+                                    <label class="form-check-label fw-bold small text-dark ms-2" for="useProfileResumeRadio">
+                                        Use Default Profile Resume
+                                    </label>
+                                    <div class="text-muted small ms-2">Pre-attached from your student profile</div>
+                                </div>
+                                <a href="{{ student_profile.resume.url }}" target="_blank" class="btn btn-sm btn-outline-primary py-1 px-3">
+                                    <i class="bi bi-eye me-1"></i>Preview Resume
+                                </a>
+                            </div>
+                        </div>
+
+                        <!-- Option B: Upload Custom Resume -->
+                        <div class="form-check mb-3">
+                            <input class="form-check-input" type="radio" name="resume_choice" id="useCustomResumeRadio" value="custom" onchange="toggleResumeUploadMode()">
+                            <label class="form-check-label fw-semibold small text-dark ms-2" for="useCustomResumeRadio">
+                                Upload a tailored custom resume for this specific position
+                            </label>
+                        </div>
+                        {% endif %}
+
+                        <!-- Drag and Drop Resume Container -->
+                        <div id="customResumeUploadContainer" class="{% if student_profile.resume %}d-none{% endif %} mb-3">
+                            <div class="resume-drop-zone" id="resumeDropZone" onclick="document.getElementById('customResumeInput').click();">
+                                <i class="bi bi-cloud-arrow-up text-primary fs-1 d-block mb-2"></i>
+                                <h6 class="fw-bold mb-1">Drag & drop your resume here, or <span class="text-primary text-decoration-underline">Browse File</span></h6>
+                                <p class="text-muted small mb-0">Supported formats: PDF, DOC, DOCX (Max 10MB)</p>
+                                <input type="file" name="custom_resume" id="customResumeInput" class="d-none" accept=".pdf,.doc,.docx" onchange="handleResumeFileSelected(this)">
+                            </div>
+
+                            <!-- Uploaded Resume File Preview Box -->
+                            <div id="resumeFilePreviewCard" class="resume-preview-card mt-2 d-none">
+                                <div class="d-flex align-items-center gap-3">
+                                    <i class="bi bi-file-earmark-check-fill text-success fs-3"></i>
+                                    <div>
+                                        <div class="fw-bold small text-dark" id="previewFileName">filename.pdf</div>
+                                        <div class="text-muted" style="font-size: 0.72rem;" id="previewFileSize">1.2 MB</div>
+                                    </div>
+                                </div>
+                                <button type="button" class="btn btn-sm btn-outline-danger" onclick="removeSelectedResumeFile()">
+                                    <i class="bi bi-trash me-1"></i>Remove
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Professional Links -->
                         <div class="row g-3">
                             <div class="col-md-4">
                                 <label class="form-label small fw-semibold"><i class="bi bi-globe text-primary me-1"></i>Portfolio Website</label>
@@ -441,14 +629,67 @@
                         </div>
                     </div>
 
-                    <!-- Section 3: Pitch & Availability -->
+                    <!-- Section 3: Live Resume + Technical Skill Matching Widget -->
+                    <div class="mb-4 pt-3 border-top">
+                        <div class="d-flex align-items-center justify-content-between mb-3">
+                            <h6 class="fw-bold text-dark mb-0"><i class="bi bi-stars text-warning me-2"></i>3. Live Resume + Job Skill Matching</h6>
+                            <span class="badge bg-success-subtle text-success border border-success-subtle" id="matchStatusBadge">Analyzed</span>
+                        </div>
+
+                        <div class="resume-match-widget p-3 rounded-4 bg-light border">
+                            <div class="d-flex align-items-center gap-3 mb-3">
+                                <div class="score-circle-badge score-circle-high" id="modalMatchScoreCircle">
+                                    <span id="modalMatchScoreVal">85%</span>
+                                    <span style="font-size: 0.55rem; font-weight: 600;">MATCH</span>
+                                </div>
+                                <div class="flex-grow-1">
+                                    <h6 class="fw-bold mb-1 text-dark">Technical Skill Fit Breakdown</h6>
+                                    <p class="text-muted small mb-0">Our AI evaluates your profile/resume against the exact technical requirements demanded for this role.</p>
+                                </div>
+                            </div>
+
+                            <div class="row g-2 pt-2 border-top">
+                                <!-- Matching Skills -->
+                                <div class="col-md-4">
+                                    <span class="small fw-bold text-success d-block mb-1">
+                                        <i class="bi bi-check-circle-fill me-1"></i>Matching Skills:
+                                    </span>
+                                    <div class="d-flex flex-wrap gap-1" id="modalMatchingSkillsList">
+                                        <!-- Injected dynamically -->
+                                    </div>
+                                </div>
+
+                                <!-- Missing Skills -->
+                                <div class="col-md-4">
+                                    <span class="small fw-bold text-danger d-block mb-1">
+                                        <i class="bi bi-x-circle-fill me-1"></i>Missing Skills:
+                                    </span>
+                                    <div class="d-flex flex-wrap gap-1" id="modalMissingSkillsList">
+                                        <!-- Injected dynamically -->
+                                    </div>
+                                </div>
+
+                                <!-- Recommended Skills to Learn -->
+                                <div class="col-md-4">
+                                    <span class="small fw-bold text-purple d-block mb-1" style="color: #6366f1;">
+                                        <i class="bi bi-star-fill text-warning me-1"></i>Recommended to Learn:
+                                    </span>
+                                    <div class="d-flex flex-wrap gap-1" id="modalRecommendedSkillsList">
+                                        <!-- Injected dynamically -->
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Section 4: Pitch & Availability -->
                     <div class="mb-3 pt-3 border-top">
-                        <h6 class="fw-bold text-dark mb-3"><i class="bi bi-chat-quote text-success me-2"></i>3. Pitch & Availability</h6>
+                        <h6 class="fw-bold text-dark mb-3"><i class="bi bi-chat-quote text-success me-2"></i>4. Pitch & Candidate Preferences</h6>
                         <div class="row g-3 mb-3">
                             <div class="col-md-4">
                                 <label class="form-label small fw-semibold">Experience Level</label>
                                 <select name="experience_level" class="form-select form-select-sm">
-                                    <option value="Fresher" selected>Fresher (2025/2026 Grad)</option>
+                                    <option value="Fresher" selected>Fresher (2025/2026 Batch)</option>
                                     <option value="0-1 Years">0 - 1 Years</option>
                                     <option value="1-2 Years">1 - 2 Years</option>
                                     <option value="Internship Experienced">Internship Experienced</option>
@@ -465,14 +706,14 @@
                             </div>
                             <div class="col-md-4">
                                 <label class="form-label small fw-semibold">Expected CTC / Stipend</label>
-                                <input type="text" name="expected_salary" class="form-control form-control-sm" placeholder="e.g. As per company standards">
+                                <input type="text" name="expected_salary" class="form-control form-control-sm" placeholder="e.g. As per company standard">
                             </div>
                         </div>
 
                         <div>
-                            <label class="form-label small fw-semibold">Pitch to Hiring Team / Why are you a great fit? *</label>
-                            <textarea name="cover_letter" rows="3" class="form-control" placeholder="Describe your relevant skills, projects, and why you are excited to join this startup/company..." required></textarea>
-                            <div class="form-text" style="font-size: 0.75rem;">A brief 2-3 sentence personalized pitch increases recruiter interview invitation rates by 3x!</div>
+                            <label class="form-label small fw-semibold">Brief Pitch to Hiring Team / Why are you a great fit? *</label>
+                            <textarea name="cover_letter" rows="3" class="form-control" placeholder="Mention your core technical projects, frameworks, and why you are excited to join this team..." required></textarea>
+                            <div class="form-text" style="font-size: 0.74rem;">A concise 2-3 sentence personalized pitch increases recruiter shortlisting rates significantly.</div>
                         </div>
                     </div>
 
@@ -488,7 +729,86 @@
     </div>
 </div>
 
-<!-- ================= MODAL 2: CONNECT WITH STARTUP MODAL ================= -->
+<!-- ================= MODAL 2: COMPANY DETAILS MODAL ================= -->
+<div class="modal fade" id="companyDetailsModal" tabindex="-1" aria-labelledby="companyDetailsModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable">
+        <div class="modal-content border-0 shadow-lg rounded-4">
+            <div class="modal-header border-bottom bg-light px-4 py-3 rounded-top-4">
+                <div class="d-flex align-items-center gap-3">
+                    <div class="company-logo-container lg" id="compModalLogoBox">
+                        <img src="" alt="Company Logo" class="company-logo-img" id="compModalLogoImg">
+                        <div class="company-fallback-badge" id="compModalFallback" style="display: none;">CO</div>
+                    </div>
+                    <div>
+                        <div class="d-flex align-items-center gap-2">
+                            <h4 class="modal-title fs-5 fw-bold mb-0 text-dark" id="compModalName">Company Name</h4>
+                            <i class="bi bi-patch-check-fill text-primary" title="Verified Partner"></i>
+                            <span class="badge bg-primary-subtle text-primary border border-primary-subtle rounded-pill px-2 py-0" style="font-size: 0.65rem;" id="compModalType">Enterprise</span>
+                        </div>
+                        <span class="small text-muted" id="compModalIndustry">Industry</span>
+                    </div>
+                </div>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+
+            <div class="modal-body p-4">
+                <!-- Tagline -->
+                <div class="p-3 bg-light rounded-3 border mb-3">
+                    <strong class="text-dark small d-block mb-1"><i class="bi bi-stars text-warning me-1"></i>Company Mission & Overview:</strong>
+                    <p class="small text-muted mb-0" id="compModalDescription">Description...</p>
+                </div>
+
+                <!-- Company Specs Grid -->
+                <div class="row g-3 mb-4">
+                    <div class="col-sm-6 col-md-3">
+                        <div class="p-2 border rounded-3 bg-white">
+                            <div class="text-muted" style="font-size: 0.68rem; font-weight: 700; text-transform: uppercase;">Headquarters</div>
+                            <div class="small fw-bold text-dark" id="compModalHQ">HQ Location</div>
+                        </div>
+                    </div>
+                    <div class="col-sm-6 col-md-3">
+                        <div class="p-2 border rounded-3 bg-white">
+                            <div class="text-muted" style="font-size: 0.68rem; font-weight: 700; text-transform: uppercase;">Locations</div>
+                            <div class="small fw-bold text-dark" id="compModalLocations">Locations</div>
+                        </div>
+                    </div>
+                    <div class="col-sm-6 col-md-3">
+                        <div class="p-2 border rounded-3 bg-white">
+                            <div class="text-muted" style="font-size: 0.68rem; font-weight: 700; text-transform: uppercase;">Team Size</div>
+                            <div class="small fw-bold text-dark" id="compModalTeamSize">Team Scale</div>
+                        </div>
+                    </div>
+                    <div class="col-sm-6 col-md-3">
+                        <div class="p-2 border rounded-3 bg-white">
+                            <div class="text-muted" style="font-size: 0.68rem; font-weight: 700; text-transform: uppercase;">Official Website</div>
+                            <div class="small fw-bold text-primary text-truncate">
+                                <a href="#" target="_blank" id="compModalWebsiteLink" class="text-decoration-none">Visit Website <i class="bi bi-box-arrow-up-right"></i></a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Required Technical Skills & Tech Stack -->
+                <div class="mb-4">
+                    <h6 class="fw-bold text-dark mb-2"><i class="bi bi-cpu-fill text-primary me-2"></i>Technical Skills Required by this Company</h6>
+                    <div class="d-flex flex-wrap gap-1" id="compModalSkillsList">
+                        <!-- Skills pills dynamically populated -->
+                    </div>
+                </div>
+
+                <!-- Open Jobs List at this Company -->
+                <div>
+                    <h6 class="fw-bold text-dark mb-3"><i class="bi bi-briefcase-fill text-success me-2"></i>Current Job Openings (<span id="compModalJobsCount">0</span>)</h6>
+                    <div class="d-flex flex-column gap-3" id="compModalJobsContainer">
+                        <!-- Injected dynamically -->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- ================= MODAL 3: CONNECT WITH COMPANY MODAL ================= -->
 <div class="modal fade" id="companyConnectModal" tabindex="-1" aria-labelledby="companyConnectModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content border-0 shadow-lg rounded-4">
@@ -496,8 +816,8 @@
                 <div class="d-flex align-items-center gap-2">
                     <i class="bi bi-rocket-takeoff-fill text-primary fs-4"></i>
                     <div>
-                        <h5 class="modal-title fw-bold mb-0" id="connectModalCompanyName">Connect with Startup</h5>
-                        <span class="small text-muted" id="connectModalIndustry">Join Founder & Recruiter Talent Network</span>
+                        <h5 class="modal-title fw-bold mb-0" id="connectModalCompanyName">Connect with Partner</h5>
+                        <span class="small text-muted" id="connectModalIndustry">Join Recruiter Talent Network</span>
                     </div>
                 </div>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
@@ -511,25 +831,23 @@
                     <input type="hidden" name="ajax" value="1">
                     
                     <p class="text-muted small mb-3">
-                        Express hiring interest to let founders and technical recruiters proactively reach out to you for current and upcoming openings.
+                        Express hiring interest to let recruiters and talent directors proactively discover your profile for current and upcoming opportunities.
                     </p>
 
                     <div class="mb-3">
                         <label class="form-label small fw-semibold">Preferred Domain / Role Interest *</label>
                         <select name="preferred_role" class="form-select">
-                            <option value="AI / ML Engineer" selected>AI / ML Engineer & GenAI</option>
-                            <option value="Backend Developer (Python/Go/Java)">Backend Developer (Python / Go / Java)</option>
-                            <option value="Full Stack Developer (React/Node/Django)">Full Stack Developer</option>
-                            <option value="Frontend Engineer (React/TypeScript)">Frontend Web / Mobile Engineer</option>
-                            <option value="Data Scientist / Analyst">Data Science & Analytics</option>
-                            <option value="DevOps & Cloud Intern">DevOps / Cloud Platform Intern</option>
-                            <option value="Software Engineering Intern">Summer / Full-Time Internship</option>
+                            <option value="Software Development Engineer" selected>Software Development Engineer (SDE)</option>
+                            <option value="AI / ML Engineer & GenAI">AI / ML Engineer & Data Science</option>
+                            <option value="Cloud Infrastructure & DevOps">Cloud Infrastructure & DevOps</option>
+                            <option value="Full Stack Web Developer">Full Stack Web Developer</option>
+                            <option value="Summer / Graduate Intern">Summer / Graduate Engineering Intern</option>
                         </select>
                     </div>
 
                     <div class="mb-3">
-                        <label class="form-label small fw-semibold">Introductory Note to Founders / Hiring Team (Optional)</label>
-                        <textarea name="note" rows="3" class="form-control" placeholder="Hi! I am a passionate developer with skills in Python, ML, and React. I'd love to contribute to your mission..."></textarea>
+                        <label class="form-label small fw-semibold">Introductory Note to Hiring Team (Optional)</label>
+                        <textarea name="note" rows="3" class="form-control" placeholder="Hi! I am a passionate developer with skills in Python, Java, and Cloud. I'd love to contribute to your mission..."></textarea>
                     </div>
 
                     <div class="modal-footer px-0 pb-0 border-top mt-4">
@@ -544,56 +862,280 @@
     </div>
 </div>
 
-<!-- JavaScript for Modal Interactivity -->
+<!-- ================= JAVASCRIPT LOGIC ================= -->
 <script>
+let currentApplyTriggerBtn = null;
+let currentConnectTriggerBtn = null;
+let activeJobIdForMatch = null;
+
+function toggleResumeUploadMode() {
+    const customRadio = document.getElementById('useCustomResumeRadio');
+    const uploadContainer = document.getElementById('customResumeUploadContainer');
+    if (customRadio && customRadio.checked) {
+        uploadContainer.classList.remove('d-none');
+    } else {
+        uploadContainer.classList.add('d-none');
+        // Trigger live match with profile resume
+        triggerLiveSkillMatch(activeJobIdForMatch, null);
+    }
+}
+
+function handleResumeFileSelected(input) {
+    if (input.files && input.files[0]) {
+        const file = input.files[0];
+        document.getElementById('previewFileName').textContent = file.name;
+        document.getElementById('previewFileSize').textContent = (file.size / (1024 * 1024)).toFixed(2) + ' MB';
+        document.getElementById('resumeFilePreviewCard').classList.remove('d-none');
+
+        // Trigger live match with selected custom file
+        triggerLiveSkillMatch(activeJobIdForMatch, file);
+    }
+}
+
+function removeSelectedResumeFile() {
+    const input = document.getElementById('customResumeInput');
+    input.value = '';
+    document.getElementById('resumeFilePreviewCard').classList.add('d-none');
+    // Fall back to profile resume match
+    triggerLiveSkillMatch(activeJobIdForMatch, null);
+}
+
+function triggerLiveSkillMatch(jobId, file) {
+    if (!jobId) return;
+
+    const formData = new FormData();
+    formData.append('job_id', jobId);
+    if (file) {
+        formData.append('resume', file);
+    }
+
+    fetch('/jobs/api/match/', {
+        method: 'POST',
+        body: formData,
+        headers: {
+            'X-CSRFToken': '{{ csrf_token }}',
+            'X-Requested-With': 'XMLHttpRequest',
+        }
+    })
+    .then(res => res.json())
+    .then(data => {
+        if (data.success) {
+            updateModalMatchWidget(data);
+        }
+    })
+    .catch(() => {});
+}
+
+function updateModalMatchWidget(data) {
+    const scoreVal = document.getElementById('modalMatchScoreVal');
+    const circle = document.getElementById('modalMatchScoreCircle');
+    scoreVal.textContent = data.match_percentage + '%';
+
+    circle.className = 'score-circle-badge';
+    if (data.match_percentage >= 70) {
+        circle.classList.add('score-circle-high');
+    } else if (data.match_percentage >= 45) {
+        circle.classList.add('score-circle-med');
+    } else {
+        circle.classList.add('score-circle-low');
+    }
+
+    // Matching skills
+    const matchingContainer = document.getElementById('modalMatchingSkillsList');
+    matchingContainer.innerHTML = '';
+    if (data.matched_skills && data.matched_skills.length > 0) {
+        data.matched_skills.forEach(s => {
+            const badge = document.createElement('span');
+            badge.className = 'badge bg-success-subtle text-success border border-success-subtle rounded-pill';
+            badge.style.fontSize = '0.72rem';
+            badge.textContent = s;
+            matchingContainer.appendChild(badge);
+        });
+    } else {
+        matchingContainer.innerHTML = '<span class="text-muted small">None detected</span>';
+    }
+
+    // Missing skills
+    const missingContainer = document.getElementById('modalMissingSkillsList');
+    missingContainer.innerHTML = '';
+    if (data.missing_skills && data.missing_skills.length > 0) {
+        data.missing_skills.forEach(s => {
+            const badge = document.createElement('span');
+            badge.className = 'badge bg-danger-subtle text-danger border border-danger-subtle rounded-pill';
+            badge.style.fontSize = '0.72rem';
+            badge.textContent = s;
+            missingContainer.appendChild(badge);
+        });
+    } else {
+        missingContainer.innerHTML = '<span class="text-muted small">None (All matched!)</span>';
+    }
+
+    // Recommended skills
+    const recommendedContainer = document.getElementById('modalRecommendedSkillsList');
+    recommendedContainer.innerHTML = '';
+    if (data.recommended_skills && data.recommended_skills.length > 0) {
+        data.recommended_skills.forEach(s => {
+            const badge = document.createElement('span');
+            badge.className = 'badge bg-primary-subtle text-primary border border-primary-subtle rounded-pill';
+            badge.style.fontSize = '0.72rem';
+            badge.textContent = s;
+            recommendedContainer.appendChild(badge);
+        });
+    } else {
+        recommendedContainer.innerHTML = '<span class="text-muted small">None</span>';
+    }
+}
+
 document.addEventListener('DOMContentLoaded', function() {
     const applyModal = new bootstrap.Modal(document.getElementById('jobApplicationModal'));
+    const companyDetailsModal = new bootstrap.Modal(document.getElementById('companyDetailsModal'));
     const connectModal = new bootstrap.Modal(document.getElementById('companyConnectModal'));
 
-    let currentApplyTriggerBtn = null;
-    let currentConnectTriggerBtn = null;
+    // Drag and drop events for resume
+    const dropZone = document.getElementById('resumeDropZone');
+    if (dropZone) {
+        ['dragenter', 'dragover'].forEach(eventName => {
+            dropZone.addEventListener(eventName, (e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                dropZone.classList.add('dragover');
+            });
+        });
+
+        ['dragleave', 'drop'].forEach(eventName => {
+            dropZone.addEventListener(eventName, (e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                dropZone.classList.remove('dragover');
+            });
+        });
+
+        dropZone.addEventListener('drop', (e) => {
+            const dt = e.dataTransfer;
+            const files = dt.files;
+            if (files.length > 0) {
+                document.getElementById('customResumeInput').files = files;
+                handleResumeFileSelected(document.getElementById('customResumeInput'));
+            }
+        });
+    }
+
+    // Handle Bookmark / Save Job Clicks
+    document.querySelectorAll('.btn-save-job').forEach(btn => {
+        btn.addEventListener('click', function(e) {
+            e.preventDefault();
+            e.stopPropagation();
+            const jobId = this.getAttribute('data-job-id');
+            const icon = this.querySelector('i');
+            
+            fetch('/jobs/api/save/' + jobId + '/', {
+                method: 'POST',
+                headers: {
+                    'X-CSRFToken': '{{ csrf_token }}',
+                    'X-Requested-With': 'XMLHttpRequest'
+                }
+            })
+            .then(res => res.json())
+            .then(data => {
+                if (data.success) {
+                    if (data.saved) {
+                        this.classList.add('active');
+                        icon.className = 'bi bi-bookmark-fill text-primary';
+                    } else {
+                        this.classList.remove('active');
+                        icon.className = 'bi bi-bookmark';
+                    }
+                }
+            })
+            .catch(() => {});
+        });
+    });
 
     // Handle "Apply Now" Button Clicks
     document.querySelectorAll('.open-apply-modal-btn').forEach(btn => {
         btn.addEventListener('click', function() {
             currentApplyTriggerBtn = this;
-            const jobId = this.getAttribute('data-job-id');
+            activeJobIdForMatch = this.getAttribute('data-job-id');
+
             const jobTitle = this.getAttribute('data-job-title');
-            const companyName = this.getAttribute('data-company');
+            const company = this.getAttribute('data-company');
+            const companyLogo = this.getAttribute('data-company-logo');
+            const companyInitials = this.getAttribute('data-company-initials');
             const companyType = this.getAttribute('data-company-type');
             const location = this.getAttribute('data-location');
             const salary = this.getAttribute('data-salary');
             const jobType = this.getAttribute('data-job-type');
             const workMode = this.getAttribute('data-work-mode');
+            const deadline = this.getAttribute('data-deadline');
+            const qualifications = this.getAttribute('data-qualifications');
+            const experience = this.getAttribute('data-experience');
+            const skillsStr = this.getAttribute('data-skills') || '';
             const applyUrl = this.getAttribute('data-apply-url');
 
-            // Populate Modal Content
+            // Populate Modal Top
             document.getElementById('modalJobTitle').textContent = jobTitle;
-            document.getElementById('modalCompanyName').textContent = companyName;
+            document.getElementById('modalCompanyName').textContent = company;
             document.getElementById('modalCompanyType').textContent = companyType;
-            document.getElementById('modalCompanyMark').textContent = companyName.charAt(0).toUpperCase();
             document.getElementById('modalJobLocation').textContent = location;
             document.getElementById('modalJobWorkMode').textContent = workMode;
             document.getElementById('modalJobSalary').textContent = salary;
             document.getElementById('modalJobType').textContent = jobType;
+            document.getElementById('modalJobDeadline').textContent = deadline;
+            document.getElementById('modalQualificationsText').textContent = qualifications;
+            document.getElementById('modalExperienceText').textContent = experience;
 
-            const form = document.getElementById('modalApplicationForm');
-            form.action = applyUrl;
+            // Logo
+            const logoImg = document.getElementById('modalCompanyLogoImg');
+            const fallbackBadge = document.getElementById('modalCompanyFallback');
+            if (companyLogo) {
+                logoImg.src = companyLogo;
+                logoImg.style.display = 'block';
+                fallbackBadge.style.display = 'none';
+                logoImg.onerror = function() {
+                    logoImg.style.display = 'none';
+                    fallbackBadge.style.display = 'flex';
+                };
+            } else {
+                logoImg.style.display = 'none';
+                fallbackBadge.style.display = 'flex';
+            }
+            fallbackBadge.textContent = companyInitials || 'CO';
 
-            // Reset alert box
+            // Populate Skills Badges in Modal Banner
+            const badgesContainer = document.getElementById('modalRequiredSkillsBadges');
+            badgesContainer.innerHTML = '';
+            if (skillsStr) {
+                skillsStr.split(',').forEach(s => {
+                    const clean = s.trim();
+                    if (clean) {
+                        const span = document.createElement('span');
+                        span.className = 'skill-badge-pill';
+                        span.textContent = clean;
+                        badgesContainer.appendChild(span);
+                    }
+                });
+            }
+
+            const appForm = document.getElementById('modalApplicationForm');
+            appForm.action = applyUrl;
+
             const alertBox = document.getElementById('modalAlertBox');
             alertBox.className = 'alert d-none';
             alertBox.textContent = '';
 
             const submitBtn = document.getElementById('modalSubmitBtn');
             submitBtn.disabled = false;
+            submitBtn.className = 'btn btn-primary px-4 fw-bold';
             submitBtn.innerHTML = '<i class="bi bi-send-fill me-2"></i>Confirm & Submit Application';
+
+            // Trigger initial real-time match evaluation
+            triggerLiveSkillMatch(activeJobIdForMatch, null);
 
             applyModal.show();
         });
     });
 
-    // Handle AJAX submission for Job Application Form
+    // Handle AJAX submission for Job Application
     const appForm = document.getElementById('modalApplicationForm');
     appForm.addEventListener('submit', function(e) {
         e.preventDefault();
@@ -619,7 +1161,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 alertBox.innerHTML = '<i class="bi bi-check-circle-fill fs-5"></i> <div><strong>Success!</strong> ' + data.message + '</div>';
                 
                 if (currentApplyTriggerBtn) {
-                    currentApplyTriggerBtn.outerHTML = '<button class="btn btn-outline-success disabled" disabled><i class="bi bi-check-circle-fill me-1"></i>Applied</button>';
+                    currentApplyTriggerBtn.outerHTML = '<button class="btn btn-outline-success btn-sm flex-fill disabled" disabled><i class="bi bi-check-circle-fill me-1"></i>Applied</button>';
                 }
 
                 submitBtn.className = 'btn btn-success px-4 fw-bold';
@@ -636,12 +1178,93 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         })
         .catch(err => {
-            // Fallback to standard form submit if fetch network fails
             appForm.submit();
         });
     });
 
-    // Handle "Connect with Startup" Button Clicks
+    // Handle "View Company Details" Modal Clicks
+    document.querySelectorAll('.open-company-details-btn').forEach(btn => {
+        btn.addEventListener('click', function() {
+            const compId = this.getAttribute('data-company-id');
+            fetch('/jobs/api/company/' + compId + '/')
+                .then(res => res.json())
+                .then(data => {
+                    if (data.success) {
+                        document.getElementById('compModalName').textContent = data.name;
+                        document.getElementById('compModalType').textContent = data.company_type;
+                        document.getElementById('compModalIndustry').textContent = data.industry;
+                        document.getElementById('compModalDescription').textContent = data.description || data.tagline;
+                        document.getElementById('compModalHQ').textContent = data.headquarters || data.locations;
+                        document.getElementById('compModalLocations').textContent = data.locations;
+                        document.getElementById('compModalTeamSize').textContent = data.employee_count;
+                        document.getElementById('compModalWebsiteLink').href = data.website || '#';
+
+                        const logoImg = document.getElementById('compModalLogoImg');
+                        const fallbackBadge = document.getElementById('compModalFallback');
+                        if (data.logo_url) {
+                            logoImg.src = data.logo_url;
+                            logoImg.style.display = 'block';
+                            fallbackBadge.style.display = 'none';
+                            logoImg.onerror = function() {
+                                logoImg.style.display = 'none';
+                                fallbackBadge.style.display = 'flex';
+                            };
+                        } else {
+                            logoImg.style.display = 'none';
+                            fallbackBadge.style.display = 'flex';
+                        }
+                        fallbackBadge.textContent = data.initials || 'CO';
+
+                        // Skills
+                        const skillsContainer = document.getElementById('compModalSkillsList');
+                        skillsContainer.innerHTML = '';
+                        if (data.required_skills && data.required_skills.length > 0) {
+                            data.required_skills.forEach(sk => {
+                                const pill = document.createElement('span');
+                                pill.className = 'skill-badge-pill';
+                                pill.textContent = sk;
+                                skillsContainer.appendChild(pill);
+                            });
+                        } else {
+                            skillsContainer.innerHTML = '<span class="skill-badge-pill">Software Engineering</span>';
+                        }
+
+                        // Jobs
+                        const jobsContainer = document.getElementById('compModalJobsContainer');
+                        const jobsCount = document.getElementById('compModalJobsCount');
+                        jobsCount.textContent = data.jobs ? data.jobs.length : 0;
+                        jobsContainer.innerHTML = '';
+
+                        if (data.jobs && data.jobs.length > 0) {
+                            data.jobs.forEach(j => {
+                                const card = document.createElement('div');
+                                card.className = 'p-3 bg-light rounded-3 border d-flex justify-content-between align-items-center flex-wrap gap-2';
+                                card.innerHTML = `
+                                    <div>
+                                        <h6 class="fw-bold mb-1"><a href="${j.detail_url}" class="text-dark text-decoration-none">${j.title}</a></h6>
+                                        <div class="small text-muted">
+                                            <span><i class="bi bi-geo-alt me-1"></i>${j.location} (${j.work_mode})</span> &middot; 
+                                            <span><i class="bi bi-cash-stack text-success me-1"></i>${j.salary}</span>
+                                        </div>
+                                    </div>
+                                    <div class="d-flex gap-2">
+                                        <a href="${j.detail_url}" class="btn btn-outline-primary btn-sm">Details</a>
+                                        <a href="${j.apply_url}" class="btn btn-primary btn-sm fw-bold">Apply</a>
+                                    </div>
+                                `;
+                                jobsContainer.appendChild(card);
+                            });
+                        } else {
+                            jobsContainer.innerHTML = '<div class="text-muted small">No verified positions open at this moment.</div>';
+                        }
+
+                        companyDetailsModal.show();
+                    }
+                });
+        });
+    });
+
+    // Handle "Connect with Company" Modal Clicks
     document.querySelectorAll('.open-connect-modal-btn').forEach(btn => {
         btn.addEventListener('click', function() {
             currentConnectTriggerBtn = this;
@@ -693,7 +1316,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 alertBox.innerHTML = '<i class="bi bi-check-circle-fill fs-5"></i> <div>' + data.message + '</div>';
 
                 if (currentConnectTriggerBtn) {
-                    currentConnectTriggerBtn.outerHTML = '<button class="btn btn-outline-success btn-sm w-100 disabled" disabled><i class="bi bi-check-circle-fill me-1"></i>Connected to Network</button>';
+                    currentConnectTriggerBtn.outerHTML = '<button class="btn btn-outline-success btn-sm flex-fill disabled" disabled><i class="bi bi-check-circle-fill me-1"></i>Connected</button>';
                 }
 
                 submitBtn.className = 'btn btn-success fw-bold';

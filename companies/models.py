@@ -1,4 +1,5 @@
 from django.db import models
+from .logos import resolve_company_logo, get_company_initials, get_company_brand_color
 
 
 class Company(models.Model):
@@ -21,6 +22,8 @@ class Company(models.Model):
     description = models.TextField(blank=True)
     website = models.URLField(blank=True)
     logo = models.ImageField(upload_to='company_logos/', blank=True, null=True)
+    logo_url = models.URLField(max_length=500, blank=True, default='', help_text="Direct vector/CDN logo URL")
+    headquarters = models.CharField(max_length=255, blank=True, default='')
     locations = models.CharField(max_length=255, blank=True)
     tech_stack = models.CharField(max_length=255, blank=True, default='')
     funding_stage = models.CharField(max_length=80, blank=True, default='Series A / Funded')
@@ -35,6 +38,31 @@ class Company(models.Model):
 
     def __str__(self):
         return self.name
+
+    @property
+    def get_logo_url(self):
+        return resolve_company_logo(self)
+
+    @property
+    def initials(self):
+        return get_company_initials(self.name)
+
+    @property
+    def brand_color(self):
+        return get_company_brand_color(self.name)
+
+    def get_required_skills(self):
+        """Returns unique list of skills demanded by this company's jobs"""
+        skills_set = set()
+        for job in self.jobs.filter(is_verified=True).prefetch_related('required_skills'):
+            for sk in job.required_skills.all():
+                skills_set.add(sk.name)
+        if not skills_set and self.tech_stack:
+            for item in self.tech_stack.split(','):
+                cleaned = item.strip()
+                if cleaned:
+                    skills_set.add(cleaned)
+        return sorted(skills_set)
 
 
 class CompanyConnection(models.Model):

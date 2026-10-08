@@ -4,12 +4,13 @@ from django.contrib import messages
 from django.http import JsonResponse
 from django.db.models import Q, Count
 from .models import Company, CompanyConnection
-from jobs.models import Job
+from jobs.models import Job, SavedJob
+from applications.models import Application
 
 
 def company_list(request):
     companies = Company.objects.annotate(
-        total_jobs=Count('jobs')
+        total_jobs=Count('jobs', filter=Q(jobs__is_active=True, jobs__is_verified=True))
     ).order_by('-total_jobs', 'name')
 
     query = request.GET.get('q', '').strip()
@@ -21,7 +22,8 @@ def company_list(request):
             Q(name__icontains=query) |
             Q(industry__icontains=query) |
             Q(tech_stack__icontains=query) |
-            Q(locations__icontains=query)
+            Q(locations__icontains=query) |
+            Q(headquarters__icontains=query)
         )
     if company_type:
         companies = companies.filter(company_type=company_type)
@@ -37,12 +39,12 @@ def company_list(request):
         )
 
     context = {
-        'companies': companies,
+        'companies': list(companies),
         'connected_ids': connected_ids,
         'query': query,
         'selected_type': company_type,
         'selected_industry': industry,
-        'company_types': ['Startup', 'Unicorn', 'Enterprise', 'Product Lab'],
+        'company_types': ['Enterprise', 'Unicorn', 'Startup', 'Product Lab'],
         'student_profile': student_profile,
     }
     return render(request, 'companies/company_list.html', context)
@@ -50,19 +52,26 @@ def company_list(request):
 
 def company_detail(request, company_id):
     company = get_object_or_404(Company, id=company_id)
-    jobs = company.jobs.filter(is_verified=True).order_by('-created_at')
+    jobs = company.jobs.filter(is_verified=True, is_active=True).prefetch_related('required_skills').order_by('-created_at')
 
     is_connected = False
     student_profile = None
+    applied_ids = set()
+    saved_job_ids = set()
     if request.user.is_authenticated and hasattr(request.user, 'student_profile'):
         student_profile = request.user.student_profile
         is_connected = CompanyConnection.objects.filter(student=student_profile, company=company).exists()
+        applied_ids = set(Application.objects.filter(student=student_profile, job__in=jobs).values_list('job_id', flat=True))
+        saved_job_ids = set(SavedJob.objects.filter(student=student_profile, job__in=jobs).values_list('job_id', flat=True))
 
     context = {
         'company': company,
         'jobs': jobs,
         'is_connected': is_connected,
         'student_profile': student_profile,
+        'applied_ids': applied_ids,
+        'saved_job_ids': saved_job_ids,
+        'required_skills': company.get_required_skills(),
     }
     return render(request, 'companies/company_detail.html', context)
 

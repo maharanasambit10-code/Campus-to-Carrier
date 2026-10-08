@@ -23,10 +23,22 @@
         <div class="col-lg-4">
             <div class="card border-0 shadow-sm rounded-4 p-4 sticky-top" style="top: 96px;">
                 <div class="d-flex align-items-center gap-3 mb-3">
-                    <span class="company-mark fs-4 fw-bold">{{ job.company.name|first|upper }}</span>
+                    <div class="company-logo-container lg">
+                        <img src="{{ job.company.get_logo_url }}" 
+                             alt="{{ job.company.name }} logo" 
+                             class="company-logo-img"
+                             onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+                        <div class="company-fallback-badge" style="display: none;">
+                            {{ job.company.initials }}
+                        </div>
+                    </div>
                     <div>
-                        <span class="badge bg-primary-subtle text-primary border border-primary-subtle rounded-pill px-2 py-1 mb-1">{{ job.company.company_type }}</span>
+                        <div class="d-flex align-items-center gap-1 mb-1">
+                            <span class="badge bg-primary-subtle text-primary border border-primary-subtle rounded-pill px-2 py-0" style="font-size: 0.65rem;">{{ job.company.company_type }}</span>
+                            <i class="bi bi-patch-check-fill text-primary" title="Verified Partner"></i>
+                        </div>
                         <h4 class="mb-0 fw-bold fs-5">{{ job.company.name }}</h4>
+                        <span class="text-muted small">{{ job.company.industry }}</span>
                     </div>
                 </div>
 
@@ -37,24 +49,25 @@
                     <div><i class="bi bi-cash-stack text-success me-2"></i>{{ job.salary|default:'Disclosed upon shortlist' }}</div>
                     <div><i class="bi bi-briefcase-fill text-info me-2"></i>{{ job.job_type }}</div>
                     <div><i class="bi bi-calendar-event text-danger me-2"></i>Apply by {{ job.application_deadline|date:'M d, Y' }}</div>
+                    <div><i class="bi bi-clock-history text-secondary me-2"></i>Experience: {{ job.experience_text|default:job.experience_required|default:'Fresher' }}</div>
                 </div>
 
-                {% if job.company.tagline %}
-                <div class="p-3 bg-light rounded-3 mb-3 border">
-                    <strong class="text-dark small d-block mb-1"><i class="bi bi-stars text-warning me-1"></i>About the Team:</strong>
-                    <p class="small text-muted mb-0">{{ job.company.tagline }}</p>
-                </div>
-                {% endif %}
-
+                <!-- Technical Skills Required -->
                 <div class="mb-3">
-                    <h6 class="fw-bold small text-uppercase text-muted">Required Skills</h6>
-                    <div class="d-flex flex-wrap gap-1 mt-2">
-                        {% for skill in job.required_skills.all %}
-                        <span class="badge bg-secondary-subtle text-dark rounded-pill">{{ skill.name }}</span>
+                    <h6 class="technical-skills-title mb-2"><i class="bi bi-code-slash text-primary me-1"></i>Technical Skills Required</h6>
+                    <div class="d-flex flex-wrap gap-1">
+                        {% for skill in job.all_skills_list %}
+                        <span class="skill-badge-pill">{{ skill }}</span>
                         {% empty %}
-                        <span class="text-muted small">General Software Engineering</span>
+                        <span class="skill-badge-pill">Software Engineering</span>
                         {% endfor %}
                     </div>
+                </div>
+
+                <!-- Eligibility & Qualifications Requirements -->
+                <div class="p-3 bg-light rounded-3 mb-3 border">
+                    <strong class="text-dark small d-block mb-1"><i class="bi bi-mortarboard text-warning me-1"></i>Eligibility Criteria:</strong>
+                    <p class="small text-muted mb-0">{{ job.qualifications|default:job.eligible_degree|default:'Engineering degree in CS/IT' }}</p>
                 </div>
 
                 <div class="pt-3 border-top mt-auto">
@@ -73,7 +86,7 @@
                         <i class="bi bi-file-earmark-check me-1"></i>Job Application Form
                     </span>
                     <h2 class="fw-bold mb-1">Submit Your Application</h2>
-                    <p class="text-muted small mb-0">Fill in your information below. Details from your profile have been automatically pre-filled.</p>
+                    <p class="text-muted small mb-0">Fill in your information below. Details from your profile have been pre-filled automatically.</p>
                 </div>
 
                 {% if existing_application %}
@@ -89,7 +102,7 @@
                     <a href="{% url 'job_list' %}" class="btn btn-outline-secondary ms-2">Explore More Jobs</a>
                 </div>
                 {% else %}
-                <form method="post" action="{% url 'apply_job' job.id %}" enctype="multipart/form-data">
+                <form method="post" action="{% url 'apply_job' job.id %}" enctype="multipart/form-data" id="jobApplyMainForm">
                     {% csrf_token %}
 
                     <!-- Section 1: Candidate Basic Information -->
@@ -123,31 +136,60 @@
                         </div>
                     </div>
 
-                    <!-- Section 2: Resume & Professional Portfolio -->
+                    <!-- Section 2: Resume Selection & Upload -->
                     <div class="mb-4 pt-3 border-top">
-                        <h5 class="fw-bold text-dark mb-3"><i class="bi bi-file-earmark-pdf text-danger me-2"></i>2. Resume & Portfolio</h5>
+                        <h5 class="fw-bold text-dark mb-3"><i class="bi bi-file-earmark-pdf-fill text-danger me-2"></i>2. Resume Selection & Upload</h5>
                         
-                        <div class="mb-3">
-                            <label class="form-label small fw-semibold">Resume / CV *</label>
-                            {% if profile.resume %}
-                            <div class="p-3 bg-light rounded-3 border mb-2 d-flex align-items-center justify-content-between">
-                                <div class="d-flex align-items-center gap-2">
-                                    <i class="bi bi-file-earmark-check-fill text-success fs-4"></i>
-                                    <div>
-                                        <div class="fw-semibold small">Default Profile Resume Attached</div>
-                                        <div class="text-muted" style="font-size: 0.75rem;">Your active resume is linked to this application.</div>
-                                    </div>
+                        {% if profile.resume %}
+                        <!-- Option A: Use Default Profile Resume -->
+                        <div class="p-3 bg-light rounded-3 border mb-3">
+                            <div class="form-check d-flex align-items-center justify-content-between">
+                                <div>
+                                    <input class="form-check-input" type="radio" name="use_profile_resume" id="pageUseProfileResume" value="1" checked onchange="toggleApplyPageResumeMode()">
+                                    <label class="form-check-label fw-bold small text-dark ms-2" for="pageUseProfileResume">
+                                        Use Default Profile Resume
+                                    </label>
+                                    <div class="text-muted small ms-2">Linked to your student profile account</div>
                                 </div>
-                                <a href="{{ profile.resume.url }}" target="_blank" class="btn btn-sm btn-outline-primary">
-                                    <i class="bi bi-eye me-1"></i>Preview
+                                <a href="{{ profile.resume.url }}" target="_blank" class="btn btn-sm btn-outline-primary px-3 py-1">
+                                    <i class="bi bi-eye me-1"></i>Preview Resume
                                 </a>
                             </div>
-                            <div class="form-text mb-2">Want to upload a customized resume tailored for this role?</div>
-                            {% endif %}
-                            <input type="file" name="custom_resume" class="form-control" accept=".pdf,.doc,.docx">
-                            <div class="form-text">PDF or DOCX format (Max 5MB).</div>
                         </div>
 
+                        <!-- Option B: Upload Custom Resume -->
+                        <div class="form-check mb-3">
+                            <input class="form-check-input" type="radio" name="use_profile_resume" id="pageUseCustomResume" value="0" onchange="toggleApplyPageResumeMode()">
+                            <label class="form-check-label fw-semibold small text-dark ms-2" for="pageUseCustomResume">
+                                Upload a custom resume tailored for {{ job.company.name }}
+                            </label>
+                        </div>
+                        {% endif %}
+
+                        <!-- Drag and Drop Resume Container -->
+                        <div id="pageCustomResumeUploadContainer" class="{% if profile.resume %}d-none{% endif %} mb-3">
+                            <div class="resume-drop-zone" id="pageResumeDropZone" onclick="document.getElementById('pageCustomResumeInput').click();">
+                                <i class="bi bi-cloud-arrow-up text-primary fs-1 d-block mb-2"></i>
+                                <h6 class="fw-bold mb-1">Drag & drop your resume here, or <span class="text-primary text-decoration-underline">Browse File</span></h6>
+                                <p class="text-muted small mb-0">Supported formats: PDF, DOC, DOCX (Max 10MB)</p>
+                                <input type="file" name="custom_resume" id="pageCustomResumeInput" class="d-none" accept=".pdf,.doc,.docx" onchange="handleApplyPageResumeSelected(this)">
+                            </div>
+
+                            <div id="pageResumePreviewCard" class="resume-preview-card mt-2 d-none">
+                                <div class="d-flex align-items-center gap-3">
+                                    <i class="bi bi-file-earmark-check-fill text-success fs-3"></i>
+                                    <div>
+                                        <div class="fw-bold small text-dark" id="pagePreviewFileName">filename.pdf</div>
+                                        <div class="text-muted" style="font-size: 0.72rem;" id="pagePreviewFileSize">1.2 MB</div>
+                                    </div>
+                                </div>
+                                <button type="button" class="btn btn-sm btn-outline-danger" onclick="removeApplyPageResume()">
+                                    <i class="bi bi-trash me-1"></i>Remove
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Links -->
                         <div class="row g-3">
                             <div class="col-md-4">
                                 <label class="form-label small fw-semibold"><i class="bi bi-globe text-primary me-1"></i>Portfolio Website</label>
@@ -164,9 +206,71 @@
                         </div>
                     </div>
 
-                    <!-- Section 3: Pitch & Availability -->
+                    <!-- Section 3: Live Resume Match & Skill Breakdown -->
                     <div class="mb-4 pt-3 border-top">
-                        <h5 class="fw-bold text-dark mb-3"><i class="bi bi-chat-quote text-success me-2"></i>3. Pitch to Founders & Hiring Team</h5>
+                        <h5 class="fw-bold text-dark mb-3"><i class="bi bi-stars text-warning me-2"></i>3. Live Technical Skill Match</h5>
+
+                        <div class="resume-match-widget p-3 rounded-4 bg-light border">
+                            <div class="d-flex align-items-center gap-3 mb-3">
+                                <div class="score-circle-badge {% if match_info.match_percentage >= 70 %}score-circle-high{% elif match_info.match_percentage >= 45 %}score-circle-med{% else %}score-circle-low{% endif %}" id="pageMatchCircle">
+                                    <span id="pageMatchPercentage">{{ match_info.match_percentage }}%</span>
+                                    <span style="font-size: 0.55rem; font-weight: 600;">MATCH</span>
+                                </div>
+                                <div class="flex-grow-1">
+                                    <h6 class="fw-bold mb-1 text-dark">Technical Skill Fit Analysis</h6>
+                                    <p class="text-muted small mb-0">Compared against {{ job.all_skills_list|length }} required skill(s) demanded for this role.</p>
+                                </div>
+                            </div>
+
+                            <div class="row g-2 pt-2 border-top">
+                                <!-- Matching Skills -->
+                                <div class="col-md-4">
+                                    <span class="small fw-bold text-success d-block mb-1">
+                                        <i class="bi bi-check-circle-fill me-1"></i>Matching Skills:
+                                    </span>
+                                    <div class="d-flex flex-wrap gap-1" id="pageMatchingList">
+                                        {% for s in match_info.matched_skills %}
+                                        <span class="badge bg-success-subtle text-success border border-success-subtle rounded-pill">{{ s }}</span>
+                                        {% empty %}
+                                        <span class="text-muted small">None detected</span>
+                                        {% endfor %}
+                                    </div>
+                                </div>
+
+                                <!-- Missing Skills -->
+                                <div class="col-md-4">
+                                    <span class="small fw-bold text-danger d-block mb-1">
+                                        <i class="bi bi-x-circle-fill me-1"></i>Missing Skills:
+                                    </span>
+                                    <div class="d-flex flex-wrap gap-1" id="pageMissingList">
+                                        {% for s in match_info.missing_skills %}
+                                        <span class="badge bg-danger-subtle text-danger border border-danger-subtle rounded-pill">{{ s }}</span>
+                                        {% empty %}
+                                        <span class="text-muted small">None (All matched!)</span>
+                                        {% endfor %}
+                                    </div>
+                                </div>
+
+                                <!-- Recommended Skills -->
+                                <div class="col-md-4">
+                                    <span class="small fw-bold text-purple d-block mb-1" style="color: #6366f1;">
+                                        <i class="bi bi-star-fill text-warning me-1"></i>Recommended to Learn:
+                                    </span>
+                                    <div class="d-flex flex-wrap gap-1" id="pageRecommendedList">
+                                        {% for s in match_info.recommended_skills %}
+                                        <span class="badge bg-primary-subtle text-primary border border-primary-subtle rounded-pill">{{ s }}</span>
+                                        {% empty %}
+                                        <span class="text-muted small">None</span>
+                                        {% endfor %}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Section 4: Pitch & Candidate Preferences -->
+                    <div class="mb-4 pt-3 border-top">
+                        <h5 class="fw-bold text-dark mb-3"><i class="bi bi-chat-quote text-success me-2"></i>4. Pitch & Candidate Preferences</h5>
                         
                         <div class="row g-3 mb-3">
                             <div class="col-md-4">
@@ -195,7 +299,7 @@
 
                         <div class="mb-3">
                             <label class="form-label small fw-semibold">Cover Note / Why are you excited about {{ job.company.name }}? *</label>
-                            <textarea name="cover_letter" rows="4" class="form-control" placeholder="Share why you're passionate about {{ job.company.name }}, your key projects relevant to {{ job.title }}, and what you can bring to the engineering team..." required></textarea>
+                            <textarea name="cover_letter" rows="4" class="form-control" placeholder="Share why you're passionate about {{ job.company.name }}, your key technical projects relevant to {{ job.title }}, and what you can bring to the engineering team..." required></textarea>
                             <div class="form-text">A concise, personalized pitch significantly increases recruiter response rates!</div>
                         </div>
                     </div>
@@ -203,7 +307,7 @@
                     <div class="pt-3 border-top d-flex align-items-center justify-content-between flex-wrap gap-3">
                         <a href="{% url 'job_detail' job.id %}" class="btn btn-outline-secondary">Cancel</a>
                         <button type="submit" class="btn btn-primary btn-lg px-4 fw-bold">
-                            <i class="bi bi-send-fill me-2"></i>Submit Application
+                            <i class="bi bi-send-fill me-2"></i>Confirm & Submit Application
                         </button>
                     </div>
                 </form>
@@ -213,4 +317,136 @@
     </div>
 </div>
 </main>
+
+<script>
+function toggleApplyPageResumeMode() {
+    const customRadio = document.getElementById('pageUseCustomResume');
+    const container = document.getElementById('pageCustomResumeUploadContainer');
+    if (customRadio && customRadio.checked) {
+        container.classList.remove('d-none');
+    } else {
+        container.classList.add('d-none');
+        triggerPageLiveMatch(null);
+    }
+}
+
+function handleApplyPageResumeSelected(input) {
+    if (input.files && input.files[0]) {
+        const file = input.files[0];
+        document.getElementById('pagePreviewFileName').textContent = file.name;
+        document.getElementById('pagePreviewFileSize').textContent = (file.size / (1024 * 1024)).toFixed(2) + ' MB';
+        document.getElementById('pageResumePreviewCard').classList.remove('d-none');
+        triggerPageLiveMatch(file);
+    }
+}
+
+function removeApplyPageResume() {
+    document.getElementById('pageCustomResumeInput').value = '';
+    document.getElementById('pageResumePreviewCard').classList.add('d-none');
+    triggerPageLiveMatch(null);
+}
+
+function triggerPageLiveMatch(file) {
+    const formData = new FormData();
+    formData.append('job_id', '{{ job.id }}');
+    if (file) {
+        formData.append('resume', file);
+    }
+
+    fetch('/jobs/api/match/', {
+        method: 'POST',
+        body: formData,
+        headers: {
+            'X-CSRFToken': '{{ csrf_token }}',
+            'X-Requested-With': 'XMLHttpRequest',
+        }
+    })
+    .then(res => res.json())
+    .then(data => {
+        if (data.success) {
+            document.getElementById('pageMatchPercentage').textContent = data.match_percentage + '%';
+            const circle = document.getElementById('pageMatchCircle');
+            circle.className = 'score-circle-badge';
+            if (data.match_percentage >= 70) {
+                circle.classList.add('score-circle-high');
+            } else if (data.match_percentage >= 45) {
+                circle.classList.add('score-circle-med');
+            } else {
+                circle.classList.add('score-circle-low');
+            }
+
+            // Matching skills
+            const matchEl = document.getElementById('pageMatchingList');
+            matchEl.innerHTML = '';
+            if (data.matched_skills && data.matched_skills.length > 0) {
+                data.matched_skills.forEach(s => {
+                    const badge = document.createElement('span');
+                    badge.className = 'badge bg-success-subtle text-success border border-success-subtle rounded-pill';
+                    badge.textContent = s;
+                    matchEl.appendChild(badge);
+                });
+            } else {
+                matchEl.innerHTML = '<span class="text-muted small">None detected</span>';
+            }
+
+            // Missing skills
+            const missEl = document.getElementById('pageMissingList');
+            missEl.innerHTML = '';
+            if (data.missing_skills && data.missing_skills.length > 0) {
+                data.missing_skills.forEach(s => {
+                    const badge = document.createElement('span');
+                    badge.className = 'badge bg-danger-subtle text-danger border border-danger-subtle rounded-pill';
+                    badge.textContent = s;
+                    missEl.appendChild(badge);
+                });
+            } else {
+                missEl.innerHTML = '<span class="text-muted small">None (All matched!)</span>';
+            }
+
+            // Recommended skills
+            const recEl = document.getElementById('pageRecommendedList');
+            recEl.innerHTML = '';
+            if (data.recommended_skills && data.recommended_skills.length > 0) {
+                data.recommended_skills.forEach(s => {
+                    const badge = document.createElement('span');
+                    badge.className = 'badge bg-primary-subtle text-primary border border-primary-subtle rounded-pill';
+                    badge.textContent = s;
+                    recEl.appendChild(badge);
+                });
+            }
+        }
+    })
+    .catch(() => {});
+}
+
+document.addEventListener('DOMContentLoaded', function() {
+    const dropZone = document.getElementById('pageResumeDropZone');
+    if (dropZone) {
+        ['dragenter', 'dragover'].forEach(eventName => {
+            dropZone.addEventListener(eventName, (e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                dropZone.classList.add('dragover');
+            });
+        });
+
+        ['dragleave', 'drop'].forEach(eventName => {
+            dropZone.addEventListener(eventName, (e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                dropZone.classList.remove('dragover');
+            });
+        });
+
+        dropZone.addEventListener('drop', (e) => {
+            const dt = e.dataTransfer;
+            const files = dt.files;
+            if (files.length > 0) {
+                document.getElementById('pageCustomResumeInput').files = files;
+                handleApplyPageResumeSelected(document.getElementById('pageCustomResumeInput'));
+            }
+        });
+    }
+});
+</script>
 {% endblock %}

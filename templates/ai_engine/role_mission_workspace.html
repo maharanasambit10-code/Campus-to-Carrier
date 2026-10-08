@@ -1,0 +1,132 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}{{ mission.title }} | CampusLink AI Mission{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <!-- Header Card (Slide 5) -->
+    <div class="card border-0 shadow-sm rounded-4 mb-4 p-4 p-md-5 bg-dark text-white">
+        <div class="d-flex justify-content-between align-items-center flex-wrap gap-3 mb-3">
+            <div>
+                <span class="badge text-bg-warning text-dark px-3 py-1 rounded-pill fw-bold text-uppercase mb-2">04 • AI FEATURE</span>
+                <h1 class="h2 fw-bold text-white mb-1">The 15-minute Role Mission</h1>
+                <p class="text-secondary mb-0">Instead of asking <em>"Do you know SQL?"</em>, CampusLink asks the candidate to prove it.</p>
+            </div>
+            <div class="text-end">
+                <span class="badge bg-danger fs-6 px-3 py-2 rounded-pill"><i class="bi bi-clock me-1"></i> <span id="missionTimer">15:00</span></span>
+            </div>
+        </div>
+
+        <!-- Role Mission Banner -->
+        <div class="p-4 rounded-4 bg-white bg-opacity-10 border border-white border-opacity-10">
+            <div class="d-flex align-items-center gap-2 mb-2">
+                <span class="badge bg-primary text-white rounded-pill">MISSION</span>
+                <h4 class="h5 fw-bold text-white mb-0">{{ mission.target_role|upper }}</h4>
+            </div>
+            <p class="mb-0 text-light fs-6">
+                <strong>Scenario:</strong> {{ mission.scenario_brief }}
+            </p>
+        </div>
+    </div>
+
+    <!-- Interactive Workspace Form -->
+    <div class="card border-0 shadow-sm rounded-4 p-4 p-md-5 bg-white">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h4 class="fw-bold mb-0">Candidate Problem-Solving Workspace</h4>
+            <button type="button" class="btn btn-outline-primary btn-sm rounded-pill px-3 fw-bold" onclick="autoFillDemoResponse()">
+                <i class="bi bi-magic me-1"></i> Quick Demo Solution
+            </button>
+        </div>
+
+        <form method="post" action="{% url 'role_mission_workspace' slug=mission.slug %}">
+            {% csrf_token %}
+
+            <!-- TASK 1 (Slide 5) -->
+            <div class="mb-4 p-3 rounded-4 bg-light border">
+                <div class="d-flex align-items-center gap-2 mb-2">
+                    <span class="badge bg-primary text-white rounded-pill">TASK 1</span>
+                    <label class="form-label fw-bold mb-0 text-dark">Identify 2 metrics you would inspect.</label>
+                </div>
+                <p class="text-muted small mb-2">What quantitative signals or user funnels isolate the 12% drop in repeat purchases?</p>
+                <textarea name="task1_answer" id="task1_input" rows="3" class="form-control rounded-3" placeholder="e.g. 1. 30-Day Cohort Repeat Order Rate, 2. Time-to-Second-Purchase and post-purchase customer support return complaints." required>{{ previous_submission.task1_answer|default:'' }}</textarea>
+            </div>
+
+            <!-- TASK 2 (Slide 5) -->
+            <div class="mb-4 p-3 rounded-4 bg-light border">
+                <div class="d-flex align-items-center gap-2 mb-2">
+                    <span class="badge bg-primary text-white rounded-pill">TASK 2</span>
+                    <label class="form-label fw-bold mb-0 text-dark">Write one SQL query or explain the logic.</label>
+                </div>
+                <p class="text-muted small mb-2">Query telemetry/orders to calculate repeat purchase rate per cohort month.</p>
+                <textarea name="task2_answer" id="task2_input" rows="6" class="form-control font-monospace rounded-3" placeholder="SELECT 
+    DATE_TRUNC('month', first_order_date) AS cohort_month,
+    COUNT(DISTINCT user_id) AS total_users,
+    COUNT(DISTINCT CASE WHEN order_count > 1 THEN user_id END) AS repeat_users
+FROM user_order_summary
+GROUP BY 1;" required>{{ previous_submission.task2_answer|default:'' }}</textarea>
+            </div>
+
+            <!-- TASK 3 (Slide 5) -->
+            <div class="mb-4 p-3 rounded-4 bg-light border">
+                <div class="d-flex align-items-center gap-2 mb-2">
+                    <span class="badge bg-primary text-white rounded-pill">TASK 3</span>
+                    <label class="form-label fw-bold mb-0 text-dark">Give one business action based on the result.</label>
+                </div>
+                <p class="text-muted small mb-2">Translate the analytical diagnosis into an actionable operational intervention for the e-commerce team.</p>
+                <textarea name="task3_answer" id="task3_input" rows="3" class="form-control rounded-3" placeholder="e.g. Trigger an automated personalized re-engagement incentive via email/WhatsApp on Day 14 for first-time buyers with cart-abandonment coupons." required>{{ previous_submission.task3_answer|default:'' }}</textarea>
+            </div>
+
+            <!-- Submission Footer -->
+            <div class="d-flex justify-content-between align-items-center flex-wrap gap-3">
+                <div class="text-muted small">
+                    <i class="bi bi-robot text-primary me-1"></i> AI will evaluate across <strong>Logic</strong>, <strong>SQL</strong>, and <strong>Business thinking</strong>.
+                </div>
+                <button type="submit" class="btn btn-primary btn-lg rounded-pill px-5 fw-bold shadow">
+                    Submit for AI Evaluation <i class="bi bi-arrow-right ms-2"></i>
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<script>
+// 15-minute countdown timer simulation
+let secondsLeft = 15 * 60;
+const timerEl = document.getElementById('missionTimer');
+if (timerEl) {
+    setInterval(() => {
+        if (secondsLeft > 0) {
+            secondsLeft--;
+            const m = Math.floor(secondsLeft / 60);
+            const s = secondsLeft % 60;
+            timerEl.innerText = `${m}:${s < 10 ? '0' : ''}${s}`;
+        }
+    }, 1000);
+}
+
+function autoFillDemoResponse() {
+    document.getElementById('task1_input').value = 
+`1. 30-Day Cohort Repeat Purchase Rate: To measure the drop-off rate between initial purchase and subsequent orders across summer discount cohorts.
+2. Time-to-Second-Order & Refund Velocity: To verify whether delivery delays or product dissatisfaction prompted customers not to return.`;
+
+    document.getElementById('task2_input').value = 
+`SELECT 
+    DATE_TRUNC('month', o.order_date) AS cohort_month,
+    COUNT(DISTINCT o.user_id) AS total_customers,
+    COUNT(DISTINCT CASE WHEN user_orders.order_count >= 2 THEN o.user_id END) AS repeat_buyers,
+    ROUND(COUNT(DISTINCT CASE WHEN user_orders.order_count >= 2 THEN o.user_id END)::decimal / COUNT(DISTINCT o.user_id) * 100, 2) AS repeat_rate_pct
+FROM orders o
+JOIN (
+    SELECT user_id, COUNT(order_id) AS order_count
+    FROM orders
+    GROUP BY user_id
+) user_orders ON o.user_id = user_orders.user_id
+GROUP BY 1
+ORDER BY 1 DESC;`;
+
+    document.getElementById('task3_input').value = 
+`Implement an automated personalized re-engagement workflow triggered on Day 14 post-purchase. Provide a tailored replenishment incentive and prompt a 1-click satisfaction check to capture support issues before customer churn becomes permanent.`;
+}
+</script>
+{% endblock %}

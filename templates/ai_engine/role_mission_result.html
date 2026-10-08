@@ -1,0 +1,132 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Evaluation Report | CampusLink AI Mission{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <!-- Success Banner -->
+    <div class="alert alert-success border-0 rounded-4 shadow-sm p-4 mb-4 d-flex justify-content-between align-items-center flex-wrap gap-3">
+        <div class="d-flex align-items-center gap-3">
+            <div class="badge bg-success rounded-circle p-3 fs-4"><i class="bi bi-patch-check-fill"></i></div>
+            <div>
+                <h4 class="fw-bold mb-1">Role Mission Successfully Evaluated!</h4>
+                <p class="mb-0 text-success-emphasis">Tangible evidence captured & added directly to your candidate Proof Passport and Evidence Trail.</p>
+            </div>
+        </div>
+        <a href="{% url 'readiness_score' %}" class="btn btn-success rounded-pill px-4 fw-bold">
+            View Updated Readiness <i class="bi bi-arrow-right ms-1"></i>
+        </a>
+    </div>
+
+    <!-- The 3 Pillars of AI Evaluation & Result (Slide 5) -->
+    <div class="card border-0 shadow-sm rounded-4 mb-5 p-4 p-md-5 bg-white">
+        <div class="d-flex justify-content-between align-items-center flex-wrap gap-2 mb-3">
+            <span class="badge bg-primary-subtle text-primary fw-bold px-3 py-1 rounded-pill">04 • AI EVALUATION</span>
+            <span class="text-muted small">Submitted on {{ submission.submitted_at|date:'d M Y, H:i' }}</span>
+        </div>
+        <h2 class="display-6 fw-bold text-dark mb-4">{{ mission.title }}</h2>
+
+        <div class="row g-4 align-items-center mb-5">
+            <!-- Dimensions (Logic, SQL, Business Thinking) -->
+            <div class="col-lg-7">
+                <h5 class="fw-bold mb-3"><i class="bi bi-bar-chart-steps text-primary me-2"></i>AI Dimensional Evaluation</h5>
+                <div class="row g-3">
+                    <div class="col-md-4">
+                        <div class="p-3 rounded-4 bg-light text-center border">
+                            <span class="text-muted small d-block mb-1">Logic</span>
+                            <h3 class="fw-bold text-primary mb-1">{{ submission.logic_score }}/100</h3>
+                            <small class="text-success fw-semibold"><i class="bi bi-check-circle"></i> Strong Metric Selection</small>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="p-3 rounded-4 bg-light text-center border">
+                            <span class="text-muted small d-block mb-1">SQL</span>
+                            <h3 class="fw-bold text-primary mb-1">{{ submission.sql_score }}/100</h3>
+                            <small class="text-warning fw-semibold"><i class="bi bi-exclamation-circle"></i> Clean syntax, practice JOINs</small>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="p-3 rounded-4 bg-light text-center border">
+                            <span class="text-muted small d-block mb-1">Business Thinking</span>
+                            <h3 class="fw-bold text-primary mb-1">{{ submission.business_thinking_score }}/100</h3>
+                            <small class="text-success fw-semibold"><i class="bi bi-check-circle"></i> Actionable ROI intervention</small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- RESULT CARD MATCHING SLIDE 5: 78 / 100 • Evidence captured -->
+            <div class="col-lg-5 text-center">
+                <div class="p-4 rounded-4 shadow-sm border" style="background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%);">
+                    <span class="badge bg-primary text-white px-3 py-1 rounded-pill fw-bold mb-2">RESULT</span>
+                    <div class="display-3 fw-bold text-primary mb-1">{{ submission.overall_score }} / 100</div>
+                    <h5 class="fw-bold text-success mb-2"><i class="bi bi-shield-fill-check me-1"></i>Evidence Captured</h5>
+                    <p class="small text-muted mb-0">Role Fit re-scored: <strong>82% → 91%</strong> (+9% candidate boost)</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- NEXT GAP CALLOUT MATCHING SLIDE 5 -->
+        <div class="p-4 rounded-4 border border-warning bg-warning bg-opacity-10 mb-4">
+            <div class="d-flex justify-content-between align-items-center flex-wrap gap-3">
+                <div>
+                    <span class="badge bg-warning text-dark fw-bold px-3 py-1 rounded-pill mb-2">NEXT GAP IDENTIFIED</span>
+                    <h4 class="fw-bold text-dark mb-1">{{ submission.next_gap }}</h4>
+                    <p class="text-dark opacity-80 mb-0 small">Practicing complex multi-table JOINs and window CTEs will close candidate's final technical gap.</p>
+                </div>
+                <a href="{% url 'role_mission_default' %}" class="btn btn-warning text-dark fw-bold rounded-pill px-4 py-2 shadow-sm">
+                    Launch 12-min Mission <i class="bi bi-arrow-right ms-1"></i>
+                </a>
+            </div>
+        </div>
+
+        <!-- Candidate Submitted Solutions Summary -->
+        <h5 class="fw-bold mb-3">Evaluated Submission Artifacts</h5>
+        <div class="accordion rounded-4 overflow-hidden border" id="submissionAccordion">
+            <div class="accordion-item border-0 border-bottom">
+                <h2 class="accordion-header">
+                    <button class="accordion-button fw-bold" type="button" data-bs-toggle="collapse" data-bs-target="#task1Collapse">
+                        Task 1 Solution: Inspected Metrics
+                    </button>
+                </h2>
+                <div id="task1Collapse" class="accordion-collapse collapse show">
+                    <div class="accordion-body bg-light text-dark small">
+                        {{ submission.task1_answer|linebreaks }}
+                    </div>
+                </div>
+            </div>
+            <div class="accordion-item border-0 border-bottom">
+                <h2 class="accordion-header">
+                    <button class="accordion-button collapsed fw-bold" type="button" data-bs-toggle="collapse" data-bs-target="#task2Collapse">
+                        Task 2 Solution: SQL Query & Aggregation Logic
+                    </button>
+                </h2>
+                <div id="task2Collapse" class="accordion-collapse collapse">
+                    <div class="accordion-body bg-dark text-light font-monospace small">
+                        <pre class="m-0 text-white"><code>{{ submission.task2_answer }}</code></pre>
+                    </div>
+                </div>
+            </div>
+            <div class="accordion-item border-0">
+                <h2 class="accordion-header">
+                    <button class="accordion-button collapsed fw-bold" type="button" data-bs-toggle="collapse" data-bs-target="#task3Collapse">
+                        Task 3 Solution: Business Action & Retention Plan
+                    </button>
+                </h2>
+                <div id="task3Collapse" class="accordion-collapse collapse">
+                    <div class="accordion-body bg-light text-dark small">
+                        {{ submission.task3_answer|linebreaks }}
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="mt-4 text-end">
+            <a href="{% url 'readiness_score' %}" class="btn btn-primary rounded-pill px-4 fw-bold">
+                View Updated Evidence Trail <i class="bi bi-arrow-right ms-1"></i>
+            </a>
+        </div>
+    </div>
+</div>
+{% endblock %}

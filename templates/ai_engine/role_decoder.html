@@ -1,0 +1,257 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Role Decoder | CampusLink Proof Intelligence{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <!-- Top Metric Status Bar (Slide 1) -->
+    <div class="p-3 mb-4 rounded-4 shadow-sm border bg-dark text-white d-flex flex-wrap justify-content-between align-items-center gap-3">
+        <div class="d-flex align-items-center gap-3">
+            <span class="badge text-bg-primary px-3 py-2 rounded-pill fw-bold text-uppercase">ENGINE 01</span>
+            <div>
+                <h5 class="mb-0 fw-bold">ROLE DECODER</h5>
+                <small class="text-secondary">AI Placement Readiness & Proof Intelligence Platform</small>
+            </div>
+        </div>
+        <div class="d-flex flex-wrap gap-4 align-items-center">
+            <div class="text-center px-2 border-end border-secondary border-opacity-50">
+                <div class="text-secondary small fw-semibold text-uppercase">Role Fit</div>
+                <div class="fs-6 fw-bold text-primary">82% • Data Analyst</div>
+            </div>
+            <div class="text-center px-2 border-end border-secondary border-opacity-50">
+                <div class="text-secondary small fw-semibold text-uppercase">Proof Coverage</div>
+                <div class="fs-6 fw-bold text-success">7 / 9 skills verified</div>
+            </div>
+            <div class="text-center px-2">
+                <div class="text-secondary small fw-semibold text-uppercase">Next Action</div>
+                <a href="{% url 'role_mission_default' %}" class="fs-6 fw-bold text-warning text-decoration-none">15-min SQL mission <i class="bi bi-arrow-right"></i></a>
+            </div>
+        </div>
+    </div>
+
+    <!-- The Live Career Readiness Graph (Slide 3) -->
+    <div class="card border-0 shadow-sm rounded-4 mb-5 overflow-hidden bg-white">
+        <div class="card-body p-4 p-md-5">
+            <div class="d-flex justify-content-between align-items-center flex-wrap gap-2 mb-3">
+                <span class="badge bg-primary-subtle text-primary fw-bold px-3 py-1 rounded-pill">02 • THE NEW IDEA</span>
+                <span class="small text-muted fw-semibold">Not another job portal. Decision-ready evidence.</span>
+            </div>
+            <h2 class="fw-bold mb-2">Live Career Readiness Graph</h2>
+            <p class="text-muted mb-4">Every role is converted into skills; every skill is connected to evidence; every gap becomes an action.</p>
+
+            <div class="row g-3 align-items-center text-center mt-2">
+                <div class="col-6 col-md">
+                    <div class="p-3 rounded-4 bg-primary text-white shadow-sm h-100">
+                        <div class="badge bg-white text-primary rounded-pill mb-2">STEP 1</div>
+                        <h6 class="fw-bold mb-1">JOB POST</h6>
+                        <small class="opacity-75 d-block">Extract role requirements</small>
+                    </div>
+                </div>
+                <div class="col-12 col-md-auto d-none d-md-block text-muted fs-4">→</div>
+                <div class="col-6 col-md">
+                    <div class="p-3 rounded-4 bg-light border text-dark h-100">
+                        <div class="badge bg-secondary text-white rounded-pill mb-2">STEP 2</div>
+                        <h6 class="fw-bold mb-1">SKILL GRAPH</h6>
+                        <small class="text-muted d-block">Normalize skills & weights</small>
+                    </div>
+                </div>
+                <div class="col-12 col-md-auto d-none d-md-block text-muted fs-4">→</div>
+                <div class="col-6 col-md">
+                    <div class="p-3 rounded-4 bg-light border text-dark h-100">
+                        <div class="badge bg-secondary text-white rounded-pill mb-2">STEP 3</div>
+                        <h6 class="fw-bold mb-1">PROOF</h6>
+                        <small class="text-muted d-block">Projects + assessments + work</small>
+                    </div>
+                </div>
+                <div class="col-12 col-md-auto d-none d-md-block text-muted fs-4">→</div>
+                <div class="col-6 col-md">
+                    <div class="p-3 rounded-4 bg-light border text-dark h-100">
+                        <div class="badge bg-secondary text-white rounded-pill mb-2">STEP 4</div>
+                        <h6 class="fw-bold mb-1">READINESS</h6>
+                        <small class="text-muted d-block">Evidence-backed fit</small>
+                    </div>
+                </div>
+                <div class="col-12 col-md-auto d-none d-md-block text-muted fs-4">→</div>
+                <div class="col-6 col-md">
+                    <div class="p-3 rounded-4 bg-success-subtle text-success border border-success border-opacity-25 h-100">
+                        <div class="badge bg-success text-white rounded-pill mb-2">STEP 5</div>
+                        <h6 class="fw-bold mb-1">ACTION</h6>
+                        <small class="text-muted d-block">One next mission</small>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row g-4">
+        <!-- Input Form: Paste Job Description -->
+        <div class="col-lg-5">
+            <div class="card border-0 shadow-sm rounded-4 h-100 p-4 bg-white">
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                    <h4 class="fw-bold mb-0"><i class="bi bi-file-earmark-code text-primary me-2"></i>Paste Job Description</h4>
+                    <span class="badge bg-light text-dark border">AI Parser</span>
+                </div>
+                <p class="text-muted small mb-4">Paste any job description or select an active opening. The AI Role Decoder extracts verified skill weights and must-haves.</p>
+
+                <form method="post" action="{% url 'role_decoder' %}">
+                    {% csrf_token %}
+                    <div class="mb-3">
+                        <label class="form-label fw-semibold small">Target Role Title</label>
+                        <input type="text" name="job_title" class="form-control rounded-3" value="{{ analysis.job_title|default:'Junior Data Analyst' }}" required>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label fw-semibold small">Company Name</label>
+                        <input type="text" name="company_name" class="form-control rounded-3" value="{{ analysis.company_name|default:'CloudCart E-Commerce' }}">
+                    </div>
+                    <div class="mb-3">
+                        <div class="d-flex justify-content-between align-items-center mb-1">
+                            <label class="form-label fw-semibold small mb-0">Job Description Text</label>
+                            <button type="button" class="btn btn-link btn-sm text-decoration-none p-0 small" onclick="loadDefaultJD()">Insert Sample JD</button>
+                        </div>
+                        <textarea name="job_description" id="jobDescArea" rows="10" class="form-control rounded-3 font-monospace small" required>{{ analysis.job_description_raw|default:default_jd }}</textarea>
+                    </div>
+
+                    <div class="d-grid gap-2">
+                        <button type="submit" class="btn btn-primary rounded-pill py-2 fw-bold">
+                            <i class="bi bi-cpu me-2"></i>Run Role Decoder AI
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <!-- Output: Decoded Skills & Normalized Graph -->
+        <div class="col-lg-7">
+            <div class="card border-0 shadow-sm rounded-4 p-4 bg-white">
+                <div class="d-flex justify-content-between align-items-center flex-wrap gap-2 mb-3">
+                    <div>
+                        <span class="badge bg-success-subtle text-success fw-bold px-3 py-1 rounded-pill mb-1">ROLE DECODED</span>
+                        <h4 class="fw-bold mb-0">{{ analysis.job_title }}</h4>
+                        <div class="text-muted small">{{ analysis.company_name }} • {{ analysis.total_skills_count }} Extracted Skills</div>
+                    </div>
+                    <div class="d-flex gap-2">
+                        <a href="{% url 'proof_miner' %}" class="btn btn-sm btn-outline-primary rounded-pill px-3 fw-semibold">
+                            Mine Proof <i class="bi bi-arrow-right ms-1"></i>
+                        </a>
+                        <a href="{% url 'readiness_score' %}" class="btn btn-sm btn-primary rounded-pill px-3 fw-semibold">
+                            View Readiness
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Must-Have vs Nice-to-Have Summary (Slide 4) -->
+                <div class="row g-3 mb-4">
+                    <div class="col-sm-6">
+                        <div class="p-3 rounded-4 bg-light border">
+                            <div class="d-flex align-items-center gap-2 mb-2">
+                                <span class="badge bg-danger rounded-pill">MUST-HAVE</span>
+                                <strong class="small">Non-Negotiable Signals</strong>
+                            </div>
+                            <div class="d-flex flex-wrap gap-1">
+                                {% for s in analysis.must_have_skills %}
+                                <span class="badge bg-white text-dark border small fw-semibold">{{ s }}</span>
+                                {% empty %}
+                                <span class="badge bg-white text-dark border small">SQL</span>
+                                <span class="badge bg-white text-dark border small">Python</span>
+                                <span class="badge bg-white text-dark border small">Cohort Retention</span>
+                                <span class="badge bg-white text-dark border small">Power BI</span>
+                                {% endfor %}
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-sm-6">
+                        <div class="p-3 rounded-4 bg-light border">
+                            <div class="d-flex align-items-center gap-2 mb-2">
+                                <span class="badge bg-info text-dark rounded-pill">NICE-TO-HAVE</span>
+                                <strong class="small">Competitive Boosters</strong>
+                            </div>
+                            <div class="d-flex flex-wrap gap-1">
+                                {% for s in analysis.nice_to_have_skills %}
+                                <span class="badge bg-white text-secondary border small">{{ s }}</span>
+                                {% empty %}
+                                <span class="badge bg-white text-secondary border small">Excel / BI</span>
+                                <span class="badge bg-white text-secondary border small">Statistics</span>
+                                <span class="badge bg-white text-secondary border small">Git Collaboration</span>
+                                {% endfor %}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 9 Normalized Skills Table with Priority and Weights -->
+                <h6 class="fw-bold text-dark mb-3">Extracted Skills & Priority Weights (Slide 4)</h6>
+                <div class="table-responsive">
+                    <table class="table table-hover align-middle mb-0">
+                        <thead class="table-light small text-uppercase">
+                            <tr>
+                                <th>Skill</th>
+                                <th>Category</th>
+                                <th>Priority</th>
+                                <th>Normalized Weight</th>
+                                <th>Experience Signal</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for item in analysis.extracted_skills %}
+                            <tr>
+                                <td>
+                                    <strong>{{ item.name }}</strong>
+                                    {% if item.must_have %}
+                                    <span class="badge bg-danger-subtle text-danger ms-1" style="font-size: 0.65rem;">Must-Have</span>
+                                    {% endif %}
+                                </td>
+                                <td><span class="badge bg-light text-dark border small">{{ item.category }}</span></td>
+                                <td>
+                                    {% if item.priority == 'Critical' %}
+                                    <span class="badge bg-danger text-white rounded-pill">{{ item.priority }}</span>
+                                    {% elif item.priority == 'High' %}
+                                    <span class="badge bg-warning text-dark rounded-pill">{{ item.priority }}</span>
+                                    {% else %}
+                                    <span class="badge bg-secondary text-white rounded-pill">{{ item.priority }}</span>
+                                    {% endif %}
+                                </td>
+                                <td>
+                                    <div class="d-flex align-items-center gap-2">
+                                        <div class="progress flex-grow-1" style="height: 6px; width: 60px;">
+                                            <div class="progress-bar {% if item.priority == 'Critical' %}bg-danger{% elif item.priority == 'High' %}bg-primary{% else %}bg-secondary{% endif %}" style="width: {{ item.weight|default:15 }}0%;"></div>
+                                        </div>
+                                        <span class="small fw-bold">{{ item.weight }}%</span>
+                                    </div>
+                                </td>
+                                <td class="small text-muted">{{ item.experience_signal }}</td>
+                            </tr>
+                            {% empty %}
+                            <tr>
+                                <td colspan="5" class="text-center text-muted py-3">No skills extracted. Run the decoder above.</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+
+                <!-- Experience Signals Callout -->
+                <div class="mt-4 p-3 rounded-4 bg-primary-subtle text-primary border border-primary border-opacity-25">
+                    <h6 class="fw-bold mb-2"><i class="bi bi-shield-check me-2"></i>Experience Signals Detected:</h6>
+                    <ul class="mb-0 small ps-3">
+                        {% for sig in analysis.experience_signals %}
+                        <li>{{ sig }}</li>
+                        {% empty %}
+                        <li>Telemetry log analysis experience (cohort and funnel drops)</li>
+                        <li>Demonstrated code repositories with documented schemas</li>
+                        <li>Ability to produce actionable business actions from SQL queries</li>
+                        {% endfor %}
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+function loadDefaultJD() {
+    const jd = `{{ default_jd|escapejs }}`;
+    document.getElementById('jobDescArea').value = jd;
+}
+</script>
+{% endblock %}

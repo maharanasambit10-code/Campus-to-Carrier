@@ -3,9 +3,17 @@
 {% block content %}
 <main class="job-detail-page py-5">
 <div class="container">
-    <nav class="mb-4">
-        <a class="back-link" href="{% url 'job_list' %}"><i class="bi bi-arrow-left"></i> Back to Jobs & Startups</a>
-    </nav>
+    <div class="d-flex align-items-center justify-content-between mb-4">
+        <a class="back-link mb-0" href="{% url 'job_list' %}"><i class="bi bi-arrow-left"></i> Back to Jobs & Companies</a>
+        
+        <button type="button" 
+                class="btn-save-job {% if is_saved %}active{% endif %}" 
+                id="btnSaveDetailJob"
+                data-job-id="{{ job.id }}"
+                title="{% if is_saved %}Remove Bookmark{% else %}Bookmark this job{% endif %}">
+            <i class="bi {% if is_saved %}bi-bookmark-fill text-primary{% else %}bi-bookmark{% endif %} fs-5"></i>
+        </button>
+    </div>
 
     {% if messages %}
     <div class="mb-4">
@@ -21,19 +29,31 @@
     <div class="job-detail-layout">
         <!-- Main Job Description -->
         <article class="job-detail-card">
+            <!-- Company & Job Header -->
             <div class="job-detail-company">
-                <span class="company-mark fs-3 fw-bold">{{ job.company.name|first|upper }}</span>
+                <div class="company-logo-container lg">
+                    <img src="{{ job.company.get_logo_url }}" 
+                         alt="{{ job.company.name }} logo" 
+                         class="company-logo-img"
+                         onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+                    <div class="company-fallback-badge" style="display: none;">
+                        {{ job.company.initials }}
+                    </div>
+                </div>
+
                 <div class="flex-grow-1">
                     <div class="d-flex align-items-center gap-2 mb-1">
-                        <span class="badge {% if job.company.company_type == 'Startup' %}bg-warning-subtle text-warning-emphasis border border-warning-subtle{% elif job.company.company_type == 'Unicorn' %}bg-info-subtle text-info-emphasis border border-info-subtle{% else %}bg-primary-subtle text-primary border border-primary-subtle{% endif %} rounded-pill px-3 py-1 fw-bold">
+                        <span class="badge {% if job.company.company_type == 'Enterprise' %}bg-primary-subtle text-primary border border-primary-subtle{% elif job.company.company_type == 'Unicorn' %}bg-info-subtle text-info-emphasis border border-info-subtle{% else %}bg-warning-subtle text-warning-emphasis border border-warning-subtle{% endif %} rounded-pill px-3 py-1 fw-bold">
                             {{ job.company.company_type }}
                         </span>
                         <span class="text-muted small fw-bold">{{ job.company.industry }}</span>
+                        <span class="badge bg-success-subtle text-success border border-success-subtle rounded-pill px-2 py-0">
+                            <i class="bi bi-patch-check-fill me-1"></i>Verified Hiring Partner
+                        </span>
                     </div>
-                    <h1>{{ job.title }}</h1>
+                    <h1 class="fw-bold mb-1">{{ job.title }}</h1>
                     <p class="mb-0 fs-6 text-dark fw-semibold">
                         <a href="{% url 'company_detail' job.company.id %}" class="text-decoration-none text-primary">{{ job.company.name }}</a>
-                        <i class="bi bi-patch-check-fill text-primary" title="Verified Hiring Partner"></i>
                     </p>
                 </div>
             </div>
@@ -52,14 +72,13 @@
             </div>
             {% endif %}
 
+            <!-- Meta Quick Badges -->
             <div class="job-detail-meta">
                 <span><i class="bi bi-geo-alt-fill text-primary"></i>{{ job.location }} ({{ job.work_mode }})</span>
-                <span><i class="bi bi-cash-stack text-success"></i>{{ job.salary|default:'Package disclosed in details' }}</span>
+                <span><i class="bi bi-cash-stack text-success"></i>{{ job.salary|default:'Disclosed upon shortlist' }}</span>
                 <span><i class="bi bi-briefcase-fill text-info"></i>{{ job.job_type }}</span>
                 <span><i class="bi bi-calendar3 text-danger"></i>Apply by {{ job.application_deadline|date:'M d, Y' }}</span>
-                {% if job.minimum_cgpa %}
-                <span><i class="bi bi-mortarboard-fill text-warning"></i>Min CGPA: {{ job.minimum_cgpa }}</span>
-                {% endif %}
+                <span><i class="bi bi-clock-history text-secondary"></i>Experience: {{ job.experience_text|default:job.experience_required|default:'Fresher' }}</span>
             </div>
 
             <!-- Role Summary Section -->
@@ -68,36 +87,50 @@
                 <p>{{ job.description }}</p>
             </section>
 
-            <!-- Required Skills Section -->
+            <!-- Dedicated Technical Skills Required Section -->
             <section>
-                <h2>Required Skills & Technologies</h2>
-                <div class="job-skill-list">
-                    {% for skill in job.required_skills.all %}
-                    <span>{{ skill.name }}</span>
+                <h2><i class="bi bi-cpu-fill text-primary me-2"></i>Technical Skills Required</h2>
+                <div class="d-flex flex-wrap gap-2 mt-2">
+                    {% for skill in job.all_skills_list %}
+                    <span class="skill-badge-pill" style="font-size: 0.82rem; padding: 6px 14px;">
+                        <i class="bi bi-check2 me-1"></i>{{ skill }}
+                    </span>
                     {% empty %}
-                    <span>Technical skills discussed during interview</span>
+                    <span class="skill-badge-pill">Software Engineering</span>
                     {% endfor %}
                 </div>
             </section>
 
-            {% if job.company.tech_stack %}
+            <!-- Qualifications & Eligibility Section -->
             <section>
-                <h2>Engineering Tech Stack</h2>
-                <div class="d-flex flex-wrap gap-1 mt-2">
-                    {% for tech in job.company.tech_stack.split %}
-                    <span class="badge bg-primary-subtle text-primary border border-primary-subtle rounded-pill px-3 py-2">{{ tech|cut:"," }}</span>
-                    {% endfor %}
+                <h2><i class="bi bi-mortarboard-fill text-warning me-2"></i>Eligibility & Qualifications</h2>
+                <div class="p-3 bg-light rounded-3 border">
+                    <p class="mb-2"><strong>Target Degree & Streams:</strong> {{ job.qualifications|default:job.eligible_degree|default:'B.Tech / B.E / MCA / M.Tech in CS/IT or related engineering disciplines' }}</p>
+                    <div class="row g-2 text-muted small">
+                        {% if job.minimum_cgpa %}
+                        <div class="col-sm-6"><strong>Minimum CGPA:</strong> {{ job.minimum_cgpa }} / 10.0</div>
+                        {% endif %}
+                        {% if job.graduation_year %}
+                        <div class="col-sm-6"><strong>Graduation Batches:</strong> {{ job.graduation_year }} and upcoming</div>
+                        {% endif %}
+                        {% if job.min_tenth %}
+                        <div class="col-sm-6"><strong>10th Criteria:</strong> {{ job.min_tenth }}%</div>
+                        {% endif %}
+                        {% if job.min_twelfth %}
+                        <div class="col-sm-6"><strong>12th Criteria:</strong> {{ job.min_twelfth }}%</div>
+                        {% endif %}
+                    </div>
                 </div>
             </section>
-            {% endif %}
 
             <!-- Responsibilities Section -->
             <section>
-                <h2>Responsibilities</h2>
+                <h2>Core Responsibilities</h2>
                 <ul class="detail-list">
-                    <li>Design, build, and deploy production-grade software features with high test coverage and clean documentation.</li>
-                    <li>Collaborate closely with product managers, team leads, and cross-functional teams in agile sprints.</li>
-                    <li>Optimize performance, ensure platform security, and participate in peer code reviews.</li>
+                    <li>Design, implement, and maintain high-quality production code with thorough unit and automated integration test coverage.</li>
+                    <li>Collaborate closely with product management, tech leads, and agile squads to deliver scalable engineering components.</li>
+                    <li>Optimize database queries, architect RESTful microservices, and ensure adherence to cloud infrastructure security standards.</li>
+                    <li>Participate in architectural reviews, sprint planning, and mentorship within the engineering team.</li>
                 </ul>
             </section>
 
@@ -106,12 +139,12 @@
                 <h2>About {{ job.company.name }}</h2>
                 <p>{{ job.company.description }}</p>
                 <div class="d-flex flex-wrap gap-3 mt-3 text-muted small">
-                    <div><i class="bi bi-geo-alt me-1"></i>Headquarters: {{ job.company.locations }}</div>
+                    <div><i class="bi bi-geo-alt me-1 text-primary"></i>Headquarters: {{ job.company.headquarters|default:job.company.locations }}</div>
                     {% if job.company.employee_count %}
-                    <div><i class="bi bi-people me-1"></i>Team Size: {{ job.company.employee_count }}</div>
+                    <div><i class="bi bi-people me-1 text-info"></i>Scale: {{ job.company.employee_count }}</div>
                     {% endif %}
                     {% if job.company.website %}
-                    <div><a href="{{ job.company.website }}" target="_blank" class="text-primary text-decoration-none"><i class="bi bi-box-arrow-up-right me-1"></i>Official Website</a></div>
+                    <div><a href="{{ job.company.website }}" target="_blank" class="text-primary text-decoration-none"><i class="bi bi-box-arrow-up-right me-1"></i>Official Careers Portal</a></div>
                     {% endif %}
                 </div>
             </section>
@@ -119,6 +152,57 @@
 
         <!-- Sidebar Actions & Apply Box -->
         <aside class="job-apply-card">
+            <!-- Real-Time Skill Match Breakdown Widget -->
+            <div class="resume-match-widget p-3 rounded-4 bg-light border mb-4">
+                <div class="d-flex align-items-center justify-content-between mb-2">
+                    <span class="small fw-bold text-dark"><i class="bi bi-stars text-warning me-1"></i>Your Skill Match</span>
+                    <span class="badge {% if score >= 70 %}bg-success{% elif score >= 40 %}bg-primary{% else %}bg-secondary{% endif %} rounded-pill px-2 py-1">
+                        {{ score }}% Fit
+                    </span>
+                </div>
+
+                <div class="progress mb-3" style="height: 8px; border-radius: 99px;">
+                    <div class="progress-bar {% if score >= 70 %}bg-success{% elif score >= 40 %}bg-primary{% else %}bg-secondary{% endif %}" 
+                         style="width: {{ score }}%;"></div>
+                </div>
+
+                <!-- Skill Fit Breakdown Lists -->
+                <div class="small">
+                    <div class="mb-2">
+                        <strong class="text-success small d-block mb-1"><i class="bi bi-check-circle-fill me-1"></i>Matching Skills ({{ match_info.matched_skills|length }}):</strong>
+                        <div class="d-flex flex-wrap gap-1">
+                            {% for sk in match_info.matched_skills %}
+                            <span class="badge bg-success-subtle text-success border border-success-subtle rounded-pill" style="font-size: 0.68rem;">{{ sk }}</span>
+                            {% empty %}
+                            <span class="text-muted" style="font-size: 0.72rem;">None detected</span>
+                            {% endfor %}
+                        </div>
+                    </div>
+
+                    {% if match_info.missing_skills %}
+                    <div class="mb-2">
+                        <strong class="text-danger small d-block mb-1"><i class="bi bi-x-circle-fill me-1"></i>Missing Skills ({{ match_info.missing_skills|length }}):</strong>
+                        <div class="d-flex flex-wrap gap-1">
+                            {% for sk in match_info.missing_skills %}
+                            <span class="badge bg-danger-subtle text-danger border border-danger-subtle rounded-pill" style="font-size: 0.68rem;">{{ sk }}</span>
+                            {% endfor %}
+                        </div>
+                    </div>
+                    {% endif %}
+
+                    {% if match_info.recommended_skills %}
+                    <div>
+                        <strong class="small d-block mb-1 text-purple" style="color: #6366f1;"><i class="bi bi-star-fill text-warning me-1"></i>Recommended to Learn:</strong>
+                        <div class="d-flex flex-wrap gap-1">
+                            {% for sk in match_info.recommended_skills %}
+                            <span class="badge bg-primary-subtle text-primary border border-primary-subtle rounded-pill" style="font-size: 0.68rem;">{{ sk }}</span>
+                            {% endfor %}
+                        </div>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+
             <span class="eyebrow">Your Next Move</span>
             <h2>{{ job.title }}</h2>
             <p class="text-muted small mb-3">{{ job.company.name }} &middot; {{ job.location }}</p>
@@ -140,19 +224,15 @@
                 <i class="bi bi-list-check me-1"></i>View in My Applications
             </a>
             {% else %}
-            <p>Submit your candidate profile and pitch for consideration for this role.</p>
-            <button type="button" class="btn btn-primary w-100 mb-2 fw-bold py-2" data-bs-toggle="modal" data-bs-target="#detailApplyModal">
-                <i class="bi bi-send-fill me-2"></i>Apply Now <i class="bi bi-arrow-up-right ms-1"></i>
-            </button>
-            <a href="{% url 'apply_job' job.id %}" class="btn btn-link text-muted small w-100 text-center mb-3 text-decoration-none">
-                Open Fullscreen Application Form &rarr;
+            <a href="{% url 'apply_job' job.id %}" class="btn btn-primary w-100 mb-2 fw-bold py-2 shadow-sm">
+                <i class="bi bi-send-fill me-2"></i>Apply Now <i class="bi bi-arrow-right ms-1"></i>
             </a>
             {% endif %}
 
             <!-- Company Connect Action -->
-            <div class="p-3 bg-light rounded-3 border mb-3">
+            <div class="p-3 bg-light rounded-3 border mb-3 mt-3">
                 <div class="d-flex align-items-center justify-content-between mb-2">
-                    <strong class="small text-dark"><i class="bi bi-building-add text-primary me-1"></i>Startup Network</strong>
+                    <strong class="small text-dark"><i class="bi bi-building-add text-primary me-1"></i>Talent Network</strong>
                 </div>
                 {% if is_connected %}
                 <span class="badge bg-success-subtle text-success border border-success-subtle w-100 py-2 d-block text-center">
@@ -172,17 +252,7 @@
             <div class="border-top pt-3">
                 <h6 class="small fw-bold text-muted text-uppercase mb-2">Preparation & AI Tools</h6>
                 <a href="{% url 'ai_mock_interview' %}?job_id={{ job.id }}" class="btn btn-outline-info w-100 mb-2 d-flex align-items-center justify-content-center gap-2 fw-semibold" style="border-width: 1.5px;">
-                    <i class="bi bi-robot fs-5"></i> Practice AI Interview
-                </a>
-                <form method="post" action="{% url 'opportunity_compiler_run' %}" class="mb-2">
-                    {% csrf_token %}
-                    <input type="hidden" name="job_id" value="{{ job.id }}">
-                    <button type="submit" class="btn btn-outline-primary w-100 fw-semibold">
-                        <i class="bi bi-cpu me-2"></i>Compile Opportunity Path
-                    </button>
-                </form>
-                <a href="{% url 'simulator_catalog' %}" class="btn btn-outline-success w-100 fw-semibold">
-                    <i class="bi bi-airplane-engines me-2"></i>Career Flight Simulator
+                    <i class="bi bi-robot fs-5"></i> Practice AI Interview with Priya
                 </a>
             </div>
         </aside>
@@ -190,127 +260,34 @@
 </div>
 </main>
 
-<!-- Job Detail Application Modal -->
-<div class="modal fade" id="detailApplyModal" tabindex="-1" aria-labelledby="detailApplyModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable">
-        <div class="modal-content border-0 shadow-lg rounded-4">
-            <div class="modal-header border-bottom bg-light px-4 py-3 rounded-top-4">
-                <div class="d-flex align-items-center gap-3">
-                    <span class="company-mark fw-bold">{{ job.company.name|first|upper }}</span>
-                    <div>
-                        <div class="d-flex align-items-center gap-2">
-                            <span class="badge bg-primary-subtle text-primary border rounded-pill px-2 py-0" style="font-size: 0.65rem;">{{ job.company.company_type }}</span>
-                            <span class="small text-muted fw-bold">{{ job.company.name }}</span>
-                        </div>
-                        <h4 class="modal-title fs-5 fw-bold mb-0">Apply for {{ job.title }}</h4>
-                    </div>
-                </div>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-
-            <div class="modal-body p-4">
-                <form method="post" action="{% url 'apply_job' job.id %}" enctype="multipart/form-data">
-                    {% csrf_token %}
-
-                    <div class="mb-4">
-                        <h6 class="fw-bold text-dark mb-3"><i class="bi bi-person-badge text-primary me-2"></i>1. Candidate Profile</h6>
-                        <div class="row g-3">
-                            <div class="col-md-6">
-                                <label class="form-label small fw-semibold">Full Name *</label>
-                                <input type="text" name="full_name" class="form-control" value="{{ request.user.get_full_name|default:request.user.username }}" required>
-                            </div>
-                            <div class="col-md-6">
-                                <label class="form-label small fw-semibold">Email *</label>
-                                <input type="email" name="email" class="form-control" value="{{ request.user.email }}" required>
-                            </div>
-                            <div class="col-md-6">
-                                <label class="form-label small fw-semibold">Phone *</label>
-                                <input type="tel" name="phone" class="form-control" value="{{ student_profile.phone|default:'+91 ' }}" required>
-                            </div>
-                            <div class="col-md-6">
-                                <label class="form-label small fw-semibold">College *</label>
-                                <input type="text" name="college" class="form-control" value="{{ student_profile.college|default:'BPUT University' }}" required>
-                            </div>
-                            <div class="col-md-8">
-                                <label class="form-label small fw-semibold">Degree & Major *</label>
-                                <input type="text" name="degree_major" class="form-control" value="{{ student_profile.degree|default:student_profile.department|default:'B.Tech Computer Science' }}" required>
-                            </div>
-                            <div class="col-md-4">
-                                <label class="form-label small fw-semibold">CGPA</label>
-                                <input type="number" step="0.01" min="0" max="10" name="cgpa" class="form-control" value="{{ student_profile.cgpa|default:'8.5' }}">
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="mb-4 pt-3 border-top">
-                        <h6 class="fw-bold text-dark mb-3"><i class="bi bi-file-earmark-pdf text-danger me-2"></i>2. Resume & Links</h6>
-                        <div class="mb-3">
-                            <label class="form-label small fw-semibold">Resume Attachment</label>
-                            {% if student_profile.resume %}
-                            <div class="p-2 bg-light rounded-3 border mb-2 d-flex align-items-center justify-content-between">
-                                <span class="small fw-semibold"><i class="bi bi-file-earmark-check-fill text-success me-1"></i>Active Profile Resume</span>
-                                <a href="{{ student_profile.resume.url }}" target="_blank" class="btn btn-sm btn-outline-primary py-0 px-2" style="font-size: 0.75rem;">View</a>
-                            </div>
-                            {% endif %}
-                            <input type="file" name="custom_resume" class="form-control" accept=".pdf,.doc,.docx">
-                        </div>
-
-                        <div class="row g-3">
-                            <div class="col-md-4">
-                                <label class="form-label small fw-semibold">Portfolio URL</label>
-                                <input type="url" name="portfolio_url" class="form-control form-control-sm" value="{{ student_profile.portfolio }}">
-                            </div>
-                            <div class="col-md-4">
-                                <label class="form-label small fw-semibold">GitHub</label>
-                                <input type="url" name="github_url" class="form-control form-control-sm" value="{{ student_profile.github }}">
-                            </div>
-                            <div class="col-md-4">
-                                <label class="form-label small fw-semibold">LinkedIn</label>
-                                <input type="url" name="linkedin_url" class="form-control form-control-sm" value="{{ student_profile.linkedin }}">
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="mb-3 pt-3 border-top">
-                        <h6 class="fw-bold text-dark mb-3"><i class="bi bi-chat-quote text-success me-2"></i>3. Pitch & Availability</h6>
-                        <div class="row g-3 mb-3">
-                            <div class="col-md-4">
-                                <label class="form-label small fw-semibold">Experience Level</label>
-                                <select name="experience_level" class="form-select form-select-sm">
-                                    <option value="Fresher" selected>Fresher (2025/2026 Grad)</option>
-                                    <option value="0-1 Years">0 - 1 Years</option>
-                                    <option value="1-2 Years">1 - 2 Years</option>
-                                </select>
-                            </div>
-                            <div class="col-md-4">
-                                <label class="form-label small fw-semibold">Availability</label>
-                                <select name="availability" class="form-select form-select-sm">
-                                    <option value="Immediate" selected>Immediate (0-7 Days)</option>
-                                    <option value="Within 15 Days">Within 15 Days</option>
-                                    <option value="1 Month">1 Month</option>
-                                </select>
-                            </div>
-                            <div class="col-md-4">
-                                <label class="form-label small fw-semibold">Expected CTC / Stipend</label>
-                                <input type="text" name="expected_salary" class="form-control form-control-sm" placeholder="e.g. As per company norms">
-                            </div>
-                        </div>
-
-                        <div>
-                            <label class="form-label small fw-semibold">Cover Note / Pitch *</label>
-                            <textarea name="cover_letter" rows="3" class="form-control" placeholder="Share why you want to work at {{ job.company.name }} and how your skills match this role..." required></textarea>
-                        </div>
-                    </div>
-
-                    <div class="modal-footer px-0 pb-0 border-top mt-4">
-                        <button type="button" class="btn btn-light" data-bs-dismiss="modal">Cancel</button>
-                        <button type="submit" class="btn btn-primary px-4 fw-bold">
-                            <i class="bi bi-send-fill me-2"></i>Confirm & Submit Application
-                        </button>
-                    </div>
-                </form>
-            </div>
-        </div>
-    </div>
-</div>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const saveBtn = document.getElementById('btnSaveDetailJob');
+    if (saveBtn) {
+        saveBtn.addEventListener('click', function() {
+            const jobId = this.getAttribute('data-job-id');
+            const icon = this.querySelector('i');
+            fetch('/jobs/api/save/' + jobId + '/', {
+                method: 'POST',
+                headers: {
+                    'X-CSRFToken': '{{ csrf_token }}',
+                    'X-Requested-With': 'XMLHttpRequest'
+                }
+            })
+            .then(res => res.json())
+            .then(data => {
+                if (data.success) {
+                    if (data.saved) {
+                        this.classList.add('active');
+                        icon.className = 'bi bi-bookmark-fill text-primary fs-5';
+                    } else {
+                        this.classList.remove('active');
+                        icon.className = 'bi bi-bookmark fs-5';
+                    }
+                }
+            });
+        });
+    }
+});
+</script>
 {% endblock %}

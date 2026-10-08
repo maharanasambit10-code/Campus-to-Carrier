@@ -178,3 +178,62 @@ class JobAndStartupConnectTests(TestCase):
         )
         conn = CompanyConnection.objects.get(student=self.profile, company=self.startup)
         self.assertEqual(conn.preferred_role, 'AI / ML Engineer')
+
+    def test_company_logo_and_initials(self):
+        self.assertTrue(self.startup.get_logo_url)
+        self.assertIn('.svg', self.startup.get_logo_url)
+        self.assertEqual(self.startup.initials, 'SRV')
+        self.assertEqual(self.unicorn.initials, 'CRED')
+
+    def test_multi_skill_filtering(self):
+        self.client.login(username='teststudent', password='testpassword123')
+        # Filter by Python
+        res = self.client.get(reverse('job_list') + '?skills=Python')
+        self.assertEqual(res.status_code, 200)
+        self.assertContains(res, 'AI Research Engineer')
+
+    def test_toggle_save_job(self):
+        self.client.login(username='teststudent', password='testpassword123')
+        # Save job
+        res = self.client.post(reverse('toggle_save_job', kwargs={'job_id': self.job1.id}))
+        self.assertEqual(res.status_code, 200)
+        data = res.json()
+        self.assertTrue(data['success'])
+        self.assertTrue(data['saved'])
+        self.assertTrue(self.job1.saved_by_students.filter(student=self.profile).exists())
+
+        # Unsave job
+        res2 = self.client.post(reverse('toggle_save_job', kwargs={'job_id': self.job1.id}))
+        self.assertEqual(res2.status_code, 200)
+        data2 = res2.json()
+        self.assertTrue(data2['success'])
+        self.assertFalse(data2['saved'])
+
+    def test_saved_jobs_list(self):
+        self.client.login(username='teststudent', password='testpassword123')
+        self.client.post(reverse('toggle_save_job', kwargs={'job_id': self.job1.id}))
+        res = self.client.get(reverse('saved_jobs_list'))
+        self.assertEqual(res.status_code, 200)
+        self.assertContains(res, 'AI Research Engineer')
+
+    def test_api_resume_match(self):
+        self.client.login(username='teststudent', password='testpassword123')
+        res = self.client.post(reverse('api_resume_match'), {'job_id': self.job1.id})
+        self.assertEqual(res.status_code, 200)
+        data = res.json()
+        self.assertTrue(data['success'])
+        self.assertIn('match_percentage', data)
+        self.assertIn('matched_skills', data)
+        self.assertIn('missing_skills', data)
+        self.assertIn('recommended_skills', data)
+
+    def test_api_company_details(self):
+        self.client.login(username='teststudent', password='testpassword123')
+        res = self.client.get(reverse('api_company_details', kwargs={'company_id': self.startup.id}))
+        self.assertEqual(res.status_code, 200)
+        data = res.json()
+        self.assertTrue(data['success'])
+        self.assertEqual(data['name'], 'Sarvam AI')
+        self.assertIn('jobs', data)
+        self.assertEqual(len(data['jobs']), 1)
+

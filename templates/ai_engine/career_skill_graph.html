@@ -1,0 +1,196 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Career Skill Graph | CampusLink{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <!-- Header -->
+    <div class="p-4 mb-4 rounded-4 shadow-sm border bg-dark text-white d-flex flex-wrap justify-content-between align-items-center gap-3">
+        <div>
+            <span class="badge text-bg-primary px-3 py-1 rounded-pill fw-bold text-uppercase mb-2">02 • THE NEW IDEA</span>
+            <h1 class="h2 fw-bold text-white mb-1">Live Career Readiness Graph</h1>
+            <p class="text-secondary mb-0">Every role is converted into skills; every skill is connected to evidence; every gap becomes an action.</p>
+        </div>
+        <div class="d-flex gap-2">
+            <a href="{% url 'role_decoder' %}" class="btn btn-outline-light rounded-pill px-3">Role Decoder</a>
+            <a href="{% url 'readiness_score' %}" class="btn btn-primary rounded-pill px-3">Readiness Score</a>
+        </div>
+    </div>
+
+    <!-- Career Readiness Pipeline (Slide 3) -->
+    <div class="card border-0 shadow-sm rounded-4 mb-4 p-4 bg-white">
+        <div class="row g-3 align-items-center text-center">
+            <div class="col-6 col-md">
+                <div class="p-3 rounded-4 bg-primary text-white shadow-sm">
+                    <span class="badge bg-white text-primary rounded-pill mb-1">01</span>
+                    <strong class="d-block">JOB POST</strong>
+                    <small class="opacity-75">Extract role requirements</small>
+                </div>
+            </div>
+            <div class="col-12 col-md-auto text-muted fs-4 d-none d-md-block">→</div>
+            <div class="col-6 col-md">
+                <div class="p-3 rounded-4 bg-dark text-white shadow-sm">
+                    <span class="badge bg-primary rounded-pill mb-1">02</span>
+                    <strong class="d-block">SKILL GRAPH</strong>
+                    <small class="text-secondary">Normalize skills & weights</small>
+                </div>
+            </div>
+            <div class="col-12 col-md-auto text-muted fs-4 d-none d-md-block">→</div>
+            <div class="col-6 col-md">
+                <div class="p-3 rounded-4 bg-light border text-dark">
+                    <span class="badge bg-secondary text-white rounded-pill mb-1">03</span>
+                    <strong class="d-block">PROOF</strong>
+                    <small class="text-muted">Projects + assessments + work</small>
+                </div>
+            </div>
+            <div class="col-12 col-md-auto text-muted fs-4 d-none d-md-block">→</div>
+            <div class="col-6 col-md">
+                <div class="p-3 rounded-4 bg-light border text-dark">
+                    <span class="badge bg-secondary text-white rounded-pill mb-1">04</span>
+                    <strong class="d-block">READINESS</strong>
+                    <small class="text-muted">Evidence-backed fit</small>
+                </div>
+            </div>
+            <div class="col-12 col-md-auto text-muted fs-4 d-none d-md-block">→</div>
+            <div class="col-6 col-md">
+                <div class="p-3 rounded-4 bg-success-subtle text-success border border-success border-opacity-25">
+                    <span class="badge bg-success text-white rounded-pill mb-1">05</span>
+                    <strong class="d-block">ACTION</strong>
+                    <small class="text-muted">One next mission</small>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Interactive Graph Visualization Canvas -->
+    <div class="row g-4 mb-4">
+        <div class="col-lg-8">
+            <div class="card border-0 shadow-sm rounded-4 p-4 bg-white h-100">
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                    <h5 class="fw-bold mb-0"><i class="bi bi-diagram-3-fill text-primary me-2"></i>Graph Topology & Evidence Nodes</h5>
+                    <span class="badge bg-light text-dark border">Interactive Web Canvas</span>
+                </div>
+                <p class="text-muted small mb-3">Visualizing the real-time knowledge graph linking candidate work artifacts to Junior Data Analyst requirements.</p>
+
+                <!-- Interactive SVG Graph Representation -->
+                <div class="p-3 rounded-4 bg-light border position-relative overflow-hidden" style="min-height: 480px;">
+                    <svg viewBox="0 0 700 440" class="w-100 h-100" style="min-height: 440px;">
+                        <!-- Connection Lines -->
+                        <!-- Role to Skills -->
+                        <line x1="120" y1="220" x2="280" y2="70" stroke="#cbd5e1" stroke-width="3" stroke-dasharray="2,2"/>
+                        <line x1="120" y1="220" x2="280" y2="130" stroke="#cbd5e1" stroke-width="3"/>
+                        <line x1="120" y1="220" x2="280" y2="190" stroke="#cbd5e1" stroke-width="3"/>
+                        <line x1="120" y1="220" x2="280" y2="250" stroke="#cbd5e1" stroke-width="3"/>
+                        <line x1="120" y1="220" x2="280" y2="310" stroke="#cbd5e1" stroke-width="3"/>
+                        <line x1="120" y1="220" x2="280" y2="370" stroke="#cbd5e1" stroke-width="2" stroke-dasharray="4,4"/>
+
+                        <!-- Skills to Evidence -->
+                        <line x1="280" y1="70" x2="480" y2="70" stroke="#10b981" stroke-width="3"/>
+                        <line x1="280" y1="130" x2="480" y2="130" stroke="#10b981" stroke-width="3"/>
+                        <line x1="280" y1="190" x2="480" y2="190" stroke="#10b981" stroke-width="3"/>
+                        <line x1="280" y1="250" x2="480" y2="250" stroke="#10b981" stroke-width="3"/>
+
+                        <!-- Gap to Action -->
+                        <line x1="280" y1="70" x2="520" y2="340" stroke="#f59e0b" stroke-width="3" stroke-dasharray="4,4"/>
+
+                        <!-- Node 1: Root Role Node -->
+                        <circle cx="120" cy="220" r="42" fill="#2563eb" filter="drop-shadow(0px 4px 6px rgba(0,0,0,0.15))"/>
+                        <text x="120" y="215" fill="#fff" font-size="12" font-weight="bold" text-anchor="middle">Junior</text>
+                        <text x="120" y="232" fill="#fff" font-size="12" font-weight="bold" text-anchor="middle">Data Analyst</text>
+
+                        <!-- Skill Nodes -->
+                        <!-- SQL -->
+                        <circle cx="280" cy="70" r="26" fill="#ef4444"/>
+                        <text x="280" y="74" fill="#fff" font-size="11" font-weight="bold" text-anchor="middle">SQL (25%)</text>
+
+                        <!-- Python -->
+                        <circle cx="280" cy="130" r="24" fill="#10b981"/>
+                        <text x="280" y="134" fill="#fff" font-size="10" font-weight="bold" text-anchor="middle">Python (15%)</text>
+
+                        <!-- Power BI -->
+                        <circle cx="280" cy="190" r="24" fill="#10b981"/>
+                        <text x="280" y="194" fill="#fff" font-size="10" font-weight="bold" text-anchor="middle">Power BI (15%)</text>
+
+                        <!-- Cohort Analysis -->
+                        <circle cx="280" cy="250" r="24" fill="#10b981"/>
+                        <text x="280" y="254" fill="#fff" font-size="10" font-weight="bold" text-anchor="middle">Cohort (15%)</text>
+
+                        <!-- Communication -->
+                        <circle cx="280" cy="310" r="22" fill="#f59e0b"/>
+                        <text x="280" y="314" fill="#fff" font-size="9" font-weight="bold" text-anchor="middle">Comm (10%)</text>
+
+                        <!-- Inferred Excel -->
+                        <circle cx="280" cy="370" r="20" fill="#94a3b8"/>
+                        <text x="280" y="374" fill="#fff" font-size="9" text-anchor="middle">Excel (5%)</text>
+
+                        <!-- Evidence Nodes -->
+                        <!-- Timed Mission -->
+                        <rect x="480" y="55" width="160" height="30" rx="8" fill="#3b82f6"/>
+                        <text x="560" y="74" fill="#fff" font-size="10" font-weight="bold" text-anchor="middle">15-min Timed Mission</text>
+
+                        <!-- ML Churn Repo -->
+                        <rect x="480" y="115" width="160" height="30" rx="8" fill="#059669"/>
+                        <text x="560" y="134" fill="#fff" font-size="10" font-weight="bold" text-anchor="middle">GitHub: ML Churn Repo</text>
+
+                        <!-- Power BI Dashboard -->
+                        <rect x="480" y="175" width="160" height="30" rx="8" fill="#059669"/>
+                        <text x="560" y="194" fill="#fff" font-size="10" font-weight="bold" text-anchor="middle">Executive Dashboard</text>
+
+                        <!-- Mentor Review -->
+                        <rect x="480" y="235" width="160" height="30" rx="8" fill="#d97706"/>
+                        <text x="560" y="254" fill="#fff" font-size="10" font-weight="bold" text-anchor="middle">Mentor Endorsement</text>
+
+                        <!-- Next Action Node -->
+                        <rect x="440" y="325" width="220" height="36" rx="10" fill="#f59e0b" filter="drop-shadow(0px 3px 5px rgba(0,0,0,0.1))"/>
+                        <text x="550" y="347" fill="#111827" font-size="11" font-weight="bold" text-anchor="middle">⚡ Next Action: 12-min JOINs (+9%)</text>
+                    </svg>
+                </div>
+            </div>
+        </div>
+
+        <!-- Graph Intelligence & Legend -->
+        <div class="col-lg-4">
+            <div class="card border-0 shadow-sm rounded-4 p-4 bg-white h-100 d-flex flex-column justify-content-between">
+                <div>
+                    <span class="badge bg-primary-subtle text-primary fw-bold px-3 py-1 rounded-pill mb-2">GRAPH INTELLIGENCE</span>
+                    <h5 class="fw-bold mb-3">Graph Node Legend</h5>
+
+                    <div class="list-group list-group-flush small mb-4">
+                        <div class="list-group-item px-0 d-flex align-items-center gap-2">
+                            <span class="badge bg-danger rounded-circle p-2"> </span>
+                            <div><strong>Critical Skill Node:</strong> High-weight job requirement (e.g. SQL 25%)</div>
+                        </div>
+                        <div class="list-group-item px-0 d-flex align-items-center gap-2">
+                            <span class="badge bg-success rounded-circle p-2"> </span>
+                            <div><strong>Demonstrated Node:</strong> Verified work repository or timed test attached</div>
+                        </div>
+                        <div class="list-group-item px-0 d-flex align-items-center gap-2">
+                            <span class="badge bg-secondary rounded-circle p-2"> </span>
+                            <div><strong>Inferred Node:</strong> Unverified claim mentioned in profile</div>
+                        </div>
+                        <div class="list-group-item px-0 d-flex align-items-center gap-2">
+                            <span class="badge bg-warning rounded-circle p-2"> </span>
+                            <div><strong>Next-Action Edge:</strong> High-ROI micro-mission closing technical gap</div>
+                        </div>
+                    </div>
+
+                    <div class="p-3 rounded-4 bg-light border mb-3">
+                        <strong class="d-block small text-dark mb-1">Key Advantage:</strong>
+                        <p class="small text-muted mb-0">Unlike static resumes, the Career Readiness Graph updates dynamically whenever code commits or mission evaluations land.</p>
+                    </div>
+                </div>
+
+                <div class="d-grid gap-2">
+                    <a href="{% url 'role_mission_default' %}" class="btn btn-warning text-dark fw-bold rounded-pill py-2">
+                        <i class="bi bi-play-circle-fill me-1"></i> Close Gap in 15-min Mission
+                    </a>
+                    <a href="{% url 'personalized_improvement' %}" class="btn btn-outline-primary rounded-pill py-2">
+                        View Next-Best Actions
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

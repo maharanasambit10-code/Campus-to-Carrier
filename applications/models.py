@@ -16,6 +16,9 @@ class Application(models.Model):
     job = models.ForeignKey(Job, on_delete=models.CASCADE, related_name='applications')
     status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='APPLIED')
     resume_score = models.IntegerField(default=0, help_text="AI calculated score")
+    match_percentage = models.IntegerField(default=0, help_text="Skill match percentage")
+    matched_skills = models.JSONField(default=list, blank=True)
+    missing_skills = models.JSONField(default=list, blank=True)
 
     # Application form submission fields
     full_name = models.CharField(max_length=150, blank=True, default='')
@@ -38,3 +41,7 @@ class Application(models.Model):
 
     class Meta:
         unique_together = ('student', 'job')
+        ordering = ['-created_at']
+
+    def __str__(self):
+        return f"{self.full_name or self.student.user.username} applied to {self.job.title}"

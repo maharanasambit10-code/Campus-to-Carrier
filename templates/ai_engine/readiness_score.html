@@ -1,0 +1,212 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Explainable Readiness Score | CampusLink{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <!-- Top Metric Status Bar (Slide 1) -->
+    <div class="p-3 mb-4 rounded-4 shadow-sm border bg-dark text-white d-flex flex-wrap justify-content-between align-items-center gap-3">
+        <div class="d-flex align-items-center gap-3">
+            <span class="badge text-bg-warning px-3 py-2 rounded-pill fw-bold text-uppercase">ENGINE 03</span>
+            <div>
+                <h5 class="mb-0 fw-bold">READINESS SCORE & EVIDENCE TRAIL</h5>
+                <small class="text-secondary">AI Placement Readiness & Proof Intelligence Platform</small>
+            </div>
+        </div>
+        <div class="d-flex flex-wrap gap-4 align-items-center">
+            <div class="text-center px-2 border-end border-secondary border-opacity-50">
+                <div class="text-secondary small fw-semibold text-uppercase">Role Fit</div>
+                <div class="fs-5 fw-bold text-primary">{{ readiness.role_fit_percentage }}% • {{ readiness.role_title }}</div>
+            </div>
+            <div class="text-center px-2 border-end border-secondary border-opacity-50">
+                <div class="text-secondary small fw-semibold text-uppercase">Proof Coverage</div>
+                <div class="fs-5 fw-bold text-success">{{ readiness.proof_coverage }}</div>
+            </div>
+            <div class="text-center px-2">
+                <div class="text-secondary small fw-semibold text-uppercase">Next Action</div>
+                <a href="{% url 'role_mission_default' %}" class="fs-6 fw-bold text-warning text-decoration-none">{{ readiness.next_action }} <i class="bi bi-arrow-right"></i></a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Hero Card: Explainable Score built from 4 factors (Slide 4) -->
+    <div class="card border-0 shadow-sm rounded-4 mb-5 p-4 p-md-5 bg-white">
+        <div class="row align-items-center g-4">
+            <div class="col-lg-7">
+                <span class="badge bg-primary-subtle text-primary fw-bold px-3 py-1 rounded-pill mb-2">NO BLACK-BOX HIRE ME SCORE</span>
+                <h2 class="display-6 fw-bold text-dark mb-3">Explainable Readiness: {{ readiness.role_fit_percentage }}% Role Fit</h2>
+                <p class="lead text-muted mb-4">
+                    Recruiters see exactly why the system recommended this candidate—not just a mysterious number. 
+                    Calculated from verifiable coverage, depth of work, and assessment recency.
+                </p>
+
+                <div class="row g-3">
+                    <div class="col-6 col-sm-3">
+                        <div class="p-3 rounded-4 bg-light text-center border">
+                            <span class="text-muted small d-block mb-1">Skill Coverage</span>
+                            <h4 class="fw-bold mb-0 text-primary">{{ readiness.components.skill_coverage }}%</h4>
+                        </div>
+                    </div>
+                    <div class="col-6 col-sm-3">
+                        <div class="p-3 rounded-4 bg-light text-center border">
+                            <span class="text-muted small d-block mb-1">Evidence Strength</span>
+                            <h4 class="fw-bold mb-0 text-success">{{ readiness.components.evidence_strength }}%</h4>
+                        </div>
+                    </div>
+                    <div class="col-6 col-sm-3">
+                        <div class="p-3 rounded-4 bg-light text-center border">
+                            <span class="text-muted small d-block mb-1">Assessment Result</span>
+                            <h4 class="fw-bold mb-0 text-warning">{{ readiness.components.assessment_result }}%</h4>
+                        </div>
+                    </div>
+                    <div class="col-6 col-sm-3">
+                        <div class="p-3 rounded-4 bg-light text-center border">
+                            <span class="text-muted small d-block mb-1">Freshness</span>
+                            <h4 class="fw-bold mb-0 text-info">{{ readiness.components.freshness }}%</h4>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-lg-5 text-center">
+                <div class="p-4 rounded-4 shadow-sm text-center border" style="background: linear-gradient(135deg, #f0fdf4 0%, #dcfce7 100%);">
+                    <div class="mb-2">
+                        <span class="badge bg-success text-white px-3 py-1 rounded-pill fw-bold">EVIDENCE INDEX</span>
+                    </div>
+                    <div class="display-3 fw-bold text-success mb-1">{{ readiness.role_fit_percentage }}%</div>
+                    <p class="fw-semibold text-dark mb-3">Verified Role Fit: Junior Data Analyst</p>
+                    <div class="d-flex justify-content-center gap-2">
+                        <a href="{% url 'role_mission_default' %}" class="btn btn-warning text-dark fw-bold rounded-pill px-4">
+                            <i class="bi bi-play-circle-fill me-1"></i> Launch 15-min Mission
+                        </a>
+                        <a href="{% url 'recruiter_proof_shortlist' %}" class="btn btn-outline-dark rounded-pill px-3">
+                            Recruiter View
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ANTI-BLACK-BOX RULE (Slide 6) -->
+    <div class="alert alert-dark border-2 rounded-4 p-4 mb-5 shadow-sm">
+        <div class="d-flex align-items-center gap-3 mb-2">
+            <span class="badge bg-danger fs-6 px-3 py-1 rounded-pill fw-bold">ANTI-BLACK-BOX RULE</span>
+            <h5 class="mb-0 fw-bold text-white">Inferred skill ≠ demonstrated skill. The UI always separates the two.</h5>
+        </div>
+        <p class="text-light opacity-75 mb-0 small ps-1">
+            Claiming a skill on a resume is an <em>inferred claim</em>. Delivering a project repository, passing a timed simulation, or receiving mentor review makes it a <em>demonstrated skill</em>.
+        </p>
+    </div>
+
+    <!-- Side-by-Side: Demonstrated vs Inferred Skills (Slide 6) -->
+    <div class="row g-4 mb-5">
+        <div class="col-lg-6">
+            <div class="card border-0 shadow-sm rounded-4 p-4 bg-white h-100 border-start border-success border-4">
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                    <h5 class="fw-bold mb-0 text-success"><i class="bi bi-shield-check me-2"></i>Demonstrated Skills (Evidence-Backed)</h5>
+                    <span class="badge bg-success-subtle text-success fw-bold">{{ readiness.demonstrated_skills|length }} Verified</span>
+                </div>
+                <p class="text-muted small mb-3">Backed by concrete work artifacts, code repositories, or evaluated simulations.</p>
+                <div class="list-group list-group-flush">
+                    {% for item in readiness.demonstrated_skills %}
+                    <div class="list-group-item px-0 d-flex justify-content-between align-items-center">
+                        <div>
+                            <strong>{{ item.name }}</strong>
+                            <div class="text-muted small">Evidence count: {{ item.evidence_count }} artifact(s)</div>
+                        </div>
+                        <div class="d-flex align-items-center gap-2">
+                            <span class="badge {% if item.strength == 'Strong' %}bg-success{% else %}bg-primary{% endif %} rounded-pill">{{ item.strength }}</span>
+                            <span class="badge bg-success-subtle text-success small"><i class="bi bi-check-circle-fill me-1"></i>Demonstrated</span>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+
+        <div class="col-lg-6">
+            <div class="card border-0 shadow-sm rounded-4 p-4 bg-white h-100 border-start border-warning border-4">
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                    <h5 class="fw-bold mb-0 text-warning"><i class="bi bi-exclamation-triangle me-2"></i>Inferred Skills (Profile Claims Only)</h5>
+                    <span class="badge bg-warning-subtle text-warning fw-bold">{{ readiness.inferred_skills|length }} Unverified</span>
+                </div>
+                <p class="text-muted small mb-3">Mentioned in resume or courses, but no tangible evidence or timed mission connected yet.</p>
+                <div class="list-group list-group-flush">
+                    {% for item in readiness.inferred_skills %}
+                    <div class="list-group-item px-0 d-flex justify-content-between align-items-center">
+                        <div>
+                            <strong>{{ item.name }}</strong>
+                            <div class="text-muted small">{{ item.reason }}</div>
+                        </div>
+                        <a href="{% url 'role_mission_default' %}" class="btn btn-sm btn-outline-warning text-dark fw-semibold rounded-pill">
+                            Prove with Mission <i class="bi bi-arrow-right"></i>
+                        </a>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- THE EXACT EVIDENCE TRAIL TABLE (Slide 6) -->
+    <div class="card border-0 shadow-sm rounded-4 p-4 bg-white">
+        <div class="d-flex justify-content-between align-items-center flex-wrap gap-2 mb-3">
+            <div>
+                <span class="badge bg-primary-subtle text-primary fw-bold px-3 py-1 rounded-pill mb-1">05 • TRUST</span>
+                <h4 class="fw-bold mb-0">Every score comes with an evidence trail.</h4>
+                <p class="text-muted small mb-0">Recruiters should be able to see why the system recommended a candidate—not just a number.</p>
+            </div>
+            <a href="{% url 'proof_miner' %}" class="btn btn-outline-primary btn-sm rounded-pill px-3">
+                <i class="bi bi-plus-lg me-1"></i> Add More Evidence
+            </a>
+        </div>
+
+        <div class="table-responsive">
+            <table class="table table-hover align-middle mb-0">
+                <thead class="table-light small text-uppercase">
+                    <tr>
+                        <th style="width: 20%;">SKILL</th>
+                        <th style="width: 35%;">EVIDENCE</th>
+                        <th style="width: 15%;">STRENGTH</th>
+                        <th style="width: 15%;">FRESHNESS</th>
+                        <th style="width: 15%;">ACTION</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for row in readiness.evidence_trail %}
+                    <tr>
+                        <td>
+                            <strong>{{ row.skill }}</strong>
+                            {% if row.weight %}
+                            <span class="text-muted small ms-1">({{ row.weight }} weight)</span>
+                            {% endif %}
+                        </td>
+                        <td>
+                            <div class="d-flex align-items-center gap-2">
+                                <i class="bi bi-file-earmark-check text-primary"></i>
+                                <span>{{ row.evidence }}</span>
+                            </div>
+                        </td>
+                        <td>
+                            <span class="badge {% if row.strength == 'Strong' %}bg-success{% else %}bg-warning text-dark{% endif %} rounded-pill px-3">
+                                {{ row.strength }}
+                            </span>
+                        </td>
+                        <td>
+                            <span class="badge bg-light text-secondary border small">{{ row.freshness }}</span>
+                        </td>
+                        <td>
+                            <a href="{% url 'proof_miner' %}" class="btn btn-sm btn-link text-decoration-none p-0 fw-semibold">
+                                View Artifact
+                            </a>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% endblock %}

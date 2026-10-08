@@ -1740,6 +1740,233 @@ body { font-family: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, 'Sego
 .application-mobile-list { display: none; }
 @media (max-width: 767px) { .marketplace-heading { align-items: flex-start; flex-direction: column; }.job-filters, .application-filters { align-items: stretch; flex-direction: column; }.job-filters select, .application-filters select, .job-filters .btn, .application-filters .btn { width: 100%; }.job-detail-layout { grid-template-columns: 1fr; }.job-apply-card { position: static; }.applications-table-wrap { display: none; }.application-mobile-list { display: grid; gap: 12px; }.application-mobile-card { display: grid; gap: 12px; padding: 20px; border: 1px solid var(--line); border-radius: 14px; background: #fff; box-shadow: 0 6px 18px rgba(31,55,95,.04); }.application-mobile-card h2 { margin: 5px 0; color: var(--ink); font-size: 1rem; }.application-mobile-card p { margin: 0; color: #7a8798; font-size: .76rem; }.application-mobile-card .status-pill { width: fit-content; margin: 0; } }
 @media (max-width: 575px) { .job-card, .job-detail-card, .job-apply-card { padding: 20px; }.job-card-actions { gap: 8px; }.job-card-actions .btn { font-size: .68rem; }.job-detail-company h1 { font-size: 1.65rem; } }
+
+/* ==========================================================================
+   UPGRADED JOBS & COMPANIES SECTION DESIGN SYSTEM
+   ========================================================================== */
+
+.company-logo-container {
+    width: 52px;
+    height: 52px;
+    flex: 0 0 52px;
+    background: #ffffff;
+    border: 1px solid rgba(226, 232, 240, 0.95);
+    border-radius: 12px;
+    padding: 6px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 2px 8px rgba(15, 23, 42, 0.04);
+    position: relative;
+    overflow: hidden;
+}
+
+.company-logo-container.lg {
+    width: 68px;
+    height: 68px;
+    flex: 0 0 68px;
+    border-radius: 16px;
+    padding: 8px;
+    box-shadow: 0 4px 14px rgba(15, 23, 42, 0.06);
+}
+
+.company-logo-img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    border-radius: 6px;
+    display: block;
+    transition: transform 0.2s ease;
+}
+
+.job-card-premium:hover .company-logo-img,
+.company-card-premium:hover .company-logo-img {
+    transform: scale(1.06);
+}
+
+.company-fallback-badge {
+    width: 100%;
+    height: 100%;
+    border-radius: 8px;
+    background: linear-gradient(135deg, #2563eb, #4f46e5);
+    color: #ffffff;
+    font-weight: 800;
+    font-size: 0.82rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    letter-spacing: 0.02em;
+    user-select: none;
+}
+
+.job-card-premium {
+    background: #ffffff;
+    border: 1px solid #e2e8f0;
+    border-radius: 16px;
+    padding: 24px;
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    position: relative;
+    box-shadow: 0 2px 10px rgba(15, 23, 42, 0.03);
+    transition: transform 0.22s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.22s ease, border-color 0.22s ease;
+}
+
+.job-card-premium:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 16px 36px rgba(30, 41, 59, 0.09);
+    border-color: rgba(37, 99, 235, 0.35);
+}
+
+.btn-save-job {
+    background: #f8fafc;
+    border: 1px solid #e2e8f0;
+    width: 34px;
+    height: 34px;
+    border-radius: 50%;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    color: #94a3b8;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    padding: 0;
+}
+
+.btn-save-job:hover {
+    background: #fee2e2;
+    border-color: #fca5a5;
+    color: #ef4444;
+}
+
+.btn-save-job.active i {
+    color: #2563eb !important;
+}
+
+.technical-skills-title {
+    font-size: 0.7rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: #64748b;
+}
+
+.skill-badge-pill {
+    display: inline-flex;
+    align-items: center;
+    padding: 3px 10px;
+    border-radius: 999px;
+    font-size: 0.72rem;
+    font-weight: 600;
+    color: #3730a3;
+    background: #eef2ff;
+    border: 1px solid #c7d2fe;
+    transition: all 0.15s ease;
+    white-space: nowrap;
+}
+
+.skill-badge-pill:hover {
+    background: #e0e7ff;
+    color: #312e81;
+    transform: translateY(-1px);
+}
+
+.skill-filter-chip {
+    cursor: pointer;
+    padding: 6px 14px;
+    border-radius: 999px;
+    font-size: 0.76rem;
+    font-weight: 600;
+    border: 1px solid #cbd5e1;
+    background: #ffffff;
+    color: #475569;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    user-select: none;
+    text-decoration: none;
+    transition: all 0.18s ease;
+}
+
+.skill-filter-chip:hover {
+    border-color: #3b82f6;
+    color: #1d4ed8;
+    background: #f8fafc;
+}
+
+.skill-filter-chip.active {
+    background: #2563eb;
+    color: #ffffff;
+    border-color: #2563eb;
+    box-shadow: 0 4px 12px rgba(37, 99, 235, 0.25);
+}
+
+.match-score-bar-container {
+    background: #f8fafc;
+    border: 1px solid #f1f5f9;
+    border-radius: 10px;
+    padding: 8px 12px;
+}
+
+.resume-drop-zone {
+    border: 2px dashed #94a3b8;
+    border-radius: 14px;
+    background: #f8fafc;
+    padding: 28px 20px;
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    position: relative;
+}
+
+.resume-drop-zone:hover,
+.resume-drop-zone.dragover {
+    border-color: #2563eb;
+    background: #eff6ff;
+}
+
+.resume-preview-card {
+    border: 1px solid #cbd5e1;
+    border-radius: 12px;
+    background: #ffffff;
+    padding: 12px 16px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    box-shadow: 0 2px 8px rgba(15, 23, 42, 0.04);
+}
+
+.score-circle-badge {
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    font-weight: 800;
+    font-size: 1.15rem;
+    box-shadow: 0 4px 14px rgba(0, 0, 0, 0.06);
+}
+
+.score-circle-high {
+    background: #dcfce7;
+    color: #15803d;
+    border: 2px solid #86efac;
+}
+
+.score-circle-med {
+    background: #dbeafe;
+    color: #1d4ed8;
+    border: 2px solid #93c5fd;
+}
+
+.score-circle-low {
+    background: #fef3c7;
+    color: #b45309;
+    border: 2px solid #fde68a;
+}
+
   
  
  
