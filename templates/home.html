@@ -6,46 +6,67 @@
     <section class="premium-hero-section">
         <!-- Background Animation Layer -->
         <div class="hero-animation-layer">
+            <div class="cyber-grid-overlay"></div>
             <div class="hero-orb orb-1"></div>
             <div class="hero-orb orb-2"></div>
             <div class="hero-orb orb-3"></div>
+            <div class="cyber-particles">
+                <span class="particle p-1"></span>
+                <span class="particle p-2"></span>
+                <span class="particle p-3"></span>
+                <span class="particle p-4"></span>
+                <span class="particle p-5"></span>
+                <span class="particle p-6"></span>
+                <span class="particle p-7"></span>
+                <span class="particle p-8"></span>
+                <span class="particle p-9"></span>
+                <span class="particle p-10"></span>
+                <span class="particle p-11"></span>
+                <span class="particle p-12"></span>
+            </div>
         </div>
         
         <div class="container">
-            <div class="row align-items-center">
+            <div class="row align-items-center g-4 g-xl-5">
                 <div class="col-lg-6 position-relative z-1" data-aos="fade-right">
                     <span class="premium-hero-badge" data-aos="fade-up" data-aos-delay="100"><i class="bi bi-stars me-2"></i> CAMPUSLINK • AI PLACEMENT READINESS & PROOF INTELLIGENCE PLATFORM</span>
                     <h1 class="premium-hero-title" data-aos="fade-up" data-aos-delay="200">From “I have skills”<br><span class="text-blue">→ “Here is the evidence.”</span></h1>
                     <p class="premium-hero-desc">HACKATHON MVP • REAL-WORLD • EXPLAINABLE AI. A verifiable readiness layer between learning and hiring. Turn learning activity into decision-ready evidence.</p>
                     
                     <!-- Live Metric Status Strip (Slide 1) -->
-                    <div class="p-3 mb-4 rounded-4 bg-dark text-white d-flex flex-wrap justify-content-between align-items-center gap-2 border shadow-sm">
-                        <div class="px-2">
-                            <span class="text-secondary small d-block">ROLE FIT</span>
-                            <strong class="text-primary fs-6">82% • Data Analyst</strong>
+                    <div class="hero-status-strip p-2.5 px-3 mb-3 rounded-3 text-white d-flex flex-wrap justify-content-between align-items-center gap-2 border shadow-sm">
+                        <div class="px-2 d-flex align-items-center gap-2">
+                            <span class="live-status-ping"></span>
+                            <div>
+                                <span class="text-secondary d-block" style="font-size: 0.72rem; letter-spacing: 0.04em; font-weight: 600;">ROLE FIT</span>
+                                <strong class="text-glow-cyan" style="font-size: 0.92rem;">82% • Data Analyst</strong>
+                            </div>
+                        </div>
+                        <div class="px-2 border-start border-secondary d-flex align-items-center gap-2">
+                            <span class="live-status-ping pulse-green"></span>
+                            <div>
+                                <span class="text-secondary d-block" style="font-size: 0.72rem; letter-spacing: 0.04em; font-weight: 600;">PROOF COVERAGE</span>
+                                <strong class="text-glow-lime" style="font-size: 0.92rem;">7 / 9 skills verified</strong>
+                            </div>
                         </div>
                         <div class="px-2 border-start border-secondary">
-                            <span class="text-secondary small d-block">PROOF COVERAGE</span>
-                            <strong class="text-success fs-6">7 / 9 skills verified</strong>
-                        </div>
-                        <div class="px-2 border-start border-secondary">
-                            <span class="text-secondary small d-block">NEXT ACTION</span>
-                            <a href="{% url 'role_mission_default' %}" class="text-warning text-decoration-none fw-bold small">15-min SQL mission →</a>
+                            <span class="text-secondary d-block" style="font-size: 0.72rem; letter-spacing: 0.04em; font-weight: 600;">NEXT ACTION</span>
+                            <a href="{% url 'role_mission_default' %}" class="text-warning text-decoration-none fw-bold" style="font-size: 0.88rem;">15-min SQL mission →</a>
                         </div>
                     </div>
 
                     <div class="premium-hero-actions d-flex flex-wrap gap-2">
-                        <a href="{% url 'hackathon_demo' %}" class="btn btn-warning btn-lg rounded-pill px-4 py-3 fw-bold text-dark shadow-sm">
+                        <a href="{% url 'hackathon_demo' %}" class="btn btn-warning rounded-pill px-3 py-2 fw-bold text-dark shadow-sm d-inline-flex align-items-center btn-cyber-glow">
                             <i class="bi bi-play-circle-fill me-2"></i>3-Min "Wow" Journey
                         </a>
                         <a href="{% url 'role_decoder' %}" class="btn-premium-primary"><i class="bi bi-cpu me-2"></i>Role Decoder</a>
                         <a href="{% url 'role_mission_default' %}" class="btn-premium-secondary"><i class="bi bi-stopwatch me-2"></i>15-min Mission</a>
-                        <a href="{% url 'college_readiness_radar' %}" class="btn btn-outline-primary rounded-pill px-4 py-3 fw-bold"><i class="bi bi-radar me-2"></i>College Radar</a>
-                        <a href="{% url 'recruiter_proof_shortlist' %}" class="btn btn-outline-success rounded-pill px-4 py-3 fw-bold"><i class="bi bi-award me-2"></i>Proof Shortlist</a>
+                        <a href="{% url 'college_readiness_radar' %}" class="btn btn-cyber-outline-purple rounded-pill px-3 py-2 fw-semibold"><i class="bi bi-radar me-1"></i>College Radar</a>
+                        <a href="{% url 'recruiter_proof_shortlist' %}" class="btn btn-cyber-outline-green rounded-pill px-3 py-2 fw-semibold"><i class="bi bi-award me-1"></i>Proof Shortlist</a>
                     </div>
                     
-                    <div class="premium-hero-features mt-4">
-                        <div class="row g-3">
+                    <div class="premium-hero-features mt-3 pt-1">
+                        <div class="row g-2 g-sm-3">
                             <div class="col-6">
                                 <div class="premium-feature-item">
                                     <div class="premium-feature-icon"><i class="bi bi-briefcase"></i></div>
@@ -87,9 +108,18 @@
                 </div>
                 <div class="col-lg-6" data-aos="fade-left" data-aos-delay="300">
                     <div class="premium-hero-visual">
-                        <div style="width: 100%; height: 500px; background: linear-gradient(135deg, #eef5ff 0%, #dbeafe 100%); border-radius: 24px; position: relative; overflow: hidden; display: flex; align-items: center; justify-content: center; box-shadow: 0 20px 40px rgba(23, 105, 255, 0.05);">
-                            <i class="bi bi-laptop text-blue" style="font-size: 8rem; opacity: 0.1; position: absolute;"></i>
-                            <img src="{% static 'images/student-hero.png' %}" alt="Student" class="premium-student-img" onerror="this.style.display='none'">
+                        <div class="decorative-text dt-1">Your Career Starts Here</div>
+                        
+                        <div class="hero-visual-card">
+                            <div class="holo-scanner-line"></div>
+                            <span class="hud-corner hud-tl"></span>
+                            <span class="hud-corner hud-tr"></span>
+                            <span class="hud-corner hud-bl"></span>
+                            <span class="hud-corner hud-br"></span>
+                            <div class="hud-status-badge"><span class="hud-radar-dot"></span> LIVE PROOF ENGINE</div>
+                            
+                            <img src="{% static 'images/student-hero.png' %}" alt="Student Career Progress" class="premium-student-img">
+                            <div class="hero-visual-overlay"></div>
                         </div>
                         
                         <div class="floating-card card-1">
@@ -124,7 +154,6 @@
                             </div>
                         </div>
                         
-                        <div class="decorative-text dt-1">Your Career Starts Here</div>
                         <div class="decorative-text dt-2">Dream Learn Achieve</div>
                     </div>
                 </div>
@@ -133,18 +162,18 @@
     </section>
 
     <!-- THE GAP & THE OLD SIGNAL (Slides 2, 3, 4 from PPT) -->
-    <section class="py-5" style="background: #0f172a; color: #fff;">
+    <section class="py-5 bg-transparent text-white">
         <div class="container py-4">
             <div class="row align-items-center g-5">
                 <div class="col-lg-6" data-aos="fade-right">
-                    <span class="badge text-bg-warning text-dark px-3 py-1 rounded-pill fw-bold text-uppercase mb-3" style="background: #bef264 !important;">
+                    <span class="badge text-bg-warning text-dark px-3 py-1 rounded-pill fw-bold text-uppercase mb-3" style="background: #bef264 !important; color: #030712 !important;">
                         THE GAP
                     </span>
                     <h2 class="display-5 fw-bold mb-3 tracking-tight text-white">Talent is invisible before the first job.</h2>
                     <p class="lead opacity-80 mb-4" style="color: #cbd5e1;">
                         Students struggle to prove practical ability. Recruiters sift through noisy, hard-to-compare profiles. More applications don't create better matches.
                     </p>
-                    <div class="p-3 rounded-4 bg-white bg-opacity-10 border border-white border-opacity-10 mb-3">
+                    <div class="p-3 rounded-4 bg-white bg-opacity-10 border border-white border-opacity-10 mb-3" style="backdrop-filter: blur(10px);">
                         <div class="d-flex align-items-center gap-2 mb-1">
                             <span class="badge bg-danger text-white rounded-pill">≠ THE OLD SIGNAL</span>
                             <strong class="text-white">More volume does not mean more fit.</strong>
@@ -155,17 +184,17 @@
                     </div>
                 </div>
                 <div class="col-lg-6" data-aos="fade-left">
-                    <div class="p-4 p-md-5 rounded-4 border border-white border-opacity-10 shadow-lg" style="background: linear-gradient(135deg, #1e3a8a 0%, #172554 100%);">
+                    <div class="p-4 p-md-5 rounded-4 shadow-lg" style="background: linear-gradient(135deg, rgba(14, 30, 68, 0.88) 0%, rgba(8, 16, 38, 0.92) 100%); border: 1px solid rgba(0, 242, 254, 0.28); backdrop-filter: blur(16px); box-shadow: 0 20px 50px rgba(0,0,0,0.6), 0 0 25px rgba(0, 242, 254, 0.1);">
                         <span class="text-uppercase fw-bold small text-lime d-block mb-2" style="color: #bef264;">THE CAMPUSLINK PROMISE</span>
                         <h3 class="h2 fw-bold text-white mb-3">What if students could prove fit before applying?</h3>
-                        <p class="mb-4" style="color: #e2e8f0;">
+                        <p class="mb-4" style="color: #cbd5e1;">
                             CampusLink turns career readiness into visible evidence—not another résumé pile. One loop connects learning to hiring, making each next decision clearer.
                         </p>
                         <div class="d-flex flex-wrap gap-2">
-                            <a href="{% url 'simulator_catalog' %}" class="btn btn-lime text-dark fw-bold rounded-pill px-4 py-2" style="background: #bef264;">
+                            <a href="{% url 'simulator_catalog' %}" class="btn btn-lime text-dark fw-bold rounded-pill px-4 py-2" style="background: #bef264; color: #030712 !important;">
                                 Try Flight Simulator <i class="bi bi-arrow-right ms-1"></i>
                             </a>
-                            <a href="{% url 'proof_passport_dashboard' %}" class="btn btn-outline-light rounded-pill px-4 py-2 fw-semibold">
+                            <a href="{% url 'proof_passport_dashboard' %}" class="btn btn-outline-light rounded-pill px-4 py-2 fw-semibold" style="border-color: rgba(0, 242, 254, 0.4); color: #00f2fe;">
                                 View Proof Passport
                             </a>
                         </div>
@@ -176,34 +205,34 @@
     </section>
 
     <!-- THE CAMPUSLINK LOOP (Slide 5 from PPT) -->
-    <section class="py-5" style="background: #f8fafc;">
+    <section class="py-5 bg-transparent">
         <div class="container py-4">
             <div class="text-center mb-5" data-aos="fade-up">
-                <span class="badge text-bg-primary px-3 py-1 rounded-pill fw-bold text-uppercase mb-2">THE CAMPUSLINK LOOP</span>
-                <h2 class="display-6 fw-bold text-dark">One Loop Connects Learning to Hiring</h2>
-                <p class="text-muted small" style="max-width: 600px; margin: 0 auto;">Each pass makes the next decision clearer. From classroom coursework to verified employer offers.</p>
+                <span class="badge px-3 py-1 rounded-pill fw-bold text-uppercase mb-2" style="background: rgba(0, 242, 254, 0.12); color: #00f2fe; border: 1px solid rgba(0, 242, 254, 0.28);">THE CAMPUSLINK LOOP</span>
+                <h2 class="display-6 fw-bold text-white">One Loop Connects Learning to Hiring</h2>
+                <p class="small" style="max-width: 600px; margin: 0 auto; color: #94a3b8;">Each pass makes the next decision clearer. From classroom coursework to verified employer offers.</p>
             </div>
 
             <div class="row g-4">
                 <div class="col-md-4" data-aos="fade-up" data-aos-delay="100">
-                    <div class="card h-100 border-0 shadow-sm p-4 rounded-4 bg-white text-center position-relative">
-                        <div class="badge rounded-circle bg-primary-subtle text-primary p-3 mb-3 mx-auto fs-4" style="width: 60px; height: 60px;">1</div>
-                        <h3 class="h5 fw-bold text-dark mb-2">Map Skills</h3>
-                        <p class="small text-muted mb-0">Extract and map demonstrated skills directly from coursework, academic capstones, and past repositories.</p>
+                    <div class="card h-100 border-0 shadow-lg p-4 rounded-4 text-center position-relative" style="background: rgba(10, 18, 38, 0.82); border: 1px solid rgba(0, 242, 254, 0.18) !important; backdrop-filter: blur(16px);">
+                        <div class="badge rounded-circle p-3 mb-3 mx-auto fs-4" style="width: 60px; height: 60px; background: rgba(0, 242, 254, 0.12); color: #00f2fe; border: 1px solid rgba(0, 242, 254, 0.25);">1</div>
+                        <h3 class="h5 fw-bold text-white mb-2">Map Skills</h3>
+                        <p class="small mb-0" style="color: #94a3b8;">Extract and map demonstrated skills directly from coursework, academic capstones, and past repositories.</p>
                     </div>
                 </div>
                 <div class="col-md-4" data-aos="fade-up" data-aos-delay="200">
-                    <div class="card h-100 border-0 shadow-sm p-4 rounded-4 bg-white text-center position-relative">
-                        <div class="badge rounded-circle bg-success-subtle text-success p-3 mb-3 mx-auto fs-4" style="width: 60px; height: 60px;">2</div>
-                        <h3 class="h5 fw-bold text-dark mb-2">Try Work Simulations</h3>
-                        <p class="small text-muted mb-0">Execute short, realistic workplace challenges in the Career Flight Simulator to prove hands-on problem solving.</p>
+                    <div class="card h-100 border-0 shadow-lg p-4 rounded-4 text-center position-relative" style="background: rgba(10, 18, 38, 0.82); border: 1px solid rgba(16, 185, 129, 0.2) !important; backdrop-filter: blur(16px);">
+                        <div class="badge rounded-circle p-3 mb-3 mx-auto fs-4" style="width: 60px; height: 60px; background: rgba(16, 185, 129, 0.12); color: #34d399; border: 1px solid rgba(16, 185, 129, 0.25);">2</div>
+                        <h3 class="h5 fw-bold text-white mb-2">Try Work Simulations</h3>
+                        <p class="small mb-0" style="color: #94a3b8;">Execute short, realistic workplace challenges in the Career Flight Simulator to prove hands-on problem solving.</p>
                     </div>
                 </div>
                 <div class="col-md-4" data-aos="fade-up" data-aos-delay="300">
-                    <div class="card h-100 border-0 shadow-sm p-4 rounded-4 bg-white text-center position-relative">
-                        <div class="badge rounded-circle bg-warning-subtle text-warning p-3 mb-3 mx-auto fs-4" style="width: 60px; height: 60px;">3</div>
-                        <h3 class="h5 fw-bold text-dark mb-2">Explainable Matches</h3>
-                        <p class="small text-muted mb-0">Carry tangible evidence into explainable matches. AI separates demonstrated strengths from inferred claims.</p>
+                    <div class="card h-100 border-0 shadow-lg p-4 rounded-4 text-center position-relative" style="background: rgba(10, 18, 38, 0.82); border: 1px solid rgba(245, 158, 11, 0.2) !important; backdrop-filter: blur(16px);">
+                        <div class="badge rounded-circle p-3 mb-3 mx-auto fs-4" style="width: 60px; height: 60px; background: rgba(245, 158, 11, 0.12); color: #fbbf24; border: 1px solid rgba(245, 158, 11, 0.25);">3</div>
+                        <h3 class="h5 fw-bold text-white mb-2">Explainable Matches</h3>
+                        <p class="small mb-0" style="color: #94a3b8;">Carry tangible evidence into explainable matches. AI separates demonstrated strengths from inferred claims.</p>
                     </div>
                 </div>
             </div>
@@ -211,61 +240,61 @@
     </section>
 
     <!-- THE 3 CORE PRODUCTS SHOWCASE (Slides 6, 7, 8, 10 from PPT) -->
-    <section class="py-5" style="background: #ffffff;">
+    <section class="py-5 bg-transparent">
         <div class="container py-4">
             <div class="text-center mb-5" data-aos="fade-up">
-                <span class="badge text-bg-primary px-3 py-1 rounded-pill fw-bold text-uppercase mb-2">CORE PRODUCTS</span>
-                <h2 class="display-6 fw-bold text-dark">The 3 Pillars of CampusLink</h2>
-                <p class="text-muted small">Everything required to turn hidden potential into verified employer proof.</p>
+                <span class="badge px-3 py-1 rounded-pill fw-bold text-uppercase mb-2" style="background: rgba(0, 242, 254, 0.12); color: #00f2fe; border: 1px solid rgba(0, 242, 254, 0.28);">CORE PRODUCTS</span>
+                <h2 class="display-6 fw-bold text-white">The 3 Pillars of CampusLink</h2>
+                <p class="small" style="color: #94a3b8;">Everything required to turn hidden potential into verified employer proof.</p>
             </div>
 
             <!-- PRODUCT 01: Career Flight Simulator (Slide 6) -->
-            <div class="card border-0 shadow-sm p-4 p-md-5 rounded-4 mb-4 overflow-hidden position-relative" style="background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%);">
+            <div class="card border-0 shadow-lg p-4 p-md-5 rounded-4 mb-4 overflow-hidden position-relative" style="background: linear-gradient(135deg, rgba(14, 30, 68, 0.88) 0%, rgba(8, 16, 38, 0.92) 100%); border: 1px solid rgba(0, 242, 254, 0.28) !important; box-shadow: 0 20px 50px rgba(0,0,0,0.6), 0 0 25px rgba(0, 242, 254, 0.08); backdrop-filter: blur(20px);">
                 <div class="row align-items-center g-4">
                     <div class="col-lg-7">
-                        <div class="d-inline-flex align-items-center gap-2 px-3 py-1 rounded-pill bg-primary text-white fw-bold small mb-3">
+                        <div class="d-inline-flex align-items-center gap-2 px-3 py-1 rounded-pill fw-bold small mb-3" style="background: rgba(0, 242, 254, 0.15); color: #00f2fe; border: 1px solid rgba(0, 242, 254, 0.3);">
                             PRODUCT 01 · CAREER FLIGHT SIMULATOR
                         </div>
-                        <h3 class="h2 fw-bold text-dark mb-3">The Career Flight Simulator Makes Job Fit Tangible.</h3>
-                        <p class="text-muted mb-4">
+                        <h3 class="h2 fw-bold text-white mb-3">The Career Flight Simulator Makes Job Fit Tangible.</h3>
+                        <p class="mb-4" style="color: #94a3b8;">
                             Turn a target role into a short, realistic challenge. Show strengths and skill gaps from the work itself, and recommend a next practice mission.
                         </p>
                         <div class="row g-3 mb-4">
                             <div class="col-sm-4">
-                                <div class="p-3 bg-white rounded-3 shadow-xs">
-                                    <strong class="d-block text-primary small">Realistic Challenge</strong>
-                                    <span class="small text-muted">Genuine datasets & constraints</span>
+                                <div class="p-3 rounded-3" style="background: rgba(4, 9, 22, 0.7); border: 1px solid rgba(0, 242, 254, 0.15);">
+                                    <strong class="d-block small" style="color: #00f2fe;">Realistic Challenge</strong>
+                                    <span class="small" style="color: #94a3b8;">Genuine datasets & constraints</span>
                                 </div>
                             </div>
                             <div class="col-sm-4">
-                                <div class="p-3 bg-white rounded-3 shadow-xs">
-                                    <strong class="d-block text-success small">Evaluate Work</strong>
-                                    <span class="small text-muted">Strengths from actual code</span>
+                                <div class="p-3 rounded-3" style="background: rgba(4, 9, 22, 0.7); border: 1px solid rgba(16, 185, 129, 0.15);">
+                                    <strong class="d-block small" style="color: #34d399;">Evaluate Work</strong>
+                                    <span class="small" style="color: #94a3b8;">Strengths from actual code</span>
                                 </div>
                             </div>
                             <div class="col-sm-4">
-                                <div class="p-3 bg-white rounded-3 shadow-xs">
-                                    <strong class="d-block text-warning small">Next Mission</strong>
-                                    <span class="small text-muted">Adaptive practice path</span>
+                                <div class="p-3 rounded-3" style="background: rgba(4, 9, 22, 0.7); border: 1px solid rgba(245, 158, 11, 0.15);">
+                                    <strong class="d-block small" style="color: #fbbf24;">Next Mission</strong>
+                                    <span class="small" style="color: #94a3b8;">Adaptive practice path</span>
                                 </div>
                             </div>
                         </div>
-                        <a href="{% url 'simulator_catalog' %}" class="btn btn-primary px-4 py-2 rounded-pill fw-semibold shadow-sm">
+                        <a href="{% url 'simulator_catalog' %}" class="btn btn-primary px-4 py-2 rounded-pill fw-semibold shadow-sm" style="background: linear-gradient(135deg, #00f2fe 0%, #2563eb 100%); border: none; box-shadow: 0 0 15px rgba(0, 242, 254, 0.3);">
                             <i class="bi bi-airplane-engines me-2"></i>Explore Flight Simulations
                         </a>
                     </div>
                     <div class="col-lg-5 text-center">
-                        <div class="p-4 bg-white rounded-4 shadow-sm text-start border">
+                        <div class="p-4 rounded-4 text-start shadow-lg" style="background: rgba(6, 12, 26, 0.9); border: 1px solid rgba(0, 242, 254, 0.25); box-shadow: 0 15px 35px rgba(0,0,0,0.5);">
                             <div class="d-flex justify-content-between align-items-center mb-2">
-                                <span class="badge text-bg-success rounded-pill">Data Analyst Simulation</span>
-                                <strong class="text-primary small">92/100 Fit</strong>
+                                <span class="badge text-bg-success rounded-pill" style="box-shadow: 0 0 10px rgba(16, 185, 129, 0.4);">Data Analyst Simulation</span>
+                                <strong class="small" style="color: #00f2fe;">92/100 Fit</strong>
                             </div>
-                            <h4 class="h6 fw-bold mb-2">Customer Retention & Churn Storytelling</h4>
-                            <p class="small text-muted mb-3">Analyzed Q3 cohort drop-offs and provided executive retention recommendations.</p>
+                            <h4 class="h6 fw-bold mb-2 text-white">Customer Retention & Churn Storytelling</h4>
+                            <p class="small mb-3" style="color: #94a3b8;">Analyzed Q3 cohort drop-offs and provided executive retention recommendations.</p>
                             <div class="d-flex flex-wrap gap-1">
-                                <span class="badge bg-light text-dark border small">Data Storytelling</span>
-                                <span class="badge bg-light text-dark border small">SQL Analysis</span>
-                                <span class="badge bg-light text-dark border small">Churn Cohorts</span>
+                                <span class="badge small" style="background: rgba(0, 242, 254, 0.08); color: #7dd3fc; border: 1px solid rgba(0, 242, 254, 0.2);">Data Storytelling</span>
+                                <span class="badge small" style="background: rgba(0, 242, 254, 0.08); color: #7dd3fc; border: 1px solid rgba(0, 242, 254, 0.2);">SQL Analysis</span>
+                                <span class="badge small" style="background: rgba(0, 242, 254, 0.08); color: #7dd3fc; border: 1px solid rgba(0, 242, 254, 0.2);">Churn Cohorts</span>
                             </div>
                         </div>
                     </div>
@@ -273,54 +302,54 @@
             </div>
 
             <!-- PRODUCT 02: The Opportunity Compiler (Slide 7) -->
-            <div class="card border-0 shadow-sm p-4 p-md-5 rounded-4 mb-4 overflow-hidden position-relative" style="background: linear-gradient(135deg, #f0fdf4 0%, #dcfce7 100%);">
+            <div class="card border-0 shadow-lg p-4 p-md-5 rounded-4 mb-4 overflow-hidden position-relative" style="background: linear-gradient(135deg, rgba(8, 36, 28, 0.88) 0%, rgba(5, 20, 18, 0.92) 100%); border: 1px solid rgba(16, 185, 129, 0.3) !important; box-shadow: 0 20px 50px rgba(0,0,0,0.6), 0 0 25px rgba(16, 185, 129, 0.08); backdrop-filter: blur(20px);">
                 <div class="row align-items-center g-4">
                     <div class="col-lg-7">
-                        <div class="d-inline-flex align-items-center gap-2 px-3 py-1 rounded-pill bg-success text-white fw-bold small mb-3">
+                        <div class="d-inline-flex align-items-center gap-2 px-3 py-1 rounded-pill fw-bold small mb-3" style="background: rgba(16, 185, 129, 0.15); color: #34d399; border: 1px solid rgba(16, 185, 129, 0.3);">
                             PRODUCT 02 · THE OPPORTUNITY COMPILER
                         </div>
-                        <h3 class="h2 fw-bold text-dark mb-3">The Opportunity Compiler Turns Job Posts into a Path.</h3>
-                        <p class="text-muted mb-4">
+                        <h3 class="h2 fw-bold text-white mb-3">The Opportunity Compiler Turns Job Posts into a Path.</h3>
+                        <p class="mb-4" style="color: #94a3b8;">
                             Requirements → plain-language skills. Skills → evidence or practice. Sprint around the student's schedule, and export shareable proof.
                         </p>
                         <div class="row g-2 mb-4">
                             <div class="col-sm-6">
-                                <div class="p-2 px-3 bg-white rounded-pill shadow-xs small text-muted">
+                                <div class="p-2 px-3 rounded-pill small" style="background: rgba(4, 20, 14, 0.75); border: 1px solid rgba(16, 185, 129, 0.2); color: #cbd5e1;">
                                     <i class="bi bi-arrow-right-circle-fill text-success me-1"></i> Requirements → Plain-language skills
                                 </div>
                             </div>
                             <div class="col-sm-6">
-                                <div class="p-2 px-3 bg-white rounded-pill shadow-xs small text-muted">
+                                <div class="p-2 px-3 rounded-pill small" style="background: rgba(4, 20, 14, 0.75); border: 1px solid rgba(16, 185, 129, 0.2); color: #cbd5e1;">
                                     <i class="bi bi-arrow-right-circle-fill text-success me-1"></i> Skills → Evidence or practice
                                 </div>
                             </div>
                             <div class="col-sm-6">
-                                <div class="p-2 px-3 bg-white rounded-pill shadow-xs small text-muted">
+                                <div class="p-2 px-3 rounded-pill small" style="background: rgba(4, 20, 14, 0.75); border: 1px solid rgba(16, 185, 129, 0.2); color: #cbd5e1;">
                                     <i class="bi bi-arrow-right-circle-fill text-success me-1"></i> Sprint around student's schedule
                                 </div>
                             </div>
                             <div class="col-sm-6">
-                                <div class="p-2 px-3 bg-white rounded-pill shadow-xs small text-muted">
+                                <div class="p-2 px-3 rounded-pill small" style="background: rgba(4, 20, 14, 0.75); border: 1px solid rgba(16, 185, 129, 0.2); color: #cbd5e1;">
                                     <i class="bi bi-arrow-right-circle-fill text-success me-1"></i> Share verified proof brief
                                 </div>
                             </div>
                         </div>
-                        <a href="{% url 'opportunity_compiler_home' %}" class="btn btn-success px-4 py-2 rounded-pill fw-semibold shadow-sm">
+                        <a href="{% url 'opportunity_compiler_home' %}" class="btn btn-success px-4 py-2 rounded-pill fw-semibold shadow-sm" style="background: linear-gradient(135deg, #10b981 0%, #059669 100%); border: none; box-shadow: 0 0 15px rgba(16, 185, 129, 0.3);">
                             <i class="bi bi-cpu me-2"></i>Compile Target Opportunity
                         </a>
                     </div>
                     <div class="col-lg-5 text-center">
-                        <div class="p-4 bg-white rounded-4 shadow-sm text-start border">
+                        <div class="p-4 rounded-4 text-start shadow-lg" style="background: rgba(6, 22, 16, 0.9); border: 1px solid rgba(16, 185, 129, 0.25); box-shadow: 0 15px 35px rgba(0,0,0,0.5);">
                             <div class="d-flex justify-content-between align-items-center mb-2">
                                 <span class="badge text-bg-primary rounded-pill">Sprint Schedule</span>
-                                <span class="small text-muted">2-Week Sprint</span>
+                                <span class="small" style="color: #94a3b8;">2-Week Sprint</span>
                             </div>
-                            <h4 class="h6 fw-bold mb-2">Backend Software Engineer</h4>
-                            <div class="progress mb-2" style="height: 8px;">
-                                <div class="progress-bar bg-success" style="width: 75%;"></div>
+                            <h4 class="h6 fw-bold mb-2 text-white">Backend Software Engineer</h4>
+                            <div class="progress mb-2" style="height: 8px; background: rgba(255, 255, 255, 0.1);">
+                                <div class="progress-bar bg-success" style="width: 75%; box-shadow: 0 0 10px #10b981;"></div>
                             </div>
-                            <span class="small text-muted d-block mb-3">75% Evidence Evidenced · 3 Milestones Completed</span>
-                            <div class="p-2 bg-light rounded-3 small">
+                            <span class="small d-block mb-3" style="color: #94a3b8;">75% Evidence Evidenced · 3 Milestones Completed</span>
+                            <div class="p-2 rounded-3 small" style="background: rgba(16, 185, 129, 0.1); border: 1px solid rgba(16, 185, 129, 0.25); color: #6ee7b7;">
                                 <i class="bi bi-check-circle-fill text-success me-1"></i> REST API & Distributed Caching Evidenced
                             </div>
                         </div>
@@ -329,38 +358,38 @@
             </div>
 
             <!-- PRODUCT 03: A Proof Passport (Slide 8) -->
-            <div class="card border-0 shadow-sm p-4 p-md-5 rounded-4 mb-4 overflow-hidden position-relative" style="background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);">
+            <div class="card border-0 shadow-lg p-4 p-md-5 rounded-4 mb-4 overflow-hidden position-relative" style="background: linear-gradient(135deg, rgba(28, 14, 52, 0.88) 0%, rgba(14, 8, 30, 0.92) 100%); border: 1px solid rgba(168, 85, 247, 0.3) !important; box-shadow: 0 20px 50px rgba(0,0,0,0.6), 0 0 25px rgba(168, 85, 247, 0.08); backdrop-filter: blur(20px);">
                 <div class="row align-items-center g-4">
                     <div class="col-lg-7">
-                        <div class="d-inline-flex align-items-center gap-2 px-3 py-1 rounded-pill bg-dark text-white fw-bold small mb-3">
+                        <div class="d-inline-flex align-items-center gap-2 px-3 py-1 rounded-pill fw-bold small mb-3" style="background: rgba(168, 85, 247, 0.15); color: #c084fc; border: 1px solid rgba(168, 85, 247, 0.3);">
                             PRODUCT 03 · THE PROOF PASSPORT
                         </div>
-                        <h3 class="h2 fw-bold text-dark mb-3">A Proof Passport Carries Evidence—Not Empty Claims.</h3>
-                        <p class="text-muted mb-4">
+                        <h3 class="h2 fw-bold text-white mb-3">A Proof Passport Carries Evidence—Not Empty Claims.</h3>
+                        <p class="mb-4" style="color: #94a3b8;">
                             Collect project artifacts, simulation results, and peer contributions. Attach each skill to its source and confidence level. Let students choose what to share with each employer.
                         </p>
-                        <ul class="list-unstyled mb-4 small text-muted">
-                            <li class="mb-2"><i class="bi bi-check2-circle text-primary me-2"></i><strong>Multi-Source Evidence:</strong> Project repos, simulator scores, capstone grades, and peer validations.</li>
-                            <li class="mb-2"><i class="bi bi-check2-circle text-primary me-2"></i><strong>Confidence Partitioning:</strong> Demonstrated skills separated from inferred resume claims.</li>
-                            <li class="mb-2"><i class="bi bi-check2-circle text-primary me-2"></i><strong>Recruiter Verifiable View:</strong> Tamper-evident digital passport link for hiring teams.</li>
+                        <ul class="list-unstyled mb-4 small">
+                            <li class="mb-2" style="color: #cbd5e1;"><i class="bi bi-check2-circle me-2" style="color: #c084fc;"></i><strong class="text-white">Multi-Source Evidence:</strong> Project repos, simulator scores, capstone grades, and peer validations.</li>
+                            <li class="mb-2" style="color: #cbd5e1;"><i class="bi bi-check2-circle me-2" style="color: #c084fc;"></i><strong class="text-white">Confidence Partitioning:</strong> Demonstrated skills separated from inferred resume claims.</li>
+                            <li class="mb-2" style="color: #cbd5e1;"><i class="bi bi-check2-circle me-2" style="color: #c084fc;"></i><strong class="text-white">Recruiter Verifiable View:</strong> Tamper-evident digital passport link for hiring teams.</li>
                         </ul>
-                        <a href="{% url 'proof_passport_dashboard' %}" class="btn btn-dark px-4 py-2 rounded-pill fw-semibold shadow-sm">
+                        <a href="{% url 'proof_passport_dashboard' %}" class="btn px-4 py-2 rounded-pill fw-semibold shadow-sm" style="background: linear-gradient(135deg, #a855f7 0%, #7e22ce 100%); color: white; border: none; box-shadow: 0 0 15px rgba(168, 85, 247, 0.3);">
                             <i class="bi bi-patch-check-fill me-2"></i>Inspect Proof Passport
                         </a>
                     </div>
                     <div class="col-lg-5 text-center">
-                        <div class="p-4 bg-white rounded-4 shadow-sm text-start border">
+                        <div class="p-4 rounded-4 text-start shadow-lg" style="background: rgba(18, 10, 36, 0.9); border: 1px solid rgba(168, 85, 247, 0.25); box-shadow: 0 15px 35px rgba(0,0,0,0.5);">
                             <div class="d-flex justify-content-between align-items-center mb-2">
-                                <span class="badge text-bg-warning text-dark rounded-pill fw-bold">Verified Candidate</span>
+                                <span class="badge text-bg-warning text-dark rounded-pill fw-bold" style="background: #bef264 !important; color: #030712 !important;">Verified Candidate</span>
                                 <span class="badge bg-success-subtle text-success border border-success-subtle rounded-pill">Score: 88%</span>
                             </div>
-                            <h4 class="h6 fw-bold mb-1">Candidate Proof Dossier</h4>
-                            <p class="small text-muted mb-3">4 Flight Simulations · 3 Repositories · 2 Peer Reviews</p>
+                            <h4 class="h6 fw-bold mb-1 text-white">Candidate Proof Dossier</h4>
+                            <p class="small mb-3" style="color: #94a3b8;">4 Flight Simulations · 3 Repositories · 2 Peer Reviews</p>
                             <div class="d-flex flex-wrap gap-1">
-                                <span class="badge text-bg-success small">✓ Python</span>
-                                <span class="badge text-bg-success small">✓ SQL</span>
-                                <span class="badge text-bg-success small">✓ Concurrency</span>
-                                <span class="badge text-bg-success small">✓ Cohort Metrics</span>
+                                <span class="badge small" style="background: rgba(168, 85, 247, 0.15); color: #d8b4fe; border: 1px solid rgba(168, 85, 247, 0.3);">✓ Python</span>
+                                <span class="badge small" style="background: rgba(168, 85, 247, 0.15); color: #d8b4fe; border: 1px solid rgba(168, 85, 247, 0.3);">✓ SQL</span>
+                                <span class="badge small" style="background: rgba(168, 85, 247, 0.15); color: #d8b4fe; border: 1px solid rgba(168, 85, 247, 0.3);">✓ Concurrency</span>
+                                <span class="badge small" style="background: rgba(168, 85, 247, 0.15); color: #d8b4fe; border: 1px solid rgba(168, 85, 247, 0.3);">✓ Cohort Metrics</span>
                             </div>
                         </div>
                     </div>
@@ -368,10 +397,10 @@
             </div>
 
             <!-- THE TRUST LAYER (Slide 10) -->
-            <div class="card border-0 shadow-lg p-4 p-md-5 rounded-4 text-white position-relative overflow-hidden" style="background: linear-gradient(135deg, #0f172a 0%, #1e3a8a 100%);">
+            <div class="card border-0 shadow-lg p-4 p-md-5 rounded-4 text-white position-relative overflow-hidden" style="background: linear-gradient(135deg, rgba(10, 20, 48, 0.92) 0%, rgba(15, 30, 70, 0.95) 100%); border: 1px solid rgba(190, 242, 100, 0.35) !important; box-shadow: 0 25px 60px rgba(0,0,0,0.7), 0 0 30px rgba(190, 242, 100, 0.1); backdrop-filter: blur(20px);">
                 <div class="row align-items-center g-4">
                     <div class="col-lg-8">
-                        <span class="badge text-bg-lime text-dark rounded-pill px-3 py-1 fw-bold text-uppercase mb-2" style="background: #bef264;">
+                        <span class="badge rounded-pill px-3 py-1 fw-bold text-uppercase mb-2" style="background: #bef264; color: #030712 !important;">
                             THE TRUST LAYER · SLIDE 10
                         </span>
                         <h3 class="display-6 fw-bold text-white mb-3">AI Explains the Match—and What Would Improve It</h3>
@@ -380,27 +409,27 @@
                         </p>
                         <div class="row g-3">
                             <div class="col-md-4">
-                                <div class="p-3 rounded-3 bg-white bg-opacity-10">
+                                <div class="p-3 rounded-3" style="background: rgba(255, 255, 255, 0.05); border: 1px solid rgba(255, 255, 255, 0.1);">
                                     <strong class="d-block text-white small mb-1">Evidence Behind Role</strong>
-                                    <span class="small text-white-50">Explains exactly which projects & coursework back the job.</span>
+                                    <span class="small" style="color: #94a3b8;">Explains exactly which projects & coursework back the job.</span>
                                 </div>
                             </div>
                             <div class="col-md-4">
-                                <div class="p-3 rounded-3 bg-white bg-opacity-10">
+                                <div class="p-3 rounded-3" style="background: rgba(255, 255, 255, 0.05); border: 1px solid rgba(255, 255, 255, 0.1);">
                                     <strong class="d-block text-white small mb-1">Demonstrated vs Inferred</strong>
-                                    <span class="small text-white-50">Separates proven capability from unverified resume claims.</span>
+                                    <span class="small" style="color: #94a3b8;">Separates proven capability from unverified resume claims.</span>
                                 </div>
                             </div>
                             <div class="col-md-4">
-                                <div class="p-3 rounded-3 bg-white bg-opacity-10">
+                                <div class="p-3 rounded-3" style="background: rgba(255, 255, 255, 0.05); border: 1px solid rgba(255, 255, 255, 0.1);">
                                     <strong class="d-block text-white small mb-1">Next Practice Mission</strong>
-                                    <span class="small text-white-50">Pins the exact simulation to close gaps and raise match fit.</span>
+                                    <span class="small" style="color: #94a3b8;">Pins the exact simulation to close gaps and raise match fit.</span>
                                 </div>
                             </div>
                         </div>
                     </div>
                     <div class="col-lg-4 text-center">
-                        <a href="{% url 'career_match' %}" class="btn btn-lime text-dark px-4 py-3 rounded-pill fw-bold shadow-lg" style="background: #bef264;">
+                        <a href="{% url 'career_match' %}" class="btn btn-lime px-4 py-3 rounded-pill fw-bold shadow-lg" style="background: #bef264; color: #030712 !important; box-shadow: 0 0 25px rgba(190, 242, 100, 0.4);">
                             <i class="bi bi-stars me-2"></i>Launch Trust Layer Matches
                         </a>
                     </div>
