@@ -1,0 +1,158 @@
+{% extends 'base.html' %}
+{% block title %}{{ company.name }} | Startup Profile | CAMPUSLINK{% endblock %}
+{% block content %}
+<main class="marketplace-page py-5">
+<div class="container">
+    <nav class="mb-4">
+        <a class="back-link" href="{% url 'company_list' %}"><i class="bi bi-arrow-left"></i> Back to Startups & Companies</a>
+    </nav>
+
+    {% if messages %}
+    <div class="mb-4">
+        {% for message in messages %}
+        <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+            {{ message }}
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+        {% endfor %}
+    </div>
+    {% endif %}
+
+    <!-- Company Header Card -->
+    <div class="card border-0 shadow-sm rounded-4 p-4 p-md-5 mb-4">
+        <div class="d-flex flex-wrap align-items-center justify-content-between gap-4">
+            <div class="d-flex align-items-center gap-4">
+                <span class="company-mark fs-2 fw-bold" style="width: 72px; height: 72px;">{{ company.name|first|upper }}</span>
+                <div>
+                    <div class="d-flex align-items-center gap-2 mb-1">
+                        <span class="badge {% if company.company_type == 'Startup' %}bg-warning-subtle text-warning-emphasis border border-warning-subtle{% elif company.company_type == 'Unicorn' %}bg-info-subtle text-info-emphasis border border-info-subtle{% else %}bg-primary-subtle text-primary border border-primary-subtle{% endif %} rounded-pill px-3 py-1 fw-bold">
+                            {{ company.company_type }}
+                        </span>
+                        <span class="text-muted small fw-bold">{{ company.industry }}</span>
+                    </div>
+                    <h1 class="fw-bold mb-1 fs-2 text-dark">
+                        {{ company.name }}
+                        <i class="bi bi-patch-check-fill text-primary" title="Verified Hiring Partner"></i>
+                    </h1>
+                    {% if company.tagline %}
+                    <p class="text-muted mb-0 small">{{ company.tagline }}</p>
+                    {% endif %}
+                </div>
+            </div>
+
+            <div class="d-flex flex-wrap gap-2">
+                {% if is_connected %}
+                <form method="post" action="{% url 'connect_company' company.id %}">
+                    {% csrf_token %}
+                    <input type="hidden" name="action" value="disconnect">
+                    <button type="submit" class="btn btn-outline-success">
+                        <i class="bi bi-check-circle-fill me-1"></i>Connected to Talent Network
+                    </button>
+                </form>
+                {% else %}
+                <form method="post" action="{% url 'connect_company' company.id %}">
+                    {% csrf_token %}
+                    <button type="submit" class="btn btn-primary px-4 fw-bold">
+                        <i class="bi bi-person-plus-fill me-1"></i>Connect with {{ company.name }}
+                    </button>
+                </form>
+                {% endif %}
+
+                {% if company.website %}
+                <a href="{{ company.website }}" target="_blank" class="btn btn-outline-secondary">
+                    <i class="bi bi-box-arrow-up-right me-1"></i>Visit Website
+                </a>
+                {% endif %}
+            </div>
+        </div>
+
+        <hr class="my-4">
+
+        <div class="row g-3 text-muted small">
+            <div class="col-sm-6 col-md-3">
+                <strong class="d-block text-dark mb-1"><i class="bi bi-geo-alt-fill text-primary me-1"></i>Locations</strong>
+                {{ company.locations|default:'India / Remote' }}
+            </div>
+            <div class="col-sm-6 col-md-3">
+                <strong class="d-block text-dark mb-1"><i class="bi bi-cash-coin text-success me-1"></i>Funding Stage</strong>
+                {{ company.funding_stage|default:'Funded' }}
+            </div>
+            <div class="col-sm-6 col-md-3">
+                <strong class="d-block text-dark mb-1"><i class="bi bi-people-fill text-info me-1"></i>Team Size</strong>
+                {{ company.employee_count|default:'Expanding Team' }}
+            </div>
+            <div class="col-sm-6 col-md-3">
+                <strong class="d-block text-dark mb-1"><i class="bi bi-briefcase-fill text-warning me-1"></i>Active Openings</strong>
+                {{ jobs.count }} Roles Available
+            </div>
+        </div>
+    </div>
+
+    <div class="row g-4">
+        <!-- Left: Open Roles -->
+        <div class="col-lg-8">
+            <div class="card border-0 shadow-sm rounded-4 p-4 mb-4">
+                <div class="d-flex align-items-center justify-content-between mb-4 pb-2 border-bottom">
+                    <h3 class="fs-4 fw-bold mb-0">Open Positions at {{ company.name }}</h3>
+                    <span class="badge bg-primary rounded-pill">{{ jobs.count }} Roles</span>
+                </div>
+
+                <div class="d-flex flex-column gap-3">
+                    {% for job in jobs %}
+                    <div class="p-3 bg-light rounded-3 border d-flex flex-column flex-md-row align-items-md-center justify-content-between gap-3">
+                        <div>
+                            <div class="d-flex align-items-center gap-2 mb-1">
+                                <span class="badge bg-secondary-subtle text-dark rounded-pill">{{ job.job_type }}</span>
+                                <span class="badge bg-light text-secondary border rounded-pill">{{ job.work_mode }}</span>
+                            </div>
+                            <h4 class="fs-5 fw-bold mb-1">
+                                <a href="{% url 'job_detail' job.id %}" class="text-decoration-none text-dark hover-primary">{{ job.title }}</a>
+                            </h4>
+                            <div class="small text-muted">
+                                <span><i class="bi bi-geo-alt me-1"></i>{{ job.location }}</span> &middot;
+                                <span><i class="bi bi-cash-stack text-success me-1"></i>{{ job.salary|default:'Disclosed upon shortlist' }}</span>
+                            </div>
+                        </div>
+
+                        <div class="d-flex gap-2">
+                            <a href="{% url 'job_detail' job.id %}" class="btn btn-outline-primary btn-sm">View Details</a>
+                            <a href="{% url 'apply_job' job.id %}" class="btn btn-primary btn-sm fw-bold">
+                                <i class="bi bi-send-fill me-1"></i>Apply Form
+                            </a>
+                        </div>
+                    </div>
+                    {% empty %}
+                    <div class="text-center p-4">
+                        <i class="bi bi-inbox fs-2 text-muted d-block mb-2"></i>
+                        <p class="text-muted">No open roles currently posted for this company. Connect above to be considered for future openings!</p>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+
+        <!-- Right: Company Culture & Tech Stack -->
+        <div class="col-lg-4">
+            <div class="card border-0 shadow-sm rounded-4 p-4 mb-4">
+                <h4 class="fs-5 fw-bold mb-3">About the Mission</h4>
+                <p class="text-muted small" style="line-height: 1.7;">{{ company.description }}</p>
+
+                {% if company.tech_stack %}
+                <h5 class="fs-6 fw-bold mt-4 mb-2">Tech Stack</h5>
+                <div class="d-flex flex-wrap gap-1">
+                    {% for tech in company.tech_stack.split %}
+                    <span class="badge bg-primary-subtle text-primary border border-primary-subtle rounded-pill px-2 py-1">{{ tech|cut:"," }}</span>
+                    {% endfor %}
+                </div>
+                {% endif %}
+
+                {% if company.hiring_process %}
+                <h5 class="fs-6 fw-bold mt-4 mb-2">Hiring Process</h5>
+                <p class="text-muted small mb-0">{{ company.hiring_process }}</p>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+</main>
+{% endblock %}

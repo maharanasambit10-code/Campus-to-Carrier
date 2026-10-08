@@ -1,6 +1,6 @@
 {% extends 'base.html' %}
 {% load static %}
-{% block title %}Live AI Mock Interview with Priya & Nexus AI Robot | CampusLink{% endblock %}
+{% block title %}Live AI Mock Interview with Priya · Senior Technical HR Partner | CampusLink{% endblock %}
 
 {% block content %}
 <main class="mock-interview-room bg-dark text-white position-relative" style="min-height: calc(100vh - 70px); overflow: hidden; background: radial-gradient(circle at 50% 25%, #0f1c2e 0%, #070b12 100%);">
@@ -11,17 +11,24 @@
             <div class="d-flex align-items-center gap-2">
                 <span class="live-cyan-dot"></span>
                 <strong class="fs-6 text-white tracking-wide d-flex align-items-center gap-2" id="interviewerHeaderTitle">
-                    <i class="bi bi-robot text-info"></i> NEXUS AI · ROBOTIC MOCK INTERVIEWER
+                    <i class="bi bi-person-badge-fill text-warning"></i> PRIYA AI · SENIOR TECHNICAL HR PARTNER
                 </strong>
             </div>
 
             <span class="badge text-bg-primary px-3 py-1 rounded-pill" id="badgeRole">Software Engineer Intern</span>
             <span class="badge text-bg-info text-dark px-3 py-1 rounded-pill d-none" id="badgeCompany">Tech Company</span>
+            <span class="badge text-bg-warning text-dark px-3 py-1 rounded-pill d-none" id="badgeDomain">Domain</span>
             <span class="badge text-bg-secondary px-3 py-1 rounded-pill" id="badgeType">HR & Culture</span>
             <span class="badge text-bg-dark border border-secondary px-2 py-1 rounded-pill" id="badgeDifficulty">Beginner</span>
         </div>
 
         <div class="d-flex align-items-center gap-3">
+            <!-- Voice Tester Top Action -->
+            <button type="button" class="btn btn-outline-warning btn-sm rounded-pill px-3 py-1 d-flex align-items-center gap-2 shadow-sm" id="btnTestVoiceTop" title="Test Priya's Voice">
+                <i class="bi bi-volume-up-fill"></i>
+                <span class="small fw-semibold">Priya's Voice</span>
+            </button>
+
             <!-- Question Tracker -->
             <div class="d-flex align-items-center gap-2 bg-dark bg-opacity-75 px-3 py-1 rounded-pill border border-secondary border-opacity-50">
                 <i class="bi bi-patch-question text-info"></i>
@@ -34,24 +41,24 @@
                 <span class="small font-monospace text-warning fw-bold" id="callTimer">15:00</span>
             </div>
 
-            <!-- Nexus Live State Badge -->
-            <div class="badge bg-opacity-20 px-3 py-1 rounded-pill d-flex align-items-center gap-2" id="ariaStateBadge" style="background-color: rgba(6, 182, 212, 0.2); color: #22d3ee; border: 1px solid rgba(6, 182, 212, 0.4);">
-                <span class="spinner-grow spinner-grow-sm text-info" role="status" id="ariaStateSpinner"></span>
-                <span id="ariaStateText">Nexus AI Robot Ready</span>
+            <!-- Priya Live State Badge -->
+            <div class="badge bg-opacity-20 px-3 py-1 rounded-pill d-flex align-items-center gap-2" id="ariaStateBadge" style="background-color: rgba(245, 158, 11, 0.2); color: #fbbf24; border: 1px solid rgba(245, 158, 11, 0.4);">
+                <span class="spinner-grow spinner-grow-sm text-warning" role="status" id="ariaStateSpinner"></span>
+                <span id="ariaStateText">Priya HR Partner Ready</span>
             </div>
         </div>
     </header>
 
-    <!-- Main Stage: Futuristic AI Robot Video Viewport -->
+    <!-- Main Stage: Priya HR Interviewer Video Viewport -->
     <div class="container-fluid p-0 position-relative d-flex flex-column align-items-center justify-content-center" style="height: calc(100vh - 165px); min-height: 540px;">
         
-        <!-- Animated Graphical Robot Avatar Container -->
+        <!-- Animated Graphical Priya Avatar Container -->
         <div class="avatar-stage text-center position-relative w-100 h-100 d-flex align-items-center justify-content-center p-3">
             
-            <div class="avatar-card position-relative rounded-4 shadow-lg overflow-hidden border" id="avatarCard" style="width: min(94vw, 920px); height: min(68vh, 520px); background: #000; border-color: rgba(6, 182, 212, 0.5) !important;">
+            <div class="avatar-card position-relative rounded-4 shadow-lg overflow-hidden border" id="avatarCard" style="width: min(94vw, 920px); height: min(68vh, 520px); background: #000; border-color: rgba(245, 158, 11, 0.5) !important;">
                 
-                <!-- High Resolution AI Robot Portrait -->
-                <img src="{% static 'images/ai_robot_interviewer.jpg' %}" alt="Nexus - Humanoid AI Mock Interviewer (Aria Engine)" id="ariaBaseImage" class="w-100 h-100 object-fit-cover transition-all" style="filter: brightness(0.98);">
+                <!-- Authentic Priya Portrait (Senior Technical HR Partner) -->
+                <img src="{% static 'images/aria_interviewer.jpg' %}" alt="Priya - Senior Technical HR Partner" id="ariaBaseImage" class="w-100 h-100 object-fit-cover transition-all" style="filter: brightness(0.98);">
                 
                 <!-- Dynamic Lighting & Studio Atmosphere Overlay -->
                 <div class="position-absolute top-0 start-0 w-100 h-100 pointer-events-none" style="background: linear-gradient(180deg, rgba(10, 16, 26, 0.12) 0%, rgba(10, 16, 26, 0.48) 100%);"></div>
@@ -64,9 +71,9 @@
 
                 <!-- Top-Left Telemetry HUD Badge -->
                 <div class="position-absolute top-0 start-0 p-3 d-flex align-items-center gap-2 pointer-events-none" style="z-index: 5;">
-                    <span class="badge bg-dark bg-opacity-80 border border-info border-opacity-50 text-info font-monospace small px-2 py-1 shadow-sm d-flex align-items-center gap-2" id="avatarHudBadge">
+                    <span class="badge bg-dark bg-opacity-80 border border-warning border-opacity-50 text-warning font-monospace small px-2 py-1 shadow-sm d-flex align-items-center gap-2" id="avatarHudBadge">
                         <span class="live-cyan-dot"></span>
-                        <span id="avatarHudModelText">MODEL: NEXUS-7 AI ROBOT // JOB EVALUATION ENGINE V3.2</span>
+                        <span id="avatarHudModelText">PRIYA AI · SENIOR TECHNICAL HR PARTNER // JOB READINESS COACH</span>
                     </span>
                 </div>
 
@@ -77,7 +84,7 @@
                     </span>
                 </div>
 
-                <!-- Robotic Audio Frequency Spectrum Bars (Bottom of Viewport) -->
+                <!-- Audio Frequency Spectrum Bars (Bottom of Viewport) -->
                 <div class="robot-audio-spectrum-bar position-absolute bottom-0 start-0 w-100 px-4 pb-2 d-flex align-items-end justify-content-center gap-1 pointer-events-none" id="robotSpectrumContainer" style="height: 60px; z-index: 6; background: linear-gradient(0deg, rgba(10, 16, 26, 0.85) 0%, transparent 100%);">
                     <div class="spec-bar sbar-1"></div>
                     <div class="spec-bar sbar-2"></div>
@@ -107,7 +114,7 @@
                         <!-- State 1: Listening (Green, Mic Icon, Animated Sound Bars) -->
                         <div id="pillStateListening" class="d-flex align-items-center gap-2">
                             <span class="text-success d-flex align-items-center pulse-mic"><i class="bi bi-mic-fill fs-6"></i></span>
-                            <span class="text-white small fw-bold tracking-wide">Listening to you...</span>
+                            <span class="text-white small fw-bold tracking-wide">Priya is listening to you...</span>
                             <div class="mic-wave-bars d-flex align-items-end gap-1 ms-1">
                                 <span class="sound-bar bar-1"></span>
                                 <span class="sound-bar bar-2"></span>
@@ -119,14 +126,14 @@
                         <!-- State 2: Thinking (Amber, Spinner/Pulse) -->
                         <div id="pillStateThinking" class="d-none align-items-center gap-2">
                             <div class="spinner-grow spinner-grow-sm text-warning" role="status" style="width: 14px; height: 14px;"></div>
-                            <span class="text-warning small fw-bold tracking-wide">Robot Evaluating Answer...</span>
-                            <span class="text-white-50 small ms-1" style="font-size: 0.72rem;">analyzing against job benchmarks</span>
+                            <span class="text-warning small fw-bold tracking-wide">Priya Evaluating Answer...</span>
+                            <span class="text-white-50 small ms-1" style="font-size: 0.72rem;">analyzing against STAR & job benchmarks</span>
                         </div>
 
-                        <!-- State 3: Speaking (Teal, Speaker Icon, Audio Wave) -->
+                        <!-- State 3: Speaking (Warm Amber/Gold, Speaker Icon, Audio Wave) -->
                         <div id="pillStateSpeaking" class="d-none align-items-center gap-2">
-                            <span class="text-info d-flex align-items-center"><i class="bi bi-volume-up-fill fs-6"></i></span>
-                            <span class="text-info small fw-bold tracking-wide">Robot Speaking...</span>
+                            <span class="text-warning d-flex align-items-center"><i class="bi bi-volume-up-fill fs-6"></i></span>
+                            <span class="text-warning small fw-bold tracking-wide">Priya is speaking...</span>
                             <div class="speaking-wave-bars d-flex align-items-end gap-1 ms-1">
                                 <span class="teal-bar tbar-1"></span>
                                 <span class="teal-bar tbar-2"></span>
@@ -181,16 +188,20 @@
         </div>
 
         <!-- Dedicated High-Contrast Primary Question Card -->
-        <div class="current-question-card position-absolute top-0 start-50 translate-middle-x mt-3 px-4 py-3 rounded-4 shadow-lg border" id="questionCardContainer" style="width: min(92vw, 880px); background: rgba(13, 22, 36, 0.95); backdrop-filter: blur(14px); border-color: rgba(6, 182, 212, 0.4) !important; z-index: 12;">
+        <div class="current-question-card position-absolute top-0 start-50 translate-middle-x mt-3 px-4 py-3 rounded-4 shadow-lg border" id="questionCardContainer" style="width: min(92vw, 880px); background: rgba(13, 22, 36, 0.95); backdrop-filter: blur(14px); border-color: rgba(245, 158, 11, 0.4) !important; z-index: 12;">
             <div class="d-flex flex-wrap justify-content-between align-items-center gap-2 mb-2">
                 <div class="d-flex align-items-center gap-2">
-                    <span class="badge text-bg-info text-dark fw-bold px-2 py-1 rounded-pill" id="questionCardBadge">QUESTION 1</span>
+                    <span class="badge text-bg-warning text-dark fw-bold px-2 py-1 rounded-pill" id="questionCardBadge">QUESTION 1 OF 6</span>
+                    <span class="badge bg-primary bg-opacity-75 text-white small rounded-pill px-2 py-1" id="questionPhaseBadge">PHASE 1: BACKGROUND & MOTIVATION</span>
                     <span class="badge bg-secondary bg-opacity-25 text-white border border-secondary border-opacity-50 small" id="questionTargetRole">Job: Software Engineer Intern</span>
                     <span class="badge rounded-pill px-2 py-1 small d-none" id="questionCompanyBadge"></span>
                 </div>
                 <div class="d-flex align-items-center gap-2">
-                    <button type="button" class="btn btn-outline-info btn-sm rounded-pill px-3 py-1" id="btnReplayAudio" title="Replay Robot Question Voice">
-                        <i class="bi bi-volume-up-fill me-1"></i> Replay Question
+                    <button type="button" class="btn btn-warning btn-sm rounded-pill px-3 py-1 d-none text-dark fw-bold shadow-sm" id="btnInterruptSpeech" title="I am ready to answer - Stop listening and speak now">
+                        <i class="bi bi-mic-fill me-1"></i> Answer Now
+                    </button>
+                    <button type="button" class="btn btn-outline-warning btn-sm rounded-pill px-3 py-1" id="btnReplayAudio" title="Replay Priya's Question Voice">
+                        <i class="bi bi-volume-up-fill me-1"></i> Replay Voice
                     </button>
                     <button type="button" class="btn btn-outline-secondary btn-sm rounded-pill px-2 py-1" id="btnCopyQuestion" title="Copy Question Text">
                         <i class="bi bi-clipboard"></i>
@@ -198,23 +209,45 @@
                 </div>
             </div>
             <h2 class="fs-6 fw-bold text-white mb-2" id="currentQuestionDisplay">"Preparing your job-specific question..."</h2>
-            <div class="small text-info-emphasis fst-italic d-none" id="conversationalFollowUpDisplay">
+            <div class="small text-warning-emphasis fst-italic d-none" id="conversationalFollowUpDisplay">
                 <i class="bi bi-chat-quote-fill me-1"></i> <span id="followUpText"></span>
             </div>
         </div>
 
-        <!-- Floating Live Captions & Candidate Speech Box -->
-        <div class="live-captions-container position-absolute bottom-0 start-50 translate-middle-x mb-2 px-4 py-2 rounded-4 text-center border border-secondary border-opacity-50 shadow-lg" id="captionsContainer" style="width: min(90vw, 840px); background: rgba(10, 16, 26, 0.92); backdrop-filter: blur(12px); z-index: 12;">
+        <!-- Floating Live Captions, Candidate Speech Box & Priya Job Coaching Card -->
+        <div class="live-captions-container position-absolute bottom-0 start-50 translate-middle-x mb-2 px-4 py-2 rounded-4 text-center border border-secondary border-opacity-50 shadow-lg" id="captionsContainer" style="width: min(90vw, 840px); background: rgba(10, 16, 26, 0.94); backdrop-filter: blur(12px); z-index: 12;">
             <div class="d-flex justify-content-between align-items-center mb-1">
-                <span class="small text-uppercase tracking-wider text-primary fw-bold" id="captionSpeaker">Nexus AI Robot</span>
+                <span class="small text-uppercase tracking-wider text-warning fw-bold d-flex align-items-center gap-1" id="captionSpeaker">
+                    <i class="bi bi-person-fill"></i> Priya (Senior HR Partner)
+                </span>
                 <div class="d-flex align-items-center gap-3">
                     <span class="small text-muted" id="statWpm"><i class="bi bi-speedometer2 text-info me-1"></i> <strong>120 WPM</strong></span>
                     <span class="small text-muted" id="statFillers"><i class="bi bi-chat-dots text-warning me-1"></i> Fillers: <strong>0</strong></span>
                     <span class="small text-muted" id="statStar"><i class="bi bi-star-half text-warning me-1"></i> STAR: <strong>-</strong></span>
                 </div>
             </div>
-            <p class="small text-light mb-0 font-monospace text-start text-truncate" id="captionText">"Initializing your customized mock interview session..."</p>
-            <p class="small text-info text-start text-break mt-2 mb-0 d-none" id="starFeedbackText"></p>
+            <p class="small text-light mb-0 font-monospace text-start text-truncate" id="captionText">"Initializing your customized mock interview session with Priya..."</p>
+            <p class="small text-info text-start text-break mt-1 mb-0 d-none" id="starFeedbackText"></p>
+
+            <!-- Priya's Live Job Preparation & STAR Coaching Card -->
+            <div class="priya-live-coach-card mt-2 p-2 rounded-3 text-start d-none" id="priyaCoachCard" style="background: rgba(15, 23, 42, 0.95); border: 1px solid rgba(245, 158, 11, 0.4);">
+                <div class="d-flex flex-wrap justify-content-between align-items-center gap-2 mb-1">
+                    <div class="d-flex align-items-center gap-2">
+                        <span class="badge text-bg-warning text-dark small fw-bold"><i class="bi bi-award-fill me-1"></i> PRIYA'S HR COACHING FOR THIS ANSWER</span>
+                        <span class="badge bg-secondary bg-opacity-50 text-white small" id="coachStarScore">STAR: 0/4</span>
+                    </div>
+                    <div class="d-flex align-items-center gap-1" id="coachStarPills">
+                        <span class="badge bg-dark border border-secondary text-muted small" id="pillS">S: Context</span>
+                        <span class="badge bg-dark border border-secondary text-muted small" id="pillT">T: Task</span>
+                        <span class="badge bg-dark border border-secondary text-muted small" id="pillA">A: Action</span>
+                        <span class="badge bg-dark border border-secondary text-muted small" id="pillR">R: Result</span>
+                    </div>
+                </div>
+                <p class="small text-light mb-1" id="priyaCoachAdvice" style="font-size: 0.82rem;"></p>
+                <div class="small text-warning fst-italic" id="priyaBetterJobTip" style="font-size: 0.8rem;">
+                    <i class="bi bi-lightbulb-fill text-warning me-1"></i> <span id="priyaBetterJobTipText"></span>
+                </div>
+            </div>
         </div>
 
     </div>
@@ -263,7 +296,7 @@
     <!-- Text Input Drawer (Slide up when user clicks keyboard) -->
     <div id="textInputTray" class="position-absolute bottom-0 start-50 translate-middle-x mb-5 p-3 rounded-4 shadow-lg border border-secondary d-none" style="width: min(92vw, 840px); background: rgba(10, 16, 26, 0.98); z-index: 25; margin-bottom: 80px !important;">
         <div class="d-flex justify-content-between align-items-center mb-2">
-            <span class="small text-muted"><i class="bi bi-keyboard text-primary me-1"></i> Type your answer to the AI Robot:</span>
+            <span class="small text-muted"><i class="bi bi-keyboard text-warning me-1"></i> Type your answer to Priya (HR Partner):</span>
             <button type="button" class="btn-close btn-close-white small" id="btnCloseTextTray"></button>
         </div>
         <div class="input-group">
@@ -281,11 +314,11 @@
         <div class="modal-content border-0 shadow-lg rounded-4 overflow-hidden text-dark">
             <div class="modal-header border-0 pb-0 pt-4 px-4 bg-light">
                 <div class="d-flex align-items-center gap-3">
-                    <img src="{% static 'images/ai_robot_interviewer.jpg' %}" alt="Nexus AI Robot" id="setupModalAvatarImg" class="rounded-circle shadow-sm" style="width: 65px; height: 65px; object-fit: cover; border: 2.5px solid #06b6d4;">
+                    <img src="{% static 'images/aria_interviewer.jpg' %}" alt="Priya - Senior Technical HR Partner" id="setupModalAvatarImg" class="rounded-circle shadow-sm" style="width: 65px; height: 65px; object-fit: cover; border: 2.5px solid #f59e0b;">
                     <div>
-                        <span class="badge text-bg-primary rounded-pill px-3 py-1 mb-1">AI ROBOT MOCK INTERVIEW</span>
-                        <h2 class="h5 fw-bold mb-0">Meet Nexus · Your AI Robot Interviewer</h2>
-                        <small class="text-muted">Aria Engine · Tailored question generation specifically for your selected job.</small>
+                        <span class="badge text-bg-warning text-dark rounded-pill px-3 py-1 mb-1 fw-bold">AUTHENTIC HR INTERVIEW COACHING</span>
+                        <h2 class="h5 fw-bold mb-0">Meet Priya · Your Senior HR Partner</h2>
+                        <small class="text-muted">Simulating realistic HR & Technical interviews from first to last question to prepare you for top job offers.</small>
                     </div>
                 </div>
             </div>
@@ -293,7 +326,7 @@
             <div class="modal-body p-4">
                 <div class="alert alert-info py-2 px-3 small rounded-3 mb-4 d-flex align-items-center gap-2">
                     <i class="bi bi-info-circle-fill text-primary fs-5"></i>
-                    <div>Hello <strong>{{ student_name }}</strong>! Select your target job below. Nexus will ask questions customized directly to that role and required skills.</div>
+                    <div>Hello <strong>{{ student_name }}</strong>! Select your target job below. Priya will conduct a realistic HR interview, listen attentively to your responses, and coach you to land better job offers.</div>
                 </div>
 
                 <form id="setupForm">
@@ -371,7 +404,7 @@
                                     </span>
                                 </div>
                                 <div class="text-muted small" style="font-size: 0.78rem;" id="previewHint">
-                                    <i class="bi bi-check2-circle text-success me-1"></i> Nexus will ask questions testing your actual competence in these tools and job requirements.
+                                    <i class="bi bi-check2-circle text-success me-1"></i> Priya will ask questions testing your actual competence in these tools and job requirements.
                                 </div>
                             </div>
                         </div>
@@ -422,13 +455,42 @@
                         </div>
                     </div>
 
-                    <hr class="my-4">
+                    <hr class="my-3">
+
+                    <!-- Priya Voice Configuration & Live Audio Test -->
+                    <div class="p-3 bg-light rounded-3 border mb-3">
+                        <div class="d-flex flex-wrap justify-content-between align-items-center gap-2 mb-2">
+                            <strong class="small text-dark d-flex align-items-center gap-2">
+                                <i class="bi bi-volume-up-fill text-warning fs-5"></i> Voice of Priya (Senior HR Partner)
+                            </strong>
+                            <button type="button" class="btn btn-warning btn-sm fw-bold px-3 py-1 shadow-sm d-flex align-items-center gap-2" id="btnTestVoice">
+                                <i class="bi bi-play-circle-fill"></i> 🔊 Test Priya's Voice
+                            </button>
+                        </div>
+                        <p class="small text-muted mb-2" style="font-size: 0.82rem;">
+                            Priya speaks in an articulate, natural Indian-English female voice. Test her audio greeting and select your preferred interview delivery pace below.
+                        </p>
+                        <div class="row g-2 align-items-center">
+                            <div class="col-md-7">
+                                <select class="form-select form-select-sm" id="priyaVoiceToneSelect">
+                                    <option value="warm" selected>Warm & Encouraging HR Partner (Natural Pitch)</option>
+                                    <option value="executive">Executive & Formal HR Director (Deliberate Pace)</option>
+                                    <option value="startup">Fast-Paced Startup Recruiter (Dynamic Pace)</option>
+                                </select>
+                            </div>
+                            <div class="col-md-5">
+                                <span class="badge text-bg-light border text-muted small py-2 w-100 text-truncate" id="voiceStatusBadge">
+                                    <i class="bi bi-check-circle-fill text-success me-1"></i> Voice Engine: Ready
+                                </span>
+                            </div>
+                        </div>
+                    </div>
 
                     <!-- Camera & Mic Permission Check -->
                     <div class="p-3 bg-light rounded-3 border">
                         <strong class="small d-block mb-2 text-dark"><i class="bi bi-camera-video me-1 text-primary"></i> Camera & Audio Check:</strong>
                         <div class="d-flex flex-wrap align-items-center justify-content-between gap-3">
-                            <span class="small text-muted">Nexus observes eye contact, speaking pace, and posture to provide holistic feedback.</span>
+                            <span class="small text-muted">Priya observes eye contact, speaking pace, and communication structure to provide holistic coaching.</span>
                             <button type="button" class="btn btn-outline-primary btn-sm fw-semibold" id="btnTestMedia">
                                 <i class="bi bi-shield-check me-1"></i> Allow Camera & Microphone
                             </button>
@@ -440,8 +502,8 @@
 
             <div class="modal-footer border-0 pt-0 px-4 pb-4">
                 <a href="{% url 'interview_list' %}" class="btn btn-outline-secondary">Cancel</a>
-                <button type="button" class="btn btn-primary btn-lg px-4 fw-bold shadow-sm d-flex align-items-center gap-2" id="btnStartCall" style="background: linear-gradient(135deg, #0284c7 0%, #06b6d4 100%); border: none;">
-                    <i class="bi bi-robot fs-5"></i> Start Call with AI Robot
+                <button type="button" class="btn btn-primary btn-lg px-4 fw-bold shadow-sm d-flex align-items-center gap-2" id="btnStartCall" style="background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%); border: none;">
+                    <i class="bi bi-person-video3 fs-5"></i> Start Interview with Priya
                 </button>
             </div>
         </div>
@@ -456,7 +518,7 @@
                 <div>
                     <span class="badge text-bg-warning text-dark fw-bold px-3 py-1 rounded-pill mb-2">INTERVIEW COMPLETE ✦</span>
                     <h2 class="h4 fw-bold mb-1">Performance Evaluation & Feedback Report</h2>
-                    <p class="mb-0 text-white text-opacity-75 small">Comprehensive feedback compiled by Nexus AI Robot for {{ student_name }}</p>
+                    <p class="mb-0 text-white text-opacity-75 small">Comprehensive feedback compiled by Priya AI Senior HR Partner for {{ student_name }}</p>
                 </div>
                 <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
@@ -464,7 +526,7 @@
             <div class="modal-body p-4" id="feedbackModalBody">
                 <div class="text-center py-5" id="feedbackLoading">
                     <div class="spinner-border text-primary mb-3" style="width: 3rem; height: 3rem;" role="status"></div>
-                    <h3 class="h5 fw-bold">Nexus is compiling your personalized evaluation...</h3>
+                    <h3 class="h5 fw-bold">Priya is compiling your personalized evaluation...</h3>
                     <p class="text-muted small">Analyzing technical vocabulary, STAR structure, eye contact, and communication clarity.</p>
                 </div>
 
@@ -580,7 +642,7 @@
     transform: scaleX(-1);
 }
 
-/* Sound frequency spectrum bars on Robot card */
+/* Sound frequency spectrum bars on Priya card */
 .spec-bar {
     width: 6px;
     height: 8px;
@@ -689,23 +751,23 @@
     100% { transform: scale(0.9); opacity: 0.8; }
 }
 
-/* Robot Card Lighting & Borders */
+/* Priya Interviewer Card Lighting & Borders */
 .avatar-card {
     transition: transform 0.4s ease, box-shadow 0.4s ease, border-color 0.4s ease;
-    border: 2px solid rgba(6, 182, 212, 0.45) !important;
-    box-shadow: 0 0 35px rgba(6, 182, 212, 0.25), inset 0 0 20px rgba(6, 182, 212, 0.08) !important;
+    border: 2px solid rgba(245, 158, 11, 0.45) !important;
+    box-shadow: 0 0 35px rgba(245, 158, 11, 0.25), inset 0 0 20px rgba(245, 158, 11, 0.08) !important;
 }
 .avatar-card.speaking {
-    border-color: rgba(6, 182, 212, 0.95) !important;
-    box-shadow: 0 0 55px rgba(6, 182, 212, 0.55), inset 0 0 25px rgba(6, 182, 212, 0.15) !important;
+    border-color: rgba(245, 158, 11, 0.95) !important;
+    box-shadow: 0 0 55px rgba(245, 158, 11, 0.55), inset 0 0 25px rgba(245, 158, 11, 0.15) !important;
 }
 .avatar-card.listening {
     border-color: rgba(16, 185, 129, 0.95) !important;
     box-shadow: 0 0 55px rgba(16, 185, 129, 0.5), inset 0 0 25px rgba(16, 185, 129, 0.12) !important;
 }
 .avatar-card.thinking {
-    border-color: rgba(245, 158, 11, 0.95) !important;
-    box-shadow: 0 0 55px rgba(245, 158, 11, 0.5), inset 0 0 25px rgba(245, 158, 11, 0.12) !important;
+    border-color: rgba(6, 182, 212, 0.95) !important;
+    box-shadow: 0 0 55px rgba(6, 182, 212, 0.5), inset 0 0 25px rgba(6, 182, 212, 0.12) !important;
 }
 </style>
 
@@ -798,7 +860,7 @@ document.addEventListener('DOMContentLoaded', function() {
             previewCompany.style.color = '';
             previewSkillBadges.innerHTML = '<span class="badge text-bg-secondary">Domain Skills</span>';
             if (previewHint) {
-                previewHint.innerHTML = '<i class="bi bi-gear-fill text-primary me-1"></i> Custom role mode: Nexus will generate questions specifically matching your custom title and company.';
+                previewHint.innerHTML = '<i class="bi bi-gear-fill text-primary me-1"></i> Custom role mode: Priya will generate questions specifically matching your custom title and company.';
             }
         } else {
             customRoleCol.classList.add('d-none');
@@ -847,7 +909,7 @@ document.addEventListener('DOMContentLoaded', function() {
             if (rubric && previewHint) {
                 previewHint.innerHTML = `<i class="bi bi-stars text-warning me-1"></i> <strong>Hiring Standard:</strong> ${rubric}`;
             } else if (previewHint) {
-                previewHint.innerHTML = `<i class="bi bi-check2-circle text-success me-1"></i> Nexus will ask questions testing your actual competence in these tools and job requirements.`;
+                previewHint.innerHTML = `<i class="bi bi-check2-circle text-success me-1"></i> Priya will ask questions testing your actual competence in these tools and job requirements.`;
             }
         }
     }
@@ -893,6 +955,10 @@ document.addEventListener('DOMContentLoaded', function() {
         const type = document.getElementById('setupType').value;
         const difficulty = document.getElementById('setupDifficulty').value;
         const duration = parseInt(document.getElementById('setupDuration').value);
+
+        const selectedOption = setupJobSelect.options[setupJobSelect.selectedIndex];
+        const skillsStr = selectedOption ? (selectedOption.getAttribute('data-skills') || '') : '';
+        const skills = skillsStr.split(',').map(s => s.trim()).filter(s => s);
 
         if (setupJobSelect.value === 'custom') {
             role = customRoleInput.value.trim() || 'Software Engineer';
@@ -944,7 +1010,8 @@ document.addEventListener('DOMContentLoaded', function() {
                     company_type: companyType,
                     interview_type: type,
                     difficulty: difficulty,
-                    duration_minutes: duration
+                    duration_minutes: duration,
+                    skills: skills
                 })
             });
             const data = await resp.json();
@@ -954,6 +1021,13 @@ document.addEventListener('DOMContentLoaded', function() {
                 currentQuestionIndex = 0;
                 startTime = new Date();
 
+                // Display domain badge in header
+                const badgeDomain = document.getElementById('badgeDomain');
+                if (badgeDomain && data.domain) {
+                    badgeDomain.textContent = 'Track: ' + data.domain;
+                    badgeDomain.classList.remove('d-none');
+                }
+
                 startCallTimer();
                 initSpeechRecognition();
 
@@ -962,15 +1036,18 @@ document.addEventListener('DOMContentLoaded', function() {
                     initAudioContextVAD(mediaStream);
                 }
 
-                // Display first question immediately
+                // Display first question immediately on the question card
                 updateQuestionDisplay();
 
-                // Speak greeting then first question
-                await speakRobot(data.greeting);
+                // Speak greeting smoothly without starting candidate listening yet
+                await speakPriya(data.greeting, false);
                 
-                // Then read first question
+                // Natural human HR pause before asking question 1
+                await new Promise(r => setTimeout(r, 650));
+
+                // Then read first question and transition smoothly to listening mode
                 if (questionsList.length > 0) {
-                    await speakRobot(questionsList[0]);
+                    await speakPriya(questionsList[0], true);
                 }
             }
         } catch (e) {
@@ -978,85 +1055,193 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     });
 
-    // 3. Reliable Robot Speech Synthesis Engine
+    // 3. Reliable Priya Natural Female Speech Synthesis Engine
     let cachedVoices = [];
     function initWebSpeechVoices() {
         if ('speechSynthesis' in window) {
             cachedVoices = window.speechSynthesis.getVoices();
+            updateVoiceBadgeDisplay();
             window.speechSynthesis.onvoiceschanged = () => {
                 cachedVoices = window.speechSynthesis.getVoices();
+                updateVoiceBadgeDisplay();
             };
         }
     }
     initWebSpeechVoices();
 
-    function playRobotWebSpeech(text) {
+    function getPriyaVoice() {
+        const voices = cachedVoices.length ? cachedVoices : (('speechSynthesis' in window) ? window.speechSynthesis.getVoices() : []);
+        if (!voices || !voices.length) return null;
+
+        // 1. Try Indian English female voices (Azure / Windows / Google / macOS)
+        const inFemale = voices.find(v => {
+            const n = v.name.toLowerCase();
+            const lang = (v.lang || '').toLowerCase();
+            const isIN = lang.includes('en-in') || lang.includes('en_in') || n.includes('india');
+            const isFem = n.includes('neerja') || n.includes('ananya') || n.includes('heera') || n.includes('veena') ||
+                          n.includes('kavya') || n.includes('swara') || n.includes('priya') ||
+                          (!n.includes('prabhat') && !n.includes('ravi') && !n.includes('madhav'));
+            return isIN && isFem;
+        });
+        if (inFemale) return inFemale;
+
+        // 2. Try articulate natural female voices (Samantha, Karen, Victoria, Zira, Jenny, Aria, Google US/UK)
+        const femaleNames = ['zira', 'samantha', 'victoria', 'karen', 'jenny', 'aria', 'susan', 'ava', 'allison', 'serena', 'female', 'natural'];
+        const natFemale = voices.find(v => {
+            const n = v.name.toLowerCase();
+            const lang = (v.lang || '').toLowerCase();
+            return lang.startsWith('en') && femaleNames.some(fn => n.includes(fn));
+        });
+        if (natFemale) return natFemale;
+
+        // 3. Fallback to any English voice
+        return voices.find(v => (v.lang || '').toLowerCase().startsWith('en')) || voices[0];
+    }
+
+    function updateVoiceBadgeDisplay() {
+        const voiceBadge = document.getElementById('voiceStatusBadge');
+        if (voiceBadge) {
+            const voice = getPriyaVoice();
+            if (voice) {
+                voiceBadge.innerHTML = `<i class="bi bi-volume-up-fill text-success me-1"></i> Voice: ${voice.name.split(' ')[0]} (${voice.lang})`;
+            } else {
+                voiceBadge.innerHTML = `<i class="bi bi-mic text-warning me-1"></i> Voice Engine: Initializing...`;
+            }
+        }
+    }
+
+    let _activeSpeechKeepAlive = null;
+
+    function playPriyaWebSpeech(text) {
         return new Promise((resolve) => {
             if (!('speechSynthesis' in window) || !text) {
-                setTimeout(resolve, 800);
+                setTimeout(resolve, 300);
                 return;
+            }
+
+            // Mute student speech recognition while Priya is speaking so Priya's own voice
+            // is not picked up as candidate transcript
+            stopStudentListening();
+
+            // Clear any lingering speech & heartbeat
+            if (_activeSpeechKeepAlive) {
+                clearInterval(_activeSpeechKeepAlive);
+                _activeSpeechKeepAlive = null;
             }
             window.speechSynthesis.cancel();
 
-            const utterance = new SpeechSynthesisUtterance(text);
-            const voices = cachedVoices.length ? cachedVoices : window.speechSynthesis.getVoices();
+            // 60ms delay ensures cancel() settles cleanly in Chromium
+            setTimeout(() => {
+                const utterance = new SpeechSynthesisUtterance(text);
+                window._priyaActiveUtterance = utterance; // Retain global reference against GC!
 
-            // Select articulate, clear English voice
-            const voice = voices.find(v => (v.name.toLowerCase().includes('google') || v.name.toLowerCase().includes('natural') || v.name.toLowerCase().includes('david') || v.name.toLowerCase().includes('guy') || v.name.toLowerCase().includes('george')) && v.lang.startsWith('en')) ||
-                          voices.find(v => v.lang.startsWith('en')) ||
-                          voices[0];
+                const voice = getPriyaVoice();
+                if (voice) utterance.voice = voice;
 
-            if (voice) utterance.voice = voice;
-            utterance.rate = 1.0;
-            utterance.pitch = 0.98; // Slightly crisp robotic tone
+                // Tone setting from setup modal
+                const toneSelect = document.getElementById('priyaVoiceToneSelect');
+                const tone = toneSelect ? toneSelect.value : 'warm';
+                if (tone === 'executive') {
+                    utterance.pitch = 1.01;
+                    utterance.rate = 0.94; // Measured, senior HR pace
+                } else if (tone === 'startup') {
+                    utterance.pitch = 1.05;
+                    utterance.rate = 1.03; // Dynamic, agile pace
+                } else {
+                    // warm (default)
+                    utterance.pitch = 1.04;
+                    utterance.rate = 0.98; // Warm, articulate, encouraging
+                }
 
-            utterance.onstart = () => {
-                isSpeaking = true;
-                updatePillState('speaking');
-            };
+                let finished = false;
+                const cleanUp = () => {
+                    if (finished) return;
+                    finished = true;
+                    if (_activeSpeechKeepAlive) {
+                        clearInterval(_activeSpeechKeepAlive);
+                        _activeSpeechKeepAlive = null;
+                    }
+                    window._priyaActiveUtterance = null;
+                    isSpeaking = false;
+                    resolve(true);
+                };
 
-            utterance.onend = () => {
-                isSpeaking = false;
-                resolve(true);
-            };
+                utterance.onstart = () => {
+                    isSpeaking = true;
+                    updatePillState('speaking');
 
-            utterance.onerror = () => {
-                isSpeaking = false;
-                resolve(true);
-            };
+                    // Chromium 15s pause bug keep-alive heartbeat
+                    _activeSpeechKeepAlive = setInterval(() => {
+                        if (window.speechSynthesis && window.speechSynthesis.speaking && !window.speechSynthesis.paused) {
+                            window.speechSynthesis.pause();
+                            window.speechSynthesis.resume();
+                        }
+                    }, 4000);
+                };
 
-            window.speechSynthesis.speak(utterance);
+                utterance.onend = () => {
+                    cleanUp();
+                };
+
+                utterance.onerror = (e) => {
+                    console.log('Priya speech finished or interrupted:', e);
+                    cleanUp();
+                };
+
+                // Resume if browser synthesis is paused
+                if (window.speechSynthesis.paused) {
+                    window.speechSynthesis.resume();
+                }
+
+                window.speechSynthesis.speak(utterance);
+            }, 60);
         });
     }
 
-    async function speakRobot(text) {
+    async function speakPriya(text, startListeningAfter = true) {
         if (!text) return;
-        captionSpeaker.textContent = 'Nexus AI Robot';
+        captionSpeaker.innerHTML = '<i class="bi bi-person-fill"></i> Priya (Senior HR Partner)';
         captionText.textContent = `"${text}"`;
 
         updatePillState('speaking');
+        stopStudentListening();
+
+        const btnInterrupt = document.getElementById('btnInterruptSpeech');
+        if (btnInterrupt) btnInterrupt.classList.remove('d-none');
 
         if (hasNeuralTtsServer) {
-            // Attempt server neural TTS with quick timeout
             let played = false;
             try {
                 played = await new Promise((resolve) => {
                     const audio = new Audio(`{% url "api_synthesize_tts" %}?text=${encodeURIComponent(text)}`);
-                    let timeout = setTimeout(() => {
-                        audio.pause();
-                        resolve(false);
-                    }, 2500);
+                    let started = false;
+                    let loadTimeout = setTimeout(() => {
+                        if (!started) {
+                            audio.pause();
+                            resolve(false);
+                        }
+                    }, 3500);
+
+                    audio.onplay = () => {
+                        started = true;
+                        clearTimeout(loadTimeout);
+                        isSpeaking = true;
+                        updatePillState('speaking');
+                    };
 
                     audio.onended = () => {
-                        clearTimeout(timeout);
+                        clearTimeout(loadTimeout);
+                        isSpeaking = false;
                         resolve(true);
                     };
+
                     audio.onerror = () => {
-                        clearTimeout(timeout);
+                        clearTimeout(loadTimeout);
                         resolve(false);
                     };
+
                     audio.play().catch(() => {
-                        clearTimeout(timeout);
+                        clearTimeout(loadTimeout);
                         resolve(false);
                     });
                 });
@@ -1065,21 +1250,66 @@ document.addEventListener('DOMContentLoaded', function() {
             }
 
             if (!played) {
-                await playRobotWebSpeech(text);
+                await playPriyaWebSpeech(text);
             }
         } else {
-            await playRobotWebSpeech(text);
+            // Split long text into natural sentences so Chrome never truncates or freezes
+            const sentences = (text.length > 160)
+                ? (text.match(/[^.!?]+[.!?]+|\s*[^.!?]+$/g) || [text]).map(s => s.trim()).filter(s => s.length > 0)
+                : [text];
+
+            for (let i = 0; i < sentences.length; i++) {
+                if (isPaused) break;
+                captionText.textContent = `"${sentences[i]}"`;
+                await playPriyaWebSpeech(sentences[i]);
+            }
         }
 
-        // When robot finishes speaking, transition to listening
-        updatePillState('listening');
-        startStudentListening();
+        if (btnInterrupt) btnInterrupt.classList.add('d-none');
+
+        // When Priya finishes speaking, transition smoothly to listening if requested
+        if (startListeningAfter && !isPaused) {
+            updatePillState('listening');
+            startStudentListening();
+        }
     }
+
+    // Candidate intentional interruption
+    function interruptPriyaAndAnswer() {
+        if (isSpeaking) {
+            console.log('⚡ Candidate clicked Answer Now - interrupted Priya speech');
+            if (window.speechSynthesis) window.speechSynthesis.cancel();
+            isSpeaking = false;
+            const btnInterrupt = document.getElementById('btnInterruptSpeech');
+            if (btnInterrupt) btnInterrupt.classList.add('d-none');
+            updatePillState('listening');
+            startStudentListening();
+            captionSpeaker.textContent = 'You (Candidate)';
+            captionText.textContent = '"Speaking answer..."';
+        }
+    }
+
+    const btnInterruptSpeech = document.getElementById('btnInterruptSpeech');
+    if (btnInterruptSpeech) {
+        btnInterruptSpeech.addEventListener('click', interruptPriyaAndAnswer);
+    }
+
+    // Live Voice Tester for Priya
+    function testPriyaVoice() {
+        const testGreeting = "Hello! I'm Priya, your Senior Technical HR Partner at CampusLink. I'm ready to conduct your interview from first to last question, listen to your answers, and prepare you to land your dream job offer.";
+        speakPriya(testGreeting, true);
+    }
+
+    const btnTestVoice = document.getElementById('btnTestVoice');
+    if (btnTestVoice) btnTestVoice.addEventListener('click', testPriyaVoice);
+
+    const btnTestVoiceTop = document.getElementById('btnTestVoiceTop');
+    if (btnTestVoiceTop) btnTestVoiceTop.addEventListener('click', testPriyaVoice);
 
     // Replay button on question card
     btnReplayAudio.addEventListener('click', function() {
         if (questionsList.length > 0 && currentQuestionIndex < questionsList.length) {
-            speakRobot(questionsList[currentQuestionIndex]);
+            speakPriya(questionsList[currentQuestionIndex], true);
         }
     });
 
@@ -1094,7 +1324,7 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     });
 
-    // 4. Voice Activity Detection (VAD) & Instant Barge-In
+    // 4. Voice Activity Detection (VAD) & Candidate Visualizer
     let audioContext = null;
     let analyserNode = null;
 
@@ -1139,16 +1369,10 @@ document.addEventListener('DOMContentLoaded', function() {
                 micIcon.style.transform = 'scale(1)';
             }
 
-            // Barge-In Detection:
-            // If AI is currently speaking and user speaks above threshold
-            if (isSpeaking && avgVolume > 35) {
-                console.log('⚡ Barge-in: Candidate interrupted AI speech.');
-                window.speechSynthesis && window.speechSynthesis.cancel();
-                isSpeaking = false;
-                updatePillState('listening');
-                startStudentListening();
-                captionSpeaker.textContent = 'You (Speaking)';
-            }
+            // Note: We deliberately do not auto-cancel Priya on microphone volume threshold,
+            // because laptop speakers play audio that directly enters the microphone,
+            // which previously caused Priya to be canceled after 1-2 words.
+            // If the user wants to answer immediately, they can click the "Answer Now" button.
 
             requestAnimationFrame(checkLevel);
         }
@@ -1177,20 +1401,20 @@ document.addEventListener('DOMContentLoaded', function() {
             isSpeaking = true;
             pillSpeaking.classList.remove('d-none');
             avatarCard.classList.add('speaking');
-            ariaStateText.textContent = 'Nexus Robot is speaking...';
-            unifiedPill.style.borderColor = 'rgba(6, 182, 212, 0.85)';
+            ariaStateText.textContent = 'Priya is speaking...';
+            unifiedPill.style.borderColor = 'rgba(245, 158, 11, 0.85)';
         } else if (state === 'listening') {
             isSpeaking = false;
             pillListening.classList.remove('d-none');
             avatarCard.classList.add('listening');
-            ariaStateText.textContent = 'Nexus Robot is listening...';
+            ariaStateText.textContent = 'Priya is listening to you...';
             unifiedPill.style.borderColor = 'rgba(16, 185, 129, 0.85)';
         } else if (state === 'thinking') {
             isSpeaking = false;
             pillThinking.classList.remove('d-none');
             avatarCard.classList.add('thinking');
-            ariaStateText.textContent = 'Nexus Robot is evaluating...';
-            unifiedPill.style.borderColor = 'rgba(245, 158, 11, 0.85)';
+            ariaStateText.textContent = 'Priya is evaluating your answer...';
+            unifiedPill.style.borderColor = 'rgba(6, 182, 212, 0.85)';
         } else if (state === 'paused') {
             isSpeaking = false;
             pillPaused.classList.remove('d-none');
@@ -1265,7 +1489,7 @@ document.addEventListener('DOMContentLoaded', function() {
         clearTimeout(silenceTimer);
         silenceTimer = setTimeout(() => {
             if (!isSpeaking && !isPaused && currentQuestionIndex < questionsList.length) {
-                speakRobot("Take your time. Feel free to explain your approach or share an example from your recent projects.");
+                speakPriya("Take your time, {{ student_name }}. Priya is here to help you practice. Feel free to explain your approach or share an example from your experience.");
             }
         }, 14000);
     }
@@ -1311,7 +1535,7 @@ document.addEventListener('DOMContentLoaded', function() {
         speechXActive = true;
         speechXSpeechEnded = true;
         if (!typedAnswerInput.value.trim()) {
-            captionSpeaker.textContent = 'Nexus AI Robot';
+            captionSpeaker.innerHTML = '<i class="bi bi-person-fill"></i> Priya (Senior HR Partner)';
             captionText.textContent = 'I did not catch a response. Please speak again.';
             return;
         }
@@ -1325,7 +1549,7 @@ document.addEventListener('DOMContentLoaded', function() {
         speechXSpeechEnded = false;
         if (typeof detail.text === 'string') {
             typedAnswerInput.value = detail.text;
-            captionSpeaker.textContent = 'You (Student)';
+            captionSpeaker.textContent = 'You (Candidate)';
             captionText.textContent = `"${detail.text}"`;
         }
         if (detail.metrics && typeof detail.metrics === 'object') {
@@ -1348,8 +1572,8 @@ document.addEventListener('DOMContentLoaded', function() {
     // 9. Submit / Finish Answer
     async function submitAnswer(action = 'answer') {
         if (action === 'answer' && speechXActive && !speechXSpeechEnded) {
-            captionSpeaker.textContent = 'Nexus AI Robot';
-            captionText.textContent = 'Please finish your response before I reply.';
+            captionSpeaker.innerHTML = '<i class="bi bi-person-fill"></i> Priya (Senior HR Partner)';
+            captionText.textContent = 'Please finish your response before I evaluate.';
             return;
         }
         stopStudentListening();
@@ -1358,7 +1582,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
         const answerText = typedAnswerInput.value.trim();
         if (action === 'answer' && !answerText) {
-            captionSpeaker.textContent = 'Nexus AI Robot';
+            captionSpeaker.innerHTML = '<i class="bi bi-person-fill"></i> Priya (Senior HR Partner)';
             captionText.textContent = 'I did not catch a response. Please speak or type your answer.';
             updatePillState('listening');
             startStudentListening();
@@ -1396,17 +1620,56 @@ document.addEventListener('DOMContentLoaded', function() {
                 speechXSpeechEnded = false;
                 if (Array.isArray(data.questions)) questionsList = data.questions;
                 const speech = data.speech_text || data.aria_speech;
-                transcriptHistory.push({ speaker: 'Nexus', text: speech, time: new Date() });
+                transcriptHistory.push({ speaker: 'Priya', text: speech, time: new Date() });
                 currentQuestionIndex = data.next_index;
 
-                if (data.star_feedback && starFeedbackText) {
+                // Update Priya's Live Job Preparation Coaching Card
+                const priyaCoachCard = document.getElementById('priyaCoachCard');
+                const coachStarScore = document.getElementById('coachStarScore');
+                const coachAdvice = document.getElementById('priyaCoachAdvice');
+                const betterJobTip = document.getElementById('priyaBetterJobTip');
+                const betterJobTipText = document.getElementById('priyaBetterJobTipText');
+                const pillS = document.getElementById('pillS');
+                const pillT = document.getElementById('pillT');
+                const pillA = document.getElementById('pillA');
+                const pillR = document.getElementById('pillR');
+
+                if (data.star_feedback && priyaCoachCard) {
+                    priyaCoachCard.classList.remove('d-none');
                     const components = data.star_feedback.components || {};
-                    const labels = [['situation', 'S'], ['task', 'T'], ['action', 'A'], ['result', 'R']];
-                    const coverage = labels.map(([key, label]) => `${label}: ${components[key] ? 'covered' : 'add detail'}`).join(' | ');
+                    if (coachStarScore) coachStarScore.textContent = `STAR Score: ${data.star_feedback.score}/4`;
+
+                    function updateStarBadge(el, covered, label, detail) {
+                        if (!el) return;
+                        if (covered) {
+                            el.className = 'badge bg-success small text-white px-2 py-1';
+                            el.innerHTML = `<i class="bi bi-check-circle-fill me-1"></i> ${label}: Covered`;
+                        } else {
+                            el.className = 'badge bg-dark border border-warning text-warning small px-2 py-1';
+                            el.innerHTML = `<i class="bi bi-exclamation-circle me-1"></i> ${label}: Add ${detail}`;
+                        }
+                    }
+                    updateStarBadge(pillS, components.situation, 'S', 'Context');
+                    updateStarBadge(pillT, components.task, 'T', 'Task');
+                    updateStarBadge(pillA, components.action, 'A', 'Action');
+                    updateStarBadge(pillR, components.result, 'R', 'Result');
+
                     const coaching = (data.star_feedback.feedback || []).join(' ');
-                    const metrics = (data.star_feedback.metrics_feedback || []).join(' ');
-                    starFeedbackText.textContent = `STAR (${data.star_feedback.score}/4): ${coverage}. ${coaching} ${metrics}`.trim();
-                    starFeedbackText.classList.remove('d-none');
+                    if (coachAdvice) coachAdvice.textContent = coaching || "Strong structured response! Keep articulating measurable outcomes.";
+
+                    const JOB_TIPS = [
+                        "HR Tip for Landing the Job: Open with authentic passion for this company's product and connect your background directly to their mission.",
+                        "HR Tip for Landing the Job: Quantify results! Saying 'improved query speed by 35%' ranks you 40% higher with hiring managers than general statements.",
+                        "HR Tip for Landing the Job: Detail your specific personal contribution ('I designed the architecture') rather than only team actions ('We built it').",
+                        "HR Tip for Landing the Job: When discussing conflicts, highlight active listening, empathy, and consensus-building to prove high emotional intelligence.",
+                        "HR Tip for Landing the Job: Map your 2-3 year career trajectory to this team's roadmap to show you are a high-retention, high-growth hire.",
+                        "HR Tip for Landing the Job: Asking strategic questions about team autonomy, engineering standards, and production scale shows executive maturity."
+                    ];
+                    const tip = JOB_TIPS[Math.min(currentQuestionIndex, JOB_TIPS.length - 1)];
+                    if (betterJobTip && betterJobTipText) {
+                        betterJobTipText.textContent = tip;
+                        betterJobTip.classList.remove('d-none');
+                    }
                     if (statStar) statStar.innerHTML = `<i class="bi bi-star-half text-warning me-1"></i> STAR: <strong>${data.star_feedback.score}/4</strong>`;
                 }
 
@@ -1419,7 +1682,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 }
 
                 updateQuestionDisplay();
-                await speakRobot(speech);
+                await speakPriya(speech);
 
                 if (data.is_last) {
                     finishInterview();
@@ -1432,9 +1695,25 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     }
 
-    btnFinishAnswer.addEventListener('click', () => submitAnswer('answer'));
-    btnRepeatQuestion.addEventListener('click', () => submitAnswer('repeat'));
-    btnSkipQuestion.addEventListener('click', () => submitAnswer('skip'));
+    btnFinishAnswer.addEventListener('click', () => {
+        if (isSpeaking) interruptPriyaAndAnswer();
+        submitAnswer('answer');
+    });
+    btnRepeatQuestion.addEventListener('click', () => {
+        if (isSpeaking) interruptPriyaAndAnswer();
+        submitAnswer('repeat');
+    });
+    btnSkipQuestion.addEventListener('click', () => {
+        if (isSpeaking) interruptPriyaAndAnswer();
+        submitAnswer('skip');
+    });
+
+    typedAnswerInput.addEventListener('focus', () => {
+        if (isSpeaking) interruptPriyaAndAnswer();
+    });
+    typedAnswerInput.addEventListener('input', () => {
+        if (isSpeaking) interruptPriyaAndAnswer();
+    });
 
     // Keyboard enter shortcut
     document.addEventListener('keydown', function(e) {
@@ -1625,6 +1904,21 @@ document.addEventListener('DOMContentLoaded', function() {
         const current = Math.min(currentQuestionIndex + 1, total);
         questionTracker.textContent = `Question ${current} of ${total}`;
         questionCardBadge.textContent = `QUESTION ${current} OF ${total}`;
+
+        // Calculate authentic HR Interview Progression Phase (Phase 1 to Phase 6)
+        const HR_PHASES = [
+            "PHASE 1: INTRODUCTION & MOTIVATION",
+            "PHASE 2: PROJECT & EXPERIENCE DEEP DIVE",
+            "PHASE 3: STAR PROBLEM SOLVING UNDER PRESSURE",
+            "PHASE 4: TEAM COLLABORATION & CONFLICT RESOLUTION",
+            "PHASE 5: CAREER VISION & VALUE PROPOSITION",
+            "PHASE 6: CANDIDATE QUESTIONS FOR HR PARTNER"
+        ];
+        const phaseBadge = document.getElementById('questionPhaseBadge');
+        if (phaseBadge) {
+            const phaseText = HR_PHASES[Math.min(currentQuestionIndex, HR_PHASES.length - 1)];
+            phaseBadge.textContent = phaseText;
+        }
 
         const role = setupRoleInput.value.trim() || 'Software Engineer';
         const comp = setupCompanyTypeInput.value.trim();

@@ -23,6 +23,7 @@ from .services import (
     create_avatar_streaming_session,
     generate_mock_interview_report,
     has_neural_tts,
+    identify_job_domain,
 )
 
 
@@ -124,6 +125,14 @@ def api_start_mock_interview(request):
 
     student_name = request.user.first_name or request.user.username
 
+    # Accept skills passed from the client selector
+    raw_skills = data.get('skills', [])
+    client_skills = []
+    if isinstance(raw_skills, str):
+        client_skills = [s.strip() for s in raw_skills.split(',') if s.strip()]
+    elif isinstance(raw_skills, list):
+        client_skills = [str(s).strip() for s in raw_skills if str(s).strip()]
+
     # If job_id was provided, verify and bind to that job
     job = None
     job_skills = []
@@ -138,7 +147,9 @@ def api_start_mock_interview(request):
         except Exception:
             job = None
 
-    questions = get_interview_questions(role_target, company_type, interview_type, difficulty, job_id=job_id, job=job)
+    effective_skills = job_skills if job_skills else client_skills
+    domain = identify_job_domain(role_target, effective_skills)
+    questions = get_interview_questions(role_target, company_type, interview_type, difficulty, job_id=job_id, job=job, custom_skills=effective_skills)
     greeting = get_aria_greeting(student_name, role_target, company_type, interview_type, difficulty.title(), duration_minutes)
 
     session = MockInterviewSession.objects.create(
@@ -161,11 +172,13 @@ def api_start_mock_interview(request):
         'student_name': student_name,
         'is_pro': is_pro,
         'has_neural_tts': has_neural_tts(),
+        'domain': domain,
         'job_info': {
             'id': job.id if job else None,
             'title': role_target,
             'company': company_type,
-            'skills': job_skills,
+            'skills': effective_skills,
+            'domain': domain,
             'interview_type': interview_type,
             'difficulty': difficulty,
         }

@@ -687,6 +687,324 @@ JOB_DOMAIN_QUESTION_BANKS = {
                 "What strategic challenges in infrastructure scale and security are top of mind for you at {company}?"
             ]
         }
+    },
+    'MOBILE': {
+        'TECHNICAL': {
+            'BEGINNER': [
+                "Welcome to your interview for {role} at {company}! To start, introduce yourself and describe the mobile frameworks and tools you enjoy working with, such as {skills_str}.",
+                "Can you explain the mobile application lifecycle? How do you properly preserve state when the app is backgrounded or device configuration changes?",
+                "What is the difference between Stateless and Stateful widgets in Flutter, or Activities and Fragments in native Android?",
+                "How do you handle asynchronous operations in mobile development (like network API requests or database reads) without dropping frames or freezing the UI?",
+                "Walk me through a mobile app project you developed using {skills_str}. What architecture did you follow and what challenges did you overcome?",
+                "Do you have any questions for me regarding our mobile app architecture, release cadence, or engineering team at {company}?"
+            ],
+            'INTERMEDIATE': [
+                "Walk me through your mobile engineering background and the most complex mobile feature you have architected.",
+                "How do you manage client-side state in mobile apps (e.g. Riverpod, Bloc, Provider, Redux, or ViewModel)? What factors guide your decision?",
+                "How do you diagnose and eliminate UI jank, memory leaks, and excessive battery consumption in mobile apps to maintain smooth 60 FPS scrolling?",
+                "Describe your approach to offline-first mobile architecture: how do you manage local caching (Room, SQLite, Hive) and data synchronization when reconnecting online?",
+                "How do you secure mobile apps: safely storing tokens (Keychain / Keystore), implementing biometric auth, and configuring SSL certificate pinning?",
+                "What approach do you take to building a consistent, reusable design system and responsive UI across varying mobile screen sizes and tablets?"
+            ],
+            'ADVANCED': [
+                "Give me an architectural breakdown of an enterprise mobile application you designed supporting hundreds of thousands of daily active users.",
+                "How do you design platform channels or native bridge communication to integrate native C++, Java, or Swift code into a cross-platform framework?",
+                "How would you design a scalable push notifications and deep linking architecture for {company} that routes users into complex nested app flows reliably?",
+                "Discuss automated CI/CD for mobile: how do you set up automated builds, UI test execution, and deployment pipelines with Fastlane to Google Play and Apple App Store?",
+                "Describe a catastrophic production crash or native memory corruption you investigated in a released mobile build. How did you diagnose and patch it?",
+                "What architectural questions do you have regarding our mobile app roadmap, release velocity, or performance goals at {company}?"
+            ]
+        },
+        'HR': {
+            'BEGINNER': [
+                "Tell me about yourself and what specifically attracted you to mobile application engineering for the {role} position at {company}.",
+                "What mobile apps do you admire most from a design, responsiveness, and usability perspective, and why?",
+                "Where do you see yourself growing as a mobile engineer over the next 2 to 3 years?",
+                "How do you collaborate with UI/UX designers and backend API engineers when mobile specifications are still being finalized?",
+                "What is your greatest technical strength in mobile engineering, and what is one mobile skill you are actively working to improve?",
+                "Why should {company} choose you for this {role} over other qualified candidates?"
+            ],
+            'INTERMEDIATE': [
+                "Walk me through your experience coordinating with product managers and backend teams to deliver high-impact mobile features.",
+                "How do you handle rapid changes in mobile operating systems (iOS and Android major updates) and API deprecations without disrupting roadmap goals?",
+                "Tell me about a time when a feature release caused user complaints or app store rating drops. How did you communicate and address it?",
+                "How do you balance high-velocity feature shipping with automated mobile testing and app startup performance budgets?",
+                "Describe a situation where you proactively improved mobile accessibility (TalkBack/VoiceOver) or localized an app for multiple languages.",
+                "What questions do you have for me regarding our mobile product vision and engineering culture at {company}?"
+            ],
+            'ADVANCED': [
+                "Introduce yourself and highlight the key mobile engineering milestones that define your trajectory as a senior mobile leader.",
+                "How do you establish mobile engineering standards, automated linting, modularization, and code review practices across distributed mobile teams?",
+                "Describe how you mentor junior mobile engineers and cultivate engineering craftsmanship, clean architecture, and user empathy.",
+                "Tell me about a high-stakes scenario where an App Store review rejection or sudden OS policy change threatened a critical launch date.",
+                "What does mobile user experience and performance budgeting mean to you in practical day-to-day development?",
+                "What would success look like to you in your first 90 days as {role} at {company}?"
+            ]
+        },
+        'BEHAVIORAL': {
+            'BEGINNER': [
+                "Tell me about yourself and describe a mobile app project where you collaborated closely with others.",
+                "Walk me through a situation where a mobile bug only reproduced on specific physical devices or OS versions. How did you resolve it using the STAR method?",
+                "Give me an example of receiving critical feedback on an app's UI layout or gesture navigation. How did you iterate?",
+                "Describe a time you had to learn a new mobile SDK, state management library, or third-party service under tight delivery timelines.",
+                "Tell me about a time you went beyond requirements to add smooth transitions, haptic feedback, or offline animations to delight users.",
+                "What recent mobile feature or app are you most proud of having built, and why?"
+            ],
+            'INTERMEDIATE': [
+                "Walk me through your background and an experience where you had to debug an intermittent mobile crash using Crashlytics or Sentry.",
+                "Tell me about a disagreement with a backend engineer regarding mobile API payload sizes, pagination, or schema design. How did you find alignment?",
+                "Describe a situation where app download size restrictions or cellular bandwidth forced you to optimize assets and implement dynamic feature delivery.",
+                "Give an example of balancing visual design fidelity against device battery consumption and rendering performance.",
+                "Tell me about a time you assisted a teammate who was struggling with asynchronous reactive streams or native build configuration.",
+                "What is the most constructive feedback you've received on a mobile app pull request, and how did it influence your coding methodology?"
+            ],
+            'ADVANCED': [
+                "Tell me about how your past experiences prepared you to drive mobile engineering initiatives at {company}.",
+                "Describe a time you advocated for a major mobile refactoring or modularization project despite tight delivery schedules.",
+                "Tell me about a mobile launch that encountered unexpected hurdles or low user retention in production. What were the root causes, and how did you rebound?",
+                "Describe navigating ambiguous product requirements to deliver an intuitive, high-converting mobile user flow.",
+                "How do you maintain code quality and prevent technical debt when working in fast-paced mobile release trains?",
+                "What questions do you have for me about mobile engineering leadership and team collaboration at {company}?"
+            ]
+        },
+        'CASE': {
+            'BEGINNER': [
+                "Walk me through your analytical framework when designing mobile applications.",
+                "Design a mobile offline notes application for {company}: what local database, background synchronization strategy, and UI structure would you choose?",
+                "A mobile app is draining user battery by 25% in an hour of active usage. How would you systematically diagnose and fix the cause?",
+                "How would you design an image-heavy mobile feed to ensure zero out-of-memory (OOM) crashes and instant image loading on low-bandwidth networks?",
+                "Suppose users report that the app crashes on launch on certain budget Android devices. What step-by-step diagnostic process would you follow?",
+                "Do you have questions about how our mobile engineering team approaches product discovery and user testing?"
+            ],
+            'INTERMEDIATE': [
+                "Walk me through how you design high-performance, real-time mobile applications.",
+                "Design a ride-tracking mobile screen (like Uber or Ola) for {company} displaying live vehicle location updates on a map with minimal battery drain.",
+                "An e-commerce mobile app sees a 30% drop in checkout conversions on older OS versions. Formulate an end-to-end investigation framework.",
+                "How would you architect a secure in-app payment and subscription workflow verifying digital receipts with backend servers?",
+                "Suppose our mobile app's initial download size has grown to 85MB. Formulate a comprehensive plan to reduce APK/IPA size below 30MB.",
+                "What questions do you have regarding our mobile product roadmap and technical architecture at {company}?"
+            ],
+            'ADVANCED': [
+                "Give me an executive architectural framework for building enterprise-grade mobile platforms.",
+                "Design an offline-first mobile healthcare or financial app at {company} requiring end-to-end biometric auth, local encryption, and zero-loss background syncing.",
+                "How would you architect a dynamic Server-Driven UI (SDUI) system allowing product managers to update mobile home screens without app store releases?",
+                "Formulate a mobile crash zero-tolerance framework and release gatekeeper policy for an app with 10 million active installs.",
+                "Walk me through designing an A/B testing and remote feature-flagging engine on mobile with local flag caching and zero startup latency.",
+                "What strategic mobile engineering challenges are top of mind for you at {company}?"
+            ]
+        }
+    },
+    'QA': {
+        'TECHNICAL': {
+            'BEGINNER': [
+                "Welcome to your interview for {role} at {company}! To start, introduce yourself and describe your experience with test automation and manual testing using {skills_str}.",
+                "Can you explain the Test Pyramid concept? What is the difference between Unit, Integration, and End-to-End (E2E) testing?",
+                "How do you design comprehensive test cases from user stories, and how do you ensure edge cases and boundary conditions are covered?",
+                "What is the difference between Verification and Validation, and what is the difference between Smoke Testing and Sanity Testing?",
+                "Walk me through a project where you automated tests using {skills_str}. What test framework did you use and how did you structure your test cases?",
+                "Do you have any questions for me about our QA processes, automation framework, or engineering culture at {company}?"
+            ],
+            'INTERMEDIATE': [
+                "Walk me through your testing career and the most complex automation test suite you have engineered.",
+                "Explain the Page Object Model (POM) design pattern in test automation: why is it considered best practice and how does it reduce maintenance overhead?",
+                "How do you automate REST API testing (e.g. using PyTest, Requests, or REST Assured)? How do you validate response codes, JSON schemas, and auth headers?",
+                "How do you identify, stabilize, and eliminate flaky automated tests that pass locally but fail intermittently in CI/CD pipelines?",
+                "What is your approach to Performance and Load testing (e.g. JMeter, Locust, k6)? How do you simulate concurrent users and measure p95/p99 response latency?",
+                "How do you integrate automated regression test suites into GitHub Actions or Jenkins pipelines to prevent broken pull requests from merging?"
+            ],
+            'ADVANCED': [
+                "Give me an architectural breakdown of an enterprise-grade test automation framework you built from scratch.",
+                "How would you design a distributed, parallel test execution grid running thousands of browser tests in Docker/Kubernetes within minutes?",
+                "Discuss Contract Testing (e.g. Pact) in a microservices architecture: how does it prevent integration regressions without costly end-to-end test suites?",
+                "Explain how you implement automated security vulnerability scanning (SAST/DAST) and automated web accessibility (WCAG/a11y) checks in CI/CD.",
+                "Describe a severe production defect that slipped past testing into production. Walk me through your root cause analysis, post-mortem, and testing safeguards.",
+                "What questions do you have regarding our quality engineering roadmap, automation coverage, or test infrastructure at {company}?"
+            ]
+        },
+        'HR': {
+            'BEGINNER': [
+                "Tell me about yourself and what specifically attracted you to quality assurance and test automation for the {role} position at {company}.",
+                "Why are you passionate about software testing rather than traditional application development?",
+                "Where do you see your career as a QA / SDET engineer heading over the next 2 to 3 years?",
+                "How do you handle situations where a developer claims an issue is 'not a bug, it's a feature' or cannot reproduce it on their machine?",
+                "What is your greatest technical strength in testing tools, and what is one automation skill you are actively working to improve?",
+                "Why should {company} choose you for this {role} over other qualified candidates?"
+            ],
+            'INTERMEDIATE': [
+                "Walk me through your experience collaborating with product managers and software developers to define acceptance criteria before coding starts (Shift-Left testing).",
+                "How do you advocate for software quality and user experience when engineering leadership faces pressure to ship quickly?",
+                "Tell me about a time you had to test a major release under severe time constraints. How did you prioritize risk-based test coverage?",
+                "How do you maintain a positive, constructive relationship with developers while rigorously reporting defects and regressions?",
+                "Describe a situation where you proactively championed test automation or improved test data management on your team.",
+                "What questions do you have for me regarding our QA culture, release cadence, or team expectations at {company}?"
+            ],
+            'ADVANCED': [
+                "Introduce yourself and highlight the strategic milestones that define your trajectory as a senior quality engineering leader.",
+                "How do you instill a culture of collective quality ownership across an entire engineering organization rather than quality being solely QA's job?",
+                "Describe how you mentor junior QA engineers and SDETs to transition from manual verification to robust code-based automation.",
+                "Tell me about a high-stakes scenario where you had to make a go/no-go release recommendation for a mission-critical deployment.",
+                "What does Quality Engineering (QE) mean to you in a continuous deployment, zero-downtime microservices environment?",
+                "What would success look like to you in your first 90 days as {role} at {company}?"
+            ]
+        },
+        'BEHAVIORAL': {
+            'BEGINNER': [
+                "Tell me about yourself and describe a testing or coding project where you collaborated with teammates.",
+                "Walk me through a time you caught a critical or edge-case bug right before a deadline. Walk me through your Situation, Task, Action, and Result (STAR).",
+                "Give me an example of receiving feedback that a bug report you filed was unclear or lacked reproduction steps. How did you improve?",
+                "Describe a time you had to learn a new testing tool or automation framework quickly to test an unfamiliar application.",
+                "Tell me about a time you went above and beyond to document edge cases or create reusable test datasets for your peers.",
+                "What recent testing achievement or complex bug discovery are you most proud of, and why?"
+            ],
+            'INTERMEDIATE': [
+                "Walk me through your background and an experience where you had to resolve a disagreement with a developer regarding defect severity.",
+                "Tell me about a time when production bugs occurred despite test suites passing. How did you analyze the gap and adapt test coverage?",
+                "Describe a project where unclear or constantly shifting requirements made test planning difficult. How did you manage?",
+                "Give an example of balancing deep exploratory testing against executing repetitive automated regression suites.",
+                "Tell me about a time you assisted a developer or product manager in reproducing an elusive race condition or environment bug.",
+                "What is the most constructive feedback you've received in your QA career, and how did it refine your quality mindset?"
+            ],
+            'ADVANCED': [
+                "Tell me about how your past experiences prepared you to lead quality engineering initiatives at {company}.",
+                "Describe a time you successfully advocated for halting a production deployment due to unresolved critical quality risks.",
+                "Tell me about an automation initiative or test framework that failed to deliver expected ROI. What were the lessons learned?",
+                "Describe navigating ambiguous legacy software with zero documentation to establish a reliable regression safety net.",
+                "How do you maintain team morale and focus when managing continuous regression cycles under tight deployment schedules?",
+                "What questions do you have for me about leadership and QA collaboration at {company}?"
+            ]
+        },
+        'CASE': {
+            'BEGINNER': [
+                "Walk me through your structured problem-solving approach when designing an end-to-end test plan.",
+                "Design a test plan for an ATM cash withdrawal machine or an e-commerce shopping cart checkout for {company}. What functional and non-functional tests would you include?",
+                "A web application's login page intermittently fails with 'Invalid credentials' for 1% of valid users. How do you isolate the root cause?",
+                "How would you test a file upload feature that accepts PDF resumes up to 5MB? List negative tests, security tests, and edge cases.",
+                "Suppose an automated test suite takes 3 hours to run on every commit. What steps do you take to optimize test execution time?",
+                "Do you have questions about how our product and engineering teams coordinate testing and releases?"
+            ],
+            'INTERMEDIATE': [
+                "Walk me through how you design automated end-to-end testing for modern cloud applications.",
+                "Design a comprehensive test strategy for an online food delivery ordering system at {company} covering user ordering, payment gateway, and live driver tracking.",
+                "A financial application reports occasional duplicate debits during high-concurrency flash sales. How do you design tests to reproduce this race condition?",
+                "How would you architect an automated test data generation pipeline that provisions sanitized, realistic test data on demand in CI/CD?",
+                "Suppose our automated test suite has a 12% flakiness rate in CI. Formulate a systematic program to reduce flakiness below 1%.",
+                "What questions do you have regarding our test infrastructure and quality benchmarks at {company}?"
+            ],
+            'ADVANCED': [
+                "Give me an executive architectural framework for enterprise quality assurance and continuous delivery.",
+                "Design an end-to-end testing and verification architecture for a distributed banking and payment microservices ecosystem at {company}.",
+                "How would you implement Chaos Engineering testing (e.g. Chaos Mesh or Gremlin) to validate microservice resilience against network latency and pod crashes?",
+                "Formulate an enterprise quality metrics dashboard (escaped defect rate, test coverage, MTTR, flakiness index) to present to the VP of Engineering.",
+                "Walk me through designing an automated visual regression testing pipeline across 10 responsive breakpoints and 4 major browsers with zero false positives.",
+                "What strategic quality engineering and reliability challenges are top of mind for you at {company}?"
+            ]
+        }
+    },
+    'SWE_INTERN': {
+        'TECHNICAL': {
+            'BEGINNER': [
+                "Welcome to your interview for {role} at {company}! To start, introduce yourself and describe your computer science background and preferred programming languages.",
+                "Can you explain the difference between an Array and a Linked List in memory? When would you choose one over the other?",
+                "What is a Hash Map, how does it achieve O(1) average lookup time, and how are hash collisions handled?",
+                "Explain the four core principles of Object-Oriented Programming (OOP): Encapsulation, Abstraction, Inheritance, and Polymorphism with practical code examples.",
+                "Walk me through a technical software project you built using {skills_str}. What data structures or algorithms did you utilize?",
+                "Do you have any questions for me about our engineering internships, mentorship program, or tech stack at {company}?"
+            ],
+            'INTERMEDIATE': [
+                "Walk me through your problem-solving process when tackling unfamiliar algorithmic problems.",
+                "Explain Breadth-First Search (BFS) versus Depth-First Search (DFS) on trees and graphs. When would you use BFS over DFS?",
+                "What is Dynamic Programming? How do you recognize whether a problem has optimal substructure and overlapping subproblems?",
+                "Explain the difference between SQL and NoSQL databases. How do indexing and B-Trees improve database query performance?",
+                "Discuss multithreading and concurrency basics: what is a race condition, what is a deadlock, and how do mutexes or locks prevent data corruption?",
+                "Explain horizontal scaling versus vertical scaling, and how a load balancer distributes incoming network traffic."
+            ],
+            'ADVANCED': [
+                "Give me an overview of an ambitious engineering project or complex algorithm you implemented from scratch.",
+                "How do you analyze and optimize time and space complexity for advanced data structures like Tries, Segment Trees, or Disjoint Set Union (Union-Find)?",
+                "Explain the CAP theorem and eventual consistency in distributed systems: what trade-offs must an engineer make during network partitions?",
+                "How would you design a rate limiter using the Token Bucket or Leaky Bucket algorithm capable of handling high concurrency?",
+                "Describe a challenging bug you debugged involving memory leaks, stack overflow, or pointer mismanagement. How did you resolve it?",
+                "What architectural questions do you have about engineering scale and mentorship at {company}?"
+            ]
+        },
+        'HR': {
+            'BEGINNER': [
+                "Tell me about yourself, your academic background, and why you are interested in interning as a {role} at {company}.",
+                "What inspired you to study computer science and pursue a career in software engineering?",
+                "Where do you see yourself in your software engineering journey over the next 2 to 3 years?",
+                "Tell me about a time you had to learn a completely new programming language or framework from scratch for an assignment. How did you approach it?",
+                "What is your greatest technical strength, and what is one computer science topic you are actively working to master?",
+                "Why should {company} choose you for this internship opportunity over other qualified candidates?"
+            ],
+            'INTERMEDIATE': [
+                "Walk me through your academic and project progression, and what makes {company} the right environment for your professional growth.",
+                "How do you handle receiving feedback or code review critiques on your assignments or pull requests?",
+                "Tell me about a time you had to balance heavy academic coursework, exam deadlines, and technical project deliverables.",
+                "What kind of team culture and mentorship style helps you learn most effectively?",
+                "Describe a technical initiative where you built a utility, script, or open-source contribution outside of formal coursework.",
+                "What questions do you have for me about our internship learning curriculum and team expectations at {company}?"
+            ],
+            'ADVANCED': [
+                "Introduce yourself and highlight the personal coding projects or competitive programming achievements you are most proud of.",
+                "How do you stay curious and keep up with rapidly evolving technologies in AI, cloud, and modern programming languages?",
+                "Tell me about a time you mentored a peer or junior student who was struggling with core programming or data structures concepts.",
+                "Describe a situation where a technical project did not go as planned. What did you learn from the experience?",
+                "What does engineering ownership and curiosity mean to you as a student stepping into industry?",
+                "What would a successful internship experience look like to you at {company}?"
+            ]
+        },
+        'BEHAVIORAL': {
+            'BEGINNER': [
+                "Tell me about yourself and describe a group project or hackathon where you worked closely with others.",
+                "Walk me through a difficult coding bug you encountered in a course project. Walk me through your Situation, Task, Action, and Result (STAR).",
+                "Give me an example of working with a team member who was not contributing equally to a group project. How did you handle it?",
+                "Describe a time you had to present a technical project or demo to your professors or classmates.",
+                "Tell me about a time you went above and beyond standard assignment instructions to add extra functionality or polish.",
+                "What recent coding challenge or algorithm problem are you most proud of having solved, and why?"
+            ],
+            'INTERMEDIATE': [
+                "Walk me through your background and what motivated you to pursue software engineering excellence.",
+                "Tell me about a time you made a mistake in an assignment or git commit. How did you communicate and fix it?",
+                "Describe a situation where you had to adapt quickly when project requirements or constraints changed mid-semester.",
+                "Give an example of a time you had to choose between writing quick code versus spending time on clean architecture and unit tests.",
+                "Tell me about a time you proactively helped a classmate debug an issue without simply giving them the answer.",
+                "What is the most constructive advice you've received on your code, and how did it change your programming habits?"
+            ],
+            'ADVANCED': [
+                "Tell me about how your academic and personal project experiences prepared you to contribute effectively at {company}.",
+                "Describe a time you took the lead on a technical project with little guidance. How did you structure milestones and execute?",
+                "Tell me about a project or hackathon submission that failed to win or meet your expectations. What did you learn?",
+                "Describe navigating an ambiguous problem statement to build a functional prototype.",
+                "How do you manage stress and maintain high quality during exam periods and project deadlines?",
+                "What questions do you have for me about full-time conversion opportunities and career growth at {company}?"
+            ]
+        },
+        'CASE': {
+            'BEGINNER': [
+                "Walk me through your systematic approach when analyzing a complex algorithmic problem.",
+                "Design a campus course registration system for {company}: what data structures would you use to store courses, prerequisites, and student enrollments?",
+                "Suppose a sorting algorithm in your application is taking too long on large lists. How would you diagnose whether it is an O(n^2) bottleneck?",
+                "How would you design a simple in-memory cache with a maximum capacity of 1,000 items? What eviction policy would you implement?",
+                "If our student portal's search feature is slow when searching through 50,000 job listings, what indexing or data structure improvements would you suggest?",
+                "Do you have any questions about how our engineers solve day-to-day problems at {company}?"
+            ],
+            'INTERMEDIATE': [
+                "Walk me through how you approach designing scalable software systems from first principles.",
+                "Design a simplified campus ride-sharing or carpool matching algorithm for university students: how do you match riders efficiently?",
+                "A web application's leaderboard needs to rank 100,000 active students by score in real time. What data structures (e.g. heaps, balanced BSTs, Redis Sorted Sets) would you choose?",
+                "How would you design a file-storage system that detects and deduplicates duplicate files uploaded by users?",
+                "Suppose a recursive function causes a stack overflow error on large input sizes. How do you convert it to an iterative solution using an explicit stack?",
+                "What questions do you have regarding the technical challenges intern engineers work on at {company}?"
+            ],
+            'ADVANCED': [
+                "Give me an executive breakdown of your problem-solving framework for high-scale software challenges.",
+                "Design a distributed URL shortener service like Bitly: describe the hashing mechanism, database schema, collision resolution, and caching strategy.",
+                "How would you design a collaborative real-time code editor where two students can type simultaneously without overwriting each other?",
+                "Evaluate the tradeoffs of using a relational database versus a document store for storing campus student resumes and project portfolios.",
+                "Walk me through designing an automated plagiarism detection system that compares new student code submissions against thousands of previous assignments.",
+                "What strategic technical challenges are you most excited to learn more about at {company}?"
+            ]
+        }
     }
 }
 
@@ -1080,21 +1398,21 @@ def get_aria_greeting(student_name, role_target="Software Engineer Intern", comp
 
     if 'google' in comp_lower:
         return (
-            f"Hello {name}! I am Nexus, your AI Mock Interviewer simulating Google's Hiring Committee and Culture assessment. "
-            f"At Google, we look for intellectual humility, collaborative innovation, and how you navigate ambiguity at planetary scale. "
-            f"We will conduct a {difficulty.title()} {interview_type} round for the {role_target} position. "
+            f"Hello {name}! I'm Priya, your Senior Technical HR Partner simulating Google's Hiring Committee standards. "
+            f"At Google, we look for intellectual humility, collaborative innovation, and how you navigate ambiguity at scale. "
+            f"We will conduct a {difficulty.title()} {interview_type} round for the {role_target} position to prepare you for the highest hiring bar. "
             "Take a deep breath, speak naturally into your microphone, and let's begin whenever you are ready!"
         )
     elif 'amazon' in comp_lower or 'aws' in comp_lower:
         return (
-            f"Hello {name}! I am Nexus, your AI Mock Interviewer simulating an Amazon Bar Raiser session. "
+            f"Hello {name}! I'm Priya, your Senior Technical HR Partner conducting your Amazon Bar Raiser simulation. "
             f"At Amazon, we evaluate all candidates against our 16 Leadership Principles using the STAR method. "
             f"We will conduct a {difficulty.title()} {interview_type} round for the {role_target} position. "
             "Focus on your specific individual actions and measurable customer outcomes. Let's begin whenever you are ready!"
         )
     elif 'microsoft' in comp_lower or 'azure' in comp_lower:
         return (
-            f"Hello {name}! I am Nexus, your AI Mock Interviewer simulating Microsoft's Technical and Behavioral interview. "
+            f"Hello {name}! I'm Priya, your Senior Technical HR Partner conducting your Microsoft Technical and Behavioral interview. "
             f"At Microsoft, we evaluate your Growth Mindset, how you empower others to achieve more, and how you design scalable solutions. "
             f"We will conduct a {difficulty.title()} {interview_type} round for the {role_target} position. "
             "Take a deep breath, speak clearly, and let's begin whenever you are ready!"
@@ -1105,31 +1423,45 @@ def get_aria_greeting(student_name, role_target="Software Engineer Intern", comp
     return (
         f"Hello {name}! I'm Priya, your Senior Technical HR Partner at CampusLink. "
         f"I'm excited to help you prepare for your {role_target} role{company_phrase}. "
-        f"We'll conduct a realistic {interview_type} interview at the {difficulty} level{dur_phrase}. "
+        f"We'll conduct a realistic {interview_type} interview from first to last to get you completely prepared for top hiring rounds. "
         "Take a deep breath, stay confident, and let's begin whenever you're ready!"
     )
 
 
 def identify_job_domain(role_target, skills_list=None, frameworks_list=None):
     """Classify target role and skills into an appropriate question domain."""
-    text = (role_target + " " + " ".join(skills_list or []) + " " + " ".join(frameworks_list or [])).lower()
+    text = ((role_target or "") + " " + " ".join(skills_list or []) + " " + " ".join(frameworks_list or [])).lower()
     
-    if any(k in text for k in ['devops', 'cloud', 'aws', 'docker', 'kubernetes', 'sre', 'ci/cd', 'terraform', 'infrastructure', 'sysadmin']):
+    # 1. Quality Assurance / Testing / SDET
+    if any(k in text for k in ['qa', 'test', 'sdet', 'selenium', 'cypress', 'playwright', 'pytest', 'automation tester', 'quality assurance', 'manual testing']):
+        return 'QA'
+    # 2. Mobile App Development (Flutter, Android, iOS, React Native, Swift, Kotlin)
+    if any(k in text for k in ['mobile', 'android', 'ios', 'flutter', 'react native', 'swift', 'kotlin', 'dart', 'app developer']):
+        return 'MOBILE'
+    # 3. DevOps, Cloud & SRE
+    if any(k in text for k in ['devops', 'cloud', 'aws', 'docker', 'kubernetes', 'sre', 'ci/cd', 'terraform', 'infrastructure', 'sysadmin', 'linux', 'azure', 'gcp']):
         return 'DEVOPS'
-    if any(k in text for k in ['data', 'analytics', 'analyst', 'machine learning', 'ai', 'data science', 'pandas', 'bi', 'tableau', 'sql']):
+    # 4. Data Analysis, Machine Learning, Data Science & AI
+    if any(k in text for k in ['data', 'analytics', 'analyst', 'machine learning', 'ai', 'data science', 'pandas', 'bi', 'tableau', 'sql', 'power bi', 'deep learning', 'nlp', 'pytorch', 'tensorflow']):
         return 'DATA'
+    # 5. Full Stack Web Development
     if any(k in text for k in ['full stack', 'fullstack', 'mern', 'mean', 'full-stack']):
         return 'FULLSTACK'
-    if any(k in text for k in ['frontend', 'react', 'vue', 'angular', 'javascript', 'ui/ux', 'css', 'next.js', 'html', 'tailwind']):
+    # 6. Frontend Web Development
+    if any(k in text for k in ['frontend', 'react', 'vue', 'angular', 'javascript', 'ui/ux', 'css', 'next.js', 'html', 'tailwind', 'web design']):
         return 'FRONTEND'
-    if any(k in text for k in ['backend', 'python', 'django', 'fastapi', 'flask', 'node', 'java', 'spring', 'golang', 'api', 'c#', '.net', 'php']):
+    # 7. Backend Engineering
+    if any(k in text for k in ['backend', 'python', 'django', 'fastapi', 'flask', 'node', 'java', 'spring', 'golang', 'api', 'c#', '.net', 'php', 'microservice']):
         return 'BACKEND'
+    # 8. Software Engineer Intern / Fresh Graduate / DSA & General CS
+    if any(k in text for k in ['intern', 'software engineer intern', 'swe intern', 'dsa', 'data structures', 'algorithms', 'cs intern', 'general cs', 'fresher', 'campus']):
+        return 'SWE_INTERN'
     
-    # Default to BACKEND / Software Engineering
+    # Default to Software Engineering track
     return 'BACKEND'
 
 
-def get_interview_questions(role_target="Software Engineer Intern", company_type="Tech Product Company", interview_type="HR", difficulty="BEGINNER", job_id=None, job=None):
+def get_interview_questions(role_target="Software Engineer Intern", company_type="Tech Product Company", interview_type="HR", difficulty="BEGINNER", job_id=None, job=None, custom_skills=None):
     """
     Intelligent Job-Wise Question Generator.
     Supports Big Tech company standards (Google, Amazon Bar Raiser, Microsoft Growth Mindset)
@@ -1163,6 +1495,12 @@ def get_interview_questions(role_target="Software Engineer Intern", company_type
             frameworks_list.extend([t.strip() for t in job.required_technologies.split(',') if t.strip()])
         job_description = job.description or ""
 
+    if custom_skills and not skills_list:
+        if isinstance(custom_skills, str):
+            skills_list = [s.strip() for s in custom_skills.split(',') if s.strip()]
+        elif isinstance(custom_skills, list):
+            skills_list = [str(s).strip() for s in custom_skills if str(s).strip()]
+
     itype = interview_type.upper() if interview_type else 'HR'
     if itype not in ['TECHNICAL', 'HR', 'BEHAVIORAL', 'CASE']:
         itype = 'HR'
@@ -1170,7 +1508,23 @@ def get_interview_questions(role_target="Software Engineer Intern", company_type
     if diff not in ['BEGINNER', 'INTERMEDIATE', 'ADVANCED']:
         diff = 'BEGINNER'
 
-    skills_str = ", ".join(skills_list[:4]) if skills_list else ("Python, Django, and REST APIs" if "backend" in role_target.lower() else "relevant modern engineering technologies")
+    # Domain identification
+    domain = identify_job_domain(role_target, skills_list, frameworks_list)
+
+    if not skills_list:
+        domain_defaults = {
+            'MOBILE': 'Flutter, Dart, and Android',
+            'QA': 'Test Automation, PyTest, and Selenium',
+            'SWE_INTERN': 'Data Structures, Algorithms, and OOP',
+            'FRONTEND': 'React, JavaScript, and Modern CSS',
+            'BACKEND': 'Python, Django, and REST APIs',
+            'FULLSTACK': 'React, Python, and Databases',
+            'DATA': 'SQL, Python, and Data Analysis',
+            'DEVOPS': 'Docker, Kubernetes, and Cloud CI/CD',
+        }
+        skills_str = domain_defaults.get(domain, 'relevant modern engineering technologies')
+    else:
+        skills_str = ", ".join(skills_list[:4])
 
     # 2. Check for Big Tech specific interview banks (Google, Amazon, Microsoft)
     comp_lower = company_type.lower()
@@ -1227,7 +1581,6 @@ def get_interview_questions(role_target="Software Engineer Intern", company_type
             pass
 
     # 4. Domain Question Bank Engine (Guaranteed Zero-Failure Fallback)
-    domain = identify_job_domain(role_target, skills_list, frameworks_list)
     domain_bank = JOB_DOMAIN_QUESTION_BANKS.get(domain, JOB_DOMAIN_QUESTION_BANKS['BACKEND'])
     type_bank = domain_bank.get(itype, domain_bank.get('TECHNICAL', {}))
     raw_questions = list(type_bank.get(diff, ROLE_QUESTION_BANKS.get(itype, {}).get(diff, [])))

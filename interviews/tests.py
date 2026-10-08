@@ -21,6 +21,7 @@ from interviews.services import (
     synthesize_neural_tts,
     create_avatar_streaming_session,
     generate_mock_interview_report,
+    identify_job_domain,
 )
 
 
@@ -97,6 +98,12 @@ class AriaMockInterviewViewsTest(TestCase):
         self.assertContains(response, 'Priya')
         self.assertContains(response, 'Ananya')
         self.assertContains(response, 'CampusLink')
+        self.assertContains(response, 'PRIYA AI · SENIOR TECHNICAL HR PARTNER')
+        self.assertContains(response, 'aria_interviewer.jpg')
+        self.assertContains(response, 'btnTestVoice')
+        self.assertIn("Test Priya's Voice", response.content.decode('utf-8'))
+        self.assertNotContains(response, 'NEXUS AI · ROBOTIC MOCK INTERVIEWER')
+        self.assertNotContains(response, 'ai_robot_interviewer.jpg')
         self.assertTemplateUsed(response, 'interviews/mock_room.html')
 
     def test_non_pro_user_cannot_access_mock_interview_or_tts(self):
@@ -701,3 +708,84 @@ class AriaServicesTest(TestCase):
 
         self.assertIn('STAR', turn['speech_text'])
         self.assertIn('situation', turn['speech_text'].lower())
+
+
+class DomainSpecificQuestionsTest(TestCase):
+    def setUp(self):
+        self.client = Client()
+        self.user = User.objects.create_user(
+            username='domain_tester',
+            email='tester@campuslink.edu',
+            password='Password@123',
+            first_name='Ananya',
+            last_name='Das',
+        )
+        Membership.objects.create(user=self.user, plan='PRO_MONTHLY', status='ACTIVE')
+
+    def test_identify_job_domain_mappings(self):
+        self.assertEqual(identify_job_domain('Mobile App Developer', ['Flutter', 'Android']), 'MOBILE')
+        self.assertEqual(identify_job_domain('QA & Automation Engineer', ['PyTest', 'Selenium']), 'QA')
+        self.assertEqual(identify_job_domain('Software Engineer Intern', ['DSA', 'Algorithms']), 'SWE_INTERN')
+        self.assertEqual(identify_job_domain('Frontend Developer', ['React', 'CSS']), 'FRONTEND')
+        self.assertEqual(identify_job_domain('Python Backend Developer', ['Django', 'FastAPI']), 'BACKEND')
+        self.assertEqual(identify_job_domain('Data Analyst', ['SQL', 'Pandas']), 'DATA')
+        self.assertEqual(identify_job_domain('DevOps Engineer', ['Docker', 'AWS']), 'DEVOPS')
+        self.assertEqual(identify_job_domain('Full Stack Web Developer', ['MERN', 'React']), 'FULLSTACK')
+
+    def test_mobile_domain_questions_tailoring(self):
+        questions = get_interview_questions(
+            role_target='Mobile App Developer',
+            company_type='Consumer Apps Corp',
+            interview_type='TECHNICAL',
+            difficulty='BEGINNER',
+            custom_skills=['Flutter', 'Android']
+        )
+        self.assertTrue(len(questions) >= 4)
+        combined = " ".join(questions).lower()
+        self.assertTrue('mobile' in combined or 'flutter' in combined or 'lifecycle' in combined)
+
+    def test_qa_domain_questions_tailoring(self):
+        questions = get_interview_questions(
+            role_target='QA & Automation Engineer',
+            company_type='Enterprise Quality Inc',
+            interview_type='TECHNICAL',
+            difficulty='BEGINNER',
+            custom_skills=['PyTest', 'Selenium']
+        )
+        self.assertTrue(len(questions) >= 4)
+        combined = " ".join(questions).lower()
+        self.assertTrue('test' in combined or 'pyramid' in combined or 'qa' in combined)
+
+    def test_swe_intern_domain_questions_tailoring(self):
+        questions = get_interview_questions(
+            role_target='Software Engineer Intern',
+            company_type='Tech Innovations',
+            interview_type='TECHNICAL',
+            difficulty='BEGINNER',
+            custom_skills=['DSA', 'Data Structures']
+        )
+        self.assertTrue(len(questions) >= 4)
+        combined = " ".join(questions).lower()
+        self.assertTrue('array' in combined or 'hash' in combined or 'data structures' in combined)
+
+    def test_api_start_mock_interview_returns_domain_and_skills(self):
+        self.client.force_login(self.user)
+        resp = self.client.post(
+            reverse('api_start_mock_interview'),
+            data=json.dumps({
+                'role_target': 'Mobile App Developer',
+                'company_type': 'Consumer Apps Corp',
+                'interview_type': 'TECHNICAL',
+                'difficulty': 'BEGINNER',
+                'duration_minutes': 15,
+                'skills': ['Flutter', 'Dart', 'Android']
+            }),
+            content_type='application/json'
+        )
+        self.assertEqual(resp.status_code, 200)
+        data = resp.json()
+        self.assertTrue(data['success'])
+        self.assertEqual(data['domain'], 'MOBILE')
+        self.assertIn('Flutter', data['job_info']['skills'])
+        self.assertTrue(len(data['questions']) >= 4)
+

@@ -1,26 +1,718 @@
-
 {% extends 'base.html' %}
-{% block title %}Find Opportunities | CAMPUSLINK{% endblock %}
+{% block title %}Find Opportunities & Connect with Startups | CAMPUSLINK{% endblock %}
 {% block content %}
-<main class="marketplace-page">
-<div class="container py-5">
-    <div class="marketplace-heading"><div><span class="eyebrow">Career marketplace</span><h1>Find Your Next Opportunity</h1><p>Discover roles matched to your skills, interests and career goals.</p></div><span class="marketplace-count">{{ job_matches|length }} opportunities</span></div>
+<main class="marketplace-page py-5">
+<div class="container">
+    <!-- Marketplace Hero Header -->
+    <div class="marketplace-heading mb-4 pb-3 border-bottom">
+        <div>
+            <div class="d-flex align-items-center gap-2 mb-2">
+                <span class="badge bg-primary-subtle text-primary border border-primary-subtle rounded-pill px-3 py-1 fw-bold">
+                    <i class="bi bi-rocket-takeoff-fill me-1"></i>Campus-to-Career Launchpad
+                </span>
+                <span class="badge bg-success-subtle text-success border border-success-subtle rounded-pill px-3 py-1 fw-bold">
+                    <i class="bi bi-shield-check me-1"></i>Verified Hiring Partners
+                </span>
+            </div>
+            <h1 class="fw-bold mb-2">Find Opportunities & Connect with Startups</h1>
+            <p class="text-muted mb-0">Discover high-impact roles at India's fastest-growing AI startups, unicorns, and global technology innovators.</p>
+        </div>
+        <div class="d-flex flex-wrap gap-2 align-items-center">
+            <span class="marketplace-count"><i class="bi bi-briefcase-fill me-1 text-primary"></i>{{ job_matches|length }} Active Roles</span>
+            <span class="marketplace-count"><i class="bi bi-building-fill me-1 text-info"></i>{{ companies|length }} Top Companies & Startups</span>
+        </div>
+    </div>
+
     {% if messages %}
     <div class="mb-4">
         {% for message in messages %}
-        <div class="alert alert-{{ message.tags }}">{{ message }}</div>
+        <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+            {{ message }}
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
         {% endfor %}
     </div>
     {% endif %}
 
-    <form class="job-filters" method="get"><div class="job-search"><i class="bi bi-search"></i><input type="search" name="q" value="{{ query }}" placeholder="Search jobs, skills or companies..." aria-label="Search jobs, skills or companies"></div><select name="role" aria-label="Filter by role"><option value="">All roles</option>{% for option in role_filters %}<option value="{{ option }}"{% if selected_role == option %} selected{% endif %}>{{ option }}</option>{% endfor %}</select><select name="experience" aria-label="Filter by experience"><option value="">All experience</option><option value="fresher"{% if selected_experience == 'fresher' %} selected{% endif %}>Fresher</option><option value="0-1"{% if selected_experience == '0-1' %} selected{% endif %}>0-1 years</option><option value="1-3"{% if selected_experience == '1-3' %} selected{% endif %}>1-3 years</option></select><select name="location" aria-label="Filter by location"><option value="">All locations</option>{% for option in location_filters %}<option value="{{ option }}"{% if selected_location == option %} selected{% endif %}>{{ option }}</option>{% endfor %}</select><select name="job_type" aria-label="Filter by job type"><option value="">All job types</option><option value="Full-Time"{% if selected_job_type == 'Full-Time' %} selected{% endif %}>Full Time</option><option value="Internship"{% if selected_job_type == 'Internship' %} selected{% endif %}>Internship</option></select><button class="btn btn-primary" type="submit">Apply filters</button></form>
+    <!-- Top View Switcher Tabs -->
+    <ul class="nav nav-pills mb-4 gap-2 bg-white p-2 rounded-4 border shadow-sm" id="opportunityTabs" role="tablist">
+        <li class="nav-item" role="presentation">
+            <a class="nav-link rounded-3 px-4 py-2 fw-bold d-flex align-items-center gap-2 {% if active_tab != 'companies' %}active{% endif %}" 
+               href="{% url 'job_list' %}?tab=jobs{% if query %}&q={{ query }}{% endif %}{% if selected_role %}&role={{ selected_role }}{% endif %}{% if selected_company_type %}&company_type={{ selected_company_type }}{% endif %}">
+                <i class="bi bi-briefcase"></i> Explore Jobs & Internships ({{ job_matches|length }})
+            </a>
+        </li>
+        <li class="nav-item" role="presentation">
+            <a class="nav-link rounded-3 px-4 py-2 fw-bold d-flex align-items-center gap-2 {% if active_tab == 'companies' %}active{% endif %}" 
+               href="{% url 'job_list' %}?tab=companies{% if query %}&q={{ query }}{% endif %}">
+                <i class="bi bi-buildings"></i> Connect with Startups & Companies ({{ companies|length }})
+            </a>
+        </li>
+    </ul>
 
+    {% if active_tab != 'companies' %}
+    <!-- ================= JOBS VIEW ================= -->
+
+    <!-- Filters Bar -->
+    <form class="job-filters mb-4" method="get" action="{% url 'job_list' %}">
+        <input type="hidden" name="tab" value="jobs">
+        <div class="job-search">
+            <i class="bi bi-search"></i>
+            <input type="search" name="q" value="{{ query }}" placeholder="Search role, startup, tech stack, or city..." aria-label="Search jobs">
+        </div>
+        
+        <select name="company_type" aria-label="Filter by company type">
+            <option value="">All Company Types</option>
+            {% for ct in company_types %}
+            <option value="{{ ct }}"{% if selected_company_type == ct %} selected{% endif %}>{{ ct }}</option>
+            {% endfor %}
+        </select>
+
+        <select name="role" aria-label="Filter by role">
+            <option value="">All Tech Skills</option>
+            {% for option in role_filters %}
+            <option value="{{ option }}"{% if selected_role == option %} selected{% endif %}>{{ option }}</option>
+            {% endfor %}
+        </select>
+
+        <select name="job_type" aria-label="Filter by job type">
+            <option value="">All Types</option>
+            <option value="Full-Time"{% if selected_job_type == 'Full-Time' %} selected{% endif %}>Full Time</option>
+            <option value="Internship"{% if selected_job_type == 'Internship' %} selected{% endif %}>Internship</option>
+        </select>
+
+        <select name="location" aria-label="Filter by location">
+            <option value="">All Locations</option>
+            {% for option in location_filters %}
+            <option value="{{ option }}"{% if selected_location == option %} selected{% endif %}>{{ option }}</option>
+            {% endfor %}
+        </select>
+
+        <select name="experience" aria-label="Filter by experience">
+            <option value="">All Experience</option>
+            <option value="fresher"{% if selected_experience == 'fresher' %} selected{% endif %}>Fresher</option>
+            <option value="0-1"{% if selected_experience == '0-1' %} selected{% endif %}>0-1 years</option>
+        </select>
+
+        <button class="btn btn-primary" type="submit">Filter Roles</button>
+        {% if query or selected_role or selected_company_type or selected_job_type or selected_location or selected_experience or selected_company_id %}
+        <a href="{% url 'job_list' %}?tab=jobs" class="btn btn-outline-secondary">Reset</a>
+        {% endif %}
+    </form>
+
+    <!-- Quick Pill Badges for Quick Filtering -->
+    <div class="d-flex flex-wrap gap-2 align-items-center mb-4">
+        <span class="small fw-bold text-muted me-1">Quick Filters:</span>
+        <a href="{% url 'job_list' %}?tab=jobs&company_type=Startup" class="badge rounded-pill {% if selected_company_type == 'Startup' %}bg-primary text-white{% else %}bg-white text-dark border{% endif %} text-decoration-none px-3 py-2">
+            🚀 High-Growth Startups
+        </a>
+        <a href="{% url 'job_list' %}?tab=jobs&company_type=Unicorn" class="badge rounded-pill {% if selected_company_type == 'Unicorn' %}bg-primary text-white{% else %}bg-white text-dark border{% endif %} text-decoration-none px-3 py-2">
+            🦄 Tech Unicorns
+        </a>
+        <a href="{% url 'job_list' %}?tab=jobs&job_type=Internship" class="badge rounded-pill {% if selected_job_type == 'Internship' %}bg-primary text-white{% else %}bg-white text-dark border{% endif %} text-decoration-none px-3 py-2">
+            🎓 Internships
+        </a>
+        <a href="{% url 'job_list' %}?tab=jobs&role=AI" class="badge rounded-pill {% if selected_role == 'AI' %}bg-primary text-white{% else %}bg-white text-dark border{% endif %} text-decoration-none px-3 py-2">
+            🤖 AI & Machine Learning
+        </a>
+        <a href="{% url 'job_list' %}?tab=jobs&location=Remote" class="badge rounded-pill {% if selected_location == 'Remote' %}bg-primary text-white{% else %}bg-white text-dark border{% endif %} text-decoration-none px-3 py-2">
+            🌐 Remote Roles
+        </a>
+    </div>
+
+    <!-- Job Cards Grid -->
     <div class="row g-4 job-grid">
         {% for match in job_matches %}
-        <div class="col-md-6 col-xl-4 d-flex"><article class="job-card"><div class="job-card-top"><span class="company-mark">{{ match.job.company.name|first|upper }}</span><span class="job-type-badge">{{ match.job.job_type }}</span></div><p class="job-company">{{ match.job.company.name }}</p><h2>{{ match.job.title }}</h2><div class="job-meta"><span><i class="bi bi-geo-alt"></i>{{ match.job.location }}</span><span><i class="bi bi-cash-stack"></i>{{ match.job.salary|default:'Package disclosed in details' }}</span></div><div class="job-skill-list">{% for skill in match.job.required_skills.all %}<span>{{ skill.name }}</span>{% endfor %}</div><div class="job-match-row"><span><i class="bi bi-stars"></i>{% if match.score %}{{ match.score }}% skill match{% else %}Career opportunity{% endif %}</span><span>{{ match.job.created_at|timesince }} ago</span></div><div class="job-card-actions"><a class="btn btn-outline-primary" href="{% url 'job_detail' match.job.id %}">View Details</a><a class="btn btn-outline-info" href="{% url 'ai_mock_interview' %}?job_id={{ match.job.id }}" title="Practice AI Mock Interview with Nexus Robot"><i class="bi bi-robot"></i> Practice</a>{% if match.job.id in applied_ids %}<span class="btn btn-light disabled">Applied</span>{% else %}<form method="post" action="{% url 'apply_job' match.job.id %}">{% csrf_token %}<button class="btn btn-primary" type="submit">Apply Now</button></form>{% endif %}</div></article></div>
-        {% empty %}<div class="col-12"><div class="empty-state marketplace-empty"><i class="bi bi-search"></i><strong>No matching opportunities</strong><span>Try adjusting your search or filters.</span></div></div>
+        <div class="col-md-6 col-xl-4 d-flex">
+            <article class="job-card shadow-sm position-relative">
+                <div class="job-card-top">
+                    <div class="d-flex align-items-center gap-2">
+                        <span class="company-mark">{{ match.job.company.name|first|upper }}</span>
+                        <div>
+                            <span class="badge {% if match.job.company.company_type == 'Startup' %}bg-warning-subtle text-warning-emphasis border border-warning-subtle{% elif match.job.company.company_type == 'Unicorn' %}bg-purple-subtle text-purple border{% else %}bg-primary-subtle text-primary border border-primary-subtle{% endif %} rounded-pill px-2 py-0" style="font-size: 0.65rem;">
+                                {{ match.job.company.company_type }}
+                            </span>
+                        </div>
+                    </div>
+                    <span class="job-type-badge">{{ match.job.job_type }}</span>
+                </div>
+
+                <div class="d-flex align-items-baseline justify-content-between mb-1">
+                    <p class="job-company mb-0">{{ match.job.company.name }}</p>
+                    <span class="badge bg-light text-secondary border rounded-pill" style="font-size: 0.68rem;">{{ match.job.work_mode }}</span>
+                </div>
+
+                <h2 class="fs-5 fw-bold mb-2">
+                    <a href="{% url 'job_detail' match.job.id %}" class="text-decoration-none text-dark hover-primary">{{ match.job.title }}</a>
+                </h2>
+
+                <div class="job-meta">
+                    <span><i class="bi bi-geo-alt"></i>{{ match.job.location }}</span>
+                    <span><i class="bi bi-cash-stack text-success"></i>{{ match.job.salary|default:'Disclosed upon shortlist' }}</span>
+                </div>
+
+                <div class="job-skill-list">
+                    {% for skill in match.job.required_skills.all %}
+                    <span>{{ skill.name }}</span>
+                    {% empty %}
+                    <span>Software Engineering</span>
+                    {% endfor %}
+                </div>
+
+                <div class="job-match-row">
+                    <span>
+                        <i class="bi bi-stars"></i>
+                        {% if match.score %}
+                            <strong>{{ match.score }}%</strong> skill match
+                        {% else %}
+                            Eligible role
+                        {% endif %}
+                    </span>
+                    <span><i class="bi bi-clock me-1"></i>{{ match.job.created_at|timesince }} ago</span>
+                </div>
+
+                <div class="job-card-actions">
+                    <a class="btn btn-outline-primary" href="{% url 'job_detail' match.job.id %}">
+                        View Details
+                    </a>
+                    <a class="btn btn-outline-info" href="{% url 'ai_mock_interview' %}?job_id={{ match.job.id }}" title="Practice AI Mock Interview">
+                        <i class="bi bi-robot"></i> Practice
+                    </a>
+                    
+                    {% if match.job.id in applied_ids %}
+                    <button class="btn btn-outline-success disabled" disabled>
+                        <i class="bi bi-check-circle-fill me-1"></i>Applied
+                    </button>
+                    {% else %}
+                    <button type="button" 
+                            class="btn btn-primary open-apply-modal-btn" 
+                            data-job-id="{{ match.job.id }}"
+                            data-job-title="{{ match.job.title }}"
+                            data-company="{{ match.job.company.name }}"
+                            data-company-type="{{ match.job.company.company_type }}"
+                            data-location="{{ match.job.location }}"
+                            data-salary="{{ match.job.salary|default:'Disclosed upon shortlist' }}"
+                            data-job-type="{{ match.job.job_type }}"
+                            data-work-mode="{{ match.job.work_mode }}"
+                            data-apply-url="{% url 'apply_job' match.job.id %}">
+                        <i class="bi bi-send-fill me-1"></i>Apply Now
+                    </button>
+                    {% endif %}
+                </div>
+            </article>
+        </div>
+        {% empty %}
+        <div class="col-12">
+            <div class="empty-state marketplace-empty text-center p-5">
+                <i class="bi bi-search fs-1 text-muted d-block mb-3"></i>
+                <h4 class="fw-bold">No matching opportunities found</h4>
+                <p class="text-muted">Try adjusting your filters, searching for a different skill, or clearing the search terms.</p>
+                <a href="{% url 'job_list' %}?tab=jobs" class="btn btn-outline-primary mt-2">Reset All Filters</a>
+            </div>
+        </div>
         {% endfor %}
     </div>
+
+    {% else %}
+    <!-- ================= STARTUPS & COMPANIES DIRECTORY ================= -->
+
+    <!-- Companies Search Bar -->
+    <div class="card border-0 shadow-sm rounded-4 p-4 mb-4">
+        <form class="d-flex flex-wrap gap-3 align-items-center" method="get" action="{% url 'job_list' %}">
+            <input type="hidden" name="tab" value="companies">
+            <div class="flex-grow-1 position-relative">
+                <i class="bi bi-search position-absolute top-50 start-0 translate-middle-y ms-3 text-muted"></i>
+                <input type="search" name="q" value="{{ query }}" class="form-control ps-5 py-2" placeholder="Search startup name, domain (AI, FinTech, SaaS), or tech stack...">
+            </div>
+            <select name="company_type" class="form-select py-2" style="width: auto; min-width: 180px;">
+                <option value="">All Partner Types</option>
+                {% for ct in company_types %}
+                <option value="{{ ct }}"{% if selected_company_type == ct %} selected{% endif %}>{{ ct }}</option>
+                {% endfor %}
+            </select>
+            <button type="submit" class="btn btn-primary px-4 py-2">Search Startups</button>
+            {% if query or selected_company_type %}
+            <a href="{% url 'job_list' %}?tab=companies" class="btn btn-outline-secondary py-2">Clear</a>
+            {% endif %}
+        </form>
+    </div>
+
+    <!-- Startups Grid -->
+    <div class="row g-4">
+        {% for comp in companies %}
+        <div class="col-md-6 col-xl-4 d-flex">
+            <div class="card border-0 shadow-sm rounded-4 p-4 w-100 d-flex flex-column h-100 position-relative transition-hover">
+                <div class="d-flex align-items-start justify-content-between gap-3 mb-3">
+                    <div class="d-flex align-items-center gap-3">
+                        <span class="company-mark fs-4 fw-bold" style="width: 48px; height: 48px;">{{ comp.name|first|upper }}</span>
+                        <div>
+                            <h3 class="fs-5 fw-bold mb-0 text-dark">
+                                {{ comp.name }}
+                                <i class="bi bi-patch-check-fill text-primary" title="Verified Hiring Partner"></i>
+                            </h3>
+                            <span class="small text-muted">{{ comp.industry }}</span>
+                        </div>
+                    </div>
+                    <span class="badge {% if comp.company_type == 'Startup' %}bg-warning-subtle text-warning-emphasis border border-warning-subtle{% elif comp.company_type == 'Unicorn' %}bg-info-subtle text-info-emphasis border border-info-subtle{% else %}bg-primary-subtle text-primary border border-primary-subtle{% endif %} rounded-pill px-3 py-1 fw-bold">
+                        {{ comp.company_type }}
+                    </span>
+                </div>
+
+                {% if comp.tagline %}
+                <p class="text-dark small fw-medium mb-2">{{ comp.tagline }}</p>
+                {% endif %}
+
+                <p class="text-muted small mb-3 flex-grow-1" style="line-height: 1.6;">
+                    {{ comp.description|truncatewords:24 }}
+                </p>
+
+                <div class="d-flex flex-wrap gap-2 mb-3 text-muted" style="font-size: 0.72rem;">
+                    <div><i class="bi bi-geo-alt-fill text-primary me-1"></i>{{ comp.locations }}</div>
+                    {% if comp.funding_stage %}
+                    <div><i class="bi bi-cash-coin text-success me-1"></i>{{ comp.funding_stage }}</div>
+                    {% endif %}
+                    {% if comp.employee_count %}
+                    <div><i class="bi bi-people-fill text-info me-1"></i>{{ comp.employee_count }}</div>
+                    {% endif %}
+                </div>
+
+                {% if comp.tech_stack %}
+                <div class="mb-3">
+                    <span class="text-muted d-block mb-1" style="font-size: 0.68rem; font-weight: 700; text-transform: uppercase;">Tech Stack:</span>
+                    <div class="d-flex flex-wrap gap-1">
+                        {% for tech in comp.tech_stack.split %}
+                        <span class="badge bg-light text-secondary border rounded-pill" style="font-size: 0.65rem;">{{ tech|cut:"," }}</span>
+                        {% endfor %}
+                    </div>
+                </div>
+                {% endif %}
+
+                <div class="p-2 bg-light rounded-3 d-flex align-items-center justify-content-between mb-3 border">
+                    <span class="small fw-semibold text-dark">
+                        <i class="bi bi-briefcase text-primary me-1"></i>
+                        {{ comp.open_positions }} Full-Time &middot; {{ comp.internship_opportunities }} Internships
+                    </span>
+                    <a href="{% url 'job_list' %}?tab=jobs&company_id={{ comp.id }}" class="small fw-bold text-primary text-decoration-none">
+                        View Jobs &rarr;
+                    </a>
+                </div>
+
+                <div class="d-flex gap-2 pt-2 border-top mt-auto">
+                    {% if comp.id in connected_company_ids %}
+                    <button class="btn btn-outline-success btn-sm w-100 disabled" disabled>
+                        <i class="bi bi-check-circle-fill me-1"></i>Connected to Network
+                    </button>
+                    {% else %}
+                    <button type="button" 
+                            class="btn btn-outline-primary btn-sm flex-grow-1 open-connect-modal-btn"
+                            data-company-id="{{ comp.id }}"
+                            data-company-name="{{ comp.name }}"
+                            data-industry="{{ comp.industry }}"
+                            data-connect-url="{% url 'connect_company' comp.id %}">
+                        <i class="bi bi-person-plus-fill me-1"></i>Connect with {{ comp.name }}
+                    </button>
+                    {% endif %}
+                    
+                    <a href="{% url 'company_detail' comp.id %}" class="btn btn-light btn-sm border" title="View Full Company Profile">
+                        <i class="bi bi-arrow-up-right"></i>
+                    </a>
+                </div>
+            </div>
+        </div>
+        {% empty %}
+        <div class="col-12">
+            <div class="empty-state text-center p-5 bg-white rounded-4 border">
+                <i class="bi bi-buildings fs-1 text-muted d-block mb-3"></i>
+                <h4 class="fw-bold">No startups or companies found</h4>
+                <p class="text-muted">Try clearing your search query or company type filter.</p>
+                <a href="{% url 'job_list' %}?tab=companies" class="btn btn-outline-primary">View All Partners</a>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+    {% endif %}
 </div>
 </main>
+
+<!-- ================= MODAL 1: JOB APPLICATION FORM MODAL ================= -->
+<div class="modal fade" id="jobApplicationModal" tabindex="-1" aria-labelledby="jobApplicationModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable">
+        <div class="modal-content border-0 shadow-lg rounded-4">
+            <div class="modal-header border-bottom bg-light px-4 py-3 rounded-top-4">
+                <div class="d-flex align-items-center gap-3">
+                    <span class="company-mark fw-bold" id="modalCompanyMark">C</span>
+                    <div>
+                        <div class="d-flex align-items-center gap-2">
+                            <span class="badge bg-primary-subtle text-primary border border-primary-subtle rounded-pill px-2 py-0" style="font-size: 0.65rem;" id="modalCompanyType">Startup</span>
+                            <span class="small text-muted fw-bold" id="modalCompanyName">Company Name</span>
+                        </div>
+                        <h4 class="modal-title fs-5 fw-bold mb-0" id="modalJobTitle">Apply for Position</h4>
+                    </div>
+                </div>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+
+            <!-- Job Quick Meta Banner inside Modal -->
+            <div class="bg-primary-subtle px-4 py-2 border-bottom d-flex flex-wrap gap-3 small text-dark">
+                <div><i class="bi bi-geo-alt-fill text-primary me-1"></i><span id="modalJobLocation">Location</span> (<span id="modalJobWorkMode">Work Mode</span>)</div>
+                <div><i class="bi bi-cash-stack text-success me-1"></i><span id="modalJobSalary">Salary</span></div>
+                <div><i class="bi bi-briefcase-fill text-info me-1"></i><span id="modalJobType">Full-Time</span></div>
+            </div>
+
+            <div class="modal-body p-4">
+                <!-- In-modal feedback alert -->
+                <div id="modalAlertBox" class="alert d-none" role="alert"></div>
+
+                <form id="modalApplicationForm" method="post" enctype="multipart/form-data" action="">
+                    {% csrf_token %}
+                    <input type="hidden" name="ajax" value="1">
+
+                    <!-- Section 1: Candidate Basic Information -->
+                    <div class="mb-4">
+                        <div class="d-flex align-items-center justify-content-between mb-3">
+                            <h6 class="fw-bold text-dark mb-0"><i class="bi bi-person-badge text-primary me-2"></i>1. Candidate Profile</h6>
+                            <span class="badge bg-light text-muted border">Pre-filled from your account</span>
+                        </div>
+                        <div class="row g-3">
+                            <div class="col-md-6">
+                                <label class="form-label small fw-semibold">Full Name *</label>
+                                <input type="text" name="full_name" class="form-control" value="{{ request.user.get_full_name|default:request.user.username }}" required>
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label small fw-semibold">Email Address *</label>
+                                <input type="email" name="email" class="form-control" value="{{ request.user.email }}" required>
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label small fw-semibold">Phone Number *</label>
+                                <input type="tel" name="phone" class="form-control" value="{{ student_profile.phone|default:'+91 ' }}" placeholder="+91 9876543210" required>
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label small fw-semibold">College / University *</label>
+                                <input type="text" name="college" class="form-control" value="{{ student_profile.college|default:'BPUT University' }}" required>
+                            </div>
+                            <div class="col-md-8">
+                                <label class="form-label small fw-semibold">Degree & Department *</label>
+                                <input type="text" name="degree_major" class="form-control" value="{{ student_profile.degree|default:student_profile.department|default:'B.Tech Computer Science & Engineering' }}" required>
+                            </div>
+                            <div class="col-md-4">
+                                <label class="form-label small fw-semibold">Current CGPA</label>
+                                <input type="number" step="0.01" min="0" max="10" name="cgpa" class="form-control" value="{{ student_profile.cgpa|default:'8.5' }}">
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Section 2: Resume & Links -->
+                    <div class="mb-4 pt-3 border-top">
+                        <h6 class="fw-bold text-dark mb-3"><i class="bi bi-file-earmark-pdf text-danger me-2"></i>2. Resume & Professional Links</h6>
+                        
+                        <div class="mb-3">
+                            <label class="form-label small fw-semibold">Resume Attachment *</label>
+                            {% if student_profile.resume %}
+                            <div class="p-2 bg-light rounded-3 border mb-2 d-flex align-items-center justify-content-between">
+                                <div class="d-flex align-items-center gap-2">
+                                    <i class="bi bi-file-earmark-check-fill text-success fs-5"></i>
+                                    <div>
+                                        <div class="small fw-semibold">Profile Resume Attached</div>
+                                        <div class="text-muted" style="font-size: 0.72rem;">Default resume from your student profile</div>
+                                    </div>
+                                </div>
+                                <a href="{{ student_profile.resume.url }}" target="_blank" class="btn btn-sm btn-outline-primary py-1 px-2" style="font-size: 0.75rem;">
+                                    <i class="bi bi-eye"></i> View
+                                </a>
+                            </div>
+                            {% endif %}
+                            <input type="file" name="custom_resume" class="form-control" accept=".pdf,.doc,.docx">
+                            <div class="form-text" style="font-size: 0.75rem;">Upload custom PDF resume (optional if profile resume attached).</div>
+                        </div>
+
+                        <div class="row g-3">
+                            <div class="col-md-4">
+                                <label class="form-label small fw-semibold"><i class="bi bi-globe text-primary me-1"></i>Portfolio Website</label>
+                                <input type="url" name="portfolio_url" class="form-control form-control-sm" value="{{ student_profile.portfolio }}" placeholder="https://yourportfolio.com">
+                            </div>
+                            <div class="col-md-4">
+                                <label class="form-label small fw-semibold"><i class="bi bi-github text-dark me-1"></i>GitHub Profile</label>
+                                <input type="url" name="github_url" class="form-control form-control-sm" value="{{ student_profile.github }}" placeholder="https://github.com/username">
+                            </div>
+                            <div class="col-md-4">
+                                <label class="form-label small fw-semibold"><i class="bi bi-linkedin text-primary me-1"></i>LinkedIn Profile</label>
+                                <input type="url" name="linkedin_url" class="form-control form-control-sm" value="{{ student_profile.linkedin }}" placeholder="https://linkedin.com/in/username">
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Section 3: Pitch & Availability -->
+                    <div class="mb-3 pt-3 border-top">
+                        <h6 class="fw-bold text-dark mb-3"><i class="bi bi-chat-quote text-success me-2"></i>3. Pitch & Availability</h6>
+                        <div class="row g-3 mb-3">
+                            <div class="col-md-4">
+                                <label class="form-label small fw-semibold">Experience Level</label>
+                                <select name="experience_level" class="form-select form-select-sm">
+                                    <option value="Fresher" selected>Fresher (2025/2026 Grad)</option>
+                                    <option value="0-1 Years">0 - 1 Years</option>
+                                    <option value="1-2 Years">1 - 2 Years</option>
+                                    <option value="Internship Experienced">Internship Experienced</option>
+                                </select>
+                            </div>
+                            <div class="col-md-4">
+                                <label class="form-label small fw-semibold">Availability</label>
+                                <select name="availability" class="form-select form-select-sm">
+                                    <option value="Immediate" selected>Immediate (0-7 Days)</option>
+                                    <option value="Within 15 Days">Within 15 Days</option>
+                                    <option value="1 Month">1 Month</option>
+                                    <option value="Post Exams">Post Semester Exams</option>
+                                </select>
+                            </div>
+                            <div class="col-md-4">
+                                <label class="form-label small fw-semibold">Expected CTC / Stipend</label>
+                                <input type="text" name="expected_salary" class="form-control form-control-sm" placeholder="e.g. As per company standards">
+                            </div>
+                        </div>
+
+                        <div>
+                            <label class="form-label small fw-semibold">Pitch to Hiring Team / Why are you a great fit? *</label>
+                            <textarea name="cover_letter" rows="3" class="form-control" placeholder="Describe your relevant skills, projects, and why you are excited to join this startup/company..." required></textarea>
+                            <div class="form-text" style="font-size: 0.75rem;">A brief 2-3 sentence personalized pitch increases recruiter interview invitation rates by 3x!</div>
+                        </div>
+                    </div>
+
+                    <div class="modal-footer px-0 pb-0 border-top mt-4">
+                        <button type="button" class="btn btn-light" data-bs-dismiss="modal">Cancel</button>
+                        <button type="submit" class="btn btn-primary px-4 fw-bold" id="modalSubmitBtn">
+                            <i class="bi bi-send-fill me-2"></i>Confirm & Submit Application
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- ================= MODAL 2: CONNECT WITH STARTUP MODAL ================= -->
+<div class="modal fade" id="companyConnectModal" tabindex="-1" aria-labelledby="companyConnectModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content border-0 shadow-lg rounded-4">
+            <div class="modal-header border-bottom bg-light px-4 py-3 rounded-top-4">
+                <div class="d-flex align-items-center gap-2">
+                    <i class="bi bi-rocket-takeoff-fill text-primary fs-4"></i>
+                    <div>
+                        <h5 class="modal-title fw-bold mb-0" id="connectModalCompanyName">Connect with Startup</h5>
+                        <span class="small text-muted" id="connectModalIndustry">Join Founder & Recruiter Talent Network</span>
+                    </div>
+                </div>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            
+            <div class="modal-body p-4">
+                <div id="connectAlertBox" class="alert d-none" role="alert"></div>
+
+                <form id="connectStartupForm" method="post" action="">
+                    {% csrf_token %}
+                    <input type="hidden" name="ajax" value="1">
+                    
+                    <p class="text-muted small mb-3">
+                        Express hiring interest to let founders and technical recruiters proactively reach out to you for current and upcoming openings.
+                    </p>
+
+                    <div class="mb-3">
+                        <label class="form-label small fw-semibold">Preferred Domain / Role Interest *</label>
+                        <select name="preferred_role" class="form-select">
+                            <option value="AI / ML Engineer" selected>AI / ML Engineer & GenAI</option>
+                            <option value="Backend Developer (Python/Go/Java)">Backend Developer (Python / Go / Java)</option>
+                            <option value="Full Stack Developer (React/Node/Django)">Full Stack Developer</option>
+                            <option value="Frontend Engineer (React/TypeScript)">Frontend Web / Mobile Engineer</option>
+                            <option value="Data Scientist / Analyst">Data Science & Analytics</option>
+                            <option value="DevOps & Cloud Intern">DevOps / Cloud Platform Intern</option>
+                            <option value="Software Engineering Intern">Summer / Full-Time Internship</option>
+                        </select>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label small fw-semibold">Introductory Note to Founders / Hiring Team (Optional)</label>
+                        <textarea name="note" rows="3" class="form-control" placeholder="Hi! I am a passionate developer with skills in Python, ML, and React. I'd love to contribute to your mission..."></textarea>
+                    </div>
+
+                    <div class="modal-footer px-0 pb-0 border-top mt-4">
+                        <button type="button" class="btn btn-light" data-bs-dismiss="modal">Close</button>
+                        <button type="submit" class="btn btn-primary fw-bold" id="connectSubmitBtn">
+                            <i class="bi bi-person-check-fill me-1"></i>Confirm Connection
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- JavaScript for Modal Interactivity -->
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const applyModal = new bootstrap.Modal(document.getElementById('jobApplicationModal'));
+    const connectModal = new bootstrap.Modal(document.getElementById('companyConnectModal'));
+
+    let currentApplyTriggerBtn = null;
+    let currentConnectTriggerBtn = null;
+
+    // Handle "Apply Now" Button Clicks
+    document.querySelectorAll('.open-apply-modal-btn').forEach(btn => {
+        btn.addEventListener('click', function() {
+            currentApplyTriggerBtn = this;
+            const jobId = this.getAttribute('data-job-id');
+            const jobTitle = this.getAttribute('data-job-title');
+            const companyName = this.getAttribute('data-company');
+            const companyType = this.getAttribute('data-company-type');
+            const location = this.getAttribute('data-location');
+            const salary = this.getAttribute('data-salary');
+            const jobType = this.getAttribute('data-job-type');
+            const workMode = this.getAttribute('data-work-mode');
+            const applyUrl = this.getAttribute('data-apply-url');
+
+            // Populate Modal Content
+            document.getElementById('modalJobTitle').textContent = jobTitle;
+            document.getElementById('modalCompanyName').textContent = companyName;
+            document.getElementById('modalCompanyType').textContent = companyType;
+            document.getElementById('modalCompanyMark').textContent = companyName.charAt(0).toUpperCase();
+            document.getElementById('modalJobLocation').textContent = location;
+            document.getElementById('modalJobWorkMode').textContent = workMode;
+            document.getElementById('modalJobSalary').textContent = salary;
+            document.getElementById('modalJobType').textContent = jobType;
+
+            const form = document.getElementById('modalApplicationForm');
+            form.action = applyUrl;
+
+            // Reset alert box
+            const alertBox = document.getElementById('modalAlertBox');
+            alertBox.className = 'alert d-none';
+            alertBox.textContent = '';
+
+            const submitBtn = document.getElementById('modalSubmitBtn');
+            submitBtn.disabled = false;
+            submitBtn.innerHTML = '<i class="bi bi-send-fill me-2"></i>Confirm & Submit Application';
+
+            applyModal.show();
+        });
+    });
+
+    // Handle AJAX submission for Job Application Form
+    const appForm = document.getElementById('modalApplicationForm');
+    appForm.addEventListener('submit', function(e) {
+        e.preventDefault();
+        const submitBtn = document.getElementById('modalSubmitBtn');
+        const alertBox = document.getElementById('modalAlertBox');
+        
+        submitBtn.disabled = true;
+        submitBtn.innerHTML = '<span class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>Submitting Application...';
+
+        const formData = new FormData(appForm);
+
+        fetch(appForm.action, {
+            method: 'POST',
+            body: formData,
+            headers: {
+                'X-Requested-With': 'XMLHttpRequest',
+            }
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                alertBox.className = 'alert alert-success d-flex align-items-center gap-2';
+                alertBox.innerHTML = '<i class="bi bi-check-circle-fill fs-5"></i> <div><strong>Success!</strong> ' + data.message + '</div>';
+                
+                if (currentApplyTriggerBtn) {
+                    currentApplyTriggerBtn.outerHTML = '<button class="btn btn-outline-success disabled" disabled><i class="bi bi-check-circle-fill me-1"></i>Applied</button>';
+                }
+
+                submitBtn.className = 'btn btn-success px-4 fw-bold';
+                submitBtn.innerHTML = '<i class="bi bi-check2 me-1"></i>Application Submitted!';
+
+                setTimeout(() => {
+                    applyModal.hide();
+                }, 1800);
+            } else {
+                alertBox.className = 'alert alert-warning d-flex align-items-center gap-2';
+                alertBox.innerHTML = '<i class="bi bi-exclamation-triangle-fill fs-5"></i> <div>' + data.message + '</div>';
+                submitBtn.disabled = false;
+                submitBtn.innerHTML = '<i class="bi bi-send-fill me-2"></i>Confirm & Submit Application';
+            }
+        })
+        .catch(err => {
+            // Fallback to standard form submit if fetch network fails
+            appForm.submit();
+        });
+    });
+
+    // Handle "Connect with Startup" Button Clicks
+    document.querySelectorAll('.open-connect-modal-btn').forEach(btn => {
+        btn.addEventListener('click', function() {
+            currentConnectTriggerBtn = this;
+            const companyName = this.getAttribute('data-company-name');
+            const industry = this.getAttribute('data-industry');
+            const connectUrl = this.getAttribute('data-connect-url');
+
+            document.getElementById('connectModalCompanyName').textContent = 'Connect with ' + companyName;
+            document.getElementById('connectModalIndustry').textContent = industry;
+
+            const form = document.getElementById('connectStartupForm');
+            form.action = connectUrl;
+
+            const alertBox = document.getElementById('connectAlertBox');
+            alertBox.className = 'alert d-none';
+            alertBox.textContent = '';
+
+            const submitBtn = document.getElementById('connectSubmitBtn');
+            submitBtn.disabled = false;
+            submitBtn.innerHTML = '<i class="bi bi-person-check-fill me-1"></i>Confirm Connection';
+
+            connectModal.show();
+        });
+    });
+
+    // Handle AJAX submission for Connect Startup Form
+    const connectForm = document.getElementById('connectStartupForm');
+    connectForm.addEventListener('submit', function(e) {
+        e.preventDefault();
+        const submitBtn = document.getElementById('connectSubmitBtn');
+        const alertBox = document.getElementById('connectAlertBox');
+
+        submitBtn.disabled = true;
+        submitBtn.innerHTML = '<span class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>Connecting...';
+
+        const formData = new FormData(connectForm);
+
+        fetch(connectForm.action, {
+            method: 'POST',
+            body: formData,
+            headers: {
+                'X-Requested-With': 'XMLHttpRequest',
+            }
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                alertBox.className = 'alert alert-success d-flex align-items-center gap-2';
+                alertBox.innerHTML = '<i class="bi bi-check-circle-fill fs-5"></i> <div>' + data.message + '</div>';
+
+                if (currentConnectTriggerBtn) {
+                    currentConnectTriggerBtn.outerHTML = '<button class="btn btn-outline-success btn-sm w-100 disabled" disabled><i class="bi bi-check-circle-fill me-1"></i>Connected to Network</button>';
+                }
+
+                submitBtn.className = 'btn btn-success fw-bold';
+                submitBtn.innerHTML = '<i class="bi bi-check2 me-1"></i>Connected!';
+
+                setTimeout(() => {
+                    connectModal.hide();
+                }, 1500);
+            } else {
+                alertBox.className = 'alert alert-warning';
+                alertBox.textContent = data.message;
+                submitBtn.disabled = false;
+                submitBtn.innerHTML = '<i class="bi bi-person-check-fill me-1"></i>Confirm Connection';
+            }
+        })
+        .catch(err => {
+            connectForm.submit();
+        });
+    });
+});
+</script>
 {% endblock %}

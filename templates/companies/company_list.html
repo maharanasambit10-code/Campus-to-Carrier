@@ -1,0 +1,154 @@
+{% extends 'base.html' %}
+{% block title %}Startups & Hiring Partners Directory | CAMPUSLINK{% endblock %}
+{% block content %}
+<main class="marketplace-page py-5">
+<div class="container">
+    <div class="marketplace-heading mb-4 pb-3 border-bottom">
+        <div>
+            <div class="d-flex align-items-center gap-2 mb-2">
+                <span class="badge bg-primary-subtle text-primary border border-primary-subtle rounded-pill px-3 py-1 fw-bold">
+                    <i class="bi bi-buildings-fill me-1"></i>Hiring Ecosystem
+                </span>
+                <span class="badge bg-success-subtle text-success border border-success-subtle rounded-pill px-3 py-1 fw-bold">
+                    <i class="bi bi-patch-check-fill me-1"></i>Verified Startups & Enterprises
+                </span>
+            </div>
+            <h1 class="fw-bold mb-2">Connect with Next-Gen Startups & Companies</h1>
+            <p class="text-muted mb-0">Join the talent networks of India's premier AI labs, fintech innovators, and tech giants.</p>
+        </div>
+        <div class="d-flex gap-2">
+            <a href="{% url 'job_list' %}" class="btn btn-outline-primary">
+                <i class="bi bi-briefcase me-1"></i>Browse All Jobs
+            </a>
+        </div>
+    </div>
+
+    {% if messages %}
+    <div class="mb-4">
+        {% for message in messages %}
+        <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+            {{ message }}
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+        {% endfor %}
+    </div>
+    {% endif %}
+
+    <!-- Filter Bar -->
+    <div class="card border-0 shadow-sm rounded-4 p-4 mb-4">
+        <form class="d-flex flex-wrap gap-3 align-items-center" method="get">
+            <div class="flex-grow-1 position-relative">
+                <i class="bi bi-search position-absolute top-50 start-0 translate-middle-y ms-3 text-muted"></i>
+                <input type="search" name="q" value="{{ query }}" class="form-control ps-5 py-2" placeholder="Search startup name, industry (AI, FinTech, SaaS), or tech stack...">
+            </div>
+            <select name="type" class="form-select py-2" style="width: auto; min-width: 180px;">
+                <option value="">All Partner Types</option>
+                {% for ct in company_types %}
+                <option value="{{ ct }}"{% if selected_type == ct %} selected{% endif %}>{{ ct }}</option>
+                {% endfor %}
+            </select>
+            <button type="submit" class="btn btn-primary px-4 py-2">Filter Partners</button>
+            {% if query or selected_type %}
+            <a href="{% url 'company_list' %}" class="btn btn-outline-secondary py-2">Clear</a>
+            {% endif %}
+        </form>
+    </div>
+
+    <!-- Startups Grid -->
+    <div class="row g-4">
+        {% for comp in companies %}
+        <div class="col-md-6 col-xl-4 d-flex">
+            <div class="card border-0 shadow-sm rounded-4 p-4 w-100 d-flex flex-column h-100 position-relative transition-hover">
+                <div class="d-flex align-items-start justify-content-between gap-3 mb-3">
+                    <div class="d-flex align-items-center gap-3">
+                        <span class="company-mark fs-4 fw-bold" style="width: 48px; height: 48px;">{{ comp.name|first|upper }}</span>
+                        <div>
+                            <h3 class="fs-5 fw-bold mb-0 text-dark">
+                                <a href="{% url 'company_detail' comp.id %}" class="text-decoration-none text-dark hover-primary">{{ comp.name }}</a>
+                                <i class="bi bi-patch-check-fill text-primary" title="Verified Hiring Partner"></i>
+                            </h3>
+                            <span class="small text-muted">{{ comp.industry }}</span>
+                        </div>
+                    </div>
+                    <span class="badge {% if comp.company_type == 'Startup' %}bg-warning-subtle text-warning-emphasis border border-warning-subtle{% elif comp.company_type == 'Unicorn' %}bg-info-subtle text-info-emphasis border border-info-subtle{% else %}bg-primary-subtle text-primary border border-primary-subtle{% endif %} rounded-pill px-3 py-1 fw-bold">
+                        {{ comp.company_type }}
+                    </span>
+                </div>
+
+                {% if comp.tagline %}
+                <p class="text-dark small fw-medium mb-2">{{ comp.tagline }}</p>
+                {% endif %}
+
+                <p class="text-muted small mb-3 flex-grow-1" style="line-height: 1.6;">
+                    {{ comp.description|truncatewords:24 }}
+                </p>
+
+                <div class="d-flex flex-wrap gap-2 mb-3 text-muted" style="font-size: 0.72rem;">
+                    <div><i class="bi bi-geo-alt-fill text-primary me-1"></i>{{ comp.locations }}</div>
+                    {% if comp.funding_stage %}
+                    <div><i class="bi bi-cash-coin text-success me-1"></i>{{ comp.funding_stage }}</div>
+                    {% endif %}
+                    {% if comp.employee_count %}
+                    <div><i class="bi bi-people-fill text-info me-1"></i>{{ comp.employee_count }}</div>
+                    {% endif %}
+                </div>
+
+                {% if comp.tech_stack %}
+                <div class="mb-3">
+                    <span class="text-muted d-block mb-1" style="font-size: 0.68rem; font-weight: 700; text-transform: uppercase;">Tech Stack:</span>
+                    <div class="d-flex flex-wrap gap-1">
+                        {% for tech in comp.tech_stack.split %}
+                        <span class="badge bg-light text-secondary border rounded-pill" style="font-size: 0.65rem;">{{ tech|cut:"," }}</span>
+                        {% endfor %}
+                    </div>
+                </div>
+                {% endif %}
+
+                <div class="p-2 bg-light rounded-3 d-flex align-items-center justify-content-between mb-3 border">
+                    <span class="small fw-semibold text-dark">
+                        <i class="bi bi-briefcase text-primary me-1"></i>
+                        {{ comp.open_positions }} Full-Time &middot; {{ comp.internship_opportunities }} Internships
+                    </span>
+                    <a href="{% url 'job_list' %}?tab=jobs&company_id={{ comp.id }}" class="small fw-bold text-primary text-decoration-none">
+                        View Jobs &rarr;
+                    </a>
+                </div>
+
+                <div class="d-flex gap-2 pt-2 border-top mt-auto">
+                    {% if comp.id in connected_ids %}
+                    <form method="post" action="{% url 'connect_company' comp.id %}" class="w-100">
+                        {% csrf_token %}
+                        <input type="hidden" name="action" value="disconnect">
+                        <button type="submit" class="btn btn-outline-success btn-sm w-100" title="Click to disconnect">
+                            <i class="bi bi-check-circle-fill me-1"></i>Connected (Disconnect)
+                        </button>
+                    </form>
+                    {% else %}
+                    <form method="post" action="{% url 'connect_company' comp.id %}" class="flex-grow-1">
+                        {% csrf_token %}
+                        <button type="submit" class="btn btn-outline-primary btn-sm w-100">
+                            <i class="bi bi-person-plus-fill me-1"></i>Connect with {{ comp.name }}
+                        </button>
+                    </form>
+                    {% endif %}
+                    
+                    <a href="{% url 'company_detail' comp.id %}" class="btn btn-light btn-sm border" title="View Full Details">
+                        <i class="bi bi-arrow-up-right"></i>
+                    </a>
+                </div>
+            </div>
+        </div>
+        {% empty %}
+        <div class="col-12">
+            <div class="empty-state text-center p-5 bg-white rounded-4 border">
+                <i class="bi bi-buildings fs-1 text-muted d-block mb-3"></i>
+                <h4 class="fw-bold">No startups or companies found</h4>
+                <p class="text-muted">Try clearing your search query or partner type filter.</p>
+                <a href="{% url 'company_list' %}" class="btn btn-outline-primary">View All Partners</a>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+</main>
+{% endblock %}

@@ -63,6 +63,7 @@ urlpatterns = [
     path('student/', include('students.urls')),
     path('officer/', include('analytics.urls')),
     path('jobs/', include('jobs.urls')),
+    path('companies/', include('companies.urls')),
     path('recruiter/', include('recruiters.urls')),
     path('notifications/', include('notifications.urls')),
     path('interviews/', include('interviews.urls')),

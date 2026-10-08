@@ -245,7 +245,7 @@
             {% for turn in transcript %}
             <div class="mb-3">
                 <strong class="small d-block {% if turn.speaker == 'Aria' or turn.speaker == 'Priya' %}text-primary{% else %}text-success{% endif %}">
-                    {% if turn.speaker == 'Aria' or turn.speaker == 'Priya' %}<i class="bi bi-robot me-1"></i> Priya (Interviewer){% else %}<i class="bi bi-person me-1"></i> You (Candidate){% endif %}
+                    {% if turn.speaker == 'Aria' or turn.speaker == 'Priya' %}<i class="bi bi-person-badge-fill me-1 text-warning"></i> Priya (Senior HR Partner){% else %}<i class="bi bi-person me-1"></i> You (Candidate){% endif %}
                 </strong>
                 <p class="small text-dark mb-0 ps-3 border-start border-2 {% if turn.speaker == 'Aria' or turn.speaker == 'Priya' %}border-primary{% else %}border-success{% endif %}">
                     {{ turn.text }}
