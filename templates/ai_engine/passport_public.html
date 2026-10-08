@@ -1,0 +1,140 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %}{{ student.user.get_full_name|default:student.user.username }} | Verified Proof Passport{% endblock %}
+
+{% block content %}
+<div class="container py-5" style="max-width: 1040px;">
+    <!-- Recruiter Proof Verifier Header -->
+    <div class="p-3 mb-4 rounded-4 bg-white border shadow-sm d-flex flex-wrap justify-content-between align-items-center gap-3">
+        <div class="d-flex align-items-center gap-3">
+            <span class="p-2 rounded-circle bg-success text-white d-flex align-items-center justify-content-center" style="width: 40px; height: 40px;">
+                <i class="bi bi-shield-check fs-5"></i>
+            </span>
+            <div>
+                <strong class="d-block text-dark">Verified Candidate Proof Passport</strong>
+                <span class="text-muted small">Validated by CampusLink Work Simulator & Academic Signals · Tamper-evident proof</span>
+            </div>
+        </div>
+        <div class="d-flex gap-2">
+            <button class="btn btn-sm btn-outline-secondary rounded-pill" onclick="window.print()">
+                <i class="bi bi-printer me-1"></i> Print Dossier
+            </button>
+            <a href="mailto:{{ student.user.email }}" class="btn btn-sm btn-primary rounded-pill fw-semibold shadow-sm">
+                <i class="bi bi-envelope-fill me-1"></i> Contact Candidate
+            </a>
+        </div>
+    </div>
+
+    <!-- Candidate Header Card -->
+    <div class="card border-0 shadow-sm p-4 p-md-5 rounded-4 mb-4" style="background: linear-gradient(135deg, #1e3a8a 0%, #0f172a 100%); color: #fff;">
+        <div class="row align-items-center">
+            <div class="col-lg-8">
+                <div class="d-flex align-items-center gap-2 mb-2">
+                    <span class="badge rounded-pill px-3 py-1 fw-bold text-dark" style="background: #bef264;">
+                        <i class="bi bi-patch-check-fill me-1"></i> VERIFIED CANDIDATE
+                    </span>
+                    {% if passport.allowed_employers %}
+                        <span class="badge bg-white bg-opacity-20 text-white rounded-pill px-3 py-1 small">
+                            Exclusive to {{ passport.allowed_employers }}
+                        </span>
+                    {% endif %}
+                </div>
+                <h1 class="display-6 fw-bold text-white mb-2">{{ student.user.get_full_name|default:student.user.username }}</h1>
+                <p class="h6 text-white-50 mb-3">{{ passport.headline }}</p>
+                <div class="d-flex flex-wrap gap-3 text-white-50 small">
+                    {% if student.department %}<span><i class="bi bi-mortarboard me-1"></i>{{ student.department }}</span>{% endif %}
+                    {% if student.college %}<span><i class="bi bi-building me-1"></i>{{ student.college }}</span>{% endif %}
+                    {% if student.cgpa %}<span><i class="bi bi-star-fill text-warning me-1"></i>CGPA: {{ student.cgpa }}/10</span>{% endif %}
+                    {% if student.graduation_year %}<span><i class="bi bi-calendar3 me-1"></i>Class of {{ student.graduation_year }}</span>{% endif %}
+                </div>
+            </div>
+
+            <!-- Evidence Score Badge -->
+            <div class="col-lg-4 text-center mt-4 mt-lg-0">
+                <div class="d-inline-flex flex-column align-items-center justify-content-center p-4 rounded-circle bg-white text-dark shadow-lg" style="width: 170px; height: 170px; border: 8px solid rgba(190, 242, 100, 0.5);">
+                    <span class="text-muted small text-uppercase fw-bold" style="font-size: 0.72rem;">Evidence Index</span>
+                    <strong class="display-5 fw-bold text-primary my-0">{{ passport.overall_evidence_score }}%</strong>
+                    <span class="badge text-bg-success rounded-pill fw-bold" style="font-size: 0.7rem;">ROLE READY</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Demonstrated Capabilities Grid (Slide 8 & 10) -->
+    <div class="card border-0 shadow-sm p-4 rounded-4 mb-4">
+        <div class="d-flex align-items-center justify-content-between mb-3 pb-2 border-bottom">
+            <h2 class="h5 fw-bold mb-0 text-dark">
+                <i class="bi bi-shield-fill-check text-success me-2"></i>Demonstrated Skills Matrix
+            </h2>
+            <span class="badge bg-success-subtle text-success border border-success-subtle rounded-pill px-3 py-2">
+                {{ demonstrated_skills|length }} Verified Capabilities
+            </span>
+        </div>
+        <p class="text-muted small mb-4">
+            Unlike keyword resume claims, every capability below has been validated through concrete simulation deliverables, active GitHub code repositories, or peer-reviewed coursework:
+        </p>
+        <div class="d-flex flex-wrap gap-2">
+            {% for sk in demonstrated_skills %}
+                <span class="badge bg-success bg-opacity-10 text-success border border-success-subtle px-3 py-2 rounded-pill fs-6 fw-semibold">
+                    <i class="bi bi-check2-circle me-1"></i>{{ sk }}
+                </span>
+            {% empty %}
+                <span class="text-muted small">Synchronizing verified skills.</span>
+            {% endfor %}
+        </div>
+    </div>
+
+    <!-- Verified Artifacts Showcase -->
+    <div class="card border-0 shadow-sm p-4 rounded-4 mb-4">
+        <h2 class="h5 fw-bold mb-3 text-dark">
+            <i class="bi bi-folder-check text-primary me-2"></i>Evidence Artifacts & Deliverables
+        </h2>
+        <div class="vstack gap-3">
+            {% for art in artifacts %}
+            <div class="p-4 rounded-4 bg-light border">
+                <div class="d-flex flex-wrap justify-content-between align-items-start gap-2 mb-2">
+                    <div>
+                        <span class="badge {% if art.artifact_type == 'SIMULATION' %}text-bg-success{% elif art.artifact_type == 'PROJECT' %}text-bg-primary{% elif art.artifact_type == 'PEER_REVIEW' %}text-bg-warning text-dark{% else %}text-bg-secondary{% endif %} rounded-pill small me-1">
+                            {{ art.get_artifact_type_display }}
+                        </span>
+                        <strong class="h6 fw-bold text-dark">{{ art.title }}</strong>
+                    </div>
+                    {% if art.score_or_grade %}
+                        <span class="badge bg-white text-dark border rounded-pill px-3 py-2 fw-semibold">
+                            <i class="bi bi-award text-warning me-1"></i>{{ art.score_or_grade }}
+                        </span>
+                    {% endif %}
+                </div>
+                <p class="text-muted small mb-3">{{ art.description }}</p>
+                <div class="d-flex flex-wrap justify-content-between align-items-center gap-2 pt-2 border-top">
+                    <span class="text-muted small" style="font-size: 0.75rem;">Verified Source: <strong class="text-dark">{{ art.source_reference }}</strong></span>
+                    {% if art.external_url %}
+                        <a href="{{ art.external_url }}" target="_blank" class="btn btn-sm btn-outline-primary rounded-pill">
+                            Inspect Live Artifact <i class="bi bi-box-arrow-up-right ms-1"></i>
+                        </a>
+                    {% endif %}
+                </div>
+            </div>
+            {% empty %}
+            <p class="text-muted small mb-0">No public artifacts visible under current student sharing preferences.</p>
+            {% endfor %}
+        </div>
+    </div>
+
+    <!-- Recruiter Direct Action Footer -->
+    <div class="card border-0 shadow-sm p-4 p-md-5 rounded-4 text-center bg-white border">
+        <h3 class="h5 fw-bold text-dark mb-2">Impressed by this candidate's verified proof?</h3>
+        <p class="text-muted small mb-4" style="max-width: 580px; margin: 0 auto;">
+            Skip the generic phone screen. You already have proof of their practical execution, problem solving rigor, and peer endorsements.
+        </p>
+        <div class="d-flex justify-content-center gap-3">
+            <a href="mailto:{{ student.user.email }}?subject=Interview%20Invitation%20via%20CampusLink%20Proof%20Passport" class="btn btn-primary px-4 py-2 rounded-pill fw-semibold shadow-sm">
+                <i class="bi bi-calendar2-check me-2"></i>Schedule Interview
+            </a>
+            <a href="{% url 'home' %}" class="btn btn-outline-secondary px-4 py-2 rounded-pill fw-semibold">
+                Learn About CampusLink
+            </a>
+        </div>
+    </div>
+</div>
+{% endblock %}

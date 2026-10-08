@@ -1,0 +1,237 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %}{{ session.target_role_title }} | Opportunity Compiler{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <!-- Back & Actions Header -->
+    <div class="d-flex flex-wrap justify-content-between align-items-center gap-3 mb-4">
+        <a href="{% url 'opportunity_compiler_home' %}" class="btn btn-outline-secondary rounded-pill btn-sm">
+            <i class="bi bi-arrow-left me-1"></i> All Compiled Paths
+        </a>
+        <div class="d-flex gap-2">
+            <a href="{% url 'opportunity_proof_brief' session.proof_brief_token %}" target="_blank" class="btn btn-success rounded-pill btn-sm fw-semibold shadow-sm">
+                <i class="bi bi-share-fill me-1"></i> Share Proof Brief
+            </a>
+            <a href="{% url 'proof_passport_dashboard' %}" class="btn btn-outline-primary rounded-pill btn-sm fw-semibold">
+                <i class="bi bi-patch-check-fill me-1"></i> Proof Passport
+            </a>
+        </div>
+    </div>
+
+    <!-- Opportunity Header Card -->
+    <div class="p-4 p-md-5 mb-5 rounded-4 text-white shadow-lg position-relative overflow-hidden"
+         style="background: linear-gradient(135deg, #1e3a8a 0%, #0284c7 100%);">
+        <div class="row align-items-center">
+            <div class="col-lg-8">
+                <div class="d-inline-flex align-items-center gap-2 px-3 py-1 rounded-pill bg-white bg-opacity-20 text-lime fw-bold small mb-3 border border-white border-opacity-25" style="color: #bef264;">
+                    <i class="bi bi-cpu"></i> COMPILED OPPORTUNITY PATH
+                </div>
+                <h1 class="h2 fw-bold mb-1">{{ session.target_role_title }}</h1>
+                <p class="text-white-50 mb-3">{{ session.target_company|default:'Target Employer' }} · {{ session.get_schedule_type_display }} ({{ session.available_hours_per_week }} hrs/wk)</p>
+                <div class="d-flex flex-wrap gap-2">
+                    <span class="badge bg-white bg-opacity-20 rounded-pill px-3 py-2 small">
+                        <i class="bi bi-list-check me-1"></i> {{ plain_skills|length }} Plain Skills
+                    </span>
+                    <span class="badge bg-white bg-opacity-20 rounded-pill px-3 py-2 small">
+                        <i class="bi bi-calendar3 me-1"></i> {{ sprint_plan|length }} Sprint Milestones
+                    </span>
+                    <span class="badge bg-white bg-opacity-20 rounded-pill px-3 py-2 small">
+                        <i class="bi bi-check2-circle me-1"></i> Evidence Verified
+                    </span>
+                </div>
+            </div>
+            <!-- Readiness Meter -->
+            <div class="col-lg-4 text-center mt-4 mt-lg-0">
+                <div class="d-inline-flex flex-column align-items-center justify-content-center p-4 rounded-circle bg-white text-dark shadow-lg" style="width: 170px; height: 170px; border: 8px solid rgba(190, 242, 100, 0.5);">
+                    <span class="text-muted small text-uppercase fw-bold" style="font-size: 0.72rem;">Evidence Match</span>
+                    <strong class="display-5 fw-bold text-primary my-0">{{ session.readiness_percentage }}%</strong>
+                    <span class="badge text-bg-success rounded-pill fw-bold" style="font-size: 0.7rem;">ROLE PATH READY</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- The 4 Core PPT Pillars (Slide 7) -->
+
+    <!-- Pillar 1: Requirements -> Plain-Language Skills -->
+    <div class="card border-0 shadow-sm p-4 rounded-4 mb-4">
+        <div class="d-flex align-items-center justify-content-between mb-3 pb-2 border-bottom">
+            <div class="d-flex align-items-center gap-2">
+                <span class="p-2 rounded-3 bg-primary text-white"><i class="bi bi-translate"></i></span>
+                <div>
+                    <h2 class="h5 fw-bold mb-0 text-dark">1. Requirements → Plain-Language Skills</h2>
+                    <span class="small text-muted">Deconstructed technical jargon translated into actionable capabilities</span>
+                </div>
+            </div>
+            <span class="badge bg-primary-subtle text-primary border border-primary-subtle px-3 py-2 rounded-pill fw-bold">Step 01</span>
+        </div>
+
+        <div class="row g-3">
+            {% for sk in plain_skills %}
+            <div class="col-md-6 col-lg-4">
+                <div class="p-3 rounded-4 bg-light border h-100">
+                    <div class="d-flex justify-content-between align-items-start mb-2">
+                        <strong class="text-dark d-block">{{ sk.title }}</strong>
+                        <span class="badge bg-primary-subtle text-primary rounded-pill small" style="font-size: 0.7rem;">{{ sk.importance }}</span>
+                    </div>
+                    <p class="small text-muted mb-0">{{ sk.explanation }}</p>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+
+    <!-- Pillar 2: Skills -> Evidence or Practice -->
+    <div class="card border-0 shadow-sm p-4 rounded-4 mb-4">
+        <div class="d-flex align-items-center justify-content-between mb-3 pb-2 border-bottom">
+            <div class="d-flex align-items-center gap-2">
+                <span class="p-2 rounded-3 bg-success text-white"><i class="bi bi-check2-all"></i></span>
+                <div>
+                    <h2 class="h5 fw-bold mb-0 text-dark">2. Skills → Evidence or Practice</h2>
+                    <span class="small text-muted">Cross-referenced against your verified Proof Passport artifacts</span>
+                </div>
+            </div>
+            <span class="badge bg-success-subtle text-success border border-success-subtle px-3 py-2 rounded-pill fw-bold">Step 02</span>
+        </div>
+
+        <div class="table-responsive">
+            <table class="table table-hover align-middle mb-0">
+                <thead class="table-light small">
+                    <tr>
+                        <th>Required Skill</th>
+                        <th>Evidence Status</th>
+                        <th>Proof Source</th>
+                        <th>Confidence</th>
+                        <th>Recommended Next Step</th>
+                    </tr>
+                </thead>
+                <tbody class="small">
+                    {% for ev in evidence_mapping %}
+                    <tr>
+                        <td class="fw-bold text-dark">{{ ev.skill }}</td>
+                        <td>
+                            {% if ev.status == 'EVIDENCED' %}
+                                <span class="badge text-bg-success px-3 py-2 rounded-pill">
+                                    <i class="bi bi-check-circle-fill me-1"></i> EVIDENCED
+                                </span>
+                            {% else %}
+                                <span class="badge text-bg-warning px-3 py-2 rounded-pill text-dark">
+                                    <i class="bi bi-exclamation-circle-fill me-1"></i> PRACTICE NEEDED
+                                </span>
+                            {% endif %}
+                        </td>
+                        <td class="text-muted">{{ ev.source }}</td>
+                        <td>
+                            <span class="badge {% if ev.confidence == 'Demonstrated' %}bg-success-subtle text-success border border-success-subtle{% else %}bg-secondary-subtle text-secondary border border-secondary-subtle{% endif %} rounded-pill">
+                                {{ ev.confidence }}
+                            </span>
+                        </td>
+                        <td class="text-muted">{{ ev.recommendation }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- Pillar 3: Sprint Around Student's Schedule -->
+    <div class="card border-0 shadow-sm p-4 rounded-4 mb-4">
+        <div class="d-flex align-items-center justify-content-between mb-3 pb-2 border-bottom">
+            <div class="d-flex align-items-center gap-2">
+                <span class="p-2 rounded-3 bg-warning text-dark"><i class="bi bi-calendar-check-fill"></i></span>
+                <div>
+                    <h2 class="h5 fw-bold mb-0 text-dark">3. Sprint Around Your Schedule</h2>
+                    <span class="small text-muted">Customized milestone plan for {{ session.get_schedule_type_display }} ({{ session.available_hours_per_week }} hrs/week)</span>
+                </div>
+            </div>
+            <span class="badge bg-warning-subtle text-dark border border-warning-subtle px-3 py-2 rounded-pill fw-bold">Step 03</span>
+        </div>
+
+        <div class="sprint-milestones-list">
+            {% for m in sprint_plan %}
+            <div class="p-3 rounded-4 mb-3 border d-flex align-items-start gap-3 {% if m.done %}bg-success-subtle border-success-subtle{% else %}bg-light border-light-subtle{% endif %}" id="milestone-box-{{ forloop.counter0 }}">
+                <div class="form-check pt-1">
+                    <input class="form-check-input fs-5" type="checkbox" id="task-chk-{{ forloop.counter0 }}" {% if m.done %}checked{% endif %} onchange="toggleMilestone({{ session.id }}, {{ forloop.counter0 }})">
+                </div>
+                <div class="flex-grow-1">
+                    <div class="d-flex flex-wrap justify-content-between align-items-center gap-2 mb-1">
+                        <strong class="text-dark">{{ m.milestone }}</strong>
+                        <span class="badge bg-white text-muted border rounded-pill small" id="status-badge-{{ forloop.counter0 }}">
+                            {% if m.done %}Completed ✓{% else %}In Progress{% endif %}
+                        </span>
+                    </div>
+                    <p class="text-muted small mb-1">{{ m.focus }}</p>
+                    <div class="small fw-semibold text-primary">
+                        <i class="bi bi-arrow-right-short"></i> Task: {{ m.task }}
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+
+        <!-- Simulator Quick Jump -->
+        <div class="p-3 bg-primary bg-opacity-10 border border-primary-subtle rounded-3 d-flex flex-wrap justify-content-between align-items-center gap-3 mt-2">
+            <div class="d-flex align-items-center gap-2">
+                <i class="bi bi-airplane-engines text-primary fs-4"></i>
+                <div>
+                    <strong class="text-dark small d-block">Recommended Sprint Mission</strong>
+                    <span class="text-muted small">Complete the simulation challenge to check off your Sprint Day milestone.</span>
+                </div>
+            </div>
+            <a href="{% url 'simulator_catalog' %}" class="btn btn-primary btn-sm rounded-pill px-3 fw-semibold">
+                Open Career Flight Simulator <i class="bi bi-arrow-right"></i>
+            </a>
+        </div>
+    </div>
+
+    <!-- Pillar 4: Share Proof -->
+    <div class="card border-0 shadow-sm p-4 p-md-5 rounded-4 text-white" style="background: linear-gradient(135deg, #0f172a 0%, #1e3a8a 100%);">
+        <div class="row align-items-center">
+            <div class="col-lg-8">
+                <span class="badge text-bg-lime text-dark rounded-pill px-3 py-1 fw-bold text-uppercase mb-2" style="background: #bef264;">
+                    Step 04 · Share Proof
+                </span>
+                <h2 class="h3 fw-bold mb-2">Export Role-Targeted Proof Brief</h2>
+                <p class="text-white-50 mb-0 small">
+                    Give recruiters tangible proof of your fit before the first interview. Share this verifiable proof brief in your application message, cold email, or portfolio.
+                </p>
+            </div>
+            <div class="col-lg-4 text-lg-end mt-4 mt-lg-0">
+                <a href="{% url 'opportunity_proof_brief' session.proof_brief_token %}" target="_blank" class="btn btn-lime text-dark px-4 py-3 rounded-pill fw-bold shadow-sm" style="background: #bef264;">
+                    <i class="bi bi-box-arrow-up-right me-1"></i> View & Copy Proof Brief
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+function toggleMilestone(sessionId, taskIndex) {
+    fetch(`/compiler/session/${sessionId}/task/${taskIndex}/toggle/`, {
+        method: 'POST',
+        headers: {
+            'X-CSRFToken': '{{ csrf_token }}',
+            'Content-Type': 'application/json'
+        }
+    })
+    .then(r => r.json())
+    .then(data => {
+        if (data.success) {
+            const box = document.getElementById(`milestone-box-${taskIndex}`);
+            const badge = document.getElementById(`status-badge-${taskIndex}`);
+            if (data.done) {
+                box.classList.remove('bg-light', 'border-light-subtle');
+                box.classList.add('bg-success-subtle', 'border-success-subtle');
+                badge.textContent = 'Completed ✓';
+            } else {
+                box.classList.remove('bg-success-subtle', 'border-success-subtle');
+                box.classList.add('bg-light', 'border-light-subtle');
+                badge.textContent = 'In Progress';
+            }
+        }
+    })
+    .catch(err => console.error(err));
+}
+</script>
+{% endblock %}

@@ -1,0 +1,135 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %}{{ challenge.title }} | Flight Simulator{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <!-- Breadcrumb & Back -->
+    <div class="d-flex align-items-center justify-content-between mb-4">
+        <a href="{% url 'simulator_catalog' %}" class="btn btn-outline-secondary rounded-pill btn-sm">
+            <i class="bi bi-arrow-left me-1"></i> Back to Simulator Missions
+        </a>
+        <span class="badge bg-primary-subtle text-primary border border-primary-subtle px-3 py-2 rounded-pill fw-bold">
+            <i class="bi bi-award-fill me-1"></i> Badge: {{ challenge.badge_name }}
+        </span>
+    </div>
+
+    <!-- Main Challenge Layout -->
+    <div class="row g-4">
+        <!-- Left: Briefing & Context -->
+        <div class="col-lg-7">
+            <!-- Mission Header Card -->
+            <div class="card border-0 shadow-sm p-4 rounded-4 mb-4" style="background: linear-gradient(135deg, #1e3a8a 0%, #1e40af 100%); color: #fff;">
+                <div class="d-flex flex-wrap gap-2 mb-2">
+                    <span class="badge bg-white bg-opacity-25 text-white rounded-pill px-3 py-1 fw-semibold">
+                        {{ challenge.get_difficulty_display }}
+                    </span>
+                    <span class="badge bg-white bg-opacity-25 text-white rounded-pill px-3 py-1 fw-semibold">
+                        <i class="bi bi-clock me-1"></i>~{{ challenge.estimated_minutes }} mins
+                    </span>
+                </div>
+                <h1 class="h3 fw-bold mb-2 text-white">{{ challenge.title }}</h1>
+                <p class="mb-0 text-white-50 small">Target Role: <strong class="text-white">{{ challenge.target_role }}</strong></p>
+            </div>
+
+            <!-- Scenario & Workplace Context -->
+            <div class="card border-0 shadow-sm p-4 rounded-4 mb-4">
+                <div class="d-flex align-items-center gap-2 mb-3">
+                    <span class="p-2 rounded-3 bg-primary-subtle text-primary"><i class="bi bi-briefcase-fill"></i></span>
+                    <h2 class="h5 fw-bold mb-0 text-dark">Workplace Scenario</h2>
+                </div>
+                <div class="text-muted leading-relaxed mb-4">
+                    {{ challenge.scenario_brief|linebreaks }}
+                </div>
+
+                <div class="d-flex align-items-center gap-2 mb-3 pt-3 border-top">
+                    <span class="p-2 rounded-3 bg-warning-subtle text-warning"><i class="bi bi-exclamation-triangle-fill"></i></span>
+                    <h2 class="h5 fw-bold mb-0 text-dark">The Problem Statement</h2>
+                </div>
+                <div class="text-dark bg-light p-3 rounded-3 mb-4 font-monospace small">
+                    {{ challenge.problem_statement|linebreaks }}
+                </div>
+
+                {% if challenge.dataset_or_context %}
+                <div class="d-flex align-items-center gap-2 mb-3 pt-3 border-top">
+                    <span class="p-2 rounded-3 bg-info-subtle text-info"><i class="bi bi-database-fill"></i></span>
+                    <h2 class="h5 fw-bold mb-0 text-dark">Telemetry & Context Data</h2>
+                </div>
+                <pre class="bg-dark text-light p-3 rounded-4 small overflow-auto" style="max-height: 260px;"><code>{{ challenge.dataset_or_context }}</code></pre>
+                {% endif %}
+
+                <div class="d-flex align-items-center gap-2 mb-2 pt-3 border-top">
+                    <span class="p-2 rounded-3 bg-success-subtle text-success"><i class="bi bi-check2-circle"></i></span>
+                    <h2 class="h5 fw-bold mb-0 text-dark">Required Deliverables</h2>
+                </div>
+                <div class="text-muted small">
+                    {{ challenge.deliverables_required|linebreaks }}
+                </div>
+            </div>
+        </div>
+
+        <!-- Right: Interactive Submission Workspace -->
+        <div class="col-lg-5">
+            <div class="sticky-top" style="top: 90px;">
+                <div class="card border-0 shadow-sm p-4 rounded-4 mb-4">
+                    <div class="d-flex align-items-center justify-content-between mb-3">
+                        <h2 class="h5 fw-bold mb-0 text-dark">Simulator Workspace</h2>
+                        <span class="badge text-bg-primary rounded-pill px-3 py-1">Interactive</span>
+                    </div>
+                    <p class="small text-muted mb-4">
+                        Submit your practical analysis, code pattern, or executive recommendations. AI will evaluate the work itself.
+                    </p>
+
+                    <form method="post" action="{% url 'simulator_submit' challenge.slug %}">
+                        {% csrf_token %}
+                        <div class="mb-3">
+                            <label class="form-label fw-semibold small text-dark" for="id_solution">
+                                1. Solution & Practical Execution <span class="text-danger">*</span>
+                            </label>
+                            <textarea id="id_solution" name="solution_text" class="form-control rounded-3 font-monospace small" rows="9" placeholder="Enter your structured analysis, diagnosis, code implementation, or architectural trade-offs here..." required>{% if previous_submission %}{{ previous_submission.solution_text }}{% endif %}</textarea>
+                            <div class="form-text small">Address all problem requirements and show your practical reasoning.</div>
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label fw-semibold small text-dark" for="id_recommendations">
+                                2. Actionable Recommendations & Interventions
+                            </label>
+                            <textarea id="id_recommendations" name="recommendations" class="form-control rounded-3 small" rows="4" placeholder="Detail 3 concrete, phased operational or technical recommendations with measurable KPIs...">{% if previous_submission %}{{ previous_submission.recommendations }}{% endif %}</textarea>
+                        </div>
+
+                        <div class="mb-4">
+                            <label class="form-label fw-semibold small text-dark" for="id_artifact_url">
+                                3. External Proof Artifact (Optional Link)
+                            </label>
+                            <div class="input-group input-group-sm">
+                                <span class="input-group-text"><i class="bi bi-link-45deg"></i></span>
+                                <input id="id_artifact_url" type="url" name="artifact_url" class="form-control" placeholder="https://github.com/... or https://colab.research.google.com/..." value="{% if previous_submission %}{{ previous_submission.artifact_url }}{% endif %}">
+                            </div>
+                            <div class="form-text small">GitHub repo, Google Colab notebook, live demo, or Notion architecture doc.</div>
+                        </div>
+
+                        <button type="submit" class="btn btn-primary w-100 py-3 rounded-pill fw-bold shadow-sm">
+                            <i class="bi bi-lightning-charge-fill me-1"></i> Submit Work for Evaluation
+                        </button>
+                    </form>
+                </div>
+
+                <!-- Evaluation Rubrics Card -->
+                <div class="card border-0 shadow-sm p-4 rounded-4 bg-light">
+                    <h3 class="h6 fw-bold mb-3 text-dark"><i class="bi bi-clipboard2-data me-2"></i>Evaluator Rubric</h3>
+                    <ul class="list-unstyled mb-0 small">
+                        {% for r in challenge.rubric_criteria %}
+                            <li class="d-flex justify-content-between py-1 border-bottom border-light-subtle">
+                                <span>{{ r.name }}</span>
+                                <strong class="text-primary">{{ r.weight }}%</strong>
+                            </li>
+                        {% empty %}
+                            <li class="text-muted">Standard 4-dimensional evaluation rubric.</li>
+                        {% endfor %}
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -14,13 +14,14 @@
         <div class="container">
             <div class="row align-items-center">
                 <div class="col-lg-6 position-relative z-1" data-aos="fade-right">
-                    <span class="premium-hero-badge" data-aos="fade-up" data-aos-delay="100"><i class="bi bi-stars me-2"></i> AI-POWERED CAREER PLATFORM</span>
-                    <h1 class="premium-hero-title" data-aos="fade-up" data-aos-delay="200">From Campus Talent to<br><span class="text-blue">Corporate Opportunity</span></h1>
-                    <p class="premium-hero-desc">Discover job openings, internships, AI career guidance, and the right opportunities to grow from campus to career.</p>
+                    <span class="premium-hero-badge" data-aos="fade-up" data-aos-delay="100"><i class="bi bi-stars me-2"></i> CAMPUSLINK · FROM LEARNING SIGNALS TO ROLE-READY PROOF</span>
+                    <h1 class="premium-hero-title" data-aos="fade-up" data-aos-delay="200">From Campus Talent to<br><span class="text-blue">Role-Ready Proof</span></h1>
+                    <p class="premium-hero-desc">Smart job discovery and verified capability signals. What if students could prove fit before applying? CampusLink turns career readiness into visible evidence—not another résumé pile.</p>
                     
-                    <div class="premium-hero-actions">
-                        <a href="{% url 'job_list' %}" class="btn-premium-primary">Explore Opportunities <i class="bi bi-arrow-right ms-2"></i></a>
-                        <a href="{% url 'career_match' %}" class="btn-premium-secondary">Get AI Career Guidance</a>
+                    <div class="premium-hero-actions d-flex flex-wrap gap-2">
+                        <a href="{% url 'simulator_catalog' %}" class="btn-premium-primary"><i class="bi bi-airplane-engines me-2"></i>Flight Simulator</a>
+                        <a href="{% url 'opportunity_compiler_home' %}" class="btn-premium-secondary"><i class="bi bi-cpu me-2"></i>Opportunity Compiler</a>
+                        <a href="{% url 'proof_passport_dashboard' %}" class="btn btn-outline-primary rounded-pill px-4 py-3 fw-bold"><i class="bi bi-patch-check me-2"></i>Proof Passport</a>
                     </div>
                     
                     <div class="premium-hero-features mt-4">
@@ -105,6 +106,283 @@
                         
                         <div class="decorative-text dt-1">Your Career Starts Here</div>
                         <div class="decorative-text dt-2">Dream Learn Achieve</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- THE GAP & THE OLD SIGNAL (Slides 2, 3, 4 from PPT) -->
+    <section class="py-5" style="background: #0f172a; color: #fff;">
+        <div class="container py-4">
+            <div class="row align-items-center g-5">
+                <div class="col-lg-6" data-aos="fade-right">
+                    <span class="badge text-bg-warning text-dark px-3 py-1 rounded-pill fw-bold text-uppercase mb-3" style="background: #bef264 !important;">
+                        THE GAP
+                    </span>
+                    <h2 class="display-5 fw-bold mb-3 tracking-tight text-white">Talent is invisible before the first job.</h2>
+                    <p class="lead opacity-80 mb-4" style="color: #cbd5e1;">
+                        Students struggle to prove practical ability. Recruiters sift through noisy, hard-to-compare profiles. More applications don't create better matches.
+                    </p>
+                    <div class="p-3 rounded-4 bg-white bg-opacity-10 border border-white border-opacity-10 mb-3">
+                        <div class="d-flex align-items-center gap-2 mb-1">
+                            <span class="badge bg-danger text-white rounded-pill">≠ THE OLD SIGNAL</span>
+                            <strong class="text-white">More volume does not mean more fit.</strong>
+                        </div>
+                        <p class="small mb-0" style="color: #94a3b8;">
+                            Keyword-heavy resumes hide transferable skills. One-shot placement drives reward timing over readiness. The signal is buried before the conversation starts.
+                        </p>
+                    </div>
+                </div>
+                <div class="col-lg-6" data-aos="fade-left">
+                    <div class="p-4 p-md-5 rounded-4 border border-white border-opacity-10 shadow-lg" style="background: linear-gradient(135deg, #1e3a8a 0%, #172554 100%);">
+                        <span class="text-uppercase fw-bold small text-lime d-block mb-2" style="color: #bef264;">THE CAMPUSLINK PROMISE</span>
+                        <h3 class="h2 fw-bold text-white mb-3">What if students could prove fit before applying?</h3>
+                        <p class="mb-4" style="color: #e2e8f0;">
+                            CampusLink turns career readiness into visible evidence—not another résumé pile. One loop connects learning to hiring, making each next decision clearer.
+                        </p>
+                        <div class="d-flex flex-wrap gap-2">
+                            <a href="{% url 'simulator_catalog' %}" class="btn btn-lime text-dark fw-bold rounded-pill px-4 py-2" style="background: #bef264;">
+                                Try Flight Simulator <i class="bi bi-arrow-right ms-1"></i>
+                            </a>
+                            <a href="{% url 'proof_passport_dashboard' %}" class="btn btn-outline-light rounded-pill px-4 py-2 fw-semibold">
+                                View Proof Passport
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- THE CAMPUSLINK LOOP (Slide 5 from PPT) -->
+    <section class="py-5" style="background: #f8fafc;">
+        <div class="container py-4">
+            <div class="text-center mb-5" data-aos="fade-up">
+                <span class="badge text-bg-primary px-3 py-1 rounded-pill fw-bold text-uppercase mb-2">THE CAMPUSLINK LOOP</span>
+                <h2 class="display-6 fw-bold text-dark">One Loop Connects Learning to Hiring</h2>
+                <p class="text-muted small" style="max-width: 600px; margin: 0 auto;">Each pass makes the next decision clearer. From classroom coursework to verified employer offers.</p>
+            </div>
+
+            <div class="row g-4">
+                <div class="col-md-4" data-aos="fade-up" data-aos-delay="100">
+                    <div class="card h-100 border-0 shadow-sm p-4 rounded-4 bg-white text-center position-relative">
+                        <div class="badge rounded-circle bg-primary-subtle text-primary p-3 mb-3 mx-auto fs-4" style="width: 60px; height: 60px;">1</div>
+                        <h3 class="h5 fw-bold text-dark mb-2">Map Skills</h3>
+                        <p class="small text-muted mb-0">Extract and map demonstrated skills directly from coursework, academic capstones, and past repositories.</p>
+                    </div>
+                </div>
+                <div class="col-md-4" data-aos="fade-up" data-aos-delay="200">
+                    <div class="card h-100 border-0 shadow-sm p-4 rounded-4 bg-white text-center position-relative">
+                        <div class="badge rounded-circle bg-success-subtle text-success p-3 mb-3 mx-auto fs-4" style="width: 60px; height: 60px;">2</div>
+                        <h3 class="h5 fw-bold text-dark mb-2">Try Work Simulations</h3>
+                        <p class="small text-muted mb-0">Execute short, realistic workplace challenges in the Career Flight Simulator to prove hands-on problem solving.</p>
+                    </div>
+                </div>
+                <div class="col-md-4" data-aos="fade-up" data-aos-delay="300">
+                    <div class="card h-100 border-0 shadow-sm p-4 rounded-4 bg-white text-center position-relative">
+                        <div class="badge rounded-circle bg-warning-subtle text-warning p-3 mb-3 mx-auto fs-4" style="width: 60px; height: 60px;">3</div>
+                        <h3 class="h5 fw-bold text-dark mb-2">Explainable Matches</h3>
+                        <p class="small text-muted mb-0">Carry tangible evidence into explainable matches. AI separates demonstrated strengths from inferred claims.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- THE 3 CORE PRODUCTS SHOWCASE (Slides 6, 7, 8, 10 from PPT) -->
+    <section class="py-5" style="background: #ffffff;">
+        <div class="container py-4">
+            <div class="text-center mb-5" data-aos="fade-up">
+                <span class="badge text-bg-primary px-3 py-1 rounded-pill fw-bold text-uppercase mb-2">CORE PRODUCTS</span>
+                <h2 class="display-6 fw-bold text-dark">The 3 Pillars of CampusLink</h2>
+                <p class="text-muted small">Everything required to turn hidden potential into verified employer proof.</p>
+            </div>
+
+            <!-- PRODUCT 01: Career Flight Simulator (Slide 6) -->
+            <div class="card border-0 shadow-sm p-4 p-md-5 rounded-4 mb-4 overflow-hidden position-relative" style="background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%);">
+                <div class="row align-items-center g-4">
+                    <div class="col-lg-7">
+                        <div class="d-inline-flex align-items-center gap-2 px-3 py-1 rounded-pill bg-primary text-white fw-bold small mb-3">
+                            PRODUCT 01 · CAREER FLIGHT SIMULATOR
+                        </div>
+                        <h3 class="h2 fw-bold text-dark mb-3">The Career Flight Simulator Makes Job Fit Tangible.</h3>
+                        <p class="text-muted mb-4">
+                            Turn a target role into a short, realistic challenge. Show strengths and skill gaps from the work itself, and recommend a next practice mission.
+                        </p>
+                        <div class="row g-3 mb-4">
+                            <div class="col-sm-4">
+                                <div class="p-3 bg-white rounded-3 shadow-xs">
+                                    <strong class="d-block text-primary small">Realistic Challenge</strong>
+                                    <span class="small text-muted">Genuine datasets & constraints</span>
+                                </div>
+                            </div>
+                            <div class="col-sm-4">
+                                <div class="p-3 bg-white rounded-3 shadow-xs">
+                                    <strong class="d-block text-success small">Evaluate Work</strong>
+                                    <span class="small text-muted">Strengths from actual code</span>
+                                </div>
+                            </div>
+                            <div class="col-sm-4">
+                                <div class="p-3 bg-white rounded-3 shadow-xs">
+                                    <strong class="d-block text-warning small">Next Mission</strong>
+                                    <span class="small text-muted">Adaptive practice path</span>
+                                </div>
+                            </div>
+                        </div>
+                        <a href="{% url 'simulator_catalog' %}" class="btn btn-primary px-4 py-2 rounded-pill fw-semibold shadow-sm">
+                            <i class="bi bi-airplane-engines me-2"></i>Explore Flight Simulations
+                        </a>
+                    </div>
+                    <div class="col-lg-5 text-center">
+                        <div class="p-4 bg-white rounded-4 shadow-sm text-start border">
+                            <div class="d-flex justify-content-between align-items-center mb-2">
+                                <span class="badge text-bg-success rounded-pill">Data Analyst Simulation</span>
+                                <strong class="text-primary small">92/100 Fit</strong>
+                            </div>
+                            <h4 class="h6 fw-bold mb-2">Customer Retention & Churn Storytelling</h4>
+                            <p class="small text-muted mb-3">Analyzed Q3 cohort drop-offs and provided executive retention recommendations.</p>
+                            <div class="d-flex flex-wrap gap-1">
+                                <span class="badge bg-light text-dark border small">Data Storytelling</span>
+                                <span class="badge bg-light text-dark border small">SQL Analysis</span>
+                                <span class="badge bg-light text-dark border small">Churn Cohorts</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- PRODUCT 02: The Opportunity Compiler (Slide 7) -->
+            <div class="card border-0 shadow-sm p-4 p-md-5 rounded-4 mb-4 overflow-hidden position-relative" style="background: linear-gradient(135deg, #f0fdf4 0%, #dcfce7 100%);">
+                <div class="row align-items-center g-4">
+                    <div class="col-lg-7">
+                        <div class="d-inline-flex align-items-center gap-2 px-3 py-1 rounded-pill bg-success text-white fw-bold small mb-3">
+                            PRODUCT 02 · THE OPPORTUNITY COMPILER
+                        </div>
+                        <h3 class="h2 fw-bold text-dark mb-3">The Opportunity Compiler Turns Job Posts into a Path.</h3>
+                        <p class="text-muted mb-4">
+                            Requirements → plain-language skills. Skills → evidence or practice. Sprint around the student's schedule, and export shareable proof.
+                        </p>
+                        <div class="row g-2 mb-4">
+                            <div class="col-sm-6">
+                                <div class="p-2 px-3 bg-white rounded-pill shadow-xs small text-muted">
+                                    <i class="bi bi-arrow-right-circle-fill text-success me-1"></i> Requirements → Plain-language skills
+                                </div>
+                            </div>
+                            <div class="col-sm-6">
+                                <div class="p-2 px-3 bg-white rounded-pill shadow-xs small text-muted">
+                                    <i class="bi bi-arrow-right-circle-fill text-success me-1"></i> Skills → Evidence or practice
+                                </div>
+                            </div>
+                            <div class="col-sm-6">
+                                <div class="p-2 px-3 bg-white rounded-pill shadow-xs small text-muted">
+                                    <i class="bi bi-arrow-right-circle-fill text-success me-1"></i> Sprint around student's schedule
+                                </div>
+                            </div>
+                            <div class="col-sm-6">
+                                <div class="p-2 px-3 bg-white rounded-pill shadow-xs small text-muted">
+                                    <i class="bi bi-arrow-right-circle-fill text-success me-1"></i> Share verified proof brief
+                                </div>
+                            </div>
+                        </div>
+                        <a href="{% url 'opportunity_compiler_home' %}" class="btn btn-success px-4 py-2 rounded-pill fw-semibold shadow-sm">
+                            <i class="bi bi-cpu me-2"></i>Compile Target Opportunity
+                        </a>
+                    </div>
+                    <div class="col-lg-5 text-center">
+                        <div class="p-4 bg-white rounded-4 shadow-sm text-start border">
+                            <div class="d-flex justify-content-between align-items-center mb-2">
+                                <span class="badge text-bg-primary rounded-pill">Sprint Schedule</span>
+                                <span class="small text-muted">2-Week Sprint</span>
+                            </div>
+                            <h4 class="h6 fw-bold mb-2">Backend Software Engineer</h4>
+                            <div class="progress mb-2" style="height: 8px;">
+                                <div class="progress-bar bg-success" style="width: 75%;"></div>
+                            </div>
+                            <span class="small text-muted d-block mb-3">75% Evidence Evidenced · 3 Milestones Completed</span>
+                            <div class="p-2 bg-light rounded-3 small">
+                                <i class="bi bi-check-circle-fill text-success me-1"></i> REST API & Distributed Caching Evidenced
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- PRODUCT 03: A Proof Passport (Slide 8) -->
+            <div class="card border-0 shadow-sm p-4 p-md-5 rounded-4 mb-4 overflow-hidden position-relative" style="background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);">
+                <div class="row align-items-center g-4">
+                    <div class="col-lg-7">
+                        <div class="d-inline-flex align-items-center gap-2 px-3 py-1 rounded-pill bg-dark text-white fw-bold small mb-3">
+                            PRODUCT 03 · THE PROOF PASSPORT
+                        </div>
+                        <h3 class="h2 fw-bold text-dark mb-3">A Proof Passport Carries Evidence—Not Empty Claims.</h3>
+                        <p class="text-muted mb-4">
+                            Collect project artifacts, simulation results, and peer contributions. Attach each skill to its source and confidence level. Let students choose what to share with each employer.
+                        </p>
+                        <ul class="list-unstyled mb-4 small text-muted">
+                            <li class="mb-2"><i class="bi bi-check2-circle text-primary me-2"></i><strong>Multi-Source Evidence:</strong> Project repos, simulator scores, capstone grades, and peer validations.</li>
+                            <li class="mb-2"><i class="bi bi-check2-circle text-primary me-2"></i><strong>Confidence Partitioning:</strong> Demonstrated skills separated from inferred resume claims.</li>
+                            <li class="mb-2"><i class="bi bi-check2-circle text-primary me-2"></i><strong>Recruiter Verifiable View:</strong> Tamper-evident digital passport link for hiring teams.</li>
+                        </ul>
+                        <a href="{% url 'proof_passport_dashboard' %}" class="btn btn-dark px-4 py-2 rounded-pill fw-semibold shadow-sm">
+                            <i class="bi bi-patch-check-fill me-2"></i>Inspect Proof Passport
+                        </a>
+                    </div>
+                    <div class="col-lg-5 text-center">
+                        <div class="p-4 bg-white rounded-4 shadow-sm text-start border">
+                            <div class="d-flex justify-content-between align-items-center mb-2">
+                                <span class="badge text-bg-warning text-dark rounded-pill fw-bold">Verified Candidate</span>
+                                <span class="badge bg-success-subtle text-success border border-success-subtle rounded-pill">Score: 88%</span>
+                            </div>
+                            <h4 class="h6 fw-bold mb-1">Candidate Proof Dossier</h4>
+                            <p class="small text-muted mb-3">4 Flight Simulations · 3 Repositories · 2 Peer Reviews</p>
+                            <div class="d-flex flex-wrap gap-1">
+                                <span class="badge text-bg-success small">✓ Python</span>
+                                <span class="badge text-bg-success small">✓ SQL</span>
+                                <span class="badge text-bg-success small">✓ Concurrency</span>
+                                <span class="badge text-bg-success small">✓ Cohort Metrics</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- THE TRUST LAYER (Slide 10) -->
+            <div class="card border-0 shadow-lg p-4 p-md-5 rounded-4 text-white position-relative overflow-hidden" style="background: linear-gradient(135deg, #0f172a 0%, #1e3a8a 100%);">
+                <div class="row align-items-center g-4">
+                    <div class="col-lg-8">
+                        <span class="badge text-bg-lime text-dark rounded-pill px-3 py-1 fw-bold text-uppercase mb-2" style="background: #bef264;">
+                            THE TRUST LAYER · SLIDE 10
+                        </span>
+                        <h3 class="display-6 fw-bold text-white mb-3">AI Explains the Match—and What Would Improve It</h3>
+                        <p class="lead opacity-90 mb-4" style="color: #cbd5e1;">
+                            A practical next step instead of a mysterious score.
+                        </p>
+                        <div class="row g-3">
+                            <div class="col-md-4">
+                                <div class="p-3 rounded-3 bg-white bg-opacity-10">
+                                    <strong class="d-block text-white small mb-1">Evidence Behind Role</strong>
+                                    <span class="small text-white-50">Explains exactly which projects & coursework back the job.</span>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="p-3 rounded-3 bg-white bg-opacity-10">
+                                    <strong class="d-block text-white small mb-1">Demonstrated vs Inferred</strong>
+                                    <span class="small text-white-50">Separates proven capability from unverified resume claims.</span>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="p-3 rounded-3 bg-white bg-opacity-10">
+                                    <strong class="d-block text-white small mb-1">Next Practice Mission</strong>
+                                    <span class="small text-white-50">Pins the exact simulation to close gaps and raise match fit.</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-4 text-center">
+                        <a href="{% url 'career_match' %}" class="btn btn-lime text-dark px-4 py-3 rounded-pill fw-bold shadow-lg" style="background: #bef264;">
+                            <i class="bi bi-stars me-2"></i>Launch Trust Layer Matches
+                        </a>
                     </div>
                 </div>
             </div>

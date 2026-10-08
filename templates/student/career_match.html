@@ -43,11 +43,103 @@
         {% endif %}
     </section>
 
+    <!-- The Trust Layer Banner (Slide 10 from PPT) -->
+    <div class="card border-0 shadow-sm p-4 rounded-4 mb-4" style="background: linear-gradient(135deg, #1e3a8a 0%, #1e40af 100%); color: #fff;">
+        <div class="d-flex flex-wrap justify-content-between align-items-center gap-3">
+            <div>
+                <span class="badge rounded-pill px-3 py-1 fw-bold text-dark mb-2" style="background: #bef264;">
+                    <i class="bi bi-shield-check me-1"></i> THE TRUST LAYER
+                </span>
+                <h2 class="h4 fw-bold text-white mb-1">AI Explains the Match—and What Would Improve It</h2>
+                <p class="text-white-50 mb-0 small" style="max-width: 640px;">
+                    A practical next step instead of a mysterious score. We separate demonstrated strengths (backed by verified code & work simulations) from inferred skills, and recommend the exact practice mission to boost your fit.
+                </p>
+            </div>
+            <div class="d-flex gap-2">
+                <a href="{% url 'simulator_catalog' %}" class="btn btn-lime text-dark fw-bold rounded-pill px-3 py-2 btn-sm" style="background: #bef264;">
+                    <i class="bi bi-airplane-engines me-1"></i> Flight Simulator
+                </a>
+                <a href="{% url 'proof_passport_dashboard' %}" class="btn btn-outline-light rounded-pill px-3 py-2 btn-sm">
+                    <i class="bi bi-patch-check me-1"></i> Proof Passport
+                </a>
+            </div>
+        </div>
+    </div>
+
     <form class="row g-2 mb-3" method="get"><div class="col-md-4"><input class="form-control" name="q" value="{{ query }}" placeholder="Company or role"></div><div class="col-md-3"><input class="form-control" name="location" value="{{ location }}" placeholder="Location"></div><div class="col-md-3"><input class="form-control" name="skill" value="{{ skill_filter }}" placeholder="Required skill"></div><div class="col-md-2"><input class="form-control" type="number" min="0" max="100" name="min_score" value="{{ minimum_score }}" placeholder="Min %"></div><div class="col-12"><button class="btn btn-outline-primary" type="submit"><i class="bi bi-funnel me-2"></i>Filter matches</button></div></form>
     <div class="d-flex flex-wrap gap-2 mb-4"><a class="btn {% if not status_filter %}btn-primary{% else %}btn-outline-primary{% endif %}" href="{% url 'career_match' %}">All</a><a class="btn {% if status_filter == 'ELIGIBLE' %}btn-success{% else %}btn-outline-success{% endif %}" href="?status=ELIGIBLE">Eligible</a><a class="btn {% if status_filter == 'PARTIAL MATCH' %}btn-warning{% else %}btn-outline-warning{% endif %}" href="?status=PARTIAL%20MATCH">Partial match</a><a class="btn {% if status_filter == 'NOT CURRENTLY ELIGIBLE' %}btn-danger{% else %}btn-outline-danger{% endif %}" href="?status=NOT%20CURRENTLY%20ELIGIBLE">Not eligible</a></div>
 
-    <section class="mb-4"><div class="section-heading mb-3"><div><span class="eyebrow">Recommended companies</span><h2>Roles worth targeting</h2></div></div><div class="row g-4">
-        {% for match in matches %}{% if match.status != 'NOT CURRENTLY ELIGIBLE' %}<div class="col-lg-6"><article class="panel-card h-100"><div class="d-flex justify-content-between gap-3"><div><span class="text-muted small">{{ match.job.company.name }}</span><h3 class="h5 fw-bold mb-1">{{ match.job.title }}</h3><span class="text-muted small">{{ match.job.location }}</span></div><strong class="text-primary fs-4">{{ match.score }}%</strong></div><hr><div class="small"><strong>Matched skills</strong><div class="d-flex flex-wrap gap-1 mt-2">{% for skill in match.matched_skills %}<span class="badge text-bg-success">✓ {{ skill|title }}</span>{% empty %}<span class="text-muted">No required skills matched yet.</span>{% endfor %}</div><strong class="d-block mt-3">Missing skills</strong><div class="d-flex flex-wrap gap-1 mt-2">{% for skill in match.missing_skills %}<span class="badge text-bg-warning">{{ skill|title }}</span>{% empty %}<span class="text-success">No missing required skills.</span>{% endfor %}</div><p class="text-muted mt-3 mb-2">{{ match.recommendation }}</p><p class="mb-3"><strong>Status:</strong> <span class="badge {% if match.status == 'ELIGIBLE' %}text-bg-success{% else %}text-bg-warning{% endif %}">{{ match.status }}</span></p><div class="text-muted mb-3">{% for label, value in match.components.items %}{{ label }}: {{ value }}{% if not forloop.last %} · {% endif %}{% endfor %}</div></div><div class="d-flex gap-2"><a href="{% url 'job_detail' match.job.id %}" class="btn btn-outline-primary">View details</a>{% if match.status == 'ELIGIBLE' %}<a href="{% url 'job_detail' match.job.id %}" class="btn btn-primary">Apply now</a>{% else %}<a href="#skill-gap" class="btn btn-outline-warning">View skill gap</a>{% endif %}</div></article></div>{% endif %}{% empty %}<div class="col-12"><div class="empty-state"><strong>No matching roles yet.</strong><span>Upload your resume or ask a recruiter to add job requirements.</span></div></div>{% endfor %}
+    <section class="mb-4"><div class="section-heading mb-3"><div><span class="eyebrow">Trust Layer Role Matches</span><h2>Roles worth targeting</h2></div></div><div class="row g-4">
+        {% for match in matches %}{% if match.status != 'NOT CURRENTLY ELIGIBLE' %}<div class="col-lg-6"><article class="panel-card h-100"><div class="d-flex justify-content-between gap-3"><div><span class="text-muted small">{{ match.job.company.name }}</span><h3 class="h5 fw-bold mb-1">{{ match.job.title }}</h3><span class="text-muted small">{{ match.job.location }}</span></div><strong class="text-primary fs-4">{{ match.score }}%</strong></div><hr>
+        
+        <!-- Trust Layer: Match Explanation -->
+        <div class="mb-3 p-3 rounded-3 bg-light border">
+            <strong class="d-block small text-dark mb-1"><i class="bi bi-shield-check text-success me-1"></i>Evidence Behind the Role:</strong>
+            <p class="small text-muted mb-2">{{ match.trust_layer.evidence_behind_the_role }}</p>
+            
+            <!-- Demonstrated Strengths Separated From Inferred Skills (Slide 10) -->
+            <strong class="d-block small text-dark mb-1">Demonstrated Strengths (Work-Backed):</strong>
+            <div class="d-flex flex-wrap gap-1 mb-2">
+                {% for skill in match.trust_layer.demonstrated_strengths %}
+                    <span class="badge text-bg-success"><i class="bi bi-check2-circle me-1"></i>{{ skill|title }}</span>
+                {% empty %}
+                    <span class="text-muted small">No verified simulation artifacts yet.</span>
+                {% endfor %}
+            </div>
+
+            <strong class="d-block small text-dark mb-1">Inferred Skills (Resume Claims):</strong>
+            <div class="d-flex flex-wrap gap-1 mb-2">
+                {% for skill in match.trust_layer.inferred_skills %}
+                    <span class="badge bg-primary-subtle text-primary border border-primary-subtle">{{ skill|title }}</span>
+                {% empty %}
+                    <span class="text-muted small">No unverified skills.</span>
+                {% endfor %}
+            </div>
+
+            <strong class="d-block small text-dark mb-1">Missing Skills to Acquire:</strong>
+            <div class="d-flex flex-wrap gap-1">
+                {% for skill in match.missing_skills %}
+                    <span class="badge text-bg-warning">{{ skill|title }}</span>
+                {% empty %}
+                    <span class="text-success small">All required skills met!</span>
+                {% endfor %}
+            </div>
+        </div>
+
+        <!-- Next Practice Mission (Slide 10) -->
+        {% if match.trust_layer.next_practice_mission %}
+        <div class="p-3 rounded-3 bg-success bg-opacity-10 border border-success-subtle mb-3 d-flex flex-wrap justify-content-between align-items-center gap-2">
+            <div>
+                <span class="badge text-bg-success rounded-pill small mb-1">ONE NEXT PRACTICE MISSION</span>
+                <strong class="d-block small text-dark">{{ match.trust_layer.next_practice_mission.title }}</strong>
+                <span class="text-muted small" style="font-size: 0.75rem;">{{ match.trust_layer.next_practice_mission.impact }}</span>
+            </div>
+            <a href="{% url 'simulator_challenge_detail' match.trust_layer.flight_challenge_slug %}" class="btn btn-sm btn-primary rounded-pill fw-semibold">
+                Launch Mission <i class="bi bi-arrow-right"></i>
+            </a>
+        </div>
+        {% endif %}
+
+        <div class="small">
+            <p class="text-muted mb-2">{{ match.recommendation }}</p>
+            <p class="mb-3"><strong>Status:</strong> <span class="badge {% if match.status == 'ELIGIBLE' %}text-bg-success{% else %}text-bg-warning{% endif %}">{{ match.status }}</span></p>
+        </div>
+
+        <div class="d-flex flex-wrap gap-2 mt-auto">
+            <a href="{% url 'job_detail' match.job.id %}" class="btn btn-outline-primary btn-sm rounded-pill">View details</a>
+            <form method="post" action="{% url 'opportunity_compiler_run' %}" class="m-0">
+                {% csrf_token %}
+                <input type="hidden" name="job_id" value="{{ match.job.id }}">
+                <button type="submit" class="btn btn-outline-info btn-sm rounded-pill fw-semibold">
+                    <i class="bi bi-cpu me-1"></i> Compile Sprint Path
+                </button>
+            </form>
+            {% if match.status == 'ELIGIBLE' %}
+                <a href="{% url 'job_detail' match.job.id %}" class="btn btn-primary btn-sm rounded-pill">Apply now</a>
+            {% else %}
+                <a href="#skill-gap" class="btn btn-outline-warning btn-sm rounded-pill">View skill gap</a>
+            {% endif %}
+        </div></article></div>{% endif %}{% empty %}<div class="col-12"><div class="empty-state"><strong>No matching roles yet.</strong><span>Upload your resume or ask a recruiter to add job requirements.</span></div></div>{% endfor %}
     </div></section>
 
     <section id="skill-gap" class="panel-card"><div class="section-heading"><div><span class="eyebrow">Skill gap analysis</span><h2>Skills to learn next</h2></div></div>{% for match in skill_gap_matches %}{% if match.missing_skills %}<div class="border-bottom py-3"><div class="d-flex justify-content-between gap-3"><div><strong>{{ match.job.title }}</strong><span class="d-block text-muted small">{{ match.job.company.name }}</span></div><span class="text-muted">{{ match.score }}%</span></div><p class="small mb-2 mt-2">Missing: {% for skill in match.missing_skills %}<span class="badge text-bg-light me-1">{{ skill|title }}</span>{% endfor %}</p><p class="small text-muted mb-0">Recommended learning path: {% for step in match.learning_path %}{{ forloop.counter }}. {{ step }}{% if not forloop.last %} · {% endif %}{% endfor %}</p></div>{% endif %}{% empty %}<p class="text-muted mb-0">Your current roles do not show a skill gap.</p>{% endfor %}</section>

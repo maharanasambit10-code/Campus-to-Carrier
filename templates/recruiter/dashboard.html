@@ -70,8 +70,29 @@
                                 </div>
                                 <span class="small text-success fw-bold">92%</span>
                             </td>
-                            <td><span class="badge bg-primary">{{ app.status }}</span></td>
-                            <td><div class="d-flex flex-wrap gap-2"><form method="post" action="{% url 'recruiter_application_status' app.id %}" class="d-flex gap-2">{% csrf_token %}<select name="status" class="form-select form-select-sm"><option value="SHORTLISTED">Shortlist</option><option value="ASSESSMENT">Assessment</option><option value="INTERVIEW">Interview</option><option value="SELECTED">Select</option><option value="REJECTED">Reject</option></select><button class="btn btn-sm btn-outline-primary" type="submit">Update</button></form>{% if app.status == 'INTERVIEW' %}<a href="{% url 'schedule_interview' app.id %}" class="btn btn-sm btn-primary"><i class="bi bi-calendar-plus me-1"></i>Schedule</a>{% endif %}</div></td>
+                            <td>
+                                <div class="d-flex flex-wrap align-items-center gap-2">
+                                    {% if app.student_passport %}
+                                    <a href="{% url 'proof_passport_public_view' app.student_passport.public_share_token %}" target="_blank" class="btn btn-sm btn-outline-success fw-semibold">
+                                        <i class="bi bi-patch-check-fill me-1"></i>Proof Passport ({{ app.student_passport.overall_evidence_score }}%)
+                                    </a>
+                                    {% endif %}
+                                    <form method="post" action="{% url 'recruiter_application_status' app.id %}" class="d-flex gap-2">
+                                        {% csrf_token %}
+                                        <select name="status" class="form-select form-select-sm">
+                                            <option value="SHORTLISTED">Shortlist</option>
+                                            <option value="ASSESSMENT">Assessment</option>
+                                            <option value="INTERVIEW">Interview</option>
+                                            <option value="SELECTED">Select</option>
+                                            <option value="REJECTED">Reject</option>
+                                        </select>
+                                        <button class="btn btn-sm btn-outline-primary" type="submit">Update</button>
+                                    </form>
+                                    {% if app.status == 'INTERVIEW' %}
+                                        <a href="{% url 'schedule_interview' app.id %}" class="btn btn-sm btn-primary"><i class="bi bi-calendar-plus me-1"></i>Schedule</a>
+                                    {% endif %}
+                                </div>
+                            </td>
                         </tr>
                         {% empty %}
                         <tr><td colspan="5" class="text-center text-muted">No applicants found.</td></tr>

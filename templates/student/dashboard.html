@@ -9,6 +9,9 @@
             <a class="dashboard-nav-link" href="{% url 'profile' %}"><i class="bi bi-person"></i>My profile</a>
             <a class="dashboard-nav-link" href="{% url 'job_list' %}"><i class="bi bi-briefcase"></i>Find opportunities</a>
             <a class="dashboard-nav-link" href="{% url 'student_applications' %}"><i class="bi bi-file-earmark-text"></i>My applications</a>
+            <a class="dashboard-nav-link" href="{% url 'simulator_catalog' %}"><i class="bi bi-airplane-engines"></i>Flight Simulator</a>
+            <a class="dashboard-nav-link" href="{% url 'opportunity_compiler_home' %}"><i class="bi bi-cpu"></i>Opportunity Compiler</a>
+            <a class="dashboard-nav-link" href="{% url 'proof_passport_dashboard' %}"><i class="bi bi-patch-check"></i>Proof Passport</a>
             <a class="dashboard-nav-link" href="{% url 'career_match' %}"><i class="bi bi-stars"></i>AI Career Match</a>
             <a class="dashboard-nav-link" href="{% url 'ai_mock_interview' %}"><i class="bi bi-camera-video"></i>AI Mock Interview</a>
             <a class="dashboard-nav-link" href="{% url 'course_list' %}"><i class="bi bi-mortarboard"></i>Learning Hub</a>
@@ -49,6 +52,78 @@
                 {% else %}
                     <a href="{% url 'pro_landing' %}" class="btn btn-light">Explore PRO <i class="bi bi-arrow-up-right ms-1"></i></a>
                 {% endif %}
+        </section>
+
+        <!-- The CampusLink Loop: From Learning Signals to Role-Ready Proof (Slides 1-10) -->
+        <section class="dashboard-campuslink-loop mb-4">
+            <div class="d-flex flex-wrap justify-content-between align-items-center mb-3">
+                <div>
+                    <span class="eyebrow text-uppercase text-primary fw-bold" style="font-size: 0.75rem; letter-spacing: 0.5px;">The CampusLink Loop</span>
+                    <h2 class="h4 fw-bold mb-0 text-dark">From Learning Signals to Role-Ready Proof</h2>
+                </div>
+                <span class="badge text-bg-primary px-3 py-2 rounded-pill fw-bold shadow-sm">
+                    <i class="bi bi-patch-check-fill me-1"></i> Role Proof Engine Active
+                </span>
+            </div>
+
+            <div class="row g-3">
+                <!-- 1. Career Flight Simulator -->
+                <div class="col-md-4">
+                    <div class="card h-100 p-4 rounded-4 border-0 shadow-sm bg-white border-top border-4 border-primary">
+                        <div class="d-flex align-items-center justify-content-between mb-3">
+                            <div class="rounded-3 d-flex align-items-center justify-content-center shadow-sm" style="width: 48px; height: 48px; background: #e0f2fe; color: #0284c7; font-size: 1.4rem;">
+                                <i class="bi bi-airplane-engines"></i>
+                            </div>
+                            <span class="badge text-bg-primary rounded-pill px-2 py-1">PRODUCT 01</span>
+                        </div>
+                        <h3 class="h6 fw-bold text-dark mb-1">Career Flight Simulator</h3>
+                        <p class="small text-muted mb-3 flex-grow-1">
+                            Turn target roles into short, realistic challenges. Prove practical fit from the work itself.
+                        </p>
+                        <a href="{% url 'simulator_catalog' %}" class="btn btn-outline-primary btn-sm rounded-pill fw-semibold w-100">
+                            Launch Simulation <i class="bi bi-arrow-right ms-1"></i>
+                        </a>
+                    </div>
+                </div>
+
+                <!-- 2. Opportunity Compiler -->
+                <div class="col-md-4">
+                    <div class="card h-100 p-4 rounded-4 border-0 shadow-sm bg-white border-top border-4 border-info">
+                        <div class="d-flex align-items-center justify-content-between mb-3">
+                            <div class="rounded-3 d-flex align-items-center justify-content-center shadow-sm" style="width: 48px; height: 48px; background: #e0e7ff; color: #4338ca; font-size: 1.4rem;">
+                                <i class="bi bi-cpu"></i>
+                            </div>
+                            <span class="badge text-bg-info text-white rounded-pill px-2 py-1">PRODUCT 02</span>
+                        </div>
+                        <h3 class="h6 fw-bold text-dark mb-1">The Opportunity Compiler</h3>
+                        <p class="small text-muted mb-3 flex-grow-1">
+                            Deconstruct job requirements into plain-language skills and sprint around your schedule.
+                        </p>
+                        <a href="{% url 'opportunity_compiler_home' %}" class="btn btn-outline-info btn-sm rounded-pill fw-semibold w-100">
+                            Compile Target Role <i class="bi bi-arrow-right ms-1"></i>
+                        </a>
+                    </div>
+                </div>
+
+                <!-- 3. Proof Passport -->
+                <div class="col-md-4">
+                    <div class="card h-100 p-4 rounded-4 border-0 shadow-sm bg-white border-top border-4 border-success">
+                        <div class="d-flex align-items-center justify-content-between mb-3">
+                            <div class="rounded-3 d-flex align-items-center justify-content-center shadow-sm" style="width: 48px; height: 48px; background: #dcfce7; color: #15803d; font-size: 1.4rem;">
+                                <i class="bi bi-patch-check-fill"></i>
+                            </div>
+                            <span class="badge text-bg-success rounded-pill px-2 py-1">PRODUCT 03</span>
+                        </div>
+                        <h3 class="h6 fw-bold text-dark mb-1">A Proof Passport</h3>
+                        <p class="small text-muted mb-3 flex-grow-1">
+                            Carries multi-source evidence, not empty claims. Share verified proof directly with recruiters.
+                        </p>
+                        <a href="{% url 'proof_passport_dashboard' %}" class="btn btn-outline-success btn-sm rounded-pill fw-semibold w-100">
+                            Open Passport <i class="bi bi-arrow-right ms-1"></i>
+                        </a>
+                    </div>
+                </div>
+            </div>
         </section>
 
         <!-- PRO Premium Career Suite (3 Cards from prompt) -->

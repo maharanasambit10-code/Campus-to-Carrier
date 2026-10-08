@@ -67,6 +67,7 @@ urlpatterns = [
     path('notifications/', include('notifications.urls')),
     path('interviews/', include('interviews.urls')),
     path('courses/', include('courses.urls')),
+    path('', include('ai_engine.urls')),
 ]
 
 if settings.DEBUG:

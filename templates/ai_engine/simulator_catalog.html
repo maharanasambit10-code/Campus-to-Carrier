@@ -1,0 +1,198 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %}Career Flight Simulator | CAMPUSLINK{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <!-- Header / Brand Banner -->
+    <div class="p-4 p-md-5 mb-5 rounded-4 text-white position-relative overflow-hidden shadow-lg"
+         style="background: linear-gradient(135deg, #1e3a8a 0%, #1e40af 50%, #2563eb 100%);">
+        <div class="position-absolute end-0 top-0 translate-middle-y opacity-10 pe-none d-none d-lg-block">
+            <i class="bi bi-airplane-engines" style="font-size: 18rem;"></i>
+        </div>
+        <div class="position-relative z-1 max-w-75">
+            <div class="d-inline-flex align-items-center gap-2 px-3 py-1 rounded-pill bg-white bg-opacity-20 text-lime fw-bold small mb-3 border border-white border-opacity-25" style="color: #bef264;">
+                <i class="bi bi-speedometer2"></i> PRODUCT 01 · CAREER FLIGHT SIMULATOR
+            </div>
+            <h1 class="display-5 fw-bold mb-3 tracking-tight">Make Job Fit Tangible.</h1>
+            <p class="lead opacity-90 mb-4" style="max-width: 680px;">
+                Turn target job roles into short, realistic workplace challenges. Prove practical capability from the work itself—not another keyword-stuffed resume.
+            </p>
+            <div class="d-flex flex-wrap gap-3 align-items-center">
+                <a href="#challenges-grid" class="btn btn-light text-primary fw-bold px-4 py-2 rounded-pill shadow-sm">
+                    <i class="bi bi-play-circle-fill me-2"></i>Select a Mission
+                </a>
+                <a href="{% url 'proof_passport_dashboard' %}" class="btn btn-outline-light fw-semibold px-4 py-2 rounded-pill">
+                    <i class="bi bi-patch-check-fill me-2"></i>View Proof Passport
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <!-- The 3 Pillars / Loop Indicator -->
+    <div class="row g-3 mb-5">
+        <div class="col-md-4">
+            <div class="card h-100 border-0 shadow-sm p-4 rounded-4 bg-light border-start border-4 border-primary">
+                <div class="d-flex align-items-center gap-3 mb-2">
+                    <div class="rounded-circle d-flex align-items-center justify-content-center bg-primary text-white" style="width: 36px; height: 36px; font-weight: bold;">1</div>
+                    <h2 class="h6 fw-bold mb-0 text-dark">Target Role Challenge</h2>
+                </div>
+                <p class="small text-muted mb-0">Realistic workplace brief with genuine telemetry, constraints, and business deliverables.</p>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card h-100 border-0 shadow-sm p-4 rounded-4 bg-light border-start border-4 border-success">
+                <div class="d-flex align-items-center gap-3 mb-2">
+                    <div class="rounded-circle d-flex align-items-center justify-content-center bg-success text-white" style="width: 36px; height: 36px; font-weight: bold;">2</div>
+                    <h2 class="h6 fw-bold mb-0 text-dark">Evaluate The Work Itself</h2>
+                </div>
+                <p class="small text-muted mb-0">AI reveals demonstrated strengths and nuanced skill gaps directly derived from your solution.</p>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card h-100 border-0 shadow-sm p-4 rounded-4 bg-light border-start border-4 border-warning">
+                <div class="d-flex align-items-center gap-3 mb-2">
+                    <div class="rounded-circle d-flex align-items-center justify-content-center bg-warning text-dark" style="width: 36px; height: 36px; font-weight: bold;">3</div>
+                    <h2 class="h6 fw-bold mb-0 text-dark">Proof Passport Sync</h2>
+                </div>
+                <p class="small text-muted mb-0">Completed missions immediately generate tamper-evident proof artifacts for recruiters.</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Filter Bar -->
+    <div class="card border-0 shadow-sm p-3 rounded-4 mb-4" id="challenges-grid">
+        <form method="get" class="row g-2 align-items-center">
+            <div class="col-md-5">
+                <select name="role" class="form-select border-0 bg-light rounded-pill px-3" onchange="this.form.submit()">
+                    <option value="">All Target Roles</option>
+                    {% for r in target_roles %}
+                        <option value="{{ r }}" {% if selected_role == r %}selected{% endif %}>{{ r }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="col-md-4">
+                <select name="difficulty" class="form-select border-0 bg-light rounded-pill px-3" onchange="this.form.submit()">
+                    <option value="">All Difficulties</option>
+                    <option value="BEGINNER" {% if selected_difficulty == 'BEGINNER' %}selected{% endif %}>Beginner (Entry-Level / Intern)</option>
+                    <option value="INTERMEDIATE" {% if selected_difficulty == 'INTERMEDIATE' %}selected{% endif %}>Intermediate (1-2 yrs)</option>
+                    <option value="ADVANCED" {% if selected_difficulty == 'ADVANCED' %}selected{% endif %}>Advanced (Senior / High Bar)</option>
+                </select>
+            </div>
+            <div class="col-md-3 d-flex gap-2">
+                <button type="submit" class="btn btn-primary rounded-pill w-100 fw-semibold">
+                    <i class="bi bi-funnel me-1"></i> Filter
+                </button>
+                {% if selected_role or selected_difficulty %}
+                    <a href="{% url 'simulator_catalog' %}" class="btn btn-outline-secondary rounded-pill">Reset</a>
+                {% endif %}
+            </div>
+        </form>
+    </div>
+
+    <!-- Challenge Cards Grid -->
+    <div class="row g-4 mb-5">
+        {% for ch in challenges %}
+        <div class="col-lg-6">
+            <div class="card h-100 border-0 shadow-sm rounded-4 overflow-hidden position-relative hover-card" style="transition: transform 0.2s ease, box-shadow 0.2s ease;">
+                <div class="card-body p-4 d-flex flex-column">
+                    <div class="d-flex justify-content-between align-items-start gap-2 mb-2">
+                        <span class="badge rounded-pill px-3 py-2 fw-semibold {% if ch.difficulty == 'BEGINNER' %}bg-success-subtle text-success border border-success-subtle{% elif ch.difficulty == 'INTERMEDIATE' %}bg-primary-subtle text-primary border border-primary-subtle{% else %}bg-danger-subtle text-danger border border-danger-subtle{% endif %}">
+                            {{ ch.get_difficulty_display }}
+                        </span>
+                        <span class="badge bg-light text-muted border rounded-pill px-3 py-2">
+                            <i class="bi bi-clock me-1"></i>~{{ ch.estimated_minutes }} mins
+                        </span>
+                    </div>
+
+                    <h2 class="h5 fw-bold text-dark mt-2 mb-1">{{ ch.title }}</h2>
+                    <div class="text-primary small fw-semibold mb-3">
+                        <i class="bi bi-briefcase me-1"></i>{{ ch.target_role }}
+                    </div>
+
+                    <p class="text-muted small mb-4 flex-grow-1">
+                        {{ ch.scenario_brief|truncatewords:32 }}
+                    </p>
+
+                    <!-- Skills Tested Pills -->
+                    <div class="mb-4">
+                        <span class="d-block small text-muted fw-bold mb-2 text-uppercase" style="font-size: 0.72rem; letter-spacing: 0.5px;">Skills Tested</span>
+                        <div class="d-flex flex-wrap gap-1">
+                            {% for skill in ch.skills_tested %}
+                                <span class="badge bg-light text-dark border px-2 py-1 small rounded-pill">{{ skill }}</span>
+                            {% endfor %}
+                        </div>
+                    </div>
+
+                    <div class="pt-3 border-top d-flex justify-content-between align-items-center mt-auto">
+                        {% if ch.user_submission %}
+                            <div>
+                                <span class="badge text-bg-success px-3 py-2 rounded-pill fw-bold">
+                                    <i class="bi bi-check-circle-fill me-1"></i> Score: {{ ch.user_submission.overall_score }}/100
+                                </span>
+                            </div>
+                            <div class="d-flex gap-2">
+                                <a href="{% url 'simulator_result' ch.user_submission.id %}" class="btn btn-sm btn-outline-success rounded-pill fw-semibold">
+                                    View Report
+                                </a>
+                                <a href="{% url 'simulator_challenge_detail' ch.slug %}" class="btn btn-sm btn-primary rounded-pill fw-semibold">
+                                    Retry Mission
+                                </a>
+                            </div>
+                        {% else %}
+                            <span class="small text-muted">
+                                <i class="bi bi-shield-check text-success me-1"></i>Grants Verified Badge
+                            </span>
+                            <a href="{% url 'simulator_challenge_detail' ch.slug %}" class="btn btn-primary rounded-pill px-4 fw-semibold shadow-sm">
+                                Launch Simulation <i class="bi bi-arrow-right ms-1"></i>
+                            </a>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% empty %}
+        <div class="col-12">
+            <div class="card border-0 shadow-sm p-5 text-center rounded-4">
+                <i class="bi bi-compass text-muted mb-3" style="font-size: 3rem;"></i>
+                <h3 class="h5 fw-bold">No simulations found</h3>
+                <p class="text-muted small">Try broadening your role or difficulty filters.</p>
+                <div><a href="{% url 'simulator_catalog' %}" class="btn btn-outline-primary rounded-pill">View All Missions</a></div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+
+    <!-- The Journey Flow (Slide 9 from PPT) -->
+    <div class="card border-0 shadow-sm p-4 p-md-5 rounded-4" style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);">
+        <div class="text-center mb-4">
+            <span class="badge text-bg-primary rounded-pill px-3 py-1 fw-bold text-uppercase mb-2">A Sample Journey</span>
+            <h2 class="h3 fw-bold text-dark">From Class Project to Role-Ready Evidence</h2>
+            <p class="text-muted small">How CampusLink converts learning signals into employer-trusted proof</p>
+        </div>
+        <div class="row g-4 text-center">
+            <div class="col-md-4">
+                <div class="p-4 bg-white rounded-4 shadow-sm h-100">
+                    <div class="badge rounded-circle bg-primary-subtle text-primary p-3 mb-3 fs-5">01</div>
+                    <h3 class="h6 fw-bold mb-2">Select Target Role</h3>
+                    <p class="small text-muted mb-0">Student picks their target goal (e.g. Data Analyst, Backend Engineer, ML Specialist).</p>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="p-4 bg-white rounded-4 shadow-sm h-100">
+                    <div class="badge rounded-circle bg-success-subtle text-success p-3 mb-3 fs-5">02</div>
+                    <h3 class="h6 fw-bold mb-2">Practice Realistic Simulation</h3>
+                    <p class="small text-muted mb-0">Simulator surfaces an authentic challenge (e.g. data-storytelling on customer churn).</p>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="p-4 bg-white rounded-4 shadow-sm h-100">
+                    <div class="badge rounded-circle bg-warning-subtle text-warning p-3 mb-3 fs-5">03</div>
+                    <h3 class="h6 fw-bold mb-2">Share Proof Passport</h3>
+                    <p class="small text-muted mb-0">Proof Passport turns submitted work into shareable, verified evidence for recruiters.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,342 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %}Proof Passport | CAMPUSLINK{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <!-- Header Hero Banner -->
+    <div class="p-4 p-md-5 mb-5 rounded-4 text-white position-relative overflow-hidden shadow-lg"
+         style="background: linear-gradient(135deg, #1e3a8a 0%, #0f172a 100%);">
+        <div class="position-absolute end-0 top-0 translate-middle-y opacity-10 pe-none d-none d-lg-block">
+            <i class="bi bi-patch-check-fill" style="font-size: 18rem;"></i>
+        </div>
+        <div class="position-relative z-1 max-w-75">
+            <div class="d-inline-flex align-items-center gap-2 px-3 py-1 rounded-pill bg-white bg-opacity-20 text-lime fw-bold small mb-3 border border-white border-opacity-25" style="color: #bef264;">
+                <i class="bi bi-shield-check"></i> PRODUCT 03 · THE PROOF PASSPORT
+            </div>
+            <h1 class="display-5 fw-bold mb-3 tracking-tight">Evidence, Not Empty Claims.</h1>
+            <p class="lead opacity-90 mb-4" style="max-width: 680px;">
+                Collect project artifacts, simulation results, and peer contributions. Every skill is attached to its verified source and confidence level.
+            </p>
+            <div class="d-flex flex-wrap gap-3 align-items-center">
+                <a href="{% url 'proof_passport_public_view' passport.public_share_token %}" target="_blank" class="btn btn-lime text-dark fw-bold px-4 py-2 rounded-pill shadow-sm" style="background: #bef264;">
+                    <i class="bi bi-eye-fill me-2"></i>Preview Recruiter Passport
+                </a>
+                <button class="btn btn-outline-light fw-semibold px-4 py-2 rounded-pill" onclick="navigator.clipboard.writeText('{{ share_url }}'); alert('Share link copied to clipboard!');">
+                    <i class="bi bi-link-45deg me-2"></i>Copy Shareable Link
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- The 3 Pillars (Exact Slide 8 from PPT) -->
+    <div class="row g-3 mb-5">
+        <div class="col-md-4">
+            <div class="card h-100 border-0 shadow-sm p-4 rounded-4 bg-light border-start border-4 border-primary">
+                <div class="d-flex align-items-center gap-2 mb-2">
+                    <span class="p-2 rounded-3 bg-primary text-white"><i class="bi bi-folder-check"></i></span>
+                    <h2 class="h6 fw-bold mb-0 text-dark">Collect Multi-Source Evidence</h2>
+                </div>
+                <p class="small text-muted mb-0">Project artifacts, simulation results, coursework, and peer contributions bundled in one verifiable credential.</p>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card h-100 border-0 shadow-sm p-4 rounded-4 bg-light border-start border-4 border-success">
+                <div class="d-flex align-items-center gap-2 mb-2">
+                    <span class="p-2 rounded-3 bg-success text-white"><i class="bi bi-tags-fill"></i></span>
+                    <h2 class="h6 fw-bold mb-0 text-dark">Attach Skills to Source & Confidence</h2>
+                </div>
+                <p class="small text-muted mb-0">Separates demonstrated skills (backed by real deliverables) from unverified inferred claims.</p>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card h-100 border-0 shadow-sm p-4 rounded-4 bg-light border-start border-4 border-warning">
+                <div class="d-flex align-items-center gap-2 mb-2">
+                    <span class="p-2 rounded-3 bg-warning text-dark"><i class="bi bi-sliders"></i></span>
+                    <h2 class="h6 fw-bold mb-0 text-dark">Employer Privacy Controls</h2>
+                </div>
+                <p class="small text-muted mb-0">Students choose exactly what to share with each employer or create targeted proof packages.</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Quick Stats Bar -->
+    <div class="row g-4 mb-5">
+        <div class="col-md-4">
+            <div class="card border-0 shadow-sm p-4 rounded-4 bg-white text-center">
+                <span class="text-muted small text-uppercase fw-bold">Overall Evidence Index</span>
+                <strong class="display-5 fw-bold text-primary my-1">{{ passport.overall_evidence_score }}%</strong>
+                <span class="badge text-bg-success rounded-pill align-self-center">ROLE-READY EVIDENCE</span>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card border-0 shadow-sm p-4 rounded-4 bg-white text-center">
+                <span class="text-muted small text-uppercase fw-bold">Demonstrated Skills</span>
+                <strong class="display-5 fw-bold text-success my-1">{{ passport.demonstrated_skills_count }}</strong>
+                <span class="small text-muted">Backed by verified code or simulations</span>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card border-0 shadow-sm p-4 rounded-4 bg-white text-center">
+                <span class="text-muted small text-uppercase fw-bold">Inferred Profile Skills</span>
+                <strong class="display-5 fw-bold text-warning my-1">{{ passport.inferred_skills_count }}</strong>
+                <span class="small text-muted">Claimed on profile / resume</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Content Area: Evidence Hub & Privacy Controls -->
+    <div class="row g-4 mb-5">
+        <!-- Left: Multi-Source Artifacts -->
+        <div class="col-lg-8">
+            <div class="card border-0 shadow-sm p-4 rounded-4 mb-4">
+                <div class="d-flex flex-wrap justify-content-between align-items-center gap-2 mb-4 pb-2 border-bottom">
+                    <div>
+                        <h2 class="h5 fw-bold mb-0 text-dark">Verified Evidence Artifacts</h2>
+                        <span class="small text-muted">{{ artifacts|length }} verified items in your passport</span>
+                    </div>
+                    <div class="d-flex gap-2">
+                        <button class="btn btn-sm btn-primary rounded-pill fw-semibold" data-bs-toggle="modal" data-bs-target="#modalAddArtifact">
+                            <i class="bi bi-plus-circle me-1"></i> Add Project Artifact
+                        </button>
+                        <button class="btn btn-sm btn-outline-primary rounded-pill fw-semibold" data-bs-toggle="modal" data-bs-target="#modalAddPeer">
+                            <i class="bi bi-people me-1"></i> Add Peer Review
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Artifacts List -->
+                <div class="vstack gap-3">
+                    {% for art in artifacts %}
+                    <div class="p-3 rounded-4 bg-light border d-flex flex-wrap justify-content-between align-items-start gap-2">
+                        <div class="flex-grow-1">
+                            <div class="d-flex align-items-center gap-2 mb-1">
+                                <span class="badge {% if art.artifact_type == 'SIMULATION' %}text-bg-success{% elif art.artifact_type == 'PROJECT' %}text-bg-primary{% elif art.artifact_type == 'PEER_REVIEW' %}text-bg-warning text-dark{% else %}text-bg-secondary{% endif %} rounded-pill small">
+                                    {{ art.get_artifact_type_display }}
+                                </span>
+                                <strong class="text-dark">{{ art.title }}</strong>
+                                <span class="badge bg-white text-success border border-success-subtle rounded-pill small" style="font-size: 0.7rem;">
+                                    <i class="bi bi-check2"></i> {{ art.confidence_level }}
+                                </span>
+                            </div>
+                            <p class="text-muted small mb-2">{{ art.description }}</p>
+                            <div class="d-flex flex-wrap align-items-center gap-2">
+                                <span class="text-muted small" style="font-size: 0.75rem;">Source: <strong>{{ art.source_reference }}</strong></span>
+                                {% if art.score_or_grade %}
+                                    <span class="badge bg-white text-muted border rounded-pill small" style="font-size: 0.7rem;">{{ art.score_or_grade }}</span>
+                                {% endif %}
+                            </div>
+                            <div class="d-flex flex-wrap gap-1 mt-2">
+                                {% for s in art.skills_evidenced %}
+                                    <span class="badge bg-white text-dark border small" style="font-size: 0.7rem;">{{ s }}</span>
+                                {% endfor %}
+                            </div>
+                        </div>
+                        {% if art.external_url %}
+                        <div class="align-self-center">
+                            <a href="{{ art.external_url }}" target="_blank" class="btn btn-sm btn-outline-secondary rounded-pill">
+                                View <i class="bi bi-box-arrow-up-right ms-1"></i>
+                            </a>
+                        </div>
+                        {% endif %}
+                    </div>
+                    {% empty %}
+                    <div class="text-center py-4 text-muted">
+                        <p class="small mb-2">No artifacts recorded yet.</p>
+                        <a href="{% url 'simulator_catalog' %}" class="btn btn-sm btn-primary rounded-pill">Take a Flight Simulator Mission</a>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+
+            <!-- Peer Contributions Section -->
+            {% if peer_reviews %}
+            <div class="card border-0 shadow-sm p-4 rounded-4">
+                <div class="d-flex justify-content-between align-items-center mb-3 pb-2 border-bottom">
+                    <h3 class="h6 fw-bold mb-0 text-dark"><i class="bi bi-chat-heart-fill text-danger me-2"></i>Peer & Mentor Contributions</h3>
+                    <span class="badge text-bg-light border rounded-pill">{{ peer_reviews|length }} reviews</span>
+                </div>
+                <div class="row g-3">
+                    {% for pr in peer_reviews %}
+                    <div class="col-md-6">
+                        <div class="p-3 rounded-4 bg-light border h-100">
+                            <p class="small fst-italic text-muted mb-2">"{{ pr.review_text }}"</p>
+                            <div class="d-flex justify-content-between align-items-center">
+                                <div>
+                                    <strong class="d-block small text-dark">{{ pr.reviewer_name }}</strong>
+                                    <span class="text-muted" style="font-size: 0.75rem;">{{ pr.reviewer_role }}</span>
+                                </div>
+                                <span class="badge bg-success-subtle text-success border border-success-subtle rounded-pill small">Verified</span>
+                            </div>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+            {% endif %}
+        </div>
+
+        <!-- Right: Employer Privacy & Sharing Controls (Slide 8) -->
+        <div class="col-lg-4">
+            <div class="sticky-top" style="top: 90px;">
+                <!-- Sharing Settings Form -->
+                <div class="card border-0 shadow-sm p-4 rounded-4 mb-4">
+                    <div class="d-flex align-items-center justify-content-between mb-3">
+                        <h2 class="h6 fw-bold mb-0 text-dark">Employer Sharing & Privacy</h2>
+                        <i class="bi bi-shield-lock-fill text-primary"></i>
+                    </div>
+                    <p class="small text-muted mb-3">
+                        Choose exactly what to share with each employer. You control which evidence appears on your verified link.
+                    </p>
+
+                    <form method="post" action="{% url 'proof_passport_update_settings' %}">
+                        {% csrf_token %}
+                        <div class="mb-3">
+                            <label class="form-label small fw-semibold text-muted" for="id_headline">Passport Professional Headline</label>
+                            <input id="id_headline" type="text" name="headline" class="form-control form-control-sm rounded-3" value="{{ passport.headline }}">
+                        </div>
+
+                        <div class="form-check form-switch mb-2">
+                            <input class="form-check-input" type="checkbox" id="chk_public" name="is_public" {% if passport.is_public %}checked{% endif %}>
+                            <label class="form-check-label small text-dark" for="chk_public">Allow Public / Recruiter Access</label>
+                        </div>
+
+                        <div class="form-check form-switch mb-2">
+                            <input class="form-check-input" type="checkbox" id="chk_sim" name="include_simulations" {% if passport.include_simulations %}checked{% endif %}>
+                            <label class="form-check-label small text-dark" for="chk_sim">Include Flight Simulator Missions</label>
+                        </div>
+
+                        <div class="form-check form-switch mb-2">
+                            <input class="form-check-input" type="checkbox" id="chk_proj" name="include_projects" {% if passport.include_projects %}checked{% endif %}>
+                            <label class="form-check-label small text-dark" for="chk_proj">Include Code Repos & Projects</label>
+                        </div>
+
+                        <div class="form-check form-switch mb-2">
+                            <input class="form-check-input" type="checkbox" id="chk_course" name="include_coursework" {% if passport.include_coursework %}checked{% endif %}>
+                            <label class="form-check-label small text-dark" for="chk_course">Include Coursework & Certifications</label>
+                        </div>
+
+                        <div class="form-check form-switch mb-3">
+                            <input class="form-check-input" type="checkbox" id="chk_peer" name="include_peer_reviews" {% if passport.include_peer_reviews %}checked{% endif %}>
+                            <label class="form-check-label small text-dark" for="chk_peer">Include Peer & Mentor Reviews</label>
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label small fw-semibold text-muted" for="id_employers">Target Employers (Optional Filter)</label>
+                            <input id="id_employers" type="text" name="allowed_employers" class="form-control form-control-sm rounded-3" placeholder="e.g. Swiggy, Google, Amazon (or leave blank for all)" value="{{ passport.allowed_employers }}">
+                            <div class="form-text small" style="font-size: 0.72rem;">Leave empty to share with all verified recruiters.</div>
+                        </div>
+
+                        <button type="submit" class="btn btn-primary w-100 rounded-pill btn-sm py-2 fw-semibold">
+                            Save Privacy Controls
+                        </button>
+                    </form>
+                </div>
+
+                <!-- Recruiter Share Link Box -->
+                <div class="card border-0 shadow-sm p-4 rounded-4 bg-light border">
+                    <h3 class="h6 fw-bold mb-2 text-dark"><i class="bi bi-qr-code me-2"></i>Your Verifiable Link</h3>
+                    <p class="small text-muted mb-3">Recruiters can inspect your proof without creating an account:</p>
+                    <div class="input-group input-group-sm mb-3">
+                        <input type="text" class="form-control font-monospace" value="{{ share_url }}" readonly id="shareLinkInput">
+                        <button class="btn btn-outline-primary" type="button" onclick="navigator.clipboard.writeText('{{ share_url }}'); alert('Link copied!');">Copy</button>
+                    </div>
+                    <a href="{% url 'proof_passport_public_view' passport.public_share_token %}" target="_blank" class="btn btn-outline-dark btn-sm w-100 rounded-pill fw-semibold">
+                        Open Public View <i class="bi bi-box-arrow-up-right ms-1"></i>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal 1: Add Project Artifact -->
+<div class="modal fade" id="modalAddArtifact" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content border-0 rounded-4 shadow">
+            <div class="modal-header border-0 pb-0">
+                <h3 class="modal-title h5 fw-bold">Add Proof Artifact</h3>
+                <button type="button" class="btn-close" data-bs-toggle="modal"></button>
+            </div>
+            <form method="post" action="{% url 'proof_passport_add_artifact' %}">
+                {% csrf_token %}
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <label class="form-label small fw-semibold">Artifact Type</label>
+                        <select name="artifact_type" class="form-select rounded-3">
+                            <option value="PROJECT">Project Artifact (Code repo, Demo)</option>
+                            <option value="COURSEWORK">Coursework & Academic Capstone</option>
+                            <option value="CERTIFICATION">Verified Certification</option>
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label small fw-semibold">Title</label>
+                        <input type="text" name="title" class="form-control rounded-3" placeholder="e.g. Distributed Billing Microservice" required>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label small fw-semibold">Description</label>
+                        <textarea name="description" class="form-control rounded-3 small" rows="3" placeholder="Detail the problem solved, architecture decisions, and business impact..." required></textarea>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label small fw-semibold">External URL (GitHub / Demo)</label>
+                        <input type="url" name="external_url" class="form-control rounded-3" placeholder="https://github.com/...">
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label small fw-semibold">Skills Evidenced (Comma-separated)</label>
+                        <input type="text" name="skills_evidenced" class="form-control rounded-3" placeholder="Python, Django, Redis, PostgreSQL">
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label small fw-semibold">Score / Grade / Result</label>
+                        <input type="text" name="score_or_grade" class="form-control rounded-3" placeholder="e.g. Grade A / Production Tested">
+                    </div>
+                </div>
+                <div class="modal-footer border-0 pt-0">
+                    <button type="button" class="btn btn-light rounded-pill" data-bs-dismiss="modal">Cancel</button>
+                    <button type="submit" class="btn btn-primary rounded-pill fw-semibold">Save Artifact to Passport</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- Modal 2: Add Peer Review -->
+<div class="modal fade" id="modalAddPeer" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content border-0 rounded-4 shadow">
+            <div class="modal-header border-0 pb-0">
+                <h3 class="modal-title h5 fw-bold">Record Peer or Mentor Review</h3>
+                <button type="button" class="btn-close" data-bs-toggle="modal"></button>
+            </div>
+            <form method="post" action="{% url 'proof_passport_add_peer_review' %}">
+                {% csrf_token %}
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <label class="form-label small fw-semibold">Reviewer Name</label>
+                        <input type="text" name="reviewer_name" class="form-control rounded-3" placeholder="e.g. Rohan Sharma" required>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label small fw-semibold">Reviewer Role & Relationship</label>
+                        <input type="text" name="reviewer_role" class="form-control rounded-3" placeholder="e.g. Team Lead / Open Source Collaborator">
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label small fw-semibold">Project Name</label>
+                        <input type="text" name="project_name" class="form-control rounded-3" placeholder="e.g. E-Commerce Microservices Engine">
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label small fw-semibold">Feedback / Review Text</label>
+                        <textarea name="review_text" class="form-control rounded-3 small" rows="3" placeholder="Feedback on technical quality, problem solving, or reliability..." required></textarea>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label small fw-semibold">Skills Endorsed (Comma-separated)</label>
+                        <input type="text" name="skills_endorsed" class="form-control rounded-3" placeholder="Python, Concurrency, Reliability">
+                    </div>
+                </div>
+                <div class="modal-footer border-0 pt-0">
+                    <button type="button" class="btn btn-light rounded-pill" data-bs-dismiss="modal">Cancel</button>
+                    <button type="submit" class="btn btn-primary rounded-pill fw-semibold">Record Review</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -22,13 +22,22 @@ def recruiter_dashboard(request):
     jobs = Job.objects.filter(company=company).prefetch_related('required_skills') if company else Job.objects.none()
     applications = Application.objects.filter(job__company=company).select_related('student__user', 'job') if company else Application.objects.none()
 
+    from ai_engine.services import sync_or_get_proof_passport
+
+    recent = list(applications.order_by('-updated_at')[:8])
+    for app in recent:
+        try:
+            app.student_passport = sync_or_get_proof_passport(app.student)
+        except Exception:
+            app.student_passport = None
+
     context = {
         'active_jobs': len(jobs),
         'total_applicants': len(applications),
         'shortlisted': len([a for a in applications if a.status == 'SHORTLISTED']),
         'interviews': len([a for a in applications if a.status == 'INTERVIEW']),
         'jobs': jobs[:8],
-        'recent_applicants': applications.order_by('-updated_at')[:8],
+        'recent_applicants': recent,
     }
     return render(request, 'recruiter/dashboard.html', context)
 
