@@ -1,0 +1,249 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Skill Barter System · 1 Hour = 1 Coin | Campus to Career{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <!-- Header Banner -->
+    <div class="p-4 p-md-5 rounded-4 text-white mb-5 shadow-lg position-relative overflow-hidden" 
+         style="background: linear-gradient(135deg, #10b981 0%, #059669 50%, #047857 100%);">
+        <div class="row align-items-center g-4">
+            <div class="col-lg-8">
+                <span class="badge bg-warning text-dark px-3 py-2 rounded-pill fw-bold text-uppercase mb-3 shadow-sm">
+                    <i class="bi bi-arrow-left-right me-1"></i> PEER SKILL BARTER ECONOMY
+                </span>
+                <h1 class="display-5 fw-bold text-white mb-3">
+                    Skill Barter System
+                </h1>
+                <p class="lead mb-4 text-white text-opacity-90">
+                    "Tu usko DSA padha, wo tujhe Spoken English padhayega. <strong>1 Ghanta = 1 Coin</strong>."<br>
+                    Koi coaching fees nahi, zero monetary barrier. Campus students apas me skills swap karte hain.
+                </p>
+                <div class="d-flex flex-wrap gap-2">
+                    <a href="#createListingSection" class="btn btn-warning text-dark fw-bold px-4 py-2 rounded-pill shadow-sm">
+                        <i class="bi bi-plus-circle me-1"></i> Post Skill Exchange
+                    </a>
+                    <a href="#marketplaceSection" class="btn btn-outline-light rounded-pill px-4 py-2 fw-semibold">
+                        <i class="bi bi-search me-1"></i> Browse Open Barters
+                    </a>
+                </div>
+            </div>
+            <div class="col-lg-4 text-center text-lg-end">
+                <div class="d-inline-block p-4 rounded-4 bg-white bg-opacity-10 backdrop-blur border border-white border-opacity-20 text-center shadow">
+                    <div class="small text-white text-uppercase fw-bold tracking-wider mb-1">Your Barter Wallet</div>
+                    <div class="display-4 fw-black text-warning mb-1">
+                        🪙 {{ wallet.coins|default:5 }}
+                    </div>
+                    <div class="text-white small fw-semibold">Available Barter Coins</div>
+                    <div class="d-flex justify-content-center gap-3 mt-3 pt-3 border-top border-white border-opacity-20 text-start">
+                        <div>
+                            <span class="d-block small text-white-50">Taught</span>
+                            <strong class="text-white">{{ wallet.hours_taught|default:0 }} hrs</strong>
+                        </div>
+                        <div class="border-start border-white border-opacity-20 ps-3">
+                            <span class="d-block small text-white-50">Learned</span>
+                            <strong class="text-white">{{ wallet.hours_learned|default:0 }} hrs</strong>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    {% if messages %}
+    <div class="mb-4">
+        {% for message in messages %}
+        <div class="alert alert-{{ message.tags|default:'info' }} alert-dismissible fade show rounded-3 shadow-sm" role="alert">
+            <i class="bi bi-check-circle-fill me-2"></i> {{ message }}
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+        {% endfor %}
+    </div>
+    {% endif %}
+
+    <!-- How Barter Works Info Strip -->
+    <div class="row g-4 mb-5 text-center">
+        <div class="col-md-4">
+            <div class="card p-4 h-100 border-0 rounded-4 shadow-sm bg-light">
+                <div class="fs-1 text-success mb-2">1️⃣</div>
+                <h5 class="fw-bold">Offer What You Know</h5>
+                <p class="text-muted small mb-0">DSA, Python, React, ya Git — jo topic apka strong hai uski 1 ghante ki class offer karo.</p>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card p-4 h-100 border-0 rounded-4 shadow-sm bg-light">
+                <div class="fs-1 text-primary mb-2">2️⃣</div>
+                <h5 class="fw-bold">Earn 1 Coin Per Hour</h5>
+                <p class="text-muted small mb-0">Jab ap kisi student ko 1 ghanta padhate ho, smart wallet me 1 Barter Coin credit hota hai.</p>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card p-4 h-100 border-0 rounded-4 shadow-sm bg-light">
+                <div class="fs-1 text-warning mb-2">3️⃣</div>
+                <h5 class="fw-bold">Spend Coin to Learn</h5>
+                <p class="text-muted small mb-0">Us coin se kisi dusre student se Spoken English, System Design ya HR prep 1-on-1 seekho.</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Content Grid -->
+    <div class="row g-4">
+        <!-- Left: Create New Barter Listing -->
+        <div class="col-lg-5" id="createListingSection">
+            <div class="card p-4 border-0 rounded-4 shadow-sm sticky-top" style="top: 90px;">
+                <div class="d-flex align-items-center gap-2 mb-3">
+                    <span class="p-2 rounded-3 bg-success bg-opacity-10 text-success"><i class="bi bi-plus-lg fs-5"></i></span>
+                    <h4 class="fw-bold mb-0">Post a Skill Exchange</h4>
+                </div>
+                <p class="text-muted small mb-4">List karo jo ap sikha sakte ho aur jo apko badle me sikhna hai.</p>
+
+                <form method="POST">
+                    {% csrf_token %}
+                    <input type="hidden" name="action" value="create_listing">
+
+                    <div class="mb-3">
+                        <label class="form-label small fw-bold text-dark">
+                            <i class="bi bi-mortarboard-fill text-success me-1"></i> I Can Teach (My Strong Skill)
+                        </label>
+                        <input type="text" name="offer_skill" class="form-control rounded-3 py-2" 
+                               placeholder="e.g. DSA & Dynamic Programming, Django, React" required>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label small fw-bold text-dark">
+                            <i class="bi bi-lightbulb-fill text-warning me-1"></i> I Want to Learn (My Weak Skill)
+                        </label>
+                        <input type="text" name="wanted_skill" class="form-control rounded-3 py-2" 
+                               placeholder="e.g. Spoken English & Accent, System Design" required>
+                    </div>
+
+                    <div class="row g-2 mb-3">
+                        <div class="col-6">
+                            <label class="form-label small fw-bold text-dark">Session Duration</label>
+                            <select name="session_hours" class="form-select rounded-3">
+                                <option value="1">1 Hour (1 Coin)</option>
+                                <option value="2">2 Hours (2 Coins)</option>
+                            </select>
+                        </div>
+                        <div class="col-6">
+                            <label class="form-label small fw-bold text-dark">Coin Bounty</label>
+                            <input type="text" class="form-control rounded-3" value="🪙 1 Coin/Hr" disabled>
+                        </div>
+                    </div>
+
+                    <div class="mb-4">
+                        <label class="form-label small fw-bold text-dark">Short Notes / Prep Level</label>
+                        <textarea name="notes" rows="3" class="form-control rounded-3" 
+                                  placeholder="e.g. Solved 150 LeetCode problems. Looking to prepare for Amazon/TCS Digital rounds."></textarea>
+                    </div>
+
+                    <button type="submit" class="btn btn-success w-100 fw-bold py-2.5 rounded-pill shadow-sm">
+                        <i class="bi bi-check2-circle me-1"></i> Publish Barter Request
+                    </button>
+                </form>
+            </div>
+        </div>
+
+        <!-- Right: Active Marketplace -->
+        <div class="col-lg-7" id="marketplaceSection">
+            <div class="d-flex justify-content-between align-items-center mb-3">
+                <h4 class="fw-bold mb-0">Active Campus Barter Matches</h4>
+                <span class="badge bg-light text-dark border px-3 py-2 rounded-pill small">
+                    {{ listings.count }} Active Requests
+                </span>
+            </div>
+
+            <div class="vstack gap-3">
+                {% for item in listings %}
+                <div class="card p-4 border-0 rounded-4 shadow-sm hover-shadow transition">
+                    <div class="d-flex justify-content-between align-items-start mb-3">
+                        <div class="d-flex align-items-center gap-2">
+                            <span class="avatar avatar-sm rounded-circle bg-primary bg-opacity-10 text-primary fw-bold p-2">
+                                {{ item.student.user.first_name|first|default:item.student.user.username|first|upper }}
+                            </span>
+                            <div>
+                                <strong class="d-block text-dark">{{ item.student.user.get_full_name|default:item.student.user.username }}</strong>
+                                <small class="text-muted">{{ item.student.college|default:"Campus Student" }} · {{ item.created_at|timesince }} ago</small>
+                            </div>
+                        </div>
+                        {% if item.status == 'OPEN' %}
+                        <span class="badge bg-success bg-opacity-10 text-success border border-success rounded-pill px-3 py-1.5 fw-semibold">
+                            ● Open for Barter
+                        </span>
+                        {% elif item.status == 'IN_PROGRESS' %}
+                        <span class="badge bg-warning bg-opacity-10 text-warning border border-warning rounded-pill px-3 py-1.5 fw-semibold">
+                            ⚡ In Progress with {{ item.partner.user.username }}
+                        </span>
+                        {% else %}
+                        <span class="badge bg-secondary rounded-pill px-3 py-1.5">
+                            ✓ Completed
+                        </span>
+                        {% endif %}
+                    </div>
+
+                    <!-- Swap Box -->
+                    <div class="p-3 rounded-3 bg-light border mb-3">
+                        <div class="row g-2 align-items-center text-center text-md-start">
+                            <div class="col-md-5">
+                                <span class="badge bg-success rounded-pill px-2.5 py-1 small mb-1">WILL TEACH</span>
+                                <h6 class="fw-bold text-dark mb-0 text-truncate">{{ item.offer_skill }}</h6>
+                            </div>
+                            <div class="col-md-2 text-center text-muted fs-4">
+                                ⇄
+                            </div>
+                            <div class="col-md-5">
+                                <span class="badge bg-primary rounded-pill px-2.5 py-1 small mb-1">WANTS TO LEARN</span>
+                                <h6 class="fw-bold text-primary mb-0 text-truncate">{{ item.wanted_skill }}</h6>
+                            </div>
+                        </div>
+                    </div>
+
+                    {% if item.notes %}
+                    <p class="text-muted small mb-3">
+                        <i class="bi bi-chat-quote me-1"></i> "{{ item.notes }}"
+                    </p>
+                    {% endif %}
+
+                    <div class="d-flex justify-content-between align-items-center pt-2 border-top">
+                        <span class="fw-bold text-warning small">
+                            🪙 {{ item.coins_reward }} Coin ({{ item.session_hours }} Hr Session)
+                        </span>
+
+                        {% if item.status == 'OPEN' %}
+                            {% if item.student != student %}
+                            <form method="POST" class="m-0">
+                                {% csrf_token %}
+                                <input type="hidden" name="action" value="accept_barter">
+                                <input type="hidden" name="listing_id" value="{{ item.id }}">
+                                <button type="submit" class="btn btn-sm btn-primary rounded-pill px-4 fw-bold">
+                                    <i class="bi bi-handshake me-1"></i> Accept & Match
+                                </button>
+                            </form>
+                            {% else %}
+                            <span class="badge bg-light text-muted border">Your Listing</span>
+                            {% endif %}
+                        {% elif item.status == 'IN_PROGRESS' %}
+                            <form method="POST" class="m-0">
+                                {% csrf_token %}
+                                <input type="hidden" name="action" value="complete_barter">
+                                <input type="hidden" name="listing_id" value="{{ item.id }}">
+                                <button type="submit" class="btn btn-sm btn-success rounded-pill px-3 fw-bold">
+                                    <i class="bi bi-check-lg me-1"></i> Mark Session Complete
+                                </button>
+                            </form>
+                        {% endif %}
+                    </div>
+                </div>
+                {% empty %}
+                <div class="card p-5 text-center border-0 rounded-4 shadow-sm">
+                    <div class="fs-1 mb-2">🤝</div>
+                    <h5 class="fw-bold">No Barter Listings Yet</h5>
+                    <p class="text-muted small">Be the first to post a skill exchange on campus!</p>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

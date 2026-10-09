@@ -1,0 +1,146 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Placement Time Machine · 5-Year Future Trajectory | Campus to Career{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <!-- Header Banner -->
+    <div class="p-4 p-md-5 rounded-4 text-white mb-5 shadow-lg position-relative overflow-hidden" 
+         style="background: linear-gradient(135deg, #4f46e5 0%, #7c3aed 50%, #9333ea 100%);">
+        <div class="row align-items-center g-4">
+            <div class="col-lg-8">
+                <span class="badge bg-warning text-dark px-3 py-2 rounded-pill fw-bold text-uppercase mb-3 shadow-sm">
+                    <i class="bi bi-hourglass-split me-1"></i> FUTURE CAREER SIMULATION ENGINE
+                </span>
+                <h1 class="display-5 fw-bold text-white mb-3">
+                    Placement Time Machine ⏳
+                </h1>
+                <p class="lead mb-4 text-white text-opacity-90">
+                    "Aise hi chala toh 5 saal baad ₹30K pe rahega... Agar roz 1 DSA question solve kiya toh <strong>5 saal baad ₹1.2 Lakh/month</strong> pe rahega!"<br>
+                    Adjust your daily habits today and watch your future 5-year lifestyle, salary, and career trajectory unfold in real-time.
+                </p>
+                <div class="d-flex flex-wrap gap-2">
+                    <span class="badge bg-white text-primary px-3 py-2 rounded-pill fw-bold">
+                        Compounding Habits = Compounding CTC
+                    </span>
+                </div>
+            </div>
+            <div class="col-lg-4 text-center text-lg-end">
+                <div class="d-inline-block p-4 rounded-4 bg-white bg-opacity-10 backdrop-blur border border-white border-opacity-20 text-center shadow">
+                    <div class="display-4 fw-black text-warning mb-1">
+                        {{ effort_score }}/100
+                    </div>
+                    <div class="text-white fw-bold">Compounding Trajectory Score</div>
+                    <span class="badge bg-success rounded-pill px-3 py-1 mt-2">
+                        Future Forecast Active
+                    </span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Habit Controls Panel -->
+    <div class="card p-4 border-0 rounded-4 shadow-sm mb-5 bg-light">
+        <h5 class="fw-bold mb-3 text-dark"><i class="bi bi-sliders me-2 text-primary"></i>Your Daily Routine Habit Inputs</h5>
+        <form method="GET" class="row g-4">
+            <div class="col-md-3">
+                <label class="form-label small fw-bold">Daily DSA Problems: <span class="text-primary fw-bold" id="dsaVal">{{ dsa_per_day }}</span></label>
+                <input type="range" name="dsa" min="0" max="5" value="{{ dsa_per_day }}" class="form-range" 
+                       oninput="document.getElementById('dsaVal').innerText = this.value; this.form.submit();">
+                <div class="d-flex justify-content-between text-muted" style="font-size: 0.7rem;">
+                    <span>0 (Zero DSA)</span>
+                    <span>5 (Hardcore)</span>
+                </div>
+            </div>
+
+            <div class="col-md-3">
+                <label class="form-label small fw-bold">Weekly Git Commits: <span class="text-success fw-bold" id="gitVal">{{ git_commits }}</span></label>
+                <input type="range" name="git" min="0" max="10" value="{{ git_commits }}" class="form-range" 
+                       oninput="document.getElementById('gitVal').innerText = this.value; this.form.submit();">
+                <div class="d-flex justify-content-between text-muted" style="font-size: 0.7rem;">
+                    <span>0</span>
+                    <span>10 Commits</span>
+                </div>
+            </div>
+
+            <div class="col-md-3">
+                <label class="form-label small fw-bold">Weekly Mock Interviews: <span class="text-info fw-bold" id="mockVal">{{ mock_interviews }}</span></label>
+                <input type="range" name="mocks" min="0" max="4" value="{{ mock_interviews }}" class="form-range" 
+                       oninput="document.getElementById('mockVal').innerText = this.value; this.form.submit();">
+                <div class="d-flex justify-content-between text-muted" style="font-size: 0.7rem;">
+                    <span>0</span>
+                    <span>4 Mocks</span>
+                </div>
+            </div>
+
+            <div class="col-md-3">
+                <label class="form-label small fw-bold">Reels Doomscrolling: <span class="text-danger fw-bold" id="reelVal">{{ doomscroll_hours }} hrs/day</span></label>
+                <input type="range" name="reels" min="0" max="6" value="{{ doomscroll_hours }}" class="form-range" 
+                       oninput="document.getElementById('reelVal').innerText = this.value + ' hrs/day'; this.form.submit();">
+                <div class="d-flex justify-content-between text-muted" style="font-size: 0.7rem;">
+                    <span>0 hrs</span>
+                    <span>6 hrs</span>
+                </div>
+            </div>
+        </form>
+    </div>
+
+    <!-- 5-Year Parallel Comparison Deck -->
+    <div class="row g-4 mb-5">
+        <!-- Path A: Routine Path -->
+        <div class="col-lg-6">
+            <div class="card p-4 p-md-5 h-100 border-0 rounded-4 shadow-sm bg-white" style="border-top: 5px solid #ef4444 !important;">
+                <span class="badge bg-danger bg-opacity-10 text-danger border border-danger rounded-pill px-3 py-1.5 fw-bold mb-3 d-inline-block" style="width: fit-content;">
+                    PATH A · "KAL SE SHURU KARUNGA" (STAGNANT TRAJECTORY)
+                </span>
+                <h4 class="fw-bold text-dark mb-4">Zero Daily Discipline (Low Effort)</h4>
+
+                <div class="vstack gap-3">
+                    {% for step in trajectory_low %}
+                    <div class="p-3 rounded-3 bg-light border">
+                        <div class="d-flex justify-content-between align-items-center mb-1">
+                            <strong class="text-danger small">{{ step.year }}</strong>
+                            <span class="badge bg-danger rounded-pill">{{ step.ctc }}</span>
+                        </div>
+                        <h6 class="fw-bold text-dark mb-1">{{ step.role }}</h6>
+                        <small class="text-muted"><i class="bi bi-geo-alt me-1"></i>{{ step.life }}</small>
+                    </div>
+                    {% endfor %}
+                </div>
+
+                <div class="mt-4 pt-3 border-top text-center text-danger fw-bold small">
+                    5-Year Result: Salary ₹48,000/mo · Worry about automation layoffs
+                </div>
+            </div>
+        </div>
+
+        <!-- Path B: 1 DSA Daily Compounded -->
+        <div class="col-lg-6">
+            <div class="card p-4 p-md-5 h-100 border-0 rounded-4 shadow-sm bg-white" style="border-top: 5px solid #10b981 !important;">
+                <span class="badge bg-success bg-opacity-10 text-success border border-success rounded-pill px-3 py-1.5 fw-bold mb-3 d-inline-block" style="width: fit-content;">
+                    PATH B · 1 DSA QUESTION DAILY (COMPOUNDING TRAJECTORY)
+                </span>
+                <h4 class="fw-bold text-dark mb-4">Daily Consistency & Proof Building</h4>
+
+                <div class="vstack gap-3">
+                    {% for step in trajectory_high %}
+                    <div class="p-3 rounded-3 bg-success bg-opacity-10 border border-success border-opacity-25">
+                        <div class="d-flex justify-content-between align-items-center mb-1">
+                            <strong class="text-success small">{{ step.year }}</strong>
+                            <span class="badge bg-success rounded-pill">{{ step.ctc }}</span>
+                        </div>
+                        <h6 class="fw-bold text-dark mb-1">{{ step.role }}</h6>
+                        <small class="text-muted"><i class="bi bi-stars text-warning me-1"></i>{{ step.life }}</small>
+                    </div>
+                    {% endfor %}
+                </div>
+
+                <div class="mt-4 pt-3 border-top text-center text-success fw-bold small">
+                    5-Year Result: ₹2.5 - 4.5 Lakhs/month · Staff Engineer · True Financial Freedom
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

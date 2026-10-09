@@ -1,0 +1,140 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}AI Brutal Interview Roaster · Zero Sugarcoating | Campus to Career{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <!-- Header Banner -->
+    <div class="p-4 p-md-5 rounded-4 text-white mb-5 shadow-lg position-relative overflow-hidden" 
+         style="background: linear-gradient(135deg, #b91c1c 0%, #dc2626 50%, #ea580c 100%);">
+        <div class="row align-items-center g-4">
+            <div class="col-lg-8">
+                <span class="badge bg-warning text-dark px-3 py-2 rounded-pill fw-bold text-uppercase mb-3 shadow-sm">
+                    <i class="bi bi-fire me-1"></i> ZERO-SUGARCOATING MOCK DRILL
+                </span>
+                <h1 class="display-5 fw-bold text-white mb-3">
+                    AI Interview Roaster 🔥
+                </h1>
+                <p class="lead mb-4 text-white text-opacity-90">
+                    "AI interview lega aur sidha roast karega — <strong>'Tu 3 baar atka, confidence zero hai, buzzwords phekna band kar!'</strong>"<br>
+                    Real HRs reject without telling you why. Our AI roaster tells you the brutal truth so you fix it before the final campus placement interview!
+                </p>
+                <div class="d-flex flex-wrap gap-2">
+                    <span class="badge bg-white text-danger px-3 py-2 rounded-pill fw-bold">
+                        <i class="bi bi-mic-fill me-1"></i> Atak Meter + Generic Buzzword Detector Active
+                    </span>
+                </div>
+            </div>
+            <div class="col-lg-4 text-center text-lg-end">
+                <div class="d-inline-block p-4 rounded-4 bg-white bg-opacity-10 backdrop-blur border border-white border-opacity-20 text-center shadow">
+                    <div class="display-4 fw-black text-warning mb-1">
+                        {% if roast_result %}{{ roast_result.confidence_score }}%{% else %}0%{% endif %}
+                    </div>
+                    <div class="text-white fw-bold">Current Roast Confidence</div>
+                    <span class="badge bg-dark text-warning rounded-pill px-3 py-1 mt-2">
+                        {% if roast_result %}Atka: {{ roast_result.stumble_count }} times{% else %}Awaiting Answer{% endif %}
+                    </span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row g-4">
+        <!-- Input Form -->
+        <div class="col-lg-6">
+            <div class="card p-4 border-0 rounded-4 shadow-sm h-100">
+                <h4 class="fw-bold mb-3 text-dark"><i class="bi bi-chat-left-dots-fill text-danger me-2"></i>Give Your Interview Answer</h4>
+                <p class="text-muted small mb-4">
+                    Choose a tough campus interview question and submit your actual answer. Zero sweet talk; expect a brutal roast.
+                </p>
+
+                <form method="POST">
+                    {% csrf_token %}
+                    <div class="mb-3">
+                        <label class="form-label small fw-bold text-dark">Interview Question</label>
+                        <select name="question" class="form-select rounded-3 py-2">
+                            {% for q in sample_questions %}
+                            <option value="{{ q }}" {% if question == q %}selected{% endif %}>{{ q }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+
+                    <div class="mb-4">
+                        <label class="form-label small fw-bold text-dark">Your Spoken / Written Response</label>
+                        <textarea name="user_answer" rows="7" class="form-control rounded-3 p-3" 
+                                  placeholder="e.g. Hi sir, I am a hardworking student. I am passionate about Python and I made an e-commerce website with my team..." required>{{ user_answer }}</textarea>
+                        <div class="form-text small text-muted">
+                            💡 Tip: Type exactly how you speak in live mock rounds!
+                        </div>
+                    </div>
+
+                    <button type="submit" class="btn btn-danger w-100 fw-bold py-2.5 rounded-pill shadow-sm">
+                        <i class="bi bi-fire me-1"></i> Roast My Answer Brutally!
+                    </button>
+                </form>
+            </div>
+        </div>
+
+        <!-- Roast Output Display -->
+        <div class="col-lg-6">
+            {% if roast_result %}
+            <div class="card p-4 p-md-5 border-0 rounded-4 shadow-sm h-100 bg-white" style="border-left: 6px solid #dc2626 !important;">
+                <span class="badge bg-danger rounded-pill px-3 py-1.5 fw-bold mb-3 d-inline-block" style="width: fit-content;">
+                    🔥 SAVAGE ROAST ANALYSIS
+                </span>
+
+                <h4 class="fw-bold text-danger mb-4">
+                    "{{ roast_result.roast_line }}"
+                </h4>
+
+                <div class="row g-3 mb-4">
+                    <div class="col-6">
+                        <div class="p-3 rounded-3 bg-light border text-center">
+                            <span class="d-block small text-muted">Stumbles / Atka Meter</span>
+                            <strong class="fs-4 text-danger">{{ roast_result.stumble_count }} Times</strong>
+                        </div>
+                    </div>
+                    <div class="col-6">
+                        <div class="p-3 rounded-3 bg-light border text-center">
+                            <span class="d-block small text-muted">Confidence Score</span>
+                            <strong class="fs-4 {% if roast_result.confidence_score > 60 %}text-success{% else %}text-warning{% endif %}">
+                                {{ roast_result.confidence_score }}%
+                            </strong>
+                        </div>
+                    </div>
+                </div>
+
+                {% if roast_result.buzzwords_used %}
+                <div class="mb-4">
+                    <span class="small fw-bold text-muted text-uppercase d-block mb-2">Overused Cliche Buzzwords Detected:</span>
+                    <div class="d-flex flex-wrap gap-2">
+                        {% for buzz in roast_result.buzzwords_used %}
+                        <span class="badge bg-warning bg-opacity-10 text-danger border border-warning rounded-pill px-3 py-1">
+                            ⚠️ "{{ buzz }}"
+                        </span>
+                        {% endfor %}
+                    </div>
+                </div>
+                {% endif %}
+
+                <div class="p-3 rounded-3 bg-success bg-opacity-10 border border-success mt-auto">
+                    <h6 class="fw-bold text-success mb-1">
+                        <i class="bi bi-tools me-1"></i> How to Fix This Like a Pro:
+                    </h6>
+                    <p class="text-dark small mb-0">{{ roast_result.actionable_fix }}</p>
+                </div>
+            </div>
+            {% else %}
+            <div class="card p-5 border-0 rounded-4 shadow-sm h-100 d-flex align-items-center justify-content-center text-center bg-light">
+                <div class="fs-1 mb-3">🎙️🔥</div>
+                <h5 class="fw-bold text-dark">Awaiting Your Answer</h5>
+                <p class="text-muted small mb-0" style="max-width: 380px;">
+                    Type your answer on the left and hit <strong>"Roast My Answer"</strong>. The AI will give you unfiltered feedback with zero diplomatic sugarcoating.
+                </p>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -276,6 +276,17 @@ class Command(BaseCommand):
             )
             companies[cdata['name']] = comp
 
+        # Admin User
+        admin_user, _ = User.objects.get_or_create(
+            username="Sambit",
+            defaults={"email": "sambit@campuslink.com", "role": "SUPER_ADMIN", "is_staff": True, "is_superuser": True}
+        )
+        admin_user.role = "SUPER_ADMIN"
+        admin_user.is_staff = True
+        admin_user.is_superuser = True
+        admin_user.set_password("sambit@123")
+        admin_user.save()
+
         # Users and profiles setup
         student_user, _ = User.objects.get_or_create(username="student1", defaults={"email": "student1@example.com", "role": "STUDENT"})
         student_user.set_password("password123")

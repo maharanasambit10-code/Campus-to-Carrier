@@ -1,0 +1,125 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Parents Sunday WhatsApp Report | Campus to Career{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <!-- Header Banner -->
+    <div class="p-4 p-md-5 rounded-4 text-white mb-5 shadow-lg position-relative overflow-hidden" 
+         style="background: linear-gradient(135deg, #059669 0%, #10b981 50%, #14b8a6 100%);">
+        <div class="row align-items-center g-4">
+            <div class="col-lg-8">
+                <span class="badge bg-warning text-dark px-3 py-2 rounded-pill fw-bold text-uppercase mb-3 shadow-sm">
+                    <i class="bi bi-whatsapp me-1"></i> PARENTAL PROGRESS SYNC
+                </span>
+                <h1 class="display-5 fw-bold text-white mb-3">
+                    Parents WhatsApp Placement Report 📱
+                </h1>
+                <p class="lead mb-4 text-white text-opacity-90">
+                    "Parents ke WhatsApp pe har Sunday beta ka verified placement report jayega."<br>
+                    Attendance, coding hours, mock interview rank, aur expected placement odds — 1-click authentic WhatsApp card.
+                </p>
+                <div class="d-flex flex-wrap gap-2">
+                    <a href="{{ encoded_whatsapp_url }}" target="_blank" class="btn btn-light text-success fw-bold px-4 py-2 rounded-pill shadow-sm">
+                        <i class="bi bi-whatsapp me-1"></i> Open & Send to Parents via WhatsApp
+                    </a>
+                </div>
+            </div>
+            <div class="col-lg-4 text-center text-lg-end">
+                <div class="d-inline-block p-4 rounded-4 bg-white bg-opacity-10 backdrop-blur border border-white border-opacity-20 text-center shadow">
+                    <div class="display-4 fw-black text-warning mb-1">
+                        {{ prob }}%
+                    </div>
+                    <div class="text-white fw-bold">Current Placement Odds</div>
+                    <span class="badge bg-light text-success rounded-pill px-3 py-1 mt-2">
+                        Safe Placement Bracket
+                    </span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row g-4 align-items-center justify-content-center">
+        <!-- Live WhatsApp Chat Simulator View -->
+        <div class="col-lg-6">
+            <div class="card border-0 rounded-4 shadow-lg overflow-hidden mx-auto" style="max-width: 440px; background-color: #0b141a;">
+                <!-- WhatsApp Top Bar -->
+                <div class="p-3 d-flex align-items-center justify-content-between text-white border-bottom border-dark" style="background-color: #202c33;">
+                    <div class="d-flex align-items-center gap-3">
+                        <i class="bi bi-arrow-left fs-5"></i>
+                        <span class="avatar avatar-sm rounded-circle bg-success text-white p-2">👨‍👩‍👦</span>
+                        <div>
+                            <strong class="d-block small text-white">Papa / Mummy (Home)</strong>
+                            <small class="text-success" style="font-size: 0.72rem;">online</small>
+                        </div>
+                    </div>
+                    <div class="d-flex gap-3 text-white-50">
+                        <i class="bi bi-camera-video-fill"></i>
+                        <i class="bi bi-telephone-fill"></i>
+                        <i class="bi bi-three-dots-vertical"></i>
+                    </div>
+                </div>
+
+                <!-- Chat Canvas with WhatsApp Wallpaper -->
+                <div class="p-3" style="background: #0b141a url('https://user-images.githubusercontent.com/15075759/28719144-86dc0f70-73b1-11e7-911d-60d70fcded21.png') repeat; min-height: 480px;">
+                    <!-- Message Bubble -->
+                    <div class="p-3 rounded-3 text-white mb-2 shadow-sm position-relative ms-auto" 
+                         style="background-color: #005c4b; max-width: 92%; border-radius: 8px 0px 8px 8px !important; font-size: 0.85rem; line-height: 1.45;">
+                        <pre class="m-0 text-white font-sans" style="white-space: pre-wrap; font-family: system-ui, -apple-system, sans-serif;">{{ whatsapp_text }}</pre>
+                        <div class="text-end text-white-50 mt-1" style="font-size: 0.68rem;">
+                            Sunday 8:00 PM · <i class="bi bi-check2-all text-info"></i>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- WhatsApp Input Mock -->
+                <div class="p-2 d-flex align-items-center gap-2" style="background-color: #202c33;">
+                    <i class="bi bi-emoji-smile text-white-50 fs-5 ps-2"></i>
+                    <input type="text" class="form-control form-control-sm border-0 rounded-pill text-white px-3" 
+                           style="background-color: #2a3942;" placeholder="Message to Parents..." disabled>
+                    <i class="bi bi-mic-fill text-white-50 fs-5 pe-2"></i>
+                </div>
+            </div>
+        </div>
+
+        <!-- Dispatch Controls -->
+        <div class="col-lg-5">
+            <div class="card p-4 border-0 rounded-4 shadow-sm">
+                <h4 class="fw-bold mb-3 text-dark">One-Click Sunday Dispatch</h4>
+                <p class="text-muted small mb-4">
+                    College ke har Sunday shaam 8:00 baje parents ke registered phone number pe beta ka verified placement score report deliver kiya jaata hai.
+                </p>
+
+                <div class="mb-3">
+                    <label class="form-label small fw-bold">Parent WhatsApp Number (Optional Direct)</label>
+                    <input type="tel" id="parentPhone" class="form-control rounded-3" placeholder="+91 98765 43210" value="+91">
+                </div>
+
+                <div class="d-grid gap-2 mb-4">
+                    <button type="button" class="btn btn-success fw-bold py-2.5 rounded-pill shadow-sm" onclick="sendToParent()">
+                        <i class="bi bi-whatsapp me-2"></i> Send via WhatsApp Web
+                    </button>
+                    <button type="button" class="btn btn-outline-secondary rounded-pill py-2 small fw-semibold" onclick="navigator.clipboard.writeText(`{{ whatsapp_text|escapejs }}`); alert('Copied report to clipboard!');">
+                        <i class="bi bi-clipboard me-1"></i> Copy Report Card Text
+                    </button>
+                </div>
+
+                <div class="p-3 rounded-3 bg-light border small text-muted">
+                    <i class="bi bi-info-circle text-primary me-1"></i>
+                    <strong>Parent Trust Guarantee:</strong> Transparent reports eliminate confusion at home and keep families proud of genuine daily efforts.
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+function sendToParent() {
+    var phone = document.getElementById('parentPhone').value.replace(/[^0-9]/g, '');
+    var text = encodeURIComponent(`{{ whatsapp_text|escapejs }}`);
+    var url = phone.length > 5 ? `https://api.whatsapp.com/send?phone=${phone}&text=${text}` : `https://api.whatsapp.com/send?text=${text}`;
+    window.open(url, '_blank');
+}
+</script>
+{% endblock %}

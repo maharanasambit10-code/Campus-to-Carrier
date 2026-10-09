@@ -1,0 +1,135 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Job Jisse Tu 3 Mahine Me Bhagega · AI Attrition Predictor | Campus to Career{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <!-- Header Banner -->
+    <div class="p-4 p-md-5 rounded-4 text-white mb-5 shadow-lg position-relative overflow-hidden" 
+         style="background: linear-gradient(135deg, #e11d48 0%, #be123c 50%, #881337 100%);">
+        <div class="row align-items-center g-4">
+            <div class="col-lg-8">
+                <span class="badge bg-warning text-dark px-3 py-2 rounded-pill fw-bold text-uppercase mb-3 shadow-sm">
+                    <i class="bi bi-door-open-fill me-1"></i> REVERSE PLACEMENT DIAGNOSTIC
+                </span>
+                <h1 class="display-5 fw-bold text-white mb-3">
+                    Job Jisse Tu 3 Mahine Mein Bhagega 🏃‍♂️
+                </h1>
+                <p class="lead mb-4 text-white text-opacity-90">
+                    "Sab bolte hain kaunsi job milegi... Koi ye nahi batata <strong>kaunsi job se tu 90 din me resign deke bhaagega!</strong>"<br>
+                    AI scans your working personality against corporate bureaucracy, bench culture, and tech stack stagnation.
+                </p>
+                <div class="d-flex flex-wrap gap-2">
+                    <span class="badge bg-white text-danger px-3 py-2 rounded-pill fw-bold">
+                        <i class="bi bi-fire me-1"></i> 90-Day Resignation Risk Engine
+                    </span>
+                </div>
+            </div>
+            <div class="col-lg-4 text-center text-lg-end">
+                <div class="d-inline-block p-4 rounded-4 bg-white bg-opacity-10 backdrop-blur border border-white border-opacity-20 text-center shadow">
+                    <div class="display-4 fw-black text-warning mb-1">
+                        {{ data.attrition_prob }}%
+                    </div>
+                    <div class="text-white fw-bold">90-Day Resignation Odds</div>
+                    <span class="badge bg-danger rounded-pill px-3 py-1 mt-2">
+                        Quit in ~{{ data.days_to_quit }} Days
+                    </span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Company Selector Controls -->
+    <div class="card p-4 border-0 rounded-4 shadow-sm mb-5 bg-light">
+        <form method="GET" class="row g-3 align-items-end">
+            <div class="col-md-5">
+                <label class="form-label small fw-bold text-dark">Target Company to Test</label>
+                <select name="company" class="form-select rounded-3 py-2">
+                    {% for c in all_companies %}
+                    <option value="{{ c }}" {% if target_company == c %}selected{% endif %}>{{ c }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="col-md-5">
+                <label class="form-label small fw-bold text-dark">Your Work Style & Personality</label>
+                <select name="work_style" class="form-select rounded-3 py-2">
+                    <option value="Agile Product Builder" {% if work_style == 'Agile Product Builder' %}selected{% endif %}>Agile Product Builder (Likes Fast Shipping & High Ownership)</option>
+                    <option value="Structured Corporate Follower" {% if work_style == 'Structured Corporate Follower' %}selected{% endif %}>Structured Corporate Follower (Likes Fixed 9-to-5 & Hierarchy)</option>
+                    <option value="R&D Deep Diver" {% if work_style == 'R&D Deep Diver' %}selected{% endif %}>R&D Deep Diver (Loves Algorithms & New Tech)</option>
+                </select>
+            </div>
+            <div class="col-md-2">
+                <button type="submit" class="btn btn-danger w-100 fw-bold py-2 rounded-pill shadow-sm">
+                    <i class="bi bi-cpu me-1"></i> Scan Attrition
+                </button>
+            </div>
+        </form>
+    </div>
+
+    <!-- Results Showcase -->
+    <div class="row g-4 mb-5">
+        <!-- Punchline Card -->
+        <div class="col-lg-7">
+            <div class="card p-4 p-md-5 h-100 border-0 rounded-4 shadow-sm" style="border-left: 6px solid #e11d48 !important;">
+                <span class="badge bg-danger bg-opacity-10 text-danger border border-danger rounded-pill px-3 py-1.5 fw-bold mb-3 d-inline-block" style="width: fit-content;">
+                    ⚠️ AI BRUTAL VERDICT
+                </span>
+                <h3 class="fw-bold text-dark mb-3">
+                    "{{ data.ai_verdict }}"
+                </h3>
+
+                <hr class="my-4">
+
+                <h6 class="fw-bold text-muted small text-uppercase">Culture Shock & Boredom Factor:</h6>
+                <div class="p-3 rounded-3 bg-light border mb-4">
+                    <p class="text-danger fw-semibold mb-0">
+                        <i class="bi bi-exclamation-triangle-fill me-2"></i> {{ data.shock_factor }}
+                    </p>
+                </div>
+
+                <div class="p-3 rounded-4 bg-success bg-opacity-10 border border-success">
+                    <h6 class="fw-bold text-success mb-1">
+                        <i class="bi bi-check-circle-fill me-1"></i> Ideal Alternative Recommendation:
+                    </h6>
+                    <p class="text-dark small mb-0">{{ data.ideal_alternative }}</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Metrics Side -->
+        <div class="col-lg-5">
+            <div class="card p-4 h-100 border-0 rounded-4 shadow-sm">
+                <h5 class="fw-bold mb-4">Attrition Risk Meters</h5>
+
+                <div class="mb-4">
+                    <div class="d-flex justify-content-between small fw-bold mb-1">
+                        <span>Boredom Index</span>
+                        <span class="text-danger">{{ data.boredom_score }}%</span>
+                    </div>
+                    <div class="progress" style="height: 10px;">
+                        <div class="progress-bar bg-danger" style="width: {{ data.boredom_score }}%;"></div>
+                    </div>
+                    <small class="text-muted" style="font-size: 0.72rem;">High risk of routine ticket maintenance & slow approvals.</small>
+                </div>
+
+                <div class="mb-4">
+                    <div class="d-flex justify-content-between small fw-bold mb-1">
+                        <span>90-Day Resignation Probability</span>
+                        <span class="text-danger">{{ data.attrition_prob }}%</span>
+                    </div>
+                    <div class="progress" style="height: 10px;">
+                        <div class="progress-bar bg-warning" style="width: {{ data.attrition_prob }}%;"></div>
+                    </div>
+                    <small class="text-muted" style="font-size: 0.72rem;">Estimated early exit around ~{{ data.days_to_quit }} days.</small>
+                </div>
+
+                <div class="p-3 rounded-3 bg-light border">
+                    <span class="d-block small text-muted">Company Operational Archetype:</span>
+                    <strong class="text-dark">{{ data.culture_type }}</strong>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

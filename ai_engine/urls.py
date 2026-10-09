@@ -74,5 +74,14 @@ urlpatterns = [
     path('unique-features/taskbar/', views.innovation_suite_view),
     path('api/innovations/<str:feature_name>/', views.api_feature_interaction, name='api_feature_interaction'),
     path('api/unique-features/<str:feature_name>/', views.api_feature_interaction),
+
+    # Ultra-Unique Placement Innovation Suite (7 Brand New Features)
+    path('skill-barter/', views.skill_barter_view, name='skill_barter'),
+    path('hr-live-stream/', views.hr_live_stream_view, name='hr_live_stream'),
+    path('job-attrition/', views.job_attrition_predictor_view, name='job_attrition'),
+    path('tpo-transparency/', views.tpo_transparency_view, name='tpo_transparency'),
+    path('placement-time-machine/', views.placement_time_machine_view, name='placement_time_machine'),
+    path('parents-whatsapp-report/', views.parents_whatsapp_report_view, name='parents_whatsapp_report'),
+    path('interview-roaster/', views.ai_interview_roaster_view, name='interview_roaster'),
 ]
 

@@ -454,4 +454,72 @@ class PersonalizedImprovementAction(models.Model):
         return f"{self.title} ({self.expected_roi_boost}) for {self.student.user.username}"
 
 
+class SkillBarterWallet(models.Model):
+    student = models.OneToOneField(StudentProfile, on_delete=models.CASCADE, related_name='barter_wallet')
+    coins = models.IntegerField(default=5)  # Welcome 5 barter coins
+    hours_taught = models.IntegerField(default=0)
+    hours_learned = models.IntegerField(default=0)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f"{self.student.user.username} Wallet ({self.coins} Coins)"
+
+
+class SkillBarterListing(models.Model):
+    STATUS_CHOICES = (
+        ('OPEN', 'Open for Barter'),
+        ('IN_PROGRESS', 'Exchange in Progress'),
+        ('COMPLETED', 'Completed'),
+    )
+    student = models.ForeignKey(StudentProfile, on_delete=models.CASCADE, related_name='barter_listings')
+    offer_skill = models.CharField(max_length=120)   # e.g. DSA, Python, Next.js
+    wanted_skill = models.CharField(max_length=120)  # e.g. Spoken English, System Design
+    session_hours = models.IntegerField(default=1)
+    coins_reward = models.IntegerField(default=1)
+    notes = models.TextField(blank=True)
+    status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='OPEN')
+    partner = models.ForeignKey(StudentProfile, on_delete=models.SET_NULL, null=True, blank=True, related_name='barter_matches')
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        ordering = ['-created_at']
+
+    def __str__(self):
+        return f"Teach {self.offer_skill} <-> Learn {self.wanted_skill} ({self.student.user.username})"
+
+
+class LiveCodingStream(models.Model):
+    student = models.ForeignKey(StudentProfile, on_delete=models.CASCADE, related_name='live_streams')
+    anonymous_alias = models.CharField(max_length=120, default='Night-Owl Coder #402')
+    language = models.CharField(max_length=80, default='Python / Django')
+    problem_title = models.CharField(max_length=255, default='LRU Cache & Concurrency System')
+    is_live = models.BooleanField(default=True)
+    viewer_count = models.IntegerField(default=18)
+    hr_scouts_count = models.IntegerField(default=3)
+    code_snippet = models.TextField(default='# Live 2:15 AM Session\nclass LRUCache:\n    def __init__(self, capacity: int):\n        self.capacity = capacity\n        self.cache = {}\n')
+    started_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        ordering = ['-is_live', '-started_at']
+
+    def __str__(self):
+        return f"{self.anonymous_alias} - {self.problem_title}"
+
+
+class TpoFairnessVote(models.Model):
+    college_name = models.CharField(max_length=200, default='BPUT University')
+    student_token = models.CharField(max_length=64, unique=True)
+    transparency_rating = models.IntegerField(default=4)  # 1-5 scale
+    is_fair_and_unbiased = models.BooleanField(default=True)
+    comment = models.CharField(max_length=255, blank=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        ordering = ['-created_at']
+
+    def __str__(self):
+        return f"Vote {self.transparency_rating}/5 for {self.college_name}"
+
+
+
 

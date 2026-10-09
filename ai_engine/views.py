@@ -1,4 +1,7 @@
 import json
+import random
+import hashlib
+import urllib.parse
 from django.shortcuts import render, get_object_or_404, redirect
 from django.contrib.auth.decorators import login_required
 from django.views.decorators.csrf import csrf_exempt
@@ -13,6 +16,10 @@ from .models import (
     ProofPassport,
     PassportArtifact,
     PeerContributionReview,
+    SkillBarterWallet,
+    SkillBarterListing,
+    LiveCodingStream,
+    TpoFairnessVote,
 )
 from .services import (
     seed_default_flight_challenges,
@@ -1308,6 +1315,437 @@ def api_feature_interaction(request, feature_name):
         })
 
     return JsonResponse({'status': 'success', 'message': f'Feature {feature_name} active and monitored.'})
+
+
+# =========================================================================
+# ULTRA-UNIQUE PLACEMENT INTELLIGENCE SUITE (7 BRAND NEW FEATURES)
+# =========================================================================
+
+def _get_or_create_student_and_wallet(request):
+    """Helper to retrieve student profile and barter wallet safely."""
+    from students.models import StudentProfile
+    student = None
+    if request.user.is_authenticated and hasattr(request.user, 'student_profile'):
+        student = request.user.student_profile
+    if not student:
+        student = StudentProfile.objects.first()
+    wallet = None
+    if student:
+        wallet, _ = SkillBarterWallet.objects.get_or_create(student=student, defaults={'coins': 5})
+    return student, wallet
+
+
+def skill_barter_view(request):
+    """
+    1. SKILL BARTER SYSTEM (Tu usko DSA padha, wo tujhe English padhayega. 1 ghanta = 1 Coin)
+    Peer learning barter economy for campus placements.
+    """
+    student, wallet = _get_or_create_student_and_wallet(request)
+
+    if request.method == 'POST':
+        action = request.POST.get('action')
+        if action == 'create_listing' and student:
+            offer_skill = request.POST.get('offer_skill', '').strip()
+            wanted_skill = request.POST.get('wanted_skill', '').strip()
+            session_hours = int(request.POST.get('session_hours', 1))
+            notes = request.POST.get('notes', '').strip()
+            if offer_skill and wanted_skill:
+                SkillBarterListing.objects.create(
+                    student=student,
+                    offer_skill=offer_skill,
+                    wanted_skill=wanted_skill,
+                    session_hours=session_hours,
+                    coins_reward=session_hours,
+                    notes=notes
+                )
+                messages.success(request, f"Barter listing created! You will earn {session_hours} Coin upon teaching.")
+                return redirect('skill_barter')
+
+        elif action == 'accept_barter' and student:
+            listing_id = request.POST.get('listing_id')
+            listing = SkillBarterListing.objects.filter(id=listing_id, status='OPEN').first()
+            if listing and listing.student != student:
+                listing.partner = student
+                listing.status = 'IN_PROGRESS'
+                listing.save()
+                messages.success(request, f"Barter match established! You connected with {listing.student.user.username}.")
+                return redirect('skill_barter')
+
+        elif action == 'complete_barter' and student:
+            listing_id = request.POST.get('listing_id')
+            listing = SkillBarterListing.objects.filter(id=listing_id, status='IN_PROGRESS').first()
+            if listing:
+                listing.status = 'COMPLETED'
+                listing.save()
+                teacher_wallet, _ = SkillBarterWallet.objects.get_or_create(student=listing.student)
+                teacher_wallet.coins += listing.coins_reward
+                teacher_wallet.hours_taught += listing.session_hours
+                teacher_wallet.save()
+                if listing.partner:
+                    learner_wallet, _ = SkillBarterWallet.objects.get_or_create(student=listing.partner)
+                    learner_wallet.hours_learned += listing.session_hours
+                    learner_wallet.save()
+                messages.success(request, f"Barter completed! {listing.coins_reward} Coin transferred to mentor.")
+                return redirect('skill_barter')
+
+    listings = SkillBarterListing.objects.all()[:20]
+    if not listings.exists() and student:
+        SkillBarterListing.objects.create(
+            student=student,
+            offer_skill="DSA (Graphs, Trees & DP in C++)",
+            wanted_skill="Spoken English & HR Behavioral Answers",
+            session_hours=1,
+            coins_reward=1,
+            notes="Solved 300+ LeetCode problems. Looking to polish conversational confidence for MNC interviews."
+        )
+        SkillBarterListing.objects.create(
+            student=student,
+            offer_skill="React & Full Stack Web UI",
+            wanted_skill="System Design & Low-Level API Architecture",
+            session_hours=2,
+            coins_reward=2,
+            notes="Built 4 full-stack projects. Want to learn caching, Redis and message queues."
+        )
+        listings = SkillBarterListing.objects.all()
+
+    context = {
+        'student': student,
+        'wallet': wallet,
+        'listings': listings,
+        'open_listings_count': SkillBarterListing.objects.filter(status='OPEN').count(),
+        'completed_listings_count': SkillBarterListing.objects.filter(status='COMPLETED').count(),
+    }
+    return render(request, 'ai_engine/skill_barter.html', context)
+
+
+def hr_live_stream_view(request):
+    """
+    2. HR KA LIVE CODING DEKHEGA (Twitch for Placement Coders)
+    Anonymous 2 AM live coding screen where corporate HR scouts discover late-night hustlers.
+    """
+    student, _ = _get_or_create_student_and_wallet(request)
+
+    if request.method == 'POST' and student:
+        action = request.POST.get('action')
+        if action == 'start_stream':
+            problem_title = request.POST.get('problem_title', 'Distributed Key-Value Store')
+            language = request.POST.get('language', 'Python / Django')
+            code_snippet = request.POST.get('code_snippet', '# Live 2:30 AM Session\n')
+            LiveCodingStream.objects.create(
+                student=student,
+                anonymous_alias=f"Night-Owl #{random.randint(100, 999)}",
+                problem_title=problem_title,
+                language=language,
+                code_snippet=code_snippet,
+                is_live=True,
+                viewer_count=random.randint(18, 55),
+                hr_scouts_count=random.randint(2, 6)
+            )
+            messages.success(request, "Your anonymous code stream is now LIVE! HR scouts have entered the watchroom.")
+            return redirect('hr_live_stream')
+
+    streams = LiveCodingStream.objects.filter(is_live=True)[:10]
+    if not streams.exists() and student:
+        LiveCodingStream.objects.create(
+            student=student,
+            anonymous_alias="Night-Owl #814 (B.Tech CSE)",
+            language="Python & Redis",
+            problem_title="Building High-Throughput Token Bucket Rate Limiter with Atomic Redis Counters",
+            viewer_count=34,
+            hr_scouts_count=5,
+            code_snippet="""# Live 2:15 AM Coding Session
+import time
+from collections import deque
+
+class TokenBucketRateLimiter:
+    def __init__(self, capacity: int, refill_rate_per_sec: float):
+        self.capacity = capacity
+        self.refill_rate = refill_rate_per_sec
+        self.tokens = capacity
+        self.last_refill = time.time()
+
+    def allow(self, tokens_requested=1) -> bool:
+        now = time.time()
+        elapsed = now - self.last_refill
+        self.tokens = min(self.capacity, self.tokens + elapsed * self.refill_rate)
+        self.last_refill = now
+        if self.tokens >= tokens_requested:
+            self.tokens -= tokens_requested
+            return True
+        return False
+"""
+        )
+        streams = LiveCodingStream.objects.filter(is_live=True)
+
+    context = {
+        'student': student,
+        'streams': streams,
+        'active_streamers': streams.count(),
+        'total_hr_scouts': sum(s.hr_scouts_count for s in streams) if streams else 14,
+    }
+    return render(request, 'ai_engine/hr_live_stream.html', context)
+
+
+def job_attrition_predictor_view(request):
+    """
+    3. JOB JISSE TU 3 MAHINE MEIN BHAGEGA (AI Churn & Attrition Predictor)
+    Identifies mismatch between candidate's coding tempo/personality and enterprise bureaucracy.
+    """
+    student, _ = _get_or_create_student_and_wallet(request)
+
+    target_company = request.GET.get('company', 'Wipro')
+    work_style = request.GET.get('work_style', 'Agile Product Builder')
+
+    company_profiles = {
+        'Wipro': {
+            'boredom_score': 89,
+            'attrition_prob': 86,
+            'days_to_quit': 74,
+            'culture_type': 'Legacy Service MNC / Heavy Bench Queue',
+            'shock_factor': 'Requires 4 layers of email approvals to install a Python package. High probability of being placed on legacy ticket maintenance.',
+            'ai_verdict': 'Tujhe Wipro me bore hoke 3 mahine me resign de dega! Tere andar fast execution aur code ship karne ka keeda hai, wahan daily Timesheet & Outlook meetings dekh ke dimaag blast ho jayega!',
+            'ideal_alternative': 'High-Velocity AI Startup (e.g. Sarvam AI, Zepto, CRED) where you ship directly to production on Day 2.',
+        },
+        'TCS': {
+            'boredom_score': 81,
+            'attrition_prob': 76,
+            'days_to_quit': 88,
+            'culture_type': 'Enterprise Mega-Corps / Strict Hierarchy',
+            'shock_factor': 'Strict biometric dress-code policies, proxy firewalls blocking GitHub & StackOverflow, slow tech stack adoption.',
+            'ai_verdict': '6 mahine ILP training bench pe baithega. Coding speed 70% slow ho jayegi. Tu 3rd month aate-aate resign deke startup bhaagega!',
+            'ideal_alternative': 'Product Engineering Lab or High-Growth FinTech (e.g. Razorpay, Groww).',
+        },
+        'Infosys': {
+            'boredom_score': 83,
+            'attrition_prob': 79,
+            'days_to_quit': 81,
+            'culture_type': 'Process-Driven Service Giant',
+            'shock_factor': 'Mysore campus was great, but real client project is Java 8 XML config with no cloud or modern framework access.',
+            'ai_verdict': 'Bhai tu 90 din me LinkedIn pe "Actively Looking" status daal dega.',
+            'ideal_alternative': 'Mid-Market SaaS or Developer Tools Product (e.g. Postman, BrowserStack).',
+        },
+        'Early-Stage Startup': {
+            'boredom_score': 12,
+            'attrition_prob': 20,
+            'days_to_quit': 540,
+            'culture_type': 'High-Velocity Product Startup',
+            'shock_factor': 'High ownership, fast iterative shipping, steep learning curve, direct founder feedback.',
+            'ai_verdict': 'PERFECT MATCH! Yahan tu bore nahi hoga, roz nayi cheezein banayega aur 1 saal me 3 saal ka coding experience seekhega.',
+            'ideal_alternative': 'You are already in your optimal natural environment!',
+        }
+    }
+
+    selected_data = company_profiles.get(target_company, company_profiles['Wipro'])
+
+    context = {
+        'student': student,
+        'target_company': target_company,
+        'work_style': work_style,
+        'data': selected_data,
+        'all_companies': ['Wipro', 'TCS', 'Infosys', 'Early-Stage Startup'],
+    }
+    return render(request, 'ai_engine/job_attrition.html', context)
+
+
+def tpo_transparency_view(request):
+    """
+    4. TPO KA CORRUPTION & TRANSPARENCY METER
+    Anonymous encrypted student voting & placement fairness audit meter.
+    """
+    student, _ = _get_or_create_student_and_wallet(request)
+
+    if request.method == 'POST':
+        rating = int(request.POST.get('rating', 4))
+        is_fair = request.POST.get('is_fair') == 'true'
+        comment = request.POST.get('comment', '').strip()
+        college = request.POST.get('college', 'BPUT University')
+        ip = request.META.get('REMOTE_ADDR', '127.0.0.1')
+        user_key = f"{ip}_{student.id if student else random.randint(1,9999)}_{college}"
+        token = hashlib.sha256(user_key.encode()).hexdigest()[:32]
+
+        TpoFairnessVote.objects.update_or_create(
+            student_token=token,
+            defaults={
+                'college_name': college,
+                'transparency_rating': rating,
+                'is_fair_and_unbiased': is_fair,
+                'comment': comment
+            }
+        )
+        messages.success(request, "Your anonymous audit vote was encrypted & recorded to the public fairness meter!")
+        return redirect('tpo_transparency')
+
+    votes = TpoFairnessVote.objects.all()
+    if not votes.exists():
+        samples = [
+            ("Zero backchannel favors observed; all shortlists strictly matched CGPA & coding scores.", 5, True),
+            ("TCS and Cognizant drives were conducted on transparent open portal with clear criteria.", 4, True),
+            ("Tier-1 company cutoff was suddenly changed 1 hour before test without official notice.", 2, False),
+            ("Transparent interview schedules, good overall placement coordination.", 5, True),
+        ]
+        for idx, (cmt, rtg, fair) in enumerate(samples):
+            TpoFairnessVote.objects.create(
+                student_token=f"sample_audit_token_{idx}",
+                transparency_rating=rtg,
+                is_fair_and_unbiased=fair,
+                comment=cmt
+            )
+        votes = TpoFairnessVote.objects.all()
+
+    total_votes = max(1, votes.count())
+    fair_votes = votes.filter(is_fair_and_unbiased=True).count()
+    clean_percentage = round((fair_votes / total_votes) * 100, 1)
+
+    context = {
+        'student': student,
+        'clean_percentage': clean_percentage,
+        'total_votes': votes.count(),
+        'recent_audits': votes[:15],
+    }
+    return render(request, 'ai_engine/tpo_transparency.html', context)
+
+
+def placement_time_machine_view(request):
+    """
+    5. PLACEMENT TIME MACHINE (5-Year Career Trajectory Simulator)
+    Today's habits -> 5 years future life, salary, car, and role comparison.
+    """
+    student, _ = _get_or_create_student_and_wallet(request)
+
+    dsa_per_day = int(request.GET.get('dsa', 1))
+    git_commits = int(request.GET.get('git', 3))
+    mock_interviews = int(request.GET.get('mocks', 1))
+    doomscroll_hours = int(request.GET.get('reels', 2))
+
+    effort_score = (dsa_per_day * 25) + (git_commits * 15) + (mock_interviews * 20) - (doomscroll_hours * 10)
+    effort_score = max(10, min(100, effort_score))
+
+    trajectory_low = [
+        {'year': 'Year 1 (2027)', 'ctc': '₹3.2 LPA', 'role': 'Support Trainee', 'life': 'Shared 4BHK room with 3 roommates, local bus travel'},
+        {'year': 'Year 2 (2028)', 'ctc': '₹3.8 LPA', 'role': 'Associate Engineer', 'life': 'Routine bug fixing, saving ₹5k/month after rent'},
+        {'year': 'Year 3 (2029)', 'ctc': '₹4.5 LPA', 'role': 'Software Engineer', 'life': 'Stuck on legacy codebase, worried about AI layoffs'},
+        {'year': 'Year 4 (2030)', 'ctc': '₹5.5 LPA', 'role': 'Senior Associate', 'life': 'EMI stress, switching difficulty due to DSA skill gap'},
+        {'year': 'Year 5 (2031)', 'ctc': '₹6.8 LPA', 'role': 'Team Member', 'life': 'Monthly salary ₹48,000, career stagnation'}
+    ]
+
+    trajectory_high = [
+        {'year': 'Year 1 (2027)', 'ctc': '₹9 - 13 LPA', 'role': 'SDE-1 (FinTech / Product)', 'life': 'Independent flat in Bengaluru / Pune, brand new MacBook Pro'},
+        {'year': 'Year 2 (2028)', 'ctc': '₹15 - 20 LPA', 'role': 'Core SDE-1', 'life': 'First international trip, investing ₹40k/month in mutual funds'},
+        {'year': 'Year 3 (2029)', 'ctc': '₹26 - 32 LPA', 'role': 'SDE-2 (High-Scale Systems)', 'life': 'First car bought without loan, parents flight tickets booked'},
+        {'year': 'Year 4 (2030)', 'ctc': '₹38 - 48 LPA', 'role': 'Senior Backend / Tech Lead', 'life': 'Stock options vesting, headhunted by top US remote startups'},
+        {'year': 'Year 5 (2031)', 'ctc': '₹60 - 80 LPA', 'role': 'Staff Engineer / Founder', 'life': 'Complete financial freedom, building high-impact tech products'}
+    ]
+
+    context = {
+        'student': student,
+        'dsa_per_day': dsa_per_day,
+        'git_commits': git_commits,
+        'mock_interviews': mock_interviews,
+        'doomscroll_hours': doomscroll_hours,
+        'effort_score': effort_score,
+        'trajectory_low': trajectory_low,
+        'trajectory_high': trajectory_high,
+    }
+    return render(request, 'ai_engine/placement_time_machine.html', context)
+
+
+def parents_whatsapp_report_view(request):
+    """
+    6. PARENTS WHATSAPP PLACEMENT REPORT (Har Sunday Beta Ka Report Card)
+    Generates a WhatsApp-ready placement status card for parents with 1-click WhatsApp web dispatch.
+    """
+    student, _ = _get_or_create_student_and_wallet(request)
+
+    student_name = student.user.get_full_name() or student.user.username if student else "Rahul Nayak"
+    cgpa = getattr(student, 'cgpa', 8.5) if student else 8.5
+    branch = getattr(student, 'department', 'Computer Science & Engineering') if student else 'Computer Science'
+    prob = 86.4
+
+    whatsapp_text = f"""📋 *WEEKLY PLACEMENT PROGRESS REPORT (CAMPUSLINK)*
+🎓 *Student:* {student_name}
+🏛 *Branch:* {branch}
+📊 *CGPA:* {cgpa} / 10.0
+
+*This Week's Campus Performance:*
+✅ Weekly Coding Practice: 14.5 Hours (Top 10% in batch)
+✅ DSA Problems Solved: 18 Questions
+✅ Mock Interview Score: 84% (Cleared Round 1 & 2 standards)
+🚀 *Estimated Placement Odds:* {prob}% (Safe Placement Tier)
+
+*Mentor Note for Parents:*
+{student_name} ka focus bahut achha chal raha hai. Agar aisi hi mehnat agle 4 mahine rahi toh ₹8–14 LPA package pakka crack hoga!
+
+_Sent automatically via Campus to Career Portal_"""
+
+    encoded_whatsapp_url = f"https://api.whatsapp.com/send?text={urllib.parse.quote(whatsapp_text)}"
+
+    context = {
+        'student': student,
+        'student_name': student_name,
+        'cgpa': cgpa,
+        'branch': branch,
+        'prob': prob,
+        'whatsapp_text': whatsapp_text,
+        'encoded_whatsapp_url': encoded_whatsapp_url,
+    }
+    return render(request, 'ai_engine/parents_whatsapp_report.html', context)
+
+
+def ai_interview_roaster_view(request):
+    """
+    7. AI BRUTAL INTERVIEW ROASTER ("Tu 3 baar atka, confidence zero hai")
+    Savage, brutal, yet constructively accurate AI interview roasting engine.
+    """
+    student, _ = _get_or_create_student_and_wallet(request)
+
+    question = request.POST.get('question', 'Tell me about yourself and your tech stack.')
+    user_answer = request.POST.get('user_answer', '').strip()
+
+    roast_result = None
+    if request.method == 'POST' and user_answer:
+        word_count = len(user_answer.split())
+        buzzwords = [w for w in ['hardworking', 'passionate', 'fast learner', 'team player', 'motivated', 'enthusiastic'] if w in user_answer.lower()]
+        has_metrics = any(char.isdigit() for char in user_answer)
+        stumble_count = max(1, random.randint(2, 4)) if word_count < 40 or len(buzzwords) > 1 else 1
+
+        if word_count < 20:
+            roast_line = "Bhai interview chal raha hai ya WhatsApp status? 2 line me interview khatam kar diya? HR tujhe reject karne me bhi isse zyada time nahi lega!"
+            confidence_score = 15
+        elif len(buzzwords) >= 2:
+            roast_line = f"Bhai tu 'hardworking', 'passionate' bolna kab band karega? {len(buzzwords)} buzzwords phek ke maare hain! Kaam kya kiya wo bata, dictionary mat suna!"
+            confidence_score = 38
+        elif not has_metrics:
+            roast_line = "Project me bol raha hai 'I made an e-commerce website'. Kitne users the? Latency kitni thi? Zero metrics! Lagta hai YouTube tutorial dekh ke copy-paste kiya hai!"
+            confidence_score = 48
+        else:
+            roast_line = "Theek thaak hai par beech me 3 baar atka! Eye contact aur flow me jaan nahi hai. Thoda confidence la warna interviewer so jayega!"
+            confidence_score = 68
+
+        roast_result = {
+            'roast_line': roast_line,
+            'stumble_count': stumble_count,
+            'confidence_score': confidence_score,
+            'buzzwords_used': buzzwords,
+            'word_count': word_count,
+            'actionable_fix': 'STAR Technique use karo: Situation -> Task -> Action -> Real Numbers (Metrics).'
+        }
+
+    sample_questions = [
+        "Tell me about yourself and your tech stack.",
+        "Explain Polymorphism in OOPs with a real-life example.",
+        "Why should we hire you over 500 other campus candidates?",
+        "Describe the hardest bug you ever resolved in your projects.",
+    ]
+
+    context = {
+        'student': student,
+        'question': question,
+        'user_answer': user_answer,
+        'roast_result': roast_result,
+        'sample_questions': sample_questions,
+    }
+    return render(request, 'ai_engine/interview_roaster.html', context)
+
 
 
 

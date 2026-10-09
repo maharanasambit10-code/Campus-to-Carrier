@@ -80,6 +80,11 @@ def login_view(request):
             if legacy_user is not None:
                 user = authenticate(request, username=username, password=password)
 
+        if user is None:
+            candidate = User.objects.filter(username__iexact=username).first()
+            if candidate:
+                user = authenticate(request, username=candidate.username, password=password)
+
         if user is not None and not user.is_staff and not user.is_superuser:
             login(request, user)
             return redirect(_dashboard_url(user))
@@ -101,6 +106,11 @@ def admin_login_view(request):
         username = request.POST.get('username', '').strip()
         password = request.POST.get('password', '')
         user = authenticate(request, username=username, password=password)
+
+        if user is None:
+            candidate = User.objects.filter(username__iexact=username).first()
+            if candidate:
+                user = authenticate(request, username=candidate.username, password=password)
 
         if user is not None and (user.is_staff or user.is_superuser):
             login(request, user)

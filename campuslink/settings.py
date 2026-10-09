@@ -189,3 +189,6 @@ AI_MATCH_WEIGHTS = {
     'experience': 10,
     'preferred_skills': 5,
 }
+
+DEFAULT_AUTO_FIELD = 'django.db.models.AutoField'
+

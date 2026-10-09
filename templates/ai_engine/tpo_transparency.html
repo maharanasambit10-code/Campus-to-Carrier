@@ -1,0 +1,159 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}TPO Transparency & Corruption Meter | Campus to Career{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <!-- Header Banner -->
+    <div class="p-4 p-md-5 rounded-4 text-white mb-5 shadow-lg position-relative overflow-hidden" 
+         style="background: linear-gradient(135deg, #0284c7 0%, #0369a1 50%, #075985 100%);">
+        <div class="row align-items-center g-4">
+            <div class="col-lg-8">
+                <span class="badge bg-warning text-dark px-3 py-2 rounded-pill fw-bold text-uppercase mb-3 shadow-sm">
+                    <i class="bi bi-shield-lock-fill me-1"></i> 100% ANONYMOUS CAMPUS WHISTLEBLOWER
+                </span>
+                <h1 class="display-5 fw-bold text-white mb-3">
+                    TPO Placement Transparency Meter
+                </h1>
+                <p class="lead mb-4 text-white text-opacity-90">
+                    "Kya college ka TPO paisa leke ya bias se placement karwata hai?"<br>
+                    Pure college ka <strong>live encrypted transparency meter</strong>. Zero fear, zero student tracking, 100% public accountability.
+                </p>
+                <div class="d-flex flex-wrap gap-2">
+                    <a href="#auditVoteForm" class="btn btn-warning text-dark fw-bold px-4 py-2 rounded-pill shadow-sm">
+                        <i class="bi bi-pencil-square me-1"></i> Cast Anonymous Audit Vote
+                    </a>
+                </div>
+            </div>
+            <div class="col-lg-4 text-center text-lg-end">
+                <div class="d-inline-block p-4 rounded-4 bg-white bg-opacity-10 backdrop-blur border border-white border-opacity-20 text-center shadow">
+                    <div class="display-4 fw-black text-warning mb-1">
+                        {{ clean_percentage }}%
+                    </div>
+                    <div class="text-white fw-bold">Clean & Fair Index</div>
+                    <span class="badge bg-success rounded-pill px-3 py-1 mt-2">
+                        {{ total_votes }} Verified Audit Votes
+                    </span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    {% if messages %}
+    <div class="mb-4">
+        {% for message in messages %}
+        <div class="alert alert-{{ message.tags|default:'info' }} alert-dismissible fade show rounded-3 shadow-sm" role="alert">
+            <i class="bi bi-check-circle-fill me-2"></i> {{ message }}
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+        {% endfor %}
+    </div>
+    {% endif %}
+
+    <div class="row g-4">
+        <!-- Vote Form -->
+        <div class="col-lg-5" id="auditVoteForm">
+            <div class="card p-4 border-0 rounded-4 shadow-sm">
+                <div class="d-flex align-items-center gap-2 mb-3">
+                    <span class="p-2 rounded-3 bg-primary bg-opacity-10 text-primary"><i class="bi bi-shield-check fs-5"></i></span>
+                    <h4 class="fw-bold mb-0">Cast Your Audit Rating</h4>
+                </div>
+                <p class="text-muted small mb-4">
+                    Ip & ID are one-way hashed (SHA-256). Nobody, including college management, can trace your vote back to you.
+                </p>
+
+                <form method="POST">
+                    {% csrf_token %}
+                    <div class="mb-3">
+                        <label class="form-label small fw-bold text-dark">College Institution</label>
+                        <input type="text" name="college" class="form-control rounded-3" value="BPUT University" required>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label small fw-bold text-dark">Overall Placement Transparency Rating</label>
+                        <select name="rating" class="form-select rounded-3">
+                            <option value="5">⭐⭐⭐⭐⭐ 5/5 - Completely Transparent & Equal</option>
+                            <option value="4" selected>⭐⭐⭐⭐ 4/5 - Mostly Fair, minor gaps</option>
+                            <option value="3">⭐⭐⭐ 3/5 - Average, favoritism exists</option>
+                            <option value="2">⭐⭐ 2/5 - High Backchannel & Bias</option>
+                            <option value="1">⭐ 1/5 - Severe Corruption / Cutoff Rigging</option>
+                        </select>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label small fw-bold text-dark">Has any donation or bribe been demanded?</label>
+                        <div class="d-flex gap-3">
+                            <div class="form-check">
+                                <input class="form-check-input" type="radio" name="is_fair" id="fairYes" value="true" checked>
+                                <label class="form-check-label small" for="fairYes">
+                                    No, Process is Clean
+                                </label>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input" type="radio" name="is_fair" id="fairNo" value="false">
+                                <label class="form-check-label small text-danger" for="fairNo">
+                                    Yes, Bias / Irregularity Observed
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="mb-4">
+                        <label class="form-label small fw-bold text-dark">Anonymous Observation Comment</label>
+                        <textarea name="comment" rows="3" class="form-control rounded-3" 
+                                  placeholder="e.g. Cutoff was transparent on college board, all interviews on time."></textarea>
+                    </div>
+
+                    <button type="submit" class="btn btn-primary w-100 fw-bold py-2.5 rounded-pill shadow-sm">
+                        <i class="bi bi-shield-lock me-1"></i> Submit Encrypted Audit Vote
+                    </button>
+                </form>
+            </div>
+        </div>
+
+        <!-- Live Transparency Feed -->
+        <div class="col-lg-7">
+            <div class="d-flex justify-content-between align-items-center mb-3">
+                <h4 class="fw-bold mb-0">Public Audit Ledger</h4>
+                <span class="badge bg-light text-dark border px-3 py-1.5 rounded-pill small">
+                    Live Transparency Stream
+                </span>
+            </div>
+
+            <div class="vstack gap-3">
+                {% for audit in recent_audits %}
+                <div class="card p-3 border-0 rounded-4 shadow-sm">
+                    <div class="d-flex justify-content-between align-items-center mb-2">
+                        <div>
+                            {% if audit.is_fair_and_unbiased %}
+                            <span class="badge bg-success bg-opacity-10 text-success border border-success rounded-pill px-2.5 py-1 small">
+                                <i class="bi bi-check-circle me-1"></i> Certified Fair
+                            </span>
+                            {% else %}
+                            <span class="badge bg-danger bg-opacity-10 text-danger border border-danger rounded-pill px-2.5 py-1 small">
+                                <i class="bi bi-exclamation-triangle me-1"></i> Bias Flagged
+                            </span>
+                            {% endif %}
+                            <span class="text-warning small ms-2">Rating: {{ audit.transparency_rating }}/5</span>
+                        </div>
+                        <span class="text-muted" style="font-size: 0.72rem;">{{ audit.created_at|timesince }} ago</span>
+                    </div>
+
+                    {% if audit.comment %}
+                    <p class="text-dark small mb-1">"{{ audit.comment }}"</p>
+                    {% else %}
+                    <p class="text-muted small mb-1 fst-italic">Anonymous student rating logged without public note.</p>
+                    {% endif %}
+                    <small class="text-muted font-monospace" style="font-size: 0.68rem;">Encrypted Token: {{ audit.student_token|slice:":12" }}...</small>
+                </div>
+                {% empty %}
+                <div class="card p-5 text-center border-0 rounded-4 shadow-sm">
+                    <p class="text-muted mb-0">No audit votes recorded yet.</p>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
