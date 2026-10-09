@@ -47,13 +47,13 @@
 
                 <div class="dropdown">
                     <a href="#" class="public-nav-link dropdown-toggle" data-bs-toggle="dropdown">
-                        <i class="bi bi-cpu me-1"></i> AI Tools
+                        <i class="bi bi-grid-fill me-1"></i> Career Tools
                     </a>
                     <ul class="dropdown-menu shadow border-0 rounded-3 mt-2">
-                        <li><a class="dropdown-item fw-bold text-primary" href="{% url 'innovation_suite' %}"><i class="bi bi-stars me-2 text-primary"></i>12 Unique Features 🔥</a></li>
-                        <li><a class="dropdown-item" href="{% url 'career_match' %}"><i class="bi bi-stars me-2 text-primary"></i>AI Career Match</a></li>
-                        <li><a class="dropdown-item" href="{% url 'ai_mock_interview' %}"><i class="bi bi-camera-video me-2 text-info"></i>AI Mock Interview</a></li>
-                        <li><a class="dropdown-item" href="{% url 'hackathon_demo' %}"><i class="bi bi-play-circle-fill me-2 text-warning"></i>3-Min Wow Demo</a></li>
+                        <li><a class="dropdown-item fw-bold text-primary" href="{% url 'innovation_suite' %}"><i class="bi bi-stars me-2 text-primary"></i>Innovation Suite</a></li>
+                        <li><a class="dropdown-item" href="{% url 'career_match' %}"><i class="bi bi-compass me-2 text-primary"></i>Career Match Engine</a></li>
+                        <li><a class="dropdown-item" href="{% url 'ai_mock_interview' %}"><i class="bi bi-camera-video me-2 text-info"></i>Mock Interview Studio</a></li>
+                        <li><a class="dropdown-item" href="{% url 'hackathon_demo' %}"><i class="bi bi-play-circle-fill me-2 text-warning"></i>Platform Tour</a></li>
                         <li><a class="dropdown-item" href="{% url 'role_decoder' %}"><i class="bi bi-file-earmark-code me-2 text-primary"></i>Role Decoder</a></li>
                         <li><a class="dropdown-item" href="{% url 'proof_miner' %}"><i class="bi bi-link-45deg me-2 text-success"></i>Proof Miner</a></li>
                         <li><a class="dropdown-item" href="{% url 'readiness_score' %}"><i class="bi bi-graph-up me-2 text-warning"></i>Readiness Score</a></li>
@@ -61,7 +61,7 @@
                         <li><a class="dropdown-item" href="{% url 'proof_passport_dashboard' %}"><i class="bi bi-patch-check me-2 text-primary"></i>Proof Passport</a></li>
                     </ul>
                 </div>
-                <a href="{% url 'innovation_suite' %}" class="public-nav-link text-primary fw-bold"><i class="bi bi-rocket-takeoff-fill me-1"></i>12 Features</a>
+                <a href="{% url 'innovation_suite' %}" class="public-nav-link text-primary fw-bold"><i class="bi bi-rocket-takeoff-fill me-1"></i>Innovation Suite</a>
                 <a href="{% url 'notification_list' %}" class="nav-icon-link" aria-label="Notifications"><i class="bi bi-bell fs-5"></i>{% if unread_notification_count %}<span class="notification-dot" aria-hidden="true"></span>{% endif %}</a>
                 {% if request.user.membership.is_active %}<a href="{% url 'pro_landing' %}" class="pro-nav-link"><i class="bi bi-stars"></i> PRO Member</a>{% else %}<a href="{% url 'pro_landing' %}" class="pro-nav-link"><i class="bi bi-stars"></i> Go PRO</a>{% endif %}
                 <div class="dropdown">
@@ -70,13 +70,13 @@
                         <strong class="text-dark user-name">{{ request.user.get_full_name|default:request.user.username }}</strong>
                     </a>
                     <ul class="dropdown-menu dropdown-menu-end shadow border-0 rounded-3 mt-2">
-                        <li><a class="dropdown-item fw-bold text-primary" href="{% url 'innovation_suite' %}"><i class="bi bi-stars me-2 text-primary"></i>12 Unique Features 🔥</a></li>
+                        <li><a class="dropdown-item fw-bold text-primary" href="{% url 'innovation_suite' %}"><i class="bi bi-stars me-2 text-primary"></i>Innovation Suite</a></li>
                         <li><a class="dropdown-item" href="{% url 'dashboard_redirect' %}"><i class="bi bi-speedometer2 me-2"></i>Dashboard</a></li>
-                        <li><a class="dropdown-item" href="{% url 'hackathon_demo' %}"><i class="bi bi-stars me-2 text-warning"></i>3-Min Wow Journey</a></li>
+                        <li><a class="dropdown-item" href="{% url 'hackathon_demo' %}"><i class="bi bi-play-circle me-2 text-warning"></i>Platform Tour</a></li>
                         <li><a class="dropdown-item" href="{% url 'role_decoder' %}"><i class="bi bi-file-earmark-code me-2"></i>Role Decoder</a></li>
                         <li><a class="dropdown-item" href="{% url 'proof_miner' %}"><i class="bi bi-link-45deg me-2"></i>Proof Miner</a></li>
                         <li><a class="dropdown-item" href="{% url 'readiness_score' %}"><i class="bi bi-graph-up me-2"></i>Readiness Score</a></li>
-                        <li><a class="dropdown-item" href="{% url 'role_mission_default' %}"><i class="bi bi-stopwatch me-2"></i>15-min Role Mission</a></li>
+                        <li><a class="dropdown-item" href="{% url 'role_mission_default' %}"><i class="bi bi-stopwatch me-2"></i>Role Mission Challenge</a></li>
                         <li><a class="dropdown-item" href="{% url 'college_readiness_radar' %}"><i class="bi bi-radar me-2"></i>College Readiness Radar</a></li>
                         <li><a class="dropdown-item" href="{% url 'recruiter_proof_shortlist' %}"><i class="bi bi-award me-2"></i>Recruiter Proof Shortlist</a></li>
                         <li><a class="dropdown-item" href="{% url 'proof_passport_dashboard' %}"><i class="bi bi-patch-check me-2"></i>Proof Passport</a></li>
@@ -89,17 +89,17 @@
                 <a href="{% url 'job_list' %}" class="public-nav-link">Jobs</a>
                 <a href="{% url 'job_list' %}" class="public-nav-link">Internships</a>
                 <a href="{% url 'company_list' %}" class="public-nav-link">Companies</a>
-                <a href="{% url 'career_match' %}" class="public-nav-link">AI Guidance</a>
-                <a href="{% url 'innovation_suite' %}" class="public-nav-link text-primary fw-bold"><i class="bi bi-rocket-takeoff-fill me-1"></i>12 Features</a>
+                <a href="{% url 'career_match' %}" class="public-nav-link">Career Match</a>
+                <a href="{% url 'innovation_suite' %}" class="public-nav-link text-primary fw-bold"><i class="bi bi-rocket-takeoff-fill me-1"></i>Innovation Suite</a>
                 <a href="{% url 'home' %}#about" class="public-nav-link">About</a>
                 <div class="dropdown">
                     <a href="#" class="public-nav-link dropdown-toggle" data-bs-toggle="dropdown">
-                        <i class="bi bi-cpu me-1"></i> AI Tools
+                        <i class="bi bi-grid-fill me-1"></i> Career Tools
                     </a>
                     <ul class="dropdown-menu shadow border-0 rounded-3 mt-2">
-                        <li><a class="dropdown-item fw-bold text-primary" href="{% url 'innovation_suite' %}"><i class="bi bi-stars me-2 text-primary"></i>12 Unique Features 🔥</a></li>
-                        <li><a class="dropdown-item" href="{% url 'hackathon_demo' %}"><i class="bi bi-play-circle-fill me-2 text-warning"></i>3-Min Wow Demo</a></li>
-                        <li><a class="dropdown-item" href="{% url 'career_match' %}"><i class="bi bi-stars me-2 text-primary"></i>AI Career Match</a></li>
+                        <li><a class="dropdown-item fw-bold text-primary" href="{% url 'innovation_suite' %}"><i class="bi bi-stars me-2 text-primary"></i>Innovation Suite</a></li>
+                        <li><a class="dropdown-item" href="{% url 'hackathon_demo' %}"><i class="bi bi-play-circle-fill me-2 text-warning"></i>Platform Tour</a></li>
+                        <li><a class="dropdown-item" href="{% url 'career_match' %}"><i class="bi bi-compass me-2 text-primary"></i>Career Match Engine</a></li>
                         <li><a class="dropdown-item" href="{% url 'role_decoder' %}"><i class="bi bi-file-earmark-code me-2 text-primary"></i>Role Decoder</a></li>
                         <li><a class="dropdown-item" href="{% url 'proof_miner' %}"><i class="bi bi-link-45deg me-2 text-success"></i>Proof Miner</a></li>
                         <li><a class="dropdown-item" href="{% url 'readiness_score' %}"><i class="bi bi-graph-up me-2 text-warning"></i>Readiness Score</a></li>
