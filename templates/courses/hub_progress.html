@@ -1,0 +1,125 @@
+{% extends 'base.html' %}
+{% block title %}My Learning Progress | CAMPUSLINK{% endblock %}
+{% block content %}
+<div class="dashboard-shell">
+    <aside class="dashboard-sidebar">
+        <div class="sidebar-label">Workspace</div>
+        <nav class="nav flex-column gap-1">
+            <a class="dashboard-nav-link" href="{% url 'student_dashboard' %}"><i class="bi bi-grid-1x2-fill"></i>Overview</a>
+            <a class="dashboard-nav-link" href="{% url 'profile' %}"><i class="bi bi-person"></i>My Profile</a>
+            <a class="dashboard-nav-link active" href="{% url 'learning_hub' %}"><i class="bi bi-mortarboard"></i>Learning Hub</a>
+        </nav>
+    </aside>
+    <main class="dashboard-main">
+
+        <div class="dashboard-heading">
+            <div>
+                <span class="eyebrow text-uppercase fw-bold" style="color:#00b4d8;font-size:.75rem;letter-spacing:.5px;">MY LEARNING</span>
+                <h1 class="mb-1">My Progress</h1>
+                <p class="text-muted mb-0">Track your courses, quiz scores, and certificates.</p>
+            </div>
+            <a href="{% url 'learning_hub' %}" class="btn btn-primary rounded-pill">
+                <i class="bi bi-plus-circle me-2"></i>Explore Courses
+            </a>
+        </div>
+
+        {% if progress_data %}
+
+        <!-- Course Progress Cards -->
+        <div class="row g-4 mb-4">
+            {% for item in progress_data %}
+            <div class="col-md-6 col-xl-4">
+                <div class="card border-0 shadow-sm rounded-4 h-100 overflow-hidden">
+                    <!-- Header -->
+                    <div class="p-4 pb-3" style="background:linear-gradient(135deg,{{ item.course.icon_bg }},#ffffff);">
+                        <div class="d-flex align-items-center gap-2 mb-2">
+                            <div style="width:40px;height:40px;border-radius:10px;background:{{ item.course.icon_color }}15;color:{{ item.course.icon_color }};display:flex;align-items:center;justify-content:center;font-size:1.2rem;">
+                                <i class="{{ item.course.icon }}"></i>
+                            </div>
+                            <h5 class="fw-bold mb-0 small">{{ item.course.title }}</h5>
+                        </div>
+                        {% if item.certificate %}
+                        <span class="badge bg-warning text-dark rounded-pill"><i class="bi bi-award-fill me-1"></i>Certified</span>
+                        {% elif item.enrollment.completed %}
+                        <span class="badge bg-success rounded-pill"><i class="bi bi-check-circle-fill me-1"></i>Completed</span>
+                        {% else %}
+                        <span class="badge rounded-pill" style="background:{{ item.course.icon_color }}15;color:{{ item.course.icon_color }}">In Progress</span>
+                        {% endif %}
+                    </div>
+
+                    <!-- Progress -->
+                    <div class="px-4 py-3">
+                        <div class="d-flex justify-content-between small mb-1">
+                            <span class="text-muted">Progress</span>
+                            <span class="fw-semibold" style="color:{{ item.course.icon_color }};">{{ item.progress }}%</span>
+                        </div>
+                        <div class="progress rounded-pill mb-3" style="height:8px;">
+                            <div class="progress-bar rounded-pill" style="width:{{ item.progress }}%;background:{{ item.course.icon_color }};" role="progressbar"></div>
+                        </div>
+
+                        {% if item.quiz_attempt %}
+                        <div class="d-flex align-items-center justify-content-between p-2 rounded-2 small" style="background:#f8fafc;">
+                            <span class="text-muted"><i class="bi bi-patch-question me-1"></i>Quiz Score</span>
+                            <span class="fw-semibold {% if item.quiz_attempt.passed %}text-success{% else %}text-danger{% endif %}">
+                                {{ item.quiz_attempt.score }}/{{ item.quiz_attempt.total }} ({{ item.quiz_attempt.percent }}%)
+                                {% if item.quiz_attempt.passed %}<i class="bi bi-check-circle-fill ms-1"></i>{% endif %}
+                            </span>
+                        </div>
+                        {% endif %}
+                    </div>
+
+                    <!-- Actions -->
+                    <div class="px-4 pb-4 mt-auto d-flex gap-2">
+                        <a href="{% url 'hub_course_detail' item.course.slug %}" class="btn btn-sm rounded-pill flex-grow-1"
+                           style="background:{{ item.course.icon_color }};color:white;border:none;">
+                            {% if item.progress == 100 %}Review{% else %}Continue{% endif %}
+                        </a>
+                        {% if item.certificate %}
+                        <a href="{% url 'hub_certificate' item.certificate.certificate_id %}" class="btn btn-sm btn-warning rounded-pill">
+                            <i class="bi bi-award-fill"></i>
+                        </a>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+
+        <!-- Certificates Section -->
+        {% if certificates %}
+        <div class="card border-0 shadow-sm rounded-4 p-4">
+            <h5 class="fw-bold mb-4"><i class="bi bi-award-fill text-warning me-2"></i>My Certificates ({{ certificates|length }})</h5>
+            <div class="row g-3">
+                {% for cert in certificates %}
+                <div class="col-md-6 col-lg-4">
+                    <div class="p-3 rounded-3 d-flex align-items-center gap-3" style="background:linear-gradient(135deg,#fef3c7,#fffbeb);border:1px solid #fde68a;">
+                        <i class="bi bi-award-fill text-warning fs-3"></i>
+                        <div class="flex-grow-1 min-w-0">
+                            <div class="fw-semibold small text-truncate">{{ cert.course.title }}</div>
+                            <div class="text-muted" style="font-size:.75rem;">{{ cert.issued_at|date:"d M Y" }}</div>
+                        </div>
+                        <a href="{% url 'hub_certificate' cert.certificate_id %}" class="btn btn-sm btn-warning rounded-pill flex-shrink-0">
+                            View
+                        </a>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+        {% endif %}
+
+        {% else %}
+        <!-- Empty state -->
+        <div class="text-center py-5">
+            <div style="font-size:5rem;opacity:.3;" class="mb-3">📚</div>
+            <h4 class="text-muted">No courses enrolled yet</h4>
+            <p class="text-muted mb-4">Start learning to track your progress here.</p>
+            <a href="{% url 'learning_hub' %}" class="btn btn-primary rounded-pill px-5">
+                <i class="bi bi-play-circle me-2"></i>Start Learning Now
+            </a>
+        </div>
+        {% endif %}
+
+    </main>
+</div>
+{% endblock %}

@@ -1,0 +1,228 @@
+{% extends 'base.html' %}
+{% block title %}{{ course.title }} | Learning Hub | CAMPUSLINK{% endblock %}
+{% block content %}
+<div class="dashboard-shell">
+    <!-- Sidebar -->
+    <aside class="dashboard-sidebar">
+        <div class="sidebar-label">Workspace</div>
+        <nav class="nav flex-column gap-1">
+            <a class="dashboard-nav-link" href="{% url 'student_dashboard' %}"><i class="bi bi-grid-1x2-fill"></i>Overview</a>
+            <a class="dashboard-nav-link" href="{% url 'profile' %}"><i class="bi bi-person"></i>My Profile</a>
+            <a class="dashboard-nav-link" href="{% url 'job_list' %}"><i class="bi bi-briefcase"></i>Find Opportunities</a>
+            <a class="dashboard-nav-link" href="{% url 'student_applications' %}"><i class="bi bi-file-earmark-text"></i>My Applications</a>
+            <a class="dashboard-nav-link" href="{% url 'career_match' %}"><i class="bi bi-stars"></i>AI Career Match</a>
+            <a class="dashboard-nav-link" href="{% url 'ai_mock_interview' %}"><i class="bi bi-camera-video"></i>AI Mock Interview</a>
+            <a class="dashboard-nav-link active" href="{% url 'learning_hub' %}"><i class="bi bi-mortarboard"></i>Learning Hub</a>
+        </nav>
+        <div class="sidebar-bottom"><span class="status-dot"></span>Placement season 2026</div>
+    </aside>
+
+    <main class="dashboard-main">
+
+        <!-- Breadcrumb -->
+        <nav aria-label="breadcrumb" class="mb-3">
+            <ol class="breadcrumb small">
+                <li class="breadcrumb-item"><a href="{% url 'learning_hub' %}" class="text-decoration-none">Learning Hub</a></li>
+                <li class="breadcrumb-item active text-muted">{{ course.title }}</li>
+            </ol>
+        </nav>
+
+        <!-- Course Hero -->
+        <div class="card border-0 shadow-sm rounded-4 overflow-hidden mb-4">
+            <div class="p-4 p-md-5" style="background: linear-gradient(135deg, {{ course.icon_bg }}, #ffffff);">
+                <div class="row align-items-center g-4">
+                    <div class="col-md-8">
+                        <div class="d-flex align-items-center gap-3 mb-3">
+                            <div style="width:60px;height:60px;border-radius:16px;background:{{ course.icon_color }}15;color:{{ course.icon_color }};display:flex;align-items:center;justify-content:center;font-size:1.8rem;border:2px solid {{ course.icon_color }}30;">
+                                <i class="{{ course.icon }}"></i>
+                            </div>
+                            <div>
+                                <span class="badge rounded-pill mb-1" style="background:{{ course.icon_color }}20;color:{{ course.icon_color }};border:1px solid {{ course.icon_color }}40;">
+                                    {{ course.get_category_display }}
+                                </span>
+                                <span class="badge rounded-pill ms-1" style="background:#f0fdf4;color:#16a34a;border:1px solid #bbf7d0;">
+                                    {{ course.get_level_display }}
+                                </span>
+                            </div>
+                        </div>
+                        <h1 class="fw-bold mb-2" style="font-size:1.8rem;">{{ course.title }}</h1>
+                        <p class="text-muted mb-3">{{ course.description }}</p>
+                        <div class="d-flex flex-wrap gap-3 small text-muted">
+                            <span><i class="bi bi-collection-play me-1" style="color:{{ course.icon_color }};"></i><strong>{{ lessons|length }}</strong> Lessons</span>
+                            <span><i class="bi bi-clock me-1" style="color:{{ course.icon_color }};"></i><strong>{{ course.duration_hrs }} hrs</strong></span>
+                            {% if quiz %}<span><i class="bi bi-patch-question me-1" style="color:{{ course.icon_color }};"></i><strong>{{ quiz.total_questions }}</strong> Quiz Questions</span>{% endif %}
+                        </div>
+                    </div>
+                    <div class="col-md-4 text-center text-md-end">
+                        {% if not enrollment %}
+                        <form method="post" action="{% url 'enroll_course' course.slug %}">
+                            {% csrf_token %}
+                            <button type="submit" id="enroll-btn" class="btn btn-lg rounded-pill px-5 fw-bold shadow-sm" style="background:{{ course.icon_color }};color:white;border:none;">
+                                <i class="bi bi-play-circle-fill me-2"></i>Start Learning
+                            </button>
+                        </form>
+                        <p class="small text-muted mt-2">Free • No credit card required</p>
+                        {% else %}
+                        <div class="text-center">
+                            <div class="mb-2 fw-bold" style="color:{{ course.icon_color }};">{{ progress }}% Complete</div>
+                            <div class="progress rounded-pill mb-3" style="height:12px;">
+                                <div class="progress-bar rounded-pill" style="width:{{ progress }}%;background:{{ course.icon_color }};" role="progressbar"></div>
+                            </div>
+                            {% if certificate %}
+                            <a href="{% url 'hub_certificate' certificate.certificate_id %}" class="btn btn-warning rounded-pill fw-bold px-4">
+                                <i class="bi bi-award-fill me-2"></i>View Certificate
+                            </a>
+                            {% elif quiz %}
+                            <a href="{% url 'hub_quiz' course.slug %}" class="btn btn-outline-primary rounded-pill fw-semibold px-4">
+                                <i class="bi bi-patch-question me-2"></i>Take Quiz
+                            </a>
+                            {% endif %}
+                        </div>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row g-4">
+            <!-- Lessons List -->
+            <div class="col-lg-8">
+                <!-- Learning Objectives -->
+                {% if course.get_objectives_list %}
+                <div class="card border-0 shadow-sm rounded-4 p-4 mb-4">
+                    <h5 class="fw-bold mb-3"><i class="bi bi-check2-all me-2" style="color:{{ course.icon_color }};"></i>What You Will Learn</h5>
+                    <div class="row g-2">
+                        {% for obj in course.get_objectives_list %}
+                        <div class="col-md-6">
+                            <div class="d-flex align-items-start gap-2">
+                                <i class="bi bi-check-circle-fill mt-1 flex-shrink-0" style="color:{{ course.icon_color }};font-size:.85rem;"></i>
+                                <span class="small">{{ obj }}</span>
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </div>
+                </div>
+                {% endif %}
+
+                <!-- Lessons -->
+                <div class="card border-0 shadow-sm rounded-4 p-4">
+                    <h5 class="fw-bold mb-4"><i class="bi bi-collection-play me-2" style="color:{{ course.icon_color }};"></i>Course Lessons</h5>
+                    {% if lessons %}
+                    <div class="lesson-list">
+                        {% for lesson in lessons %}
+                        <div class="lesson-item d-flex align-items-center gap-3 p-3 rounded-3 mb-2 {% if lesson.id in completed_lessons %}lesson-completed{% endif %}"
+                             style="background:{% if lesson.id in completed_lessons %}#f0fdf4{% else %}#fafbfc{% endif %};border:1px solid {% if lesson.id in completed_lessons %}#bbf7d0{% else %}#e9ecef{% endif %};">
+                            <!-- Status icon -->
+                            <div class="flex-shrink-0" style="width:36px;height:36px;border-radius:50%;display:flex;align-items:center;justify-content:center;
+                                background:{% if lesson.id in completed_lessons %}#16a34a{% else %}{{ course.icon_color }}15{% endif %};
+                                color:{% if lesson.id in completed_lessons %}white{% else %}{{ course.icon_color }}{% endif %};font-size:1rem;">
+                                {% if lesson.id in completed_lessons %}
+                                <i class="bi bi-check-lg"></i>
+                                {% elif lesson.content_type == 'video' %}
+                                <i class="bi bi-play-fill"></i>
+                                {% elif lesson.content_type == 'pdf' %}
+                                <i class="bi bi-file-pdf"></i>
+                                {% else %}
+                                <i class="bi bi-file-text"></i>
+                                {% endif %}
+                            </div>
+                            <!-- Lesson info -->
+                            <div class="flex-grow-1 min-w-0">
+                                <div class="fw-semibold small mb-0 text-truncate">{{ forloop.counter }}. {{ lesson.title }}</div>
+                                <div class="text-muted" style="font-size:.75rem;">
+                                    <i class="bi bi-clock me-1"></i>{{ lesson.duration_min }} min
+                                    {% if lesson.content_type == 'video' %} · <i class="bi bi-play-circle me-1"></i>Video{% endif %}
+                                    {% if lesson.content_type == 'pdf' %} · <i class="bi bi-file-pdf me-1"></i>PDF{% endif %}
+                                </div>
+                            </div>
+                            <!-- Action -->
+                            {% if enrollment %}
+                            <a href="{% url 'hub_lesson' course.slug lesson.id %}"
+                               class="btn btn-sm rounded-pill flex-shrink-0"
+                               style="{% if lesson.id in completed_lessons %}background:#f0fdf4;color:#16a34a;border:1px solid #bbf7d0;{% else %}background:{{ course.icon_color }};color:white;border:none;{% endif %}">
+                                {% if lesson.id in completed_lessons %}Review{% else %}Start{% endif %}
+                            </a>
+                            {% else %}
+                            <span class="text-muted small flex-shrink-0"><i class="bi bi-lock"></i></span>
+                            {% endif %}
+                        </div>
+                        {% endfor %}
+                    </div>
+                    {% else %}
+                    <p class="text-muted text-center py-4">No lessons available yet.</p>
+                    {% endif %}
+                </div>
+            </div>
+
+            <!-- Sidebar info -->
+            <div class="col-lg-4">
+                <!-- Quiz Card -->
+                {% if quiz %}
+                <div class="card border-0 shadow-sm rounded-4 p-4 mb-4">
+                    <h6 class="fw-bold mb-3"><i class="bi bi-patch-question-fill me-2 text-warning"></i>Course Quiz</h6>
+                    <p class="small text-muted mb-3">{{ quiz.total_questions }} multiple-choice questions • Pass at {{ quiz.pass_percent }}%</p>
+                    {% if last_attempt %}
+                    <div class="alert rounded-3 border-0 p-3 mb-3 {% if last_attempt.passed %}alert-success{% else %}alert-warning{% endif %}">
+                        <div class="fw-semibold">Last Attempt: {{ last_attempt.score }}/{{ last_attempt.total }} ({{ last_attempt.percent }}%)</div>
+                        <div class="small">{% if last_attempt.passed %}✅ Passed{% else %}❌ Did not pass — try again!{% endif %}</div>
+                    </div>
+                    {% endif %}
+                    {% if enrollment %}
+                    <a href="{% url 'hub_quiz' course.slug %}" class="btn w-100 rounded-pill fw-semibold" style="background:#f59e0b;color:white;border:none;">
+                        <i class="bi bi-lightning-fill me-2"></i>{% if last_attempt %}Retry Quiz{% else %}Take Quiz{% endif %}
+                    </a>
+                    {% else %}
+                    <button class="btn w-100 rounded-pill btn-outline-secondary" disabled>
+                        <i class="bi bi-lock me-2"></i>Enroll to Take Quiz
+                    </button>
+                    {% endif %}
+                </div>
+                {% endif %}
+
+                <!-- Certificate Card -->
+                {% if certificate %}
+                <div class="card border-0 shadow-sm rounded-4 p-4 mb-4" style="background:linear-gradient(135deg,#fef3c7,#fffbeb);border:1px solid #fde68a !important;">
+                    <div class="d-flex align-items-center gap-2 mb-2">
+                        <i class="bi bi-award-fill text-warning fs-4"></i>
+                        <h6 class="fw-bold mb-0">Certificate Earned!</h6>
+                    </div>
+                    <p class="small text-muted mb-3">Congratulations! You have completed this course.</p>
+                    <a href="{% url 'hub_certificate' certificate.certificate_id %}" class="btn btn-warning rounded-pill fw-bold w-100">
+                        <i class="bi bi-download me-2"></i>View & Download
+                    </a>
+                </div>
+                {% endif %}
+
+                <!-- Course Info -->
+                <div class="card border-0 shadow-sm rounded-4 p-4">
+                    <h6 class="fw-bold mb-3">Course Information</h6>
+                    <div class="d-flex flex-column gap-2 small">
+                        <div class="d-flex justify-content-between">
+                            <span class="text-muted">Category</span>
+                            <span class="fw-semibold">{{ course.get_category_display }}</span>
+                        </div>
+                        <div class="d-flex justify-content-between">
+                            <span class="text-muted">Level</span>
+                            <span class="fw-semibold">{{ course.get_level_display }}</span>
+                        </div>
+                        <div class="d-flex justify-content-between">
+                            <span class="text-muted">Total Lessons</span>
+                            <span class="fw-semibold">{{ lessons|length }}</span>
+                        </div>
+                        <div class="d-flex justify-content-between">
+                            <span class="text-muted">Duration</span>
+                            <span class="fw-semibold">{{ course.duration_hrs }} hours</span>
+                        </div>
+                        {% if enrollment %}
+                        <div class="d-flex justify-content-between">
+                            <span class="text-muted">Your Progress</span>
+                            <span class="fw-semibold" style="color:{{ course.icon_color }};">{{ progress }}%</span>
+                        </div>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+</div>
+{% endblock %}

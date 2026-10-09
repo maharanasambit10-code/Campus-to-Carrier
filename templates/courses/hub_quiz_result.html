@@ -1,0 +1,126 @@
+{% extends 'base.html' %}
+{% block title %}Quiz Result | {{ course.title }} | CAMPUSLINK{% endblock %}
+{% block content %}
+<div class="dashboard-shell">
+    <aside class="dashboard-sidebar">
+        <div class="sidebar-label">Workspace</div>
+        <nav class="nav flex-column gap-1">
+            <a class="dashboard-nav-link" href="{% url 'student_dashboard' %}"><i class="bi bi-grid-1x2-fill"></i>Overview</a>
+            <a class="dashboard-nav-link active" href="{% url 'learning_hub' %}"><i class="bi bi-mortarboard"></i>Learning Hub</a>
+        </nav>
+    </aside>
+    <main class="dashboard-main">
+
+        <!-- Result Banner -->
+        <div class="card border-0 shadow-sm rounded-4 overflow-hidden mb-4">
+            <div class="text-center p-5" style="background:{% if attempt.passed %}linear-gradient(135deg,#f0fdf4,#dcfce7){% else %}linear-gradient(135deg,#fef2f2,#fee2e2){% endif %}">
+                <div style="font-size:4rem;margin-bottom:1rem;">
+                    {% if attempt.passed %}🎉{% else %}💪{% endif %}
+                </div>
+                <h2 class="fw-bold mb-2" style="color:{% if attempt.passed %}#16a34a{% else %}#dc2626{% endif %}">
+                    {% if attempt.passed %}Congratulations! You Passed!{% else %}Keep Going! You Can Do It!{% endif %}
+                </h2>
+                <p class="text-muted mb-4">{{ course.title }} Quiz</p>
+
+                <!-- Score Circle -->
+                <div class="d-inline-flex align-items-center justify-content-center rounded-circle shadow-sm mb-4"
+                     style="width:120px;height:120px;background:white;border:5px solid {% if attempt.passed %}#16a34a{% else %}#dc2626{% endif %};">
+                    <div>
+                        <div class="fw-bold" style="font-size:2rem;color:{% if attempt.passed %}#16a34a{% else %}#dc2626{% endif %};">{{ attempt.percent }}%</div>
+                        <div class="text-muted small">{{ attempt.score }}/{{ attempt.total }}</div>
+                    </div>
+                </div>
+
+                {% if attempt.passed %}
+                <div class="alert alert-success rounded-3 border-0 d-inline-block px-4 mb-0">
+                    <i class="bi bi-check-circle-fill me-2"></i>You scored {{ attempt.percent }}% — above the {{ attempt.enrollment.course.quiz.pass_percent }}% pass mark!
+                </div>
+                {% else %}
+                <div class="alert alert-warning rounded-3 border-0 d-inline-block px-4 mb-0">
+                    <i class="bi bi-info-circle-fill me-2"></i>You need {{ attempt.enrollment.course.quiz.pass_percent }}% to pass. Review the lessons and try again!
+                </div>
+                {% endif %}
+            </div>
+        </div>
+
+        <!-- Certificate (if earned) -->
+        {% if certificate %}
+        <div class="card border-0 shadow-sm rounded-4 p-4 mb-4" style="background:linear-gradient(135deg,#fef3c7,#fffbeb);border:2px solid #fde68a !important;">
+            <div class="d-flex align-items-center gap-3">
+                <i class="bi bi-award-fill text-warning" style="font-size:2.5rem;"></i>
+                <div class="flex-grow-1">
+                    <h5 class="fw-bold mb-1">🎓 Certificate Earned!</h5>
+                    <p class="text-muted small mb-0">You have completed {{ course.title }}. Your certificate is ready.</p>
+                </div>
+                <a href="{% url 'hub_certificate' certificate.certificate_id %}" class="btn btn-warning rounded-pill fw-bold px-4">
+                    <i class="bi bi-download me-2"></i>View Certificate
+                </a>
+            </div>
+        </div>
+        {% endif %}
+
+        <!-- Action Buttons -->
+        <div class="d-flex flex-wrap gap-3 mb-4">
+            <a href="{% url 'hub_course_detail' course.slug %}" class="btn btn-outline-secondary rounded-pill px-4">
+                <i class="bi bi-arrow-left me-2"></i>Back to Course
+            </a>
+            <a href="{% url 'hub_quiz' course.slug %}" class="btn btn-warning rounded-pill px-4 fw-semibold">
+                <i class="bi bi-arrow-repeat me-2"></i>Retry Quiz
+            </a>
+            <a href="{% url 'learning_hub' %}" class="btn btn-primary rounded-pill px-4">
+                <i class="bi bi-mortarboard me-2"></i>Browse More Courses
+            </a>
+        </div>
+
+        <!-- Detailed Results -->
+        <div class="card border-0 shadow-sm rounded-4 p-4">
+            <h5 class="fw-bold mb-4"><i class="bi bi-list-check me-2 text-primary"></i>Question Review</h5>
+            {% for result in question_results %}
+            <div class="card rounded-3 border mb-3 overflow-hidden {% if result.is_correct %}border-success{% else %}border-danger{% endif %}">
+                <div class="p-3 d-flex align-items-start gap-3"
+                     style="background:{% if result.is_correct %}#f0fdf4{% else %}#fef2f2{% endif %}">
+                    <span class="flex-shrink-0 rounded-circle d-flex align-items-center justify-content-center fw-bold"
+                          style="width:32px;height:32px;font-size:.8rem;
+                          background:{% if result.is_correct %}#16a34a{% else %}#dc2626{% endif %};color:white;">
+                        Q{{ forloop.counter }}
+                    </span>
+                    <div class="flex-grow-1">
+                        <div class="fw-semibold small mb-2">{{ result.question.question }}</div>
+                        <div class="d-flex flex-wrap gap-2 small">
+                            <span class="badge rounded-pill px-3 py-1"
+                                  style="background:{% if result.is_correct %}#dcfce7;color:#16a34a{% else %}#fee2e2;color:#dc2626{% endif %}">
+                                Your answer: {{ result.selected|default:"Not answered" }}
+                                — {{ result.question.options|default_if_none:""|safe }}
+                                {% with result.question.options as opts %}
+                                    {% if result.selected == 'A' %}{{ result.question.option_a }}
+                                    {% elif result.selected == 'B' %}{{ result.question.option_b }}
+                                    {% elif result.selected == 'C' %}{{ result.question.option_c }}
+                                    {% elif result.selected == 'D' %}{{ result.question.option_d }}
+                                    {% else %}—{% endif %}
+                                {% endwith %}
+                            </span>
+                            {% if not result.is_correct %}
+                            <span class="badge rounded-pill px-3 py-1" style="background:#dcfce7;color:#16a34a;">
+                                Correct: {{ result.question.answer }}
+                                — {% if result.question.answer == 'A' %}{{ result.question.option_a }}
+                                {% elif result.question.answer == 'B' %}{{ result.question.option_b }}
+                                {% elif result.question.answer == 'C' %}{{ result.question.option_c }}
+                                {% elif result.question.answer == 'D' %}{{ result.question.option_d }}{% endif %}
+                            </span>
+                            {% endif %}
+                        </div>
+                        {% if result.question.explanation %}
+                        <div class="small text-muted mt-2 p-2 rounded-2" style="background:white;">
+                            <i class="bi bi-lightbulb me-1 text-warning"></i>{{ result.question.explanation }}
+                        </div>
+                        {% endif %}
+                    </div>
+                    <span class="flex-shrink-0 fs-5">{% if result.is_correct %}✅{% else %}❌{% endif %}</span>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+
+    </main>
+</div>
+{% endblock %}

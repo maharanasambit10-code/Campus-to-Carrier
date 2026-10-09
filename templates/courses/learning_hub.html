@@ -1,0 +1,235 @@
+{% extends 'base.html' %}
+{% block title %}Learning Hub | CAMPUSLINK{% endblock %}
+{% block content %}
+<div class="dashboard-shell">
+    <!-- Sidebar -->
+    <aside class="dashboard-sidebar">
+        <div class="sidebar-label">Workspace</div>
+        <nav class="nav flex-column gap-1">
+            <a class="dashboard-nav-link" href="{% url 'student_dashboard' %}"><i class="bi bi-grid-1x2-fill"></i>Overview</a>
+            <a class="dashboard-nav-link" href="{% url 'profile' %}"><i class="bi bi-person"></i>My Profile</a>
+            <a class="dashboard-nav-link" href="{% url 'job_list' %}"><i class="bi bi-briefcase"></i>Find Opportunities</a>
+            <a class="dashboard-nav-link" href="{% url 'student_applications' %}"><i class="bi bi-file-earmark-text"></i>My Applications</a>
+            <a class="dashboard-nav-link" href="{% url 'simulator_catalog' %}"><i class="bi bi-airplane-engines"></i>Flight Simulator</a>
+            <a class="dashboard-nav-link" href="{% url 'opportunity_compiler_home' %}"><i class="bi bi-cpu"></i>Opportunity Compiler</a>
+            <a class="dashboard-nav-link" href="{% url 'proof_passport_dashboard' %}"><i class="bi bi-patch-check"></i>Proof Passport</a>
+            <a class="dashboard-nav-link" href="{% url 'career_match' %}"><i class="bi bi-stars"></i>AI Career Match</a>
+            <a class="dashboard-nav-link" href="{% url 'ai_mock_interview' %}"><i class="bi bi-camera-video"></i>AI Mock Interview</a>
+            <a class="dashboard-nav-link active" href="{% url 'learning_hub' %}"><i class="bi bi-mortarboard"></i>Learning Hub</a>
+        </nav>
+        <div class="sidebar-bottom"><span class="status-dot"></span>Placement season 2026</div>
+    </aside>
+
+    <!-- Main content -->
+    <main class="dashboard-main">
+
+        <!-- Header -->
+        <div class="dashboard-heading">
+            <div>
+                <span class="eyebrow text-uppercase fw-bold" style="color:#00b4d8;font-size:.75rem;letter-spacing:.5px;">
+                    <i class="bi bi-mortarboard-fill me-1"></i>LEARNING HUB
+                </span>
+                <h1 class="mb-1">Learning Hub</h1>
+                <p class="text-muted mb-0">Learn new skills. Practice daily. Get placement-ready.</p>
+            </div>
+            {% if student %}
+            <a href="{% url 'hub_my_progress' %}" class="btn btn-primary">
+                <i class="bi bi-bar-chart-fill me-2"></i>My Progress
+            </a>
+            {% endif %}
+        </div>
+
+        <!-- Stats Cards -->
+        <div class="row g-3 mb-4">
+            <div class="col-6 col-md-3">
+                <div class="stat-card" style="border-top:3px solid #00b4d8;">
+                    <div class="stat-icon" style="background:#e0f7fa;color:#00b4d8;">
+                        <i class="bi bi-collection-play-fill"></i>
+                    </div>
+                    <div class="stat-value">{{ total_courses }}</div>
+                    <div class="stat-label">Available Courses</div>
+                </div>
+            </div>
+            <div class="col-6 col-md-3">
+                <div class="stat-card" style="border-top:3px solid #10b981;">
+                    <div class="stat-icon" style="background:#d1fae5;color:#10b981;">
+                        <i class="bi bi-check-circle-fill"></i>
+                    </div>
+                    <div class="stat-value">{{ completed_count }}</div>
+                    <div class="stat-label">Completed Courses</div>
+                </div>
+            </div>
+            <div class="col-6 col-md-3">
+                <div class="stat-card" style="border-top:3px solid #7c3aed;">
+                    <div class="stat-icon" style="background:#ede9fe;color:#7c3aed;">
+                        <i class="bi bi-graph-up-arrow"></i>
+                    </div>
+                    <div class="stat-value">{{ overall_progress }}%</div>
+                    <div class="stat-label">Learning Progress</div>
+                </div>
+            </div>
+            <div class="col-6 col-md-3">
+                <div class="stat-card" style="border-top:3px solid #f59e0b;">
+                    <div class="stat-icon" style="background:#fef3c7;color:#f59e0b;">
+                        <i class="bi bi-award-fill"></i>
+                    </div>
+                    <div class="stat-value">{{ cert_count }}</div>
+                    <div class="stat-label">Certificates Earned</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Search & Filter -->
+        <div class="card border-0 shadow-sm rounded-4 p-4 mb-4">
+            <form method="get" id="search-filter-form">
+                <div class="row g-3 align-items-center">
+                    <div class="col-md-7">
+                        <div class="input-group">
+                            <span class="input-group-text border-0 bg-light"><i class="bi bi-search text-muted"></i></span>
+                            <input type="text" name="q" id="course-search-input" value="{{ query }}" class="form-control border-0 bg-light" placeholder="Search courses...">
+                            {% if query %}<button type="button" class="btn btn-light border-0" onclick="document.getElementById('course-search-input').value=''; this.form.submit()"><i class="bi bi-x"></i></button>{% endif %}
+                        </div>
+                    </div>
+                    <div class="col-md-5">
+                        <div class="d-flex flex-wrap gap-2" id="category-filters">
+                            <a href="?{% if query %}q={{ query }}&{% endif %}category=all"
+                               class="btn btn-sm rounded-pill {% if selected_category == 'all' %}btn-primary{% else %}btn-outline-secondary{% endif %}">
+                                All
+                            </a>
+                            {% for key, label in category_choices %}
+                            <a href="?{% if query %}q={{ query }}&{% endif %}category={{ key }}"
+                               class="btn btn-sm rounded-pill {% if selected_category == key %}btn-primary{% else %}btn-outline-secondary{% endif %}">
+                                {{ label }}
+                            </a>
+                            {% endfor %}
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </div>
+
+        <!-- Course Grid -->
+        {% if course_data %}
+        <div class="row g-4" id="course-grid">
+            {% for item in course_data %}
+            <div class="col-md-6 col-xl-4 course-card-col">
+                <div class="hub-course-card card border-0 shadow-sm rounded-4 h-100 overflow-hidden">
+                    <!-- Card Header -->
+                    <div class="hub-card-header p-4 pb-3" style="background: linear-gradient(135deg, {{ item.course.icon_bg }}, #ffffff);">
+                        <div class="d-flex align-items-start justify-content-between mb-3">
+                            <div class="hub-icon-badge" style="background:{{ item.course.icon_color }}15; color:{{ item.course.icon_color }}; border: 2px solid {{ item.course.icon_color }}30;">
+                                <i class="{{ item.course.icon }} fs-4"></i>
+                            </div>
+                            <div class="d-flex flex-column align-items-end gap-1">
+                                <span class="badge rounded-pill" style="background:{{ item.course.icon_color }}20; color:{{ item.course.icon_color }}; font-size:.7rem; border: 1px solid {{ item.course.icon_color }}40;">
+                                    {{ item.course.get_level_display }}
+                                </span>
+                                {% if item.has_cert %}
+                                <span class="badge bg-warning text-dark rounded-pill" style="font-size:.65rem;">
+                                    <i class="bi bi-award-fill me-1"></i>Certified
+                                </span>
+                                {% endif %}
+                            </div>
+                        </div>
+                        <h3 class="hub-card-title fw-bold mb-1" style="font-size:1.05rem;">{{ item.course.title }}</h3>
+                        <p class="text-muted small mb-0" style="line-height:1.5; display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; overflow:hidden;">
+                            {{ item.course.description }}
+                        </p>
+                    </div>
+
+                    <!-- Card Meta -->
+                    <div class="px-4 py-3 border-top border-bottom" style="background:#fafbfc;">
+                        <div class="d-flex justify-content-between text-muted small">
+                            <span><i class="bi bi-collection-play me-1" style="color:{{ item.course.icon_color }};"></i>{{ item.course.total_lessons }} Lessons</span>
+                            <span><i class="bi bi-clock me-1" style="color:{{ item.course.icon_color }};"></i>{{ item.course.duration_hrs }} hrs</span>
+                            <span><i class="bi bi-tag me-1" style="color:{{ item.course.icon_color }};"></i>{{ item.course.get_category_display }}</span>
+                        </div>
+                    </div>
+
+                    <!-- Progress Bar (if enrolled) -->
+                    {% if item.enrolled %}
+                    <div class="px-4 pt-3" style="background:#fafbfc;">
+                        <div class="d-flex justify-content-between small mb-1">
+                            <span class="text-muted">Progress</span>
+                            <span class="fw-semibold" style="color:{{ item.course.icon_color }};">{{ item.progress }}%</span>
+                        </div>
+                        <div class="progress rounded-pill" style="height:6px; background:#e9ecef;">
+                            <div class="progress-bar rounded-pill" style="width:{{ item.progress }}%; background:{{ item.course.icon_color }};" role="progressbar"></div>
+                        </div>
+                    </div>
+                    {% endif %}
+
+                    <!-- Card Footer -->
+                    <div class="px-4 pb-4 pt-3 mt-auto" style="background:#fafbfc;">
+                        <a href="{% url 'hub_course_detail' item.course.slug %}"
+                           class="btn w-100 rounded-pill fw-semibold"
+                           style="{% if item.enrolled %}background:{{ item.course.icon_color }}; color:white; border:none;{% else %}border:2px solid {{ item.course.icon_color }}; color:{{ item.course.icon_color }}; background:transparent;{% endif %}">
+                            {% if not item.enrolled %}
+                                <i class="bi bi-play-circle me-2"></i>Start Learning
+                            {% elif item.progress == 100 %}
+                                <i class="bi bi-check-circle-fill me-2"></i>Review Course
+                            {% else %}
+                                <i class="bi bi-play-fill me-2"></i>Continue Learning
+                            {% endif %}
+                        </a>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+
+        {% else %}
+        <!-- Empty state -->
+        <div class="text-center py-5">
+            <div style="font-size:4rem; opacity:.3;" class="mb-3">📚</div>
+            <h4 class="text-muted">No courses found</h4>
+            <p class="text-muted">
+                {% if query %}
+                    No courses match "{{ query }}". <a href="{% url 'learning_hub' %}">Clear search</a>
+                {% else %}
+                    No courses available yet. Check back soon!
+                {% endif %}
+            </p>
+        </div>
+        {% endif %}
+
+    </main>
+</div>
+
+<style>
+.hub-course-card {
+    transition: transform .2s ease, box-shadow .2s ease;
+    cursor: pointer;
+}
+.hub-course-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 12px 35px rgba(0,0,0,.12) !important;
+}
+.hub-icon-badge {
+    width: 56px;
+    height: 56px;
+    border-radius: 14px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.hub-card-title {
+    color: #1a202c;
+    line-height: 1.3;
+}
+</style>
+
+<script>
+// Live search filter
+const searchInput = document.getElementById('course-search-input');
+if (searchInput) {
+    let debounceTimer;
+    searchInput.addEventListener('input', () => {
+        clearTimeout(debounceTimer);
+        debounceTimer = setTimeout(() => {
+            searchInput.form.submit();
+        }, 600);
+    });
+}
+</script>
+{% endblock %}

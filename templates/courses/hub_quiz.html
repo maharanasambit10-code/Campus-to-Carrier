@@ -1,0 +1,118 @@
+{% extends 'base.html' %}
+{% block title %}{{ quiz.title }} | CAMPUSLINK{% endblock %}
+{% block content %}
+<div class="dashboard-shell">
+    <aside class="dashboard-sidebar">
+        <div class="sidebar-label">Workspace</div>
+        <nav class="nav flex-column gap-1">
+            <a class="dashboard-nav-link" href="{% url 'student_dashboard' %}"><i class="bi bi-grid-1x2-fill"></i>Overview</a>
+            <a class="dashboard-nav-link active" href="{% url 'learning_hub' %}"><i class="bi bi-mortarboard"></i>Learning Hub</a>
+        </nav>
+    </aside>
+    <main class="dashboard-main">
+
+        <!-- Breadcrumb -->
+        <nav aria-label="breadcrumb" class="mb-3">
+            <ol class="breadcrumb small">
+                <li class="breadcrumb-item"><a href="{% url 'learning_hub' %}" class="text-decoration-none">Learning Hub</a></li>
+                <li class="breadcrumb-item"><a href="{% url 'hub_course_detail' course.slug %}" class="text-decoration-none">{{ course.title }}</a></li>
+                <li class="breadcrumb-item active">Quiz</li>
+            </ol>
+        </nav>
+
+        <!-- Quiz Header -->
+        <div class="card border-0 shadow-sm rounded-4 p-4 mb-4" style="background:linear-gradient(135deg,#fef3c7,#fffbeb);">
+            <div class="d-flex align-items-center gap-3">
+                <div style="width:52px;height:52px;border-radius:14px;background:#f59e0b20;color:#f59e0b;display:flex;align-items:center;justify-content:center;font-size:1.5rem;border:2px solid #f59e0b30;">
+                    <i class="bi bi-patch-question-fill"></i>
+                </div>
+                <div>
+                    <h2 class="fw-bold mb-1">{{ quiz.title }}</h2>
+                    <p class="text-muted mb-0 small">{{ questions|length }} questions • Pass at {{ quiz.pass_percent }}% • Good luck! 🎯</p>
+                </div>
+            </div>
+        </div>
+
+        {% if last_attempt %}
+        <div class="alert rounded-4 border-0 shadow-sm mb-4 {% if last_attempt.passed %}alert-success{% else %}alert-warning{% endif %} p-4">
+            <div class="fw-bold mb-1">Previous Attempt: {{ last_attempt.score }}/{{ last_attempt.total }} ({{ last_attempt.percent }}%)</div>
+            <div class="small">{% if last_attempt.passed %}You already passed this quiz! You can take it again to improve your score.{% else %}Keep trying — you can do it!{% endif %}</div>
+        </div>
+        {% endif %}
+
+        <!-- Quiz Form -->
+        <form method="post" action="{% url 'hub_quiz_submit' course.slug %}" id="quiz-form">
+            {% csrf_token %}
+
+            {% for q in questions %}
+            <div class="card border-0 shadow-sm rounded-4 p-4 mb-3 quiz-question-card" id="question-{{ forloop.counter }}">
+                <div class="d-flex align-items-start gap-3 mb-3">
+                    <span class="badge rounded-pill px-3 py-2 fw-bold flex-shrink-0" style="background:#f59e0b;color:white;font-size:.85rem;">Q{{ forloop.counter }}</span>
+                    <h5 class="fw-semibold mb-0" style="line-height:1.5;">{{ q.question }}</h5>
+                </div>
+                <div class="row g-2">
+                    {% for key, option in q.options.items %}
+                    <div class="col-md-6">
+                        <label class="option-label d-flex align-items-center gap-3 p-3 rounded-3 cursor-pointer"
+                               style="border:2px solid #e9ecef;background:#fafbfc;cursor:pointer;transition:all .15s;">
+                            <input type="radio" name="q_{{ q.id }}" value="{{ key }}" class="quiz-option d-none" required>
+                            <span class="option-key fw-bold" style="width:28px;height:28px;border-radius:50%;background:#e9ecef;color:#64748b;display:flex;align-items:center;justify-content:center;font-size:.8rem;flex-shrink:0;">{{ key }}</span>
+                            <span class="small">{{ option }}</span>
+                        </label>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+            {% endfor %}
+
+            <!-- Submit -->
+            <div class="d-flex justify-content-between align-items-center mt-2 mb-4">
+                <a href="{% url 'hub_course_detail' course.slug %}" class="btn btn-outline-secondary rounded-pill px-4">
+                    <i class="bi bi-arrow-left me-2"></i>Back to Course
+                </a>
+                <button type="submit" id="quiz-submit-btn" class="btn btn-warning btn-lg rounded-pill px-5 fw-bold shadow-sm">
+                    <i class="bi bi-send-fill me-2"></i>Submit Quiz
+                </button>
+            </div>
+        </form>
+
+    </main>
+</div>
+
+<style>
+.option-label:hover { border-color: #f59e0b !important; background: #fffbeb !important; }
+.option-label.selected { border-color: #f59e0b !important; background: #fef3c7 !important; }
+.option-label.selected .option-key { background: #f59e0b; color: white; }
+</style>
+
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+    // Visual selection effect
+    document.querySelectorAll('.quiz-option').forEach(radio => {
+        radio.addEventListener('change', function() {
+            const name = this.name;
+            document.querySelectorAll(`input[name="${name}"]`).forEach(r => {
+                r.closest('.option-label').classList.remove('selected');
+            });
+            this.closest('.option-label').classList.add('selected');
+        });
+    });
+
+    // Clicking the label toggles the hidden radio
+    document.querySelectorAll('.option-label').forEach(label => {
+        label.addEventListener('click', () => {
+            const radio = label.querySelector('.quiz-option');
+            radio.checked = true;
+            radio.dispatchEvent(new Event('change'));
+        });
+    });
+
+    // Prevent double submit
+    document.getElementById('quiz-form').addEventListener('submit', function() {
+        const btn = document.getElementById('quiz-submit-btn');
+        btn.disabled = true;
+        btn.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span>Submitting...';
+    });
+});
+</script>
+{% endblock %}

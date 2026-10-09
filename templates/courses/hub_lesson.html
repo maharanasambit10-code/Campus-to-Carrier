@@ -1,0 +1,196 @@
+{% extends 'base.html' %}
+{% block title %}{{ lesson.title }} | {{ course.title }} | CAMPUSLINK{% endblock %}
+{% block content %}
+<div class="dashboard-shell">
+    <!-- Sidebar: compact lesson navigator -->
+    <aside class="dashboard-sidebar" style="min-width:260px;">
+        <div class="sidebar-label">{{ course.title }}</div>
+        <nav class="nav flex-column gap-1">
+            {% for l in all_lessons %}
+            <a class="dashboard-nav-link {% if l.id == lesson.id %}active{% endif %} {% if l.id in completed_ids %}text-success{% endif %}"
+               href="{% url 'hub_lesson' course.slug l.id %}"
+               style="font-size:.82rem;padding:.5rem .75rem;">
+                {% if l.id in completed_ids %}
+                <i class="bi bi-check-circle-fill text-success"></i>
+                {% else %}
+                <i class="bi bi-circle" style="color:#cbd5e1;"></i>
+                {% endif %}
+                {{ forloop.counter }}. {{ l.title|truncatechars:28 }}
+            </a>
+            {% endfor %}
+        </nav>
+        <div class="p-3 border-top mt-2">
+            <a href="{% url 'hub_course_detail' course.slug %}" class="btn btn-sm btn-outline-secondary w-100 rounded-pill">
+                <i class="bi bi-arrow-left me-1"></i>Back to Course
+            </a>
+        </div>
+    </aside>
+
+    <main class="dashboard-main">
+
+        <!-- Breadcrumb -->
+        <nav aria-label="breadcrumb" class="mb-3">
+            <ol class="breadcrumb small">
+                <li class="breadcrumb-item"><a href="{% url 'learning_hub' %}" class="text-decoration-none">Learning Hub</a></li>
+                <li class="breadcrumb-item"><a href="{% url 'hub_course_detail' course.slug %}" class="text-decoration-none">{{ course.title }}</a></li>
+                <li class="breadcrumb-item active text-muted">{{ lesson.title }}</li>
+            </ol>
+        </nav>
+
+        <!-- Progress Bar -->
+        <div class="mb-4">
+            <div class="d-flex justify-content-between small text-muted mb-1">
+                <span>Lesson {{ current_index|add:1 }} of {{ all_lessons|length }}</span>
+                <span>{{ completed_ids|length }} / {{ all_lessons|length }} completed</span>
+            </div>
+            <div class="progress rounded-pill" style="height:6px;">
+                <div class="progress-bar rounded-pill" id="lesson-progress-bar"
+                     style="width:{% widthratio completed_ids|length all_lessons|length 100 %}%;background:{{ course.icon_color }};"
+                     role="progressbar"></div>
+            </div>
+        </div>
+
+        <!-- Lesson Card -->
+        <div class="card border-0 shadow-sm rounded-4 overflow-hidden mb-4">
+            <!-- Lesson Header -->
+            <div class="p-4 border-bottom d-flex align-items-center justify-content-between" style="background:linear-gradient(135deg,{{ course.icon_bg }},#ffffff);">
+                <div>
+                    <span class="badge rounded-pill mb-2" style="background:{{ course.icon_color }}15;color:{{ course.icon_color }};border:1px solid {{ course.icon_color }}30;">
+                        {% if lesson.content_type == 'video' %}<i class="bi bi-play-circle me-1"></i>Video
+                        {% elif lesson.content_type == 'pdf' %}<i class="bi bi-file-pdf me-1"></i>PDF
+                        {% else %}<i class="bi bi-file-text me-1"></i>Study Notes{% endif %}
+                    </span>
+                    <h2 class="fw-bold mb-1" style="font-size:1.4rem;">{{ lesson.title }}</h2>
+                    <span class="text-muted small"><i class="bi bi-clock me-1"></i>{{ lesson.duration_min }} minutes</span>
+                </div>
+                {% if lesson_progress and lesson_progress.completed %}
+                <span class="badge bg-success rounded-pill px-3 py-2"><i class="bi bi-check-lg me-1"></i>Completed</span>
+                {% endif %}
+            </div>
+
+            <!-- Lesson Content -->
+            <div class="p-4 p-md-5">
+                {% if lesson.video_url %}
+                <div class="ratio ratio-16x9 mb-4 rounded-3 overflow-hidden shadow-sm">
+                    <iframe src="{{ lesson.video_url }}" title="{{ lesson.title }}" allowfullscreen class="border-0"></iframe>
+                </div>
+                {% endif %}
+
+                {% if lesson.content_text %}
+                <div class="lesson-content">
+                    {{ lesson.content_text|safe }}
+                </div>
+                {% endif %}
+
+                {% if lesson.pdf_url %}
+                <div class="mt-4 p-4 rounded-3" style="background:#f0fdf4;border:1px solid #bbf7d0;">
+                    <div class="d-flex align-items-center gap-3">
+                        <i class="bi bi-file-pdf-fill text-danger fs-3"></i>
+                        <div>
+                            <div class="fw-semibold">Download PDF Resource</div>
+                            <div class="small text-muted">Printable notes and reference sheet</div>
+                        </div>
+                        <a href="{{ lesson.pdf_url }}" download class="btn btn-success rounded-pill ms-auto">
+                            <i class="bi bi-download me-2"></i>Download
+                        </a>
+                    </div>
+                </div>
+                {% endif %}
+            </div>
+
+            <!-- Mark Complete + Navigation -->
+            <div class="p-4 border-top d-flex flex-wrap align-items-center justify-content-between gap-3" style="background:#fafbfc;">
+                <!-- Mark Complete Button -->
+                {% if not lesson_progress or not lesson_progress.completed %}
+                <form id="complete-form">
+                    {% csrf_token %}
+                    <button type="button" id="mark-complete-btn"
+                            class="btn rounded-pill fw-semibold px-4"
+                            style="background:{{ course.icon_color }};color:white;border:none;"
+                            data-url="{% url 'mark_lesson_complete' course.slug lesson.id %}">
+                        <i class="bi bi-check2-circle me-2"></i>Mark as Complete
+                    </button>
+                </form>
+                {% else %}
+                <span class="badge bg-success rounded-pill px-4 py-2 fs-6">
+                    <i class="bi bi-check-circle-fill me-2"></i>Lesson Completed!
+                </span>
+                {% endif %}
+
+                <!-- Navigation -->
+                <div class="d-flex gap-2">
+                    {% if prev_lesson %}
+                    <a href="{% url 'hub_lesson' course.slug prev_lesson.id %}" class="btn btn-outline-secondary rounded-pill">
+                        <i class="bi bi-arrow-left me-1"></i>Previous
+                    </a>
+                    {% endif %}
+                    {% if next_lesson %}
+                    <a href="{% url 'hub_lesson' course.slug next_lesson.id %}" class="btn rounded-pill fw-semibold" id="next-lesson-btn"
+                       style="background:{{ course.icon_color }};color:white;border:none;">
+                        Next Lesson <i class="bi bi-arrow-right ms-1"></i>
+                    </a>
+                    {% else %}
+                    <a href="{% url 'hub_course_detail' course.slug %}" class="btn btn-success rounded-pill fw-semibold">
+                        <i class="bi bi-trophy-fill me-2"></i>Finish Course
+                    </a>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+
+    </main>
+</div>
+
+<style>
+.lesson-content h4, .lesson-content h5 { color: #1a202c; margin-top: 1.5rem; margin-bottom: .75rem; }
+.lesson-content pre { background: #1e293b; color: #e2e8f0; padding: 1.25rem; border-radius: 10px; overflow-x: auto; font-size: .88rem; line-height: 1.6; }
+.lesson-content code { font-family: 'Fira Code', 'Courier New', monospace; }
+.lesson-content ul, .lesson-content ol { padding-left: 1.5rem; line-height: 1.8; }
+.lesson-content p { line-height: 1.8; color: #374151; }
+</style>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const completeBtn = document.getElementById('mark-complete-btn');
+    if (!completeBtn) return;
+
+    completeBtn.addEventListener('click', function() {
+        const url = this.dataset.url;
+        const csrfToken = document.querySelector('[name=csrfmiddlewaretoken]').value;
+        completeBtn.disabled = true;
+        completeBtn.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span>Saving...';
+
+        fetch(url, {
+            method: 'POST',
+            headers: {
+                'X-CSRFToken': csrfToken,
+                'Content-Type': 'application/json',
+            },
+        })
+        .then(res => res.json())
+        .then(data => {
+            // Update progress bar
+            const bar = document.getElementById('lesson-progress-bar');
+            if (bar) {
+                const pct = Math.round((data.done / data.total) * 100);
+                bar.style.width = pct + '%';
+            }
+            // Update button to completed state
+            completeBtn.style.background = '#16a34a';
+            completeBtn.innerHTML = '<i class="bi bi-check-circle-fill me-2"></i>Completed!';
+
+            // Auto-navigate to next if available
+            const nextBtn = document.getElementById('next-lesson-btn');
+            if (nextBtn) {
+                setTimeout(() => { window.location.href = nextBtn.href; }, 1000);
+            }
+        })
+        .catch(() => {
+            completeBtn.disabled = false;
+            completeBtn.innerHTML = '<i class="bi bi-check2-circle me-2"></i>Mark as Complete';
+            alert('Something went wrong. Please try again.');
+        });
+    });
+});
+</script>
+{% endblock %}
