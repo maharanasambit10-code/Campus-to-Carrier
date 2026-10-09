@@ -2108,27 +2108,34 @@ def analyze_filler_words(text):
     return {'total_fillers': total, 'breakdown': found}
 
 def calculate_speaking_pace(word_count, duration_seconds):
-    if duration_seconds <= 0:
-        return 120 # typical default WPM
+    if duration_seconds <= 0 or word_count == 0:
+        return 0 if word_count == 0 else 120
     minutes = duration_seconds / 60.0
-    wpm = round(word_count / minutes) if minutes > 0 else 120
-    return min(max(wpm, 60), 220)
+    wpm = round(word_count / minutes) if minutes > 0 else 0
+    return min(max(wpm, 0), 220)
 
 def generate_mock_interview_report(session, transcript_history, observed_metrics=None):
     """
     Computes rigorous, constructive feedback based on actual answers,
     filler words, response completeness, Big Tech company alignment (Google, Amazon, Microsoft),
     and target role context.
+
+    Evaluation is tiered based on candidate answer substance:
+    - Tier 0: total_words < 8 -> Silent / No Verbal Participation (Score 1.0/10)
+    - Tier 1: 8 <= total_words < 45 -> Ultra-brief answers (Score 2.5 - 4.0/10)
+    - Tier 2: 45 <= total_words < 120 -> Developing / Moderate answers (Score 5.0 - 6.8/10)
+    - Tier 3: total_words >= 120 -> Comprehensive STAR answers (Score 7.0 - 9.5/10)
     """
     observed_metrics = observed_metrics or {}
     total_words = 0
     all_answers = []
     
-    for turn in transcript_history:
+    for turn in transcript_history or []:
         if turn.get('speaker') == 'Student':
-            answer_text = turn.get('text', '')
-            all_answers.append(answer_text)
-            total_words += len(answer_text.split())
+            answer_text = (turn.get('text') or '').strip()
+            if answer_text:
+                all_answers.append(answer_text)
+                total_words += len(answer_text.split())
 
     combined_text = " ".join(all_answers)
     filler_data = analyze_filler_words(combined_text)
@@ -2136,64 +2143,15 @@ def generate_mock_interview_report(session, transcript_history, observed_metrics
     total_fillers = metrics.get('filler_count', filler_data['total_fillers'])
     eye_contact_percent = metrics.get('eye_contact_percent')
     comp_lower = (session.company_type or "").lower() if session else ""
-    
-    # Calculate Scores out of 10
-    # 1. Communication: penalized slightly if excessive filler words or too terse
-    comm_score = 8.5
-    if total_fillers > 10:
-        comm_score -= 1.5
-    elif total_fillers > 5:
-        comm_score -= 0.8
-    if total_words < 80:
-        comm_score -= 1.2
-    comm_score = round(max(5.0, min(9.5, comm_score)), 1)
+    role_target = session.role_target if session and session.role_target else "Software Engineer Intern"
 
-    # 2. Content & Relevance: awarded for length, STAR components, technical/role keywords
-    content_score = 7.5
-    if any(k in combined_text.lower() for k in ['result', 'impact', 'learned', 'outcome', 'metrics']):
-        content_score += 1.0
-    if any(k in combined_text.lower() for k in ['challenge', 'problem', 'implemented', 'designed', 'built']):
-        content_score += 0.8
-    if total_words > 250:
-        content_score += 0.5
-    content_score = round(max(5.0, min(9.8, content_score)), 1)
+    # Big Tech Specific Tailoring Setup (Google, Amazon, Microsoft)
+    is_amazon = 'amazon' in comp_lower or 'aws' in comp_lower
+    is_google = 'google' in comp_lower
+    is_msft = 'microsoft' in comp_lower or 'azure' in comp_lower
 
-    # 3. Confidence: based on fillers and answer completeness
-    conf_score = 8.0
-    if total_fillers > 8:
-        conf_score -= 1.2
-    if eye_contact_percent is not None and eye_contact_percent < 70:
-        conf_score -= 0.8
-    conf_score = round(max(5.5, min(9.6, conf_score)), 1)
-
-    # 4. Body Language & Presence
-    body_score = Decimal(str(round(max(6.0, min(9.5, eye_contact_percent / 10.0)), 1))) if eye_contact_percent is not None else Decimal('7.5')
-
-    overall = round((float(comm_score) * 0.3 + float(content_score) * 0.35 + float(conf_score) * 0.2 + float(body_score) * 0.15), 1)
-
-    # Big Tech Specific Tailoring (Google, Amazon, Microsoft)
-    big_tech_evaluation = None
-
-    if 'amazon' in comp_lower or 'aws' in comp_lower:
-        has_metrics = bool(re.search(r'\d+', combined_text)) or any(w in combined_text.lower() for w in ['%', 'percent', 'metric', 'reduced', 'improved', 'ms', 'seconds'])
-        we_count = len(re.findall(r'\bwe\b', combined_text.lower()))
-        i_count = len(re.findall(r'\bi\b', combined_text.lower()))
-        owns_story = i_count >= we_count
-
-        strengths = [
-            "Demonstrated strong personal ownership and initiative using the STAR methodology.",
-            "Articulated customer-focused problem solving and technical implementation steps.",
-            "Maintained composure while detailing complex architectural decisions."
-        ]
-        if has_metrics:
-            strengths[0] = "Excellent Deliver Results alignment: backed up claims with verifiable numbers and customer outcomes."
-
-        areas_for_improvement = [
-            "Amazon Bar Raiser: In Amazon interviews, every STAR answer must finish with quantifiable business or technical metrics (e.g. latency reduced by 40%, 99.9% uptime).",
-            f"Be conscious of verbal fillers (detected {total_fillers} instances)—Amazon interviewers value concise, high-signal communication.",
-            "Amazon Ownership Principle: Clearly distinguish your specific personal contributions ('I built', 'I decided') from overall team accomplishments ('We')."
-        ]
-
+    # Model STAR Answers (Tailored to track)
+    if is_amazon:
         weakest_sample = (
             "Question: 'Tell me about a time you solved a critical operational bottleneck.'\n\n"
             "Amazon Bar Raiser Exemplary STAR Model Answer (Leadership Principle: Customer Obsession & Ownership):\n"
@@ -2202,7 +2160,6 @@ def generate_mock_interview_report(session, transcript_history, observed_metrics
             "• Action: I dived deep into APM traces, decoupled synchronous payment gateway calls using an Amazon SQS queue, optimized relational indexes on active transactions, and added Redis caching for user carts.\n"
             "• Result: Checkout latency dropped by 88% down to 240ms, cart abandonment decreased by 22%, and the platform sustained zero downtime over the 72-hour sale."
         )
-
         practice_plan = [
             {"day": 1, "focus": "Amazon 16 LPs Story Mapping", "task": "Map 5 STAR stories to top Amazon LPs: Customer Obsession, Ownership, Bias for Action, Dive Deep, and Deliver Results."},
             {"day": 2, "focus": "Quantifying Every Result", "task": "Audit every resume bullet and mock story to include exact numerical metrics (percentages, throughput, latencies)."},
@@ -2212,31 +2169,7 @@ def generate_mock_interview_report(session, transcript_history, observed_metrics
             {"day": 6, "focus": "Amazon Bar Raiser Simulation", "task": "Complete a full 20-minute timed behavioral session under intense follow-up probing."},
             {"day": 7, "focus": "Final Polish", "task": "Conduct a mock session with Nexus AI Robot to validate crisp delivery and high-signal answers."}
         ]
-
-        big_tech_evaluation = {
-            'company': 'Amazon',
-            'track': 'Amazon Bar Raiser & 16 Leadership Principles',
-            'rubric_title': 'Amazon Leadership Principles Evaluation',
-            'principles_evaluated': [
-                {'name': 'Customer Obsession', 'status': 'Demonstrated' if any(w in combined_text.lower() for w in ['customer', 'user', 'client']) else 'Developing', 'feedback': 'Framed problem around user pain points.' if any(w in combined_text.lower() for w in ['customer', 'user', 'client']) else 'Anchor answers more directly around the end-customer experience.'},
-                {'name': 'Ownership (I vs We)', 'status': 'High Bar' if owns_story else 'Needs Clarity', 'feedback': 'Clearly articulated individual decisions.' if owns_story else 'Use "I" rather than "We" when describing your specific actions.'},
-                {'name': 'Deliver Results & Metrics', 'status': 'Demonstrated' if has_metrics else 'Needs Metrics', 'feedback': 'Quantifiable outcomes provided.' if has_metrics else 'Conclude STAR stories with verifiable numbers (%, latency, cost).'},
-                {'name': 'Dive Deep & Bias for Action', 'status': 'Demonstrated', 'feedback': 'Showed willingness to troubleshoot complex technical obstacles proactively.'}
-            ]
-        }
-
-    elif 'google' in comp_lower:
-        strengths = [
-            "Demonstrated strong General Cognitive Ability (GCA) and structured problem decomposition.",
-            "Exhibited intellectual humility and openness to collaborative problem solving.",
-            "Communicated architectural decisions with clarity and technical depth."
-        ]
-        areas_for_improvement = [
-            "Googleyness & Navigating Ambiguity: Proactively clarify open-ended constraints, state working assumptions, and explore trade-offs before proposing a solution.",
-            "Google Scale: Consider planetary distributed scale (billions of queries, multi-region replication, fault tolerance) when explaining systems.",
-            f"Be mindful of verbal fillers ({total_fillers} detected)—strive for crisp, well-paced communication."
-        ]
-
+    elif is_google:
         weakest_sample = (
             "Question: 'How would you approach an ambiguous technical failure where user requests are intermittently dropping?'\n\n"
             "Google Hiring Committee Exemplary Model Answer (General Cognitive Ability & Navigating Ambiguity):\n"
@@ -2245,7 +2178,6 @@ def generate_mock_interview_report(session, transcript_history, observed_metrics
             "• Action: I navigated the ambiguity by first clarifying the failure perimeter: instrumented distributed tracing with OpenTelemetry, isolated thread pool saturation in downstream gRPC connections, and implemented exponential backoff with jitter alongside a circuit breaker.\n"
             "• Result: Request drops ceased entirely (0% dropped calls across 10 million daily requests), and we published a post-mortem documenting gRPC connection pooling best practices."
         )
-
         practice_plan = [
             {"day": 1, "focus": "Scoping Ambiguous Problems", "task": "Practice taking open-ended system prompts and listing 5 clarifying questions and 3 constraints before answering."},
             {"day": 2, "focus": "Planetary Scale Systems", "task": "Review distributed system patterns: Consistent Hashing, Raft consensus, CAP theorem trade-offs, and Bloom filters."},
@@ -2255,31 +2187,7 @@ def generate_mock_interview_report(session, transcript_history, observed_metrics
             {"day": 6, "focus": "Googleyness Rapid Fire", "task": "Answer 4 behavioral questions focused on navigating team disagreements and ambiguous product scopes."},
             {"day": 7, "focus": "Full Simulation with Nexus", "task": "Complete an advanced Google simulation session on CampusLink to validate high GCA and communication."}
         ]
-
-        big_tech_evaluation = {
-            'company': 'Google',
-            'track': 'Googleyness & General Cognitive Ability (GCA)',
-            'rubric_title': 'Google Hiring Committee Assessment',
-            'principles_evaluated': [
-                {'name': 'Googleyness & Intellectual Humility', 'status': 'Demonstrated', 'feedback': 'Showed openness to feedback, acknowledged unknowns, and exhibited collaborative spirit.'},
-                {'name': 'Navigating Ambiguity', 'status': 'Strong' if len(all_answers) >= 3 else 'Developing', 'feedback': 'Structured unstructured requirements effectively.'},
-                {'name': 'General Cognitive Ability (GCA)', 'status': 'High Bar', 'feedback': 'Broke down complex distributed systems into logical components.'},
-                {'name': '10x Scalability & Scale Thinking', 'status': 'Demonstrated', 'feedback': 'Accounted for distributed trade-offs and edge case failure modes.'}
-            ]
-        }
-
-    elif 'microsoft' in comp_lower or 'azure' in comp_lower:
-        strengths = [
-            "Demonstrated an authentic Growth Mindset by treating engineering challenges as learning opportunities.",
-            "Communicated strong customer empathy and understanding of inclusive software design.",
-            "Demonstrated discipline around maintainability, testing, and clean architecture."
-        ]
-        areas_for_improvement = [
-            "Microsoft Growth Mindset: Deepen reflection on mistakes and project failures—articulate what a past failure taught you about software design and team leadership.",
-            "Building on Others' Work: Emphasize software reuse, leveraging existing open-source libraries and enterprise platforms rather than reinventing wheels.",
-            f"Address verbal filler habits ({total_fillers} detected)—pause quietly when gathering your thoughts."
-        ]
-
+    elif is_msft:
         weakest_sample = (
             "Question: 'Tell me about a time you made a significant mistake or failure in a technical project.'\n\n"
             "Microsoft Exemplary Model Answer (Growth Mindset & Inclusive Innovation):\n"
@@ -2288,7 +2196,6 @@ def generate_mock_interview_report(session, transcript_history, observed_metrics
             "• Action: Embracing a Growth Mindset rather than defensiveness, I conducted a transparent blameless post-mortem, studied NTP clock synchronization protocols, implemented UTC monotonic timestamp validation with token leeway, and open-sourced an internal shared utility library for all product squads.\n"
             "• Result: The revised service achieved 99.995% uptime across 3 Azure regions, and the post-mortem doc became the engineering onboarding standard for distributed state handling."
         )
-
         practice_plan = [
             {"day": 1, "focus": "Growth Mindset Stories", "task": "Write down 2 stories where you failed or made a mistake, focusing 70% of the time on the lesson learned and how you adapted."},
             {"day": 2, "focus": "Building on Others' Work", "task": "Identify 3 instances where you contributed to a shared codebase or leveraged open-source platforms to accelerate velocity."},
@@ -2298,35 +2205,7 @@ def generate_mock_interview_report(session, transcript_history, observed_metrics
             {"day": 6, "focus": "Microsoft Core Values Mock", "task": "Answer 4 behavioral questions covering cross-team collaboration, customer impact, and handling ambiguity."},
             {"day": 7, "focus": "Final Nexus Simulation", "task": "Complete an advanced Microsoft simulation round to validate Growth Mindset delivery."}
         ]
-
-        big_tech_evaluation = {
-            'company': 'Microsoft',
-            'track': 'Microsoft Growth Mindset & Inclusive Innovation',
-            'rubric_title': 'Microsoft Core Competency Assessment',
-            'principles_evaluated': [
-                {'name': 'Growth Mindset (Learn-It-All)', 'status': 'Demonstrated', 'feedback': 'Approached challenges as learning opportunities and demonstrated continuous curiosity.'},
-                {'name': 'Building on Others\' Work', 'status': 'High Bar', 'feedback': 'Leveraged existing frameworks and avoided reinventing wheels.'},
-                {'name': 'Customer Empathy & Inclusion', 'status': 'Demonstrated', 'feedback': 'Prioritized user accessibility and diverse perspectives in design.'},
-                {'name': 'Enterprise Reliability & Trust', 'status': 'Strong', 'feedback': 'Demonstrated discipline around security, testing, and backwards compatibility.'}
-            ]
-        }
-
     else:
-        # Standard Generic CampusLink Track
-        strengths = [
-            "Strong authenticity and willingness to share hands-on project experiences.",
-            "Clear articulation of personal motivation for the target role and domain.",
-            "Demonstrated positive mindset toward collaborative teamwork and continuous learning."
-        ]
-        if any(w in combined_text.lower() for w in ['impact', 'result', 'metric', 'improved']):
-            strengths[0] = "Excellent focus on outcomes and measurable impact rather than just describing duties."
-
-        areas_for_improvement = [
-            "Incorporate the STAR methodology (Situation, Task, Action, Result) more systematically so every answer finishes with tangible results.",
-            f"Be conscious of verbal filler words (detected {total_fillers} instances like 'um'/'like')—try pausing quietly for 1 second instead.",
-            "Deepen role-specific technical terminology to showcase mastery when explaining architecture or strategic trade-offs."
-        ]
-
         weakest_sample = (
             "Question: 'Tell me about a challenging technical hurdle you faced in a project.'\n\n"
             "Exemplary STAR Model Answer:\n"
@@ -2335,7 +2214,6 @@ def generate_mock_interview_report(session, transcript_history, observed_metrics
             "• Action: I profiled the slow queries using Django Debug Toolbar, identified 12 redundant N+1 queries, implemented select_related and prefetch_related, and added Redis caching for static course catalogs.\n"
             "• Result: Query response times dropped by 88% down to 180ms, allowing 500+ simultaneous students to register smoothly."
         )
-
         practice_plan = [
             {"day": 1, "focus": "STAR Story Bank", "task": "Write down 4 distinct STAR stories covering: a technical challenge, a team disagreement, a leadership moment, and a failure."},
             {"day": 2, "focus": "Eliminating Fillers", "task": "Record yourself answering 'Tell me about yourself' for 90 seconds. Listen back specifically counting filler words and re-record."},
@@ -2346,12 +2224,358 @@ def generate_mock_interview_report(session, transcript_history, observed_metrics
             {"day": 7, "focus": "Final Simulation with Aria", "task": "Complete an advanced mock interview session on CampusLink to validate improved confidence and pace."}
         ]
 
+    # --- TIER EVALUATION & SCORING ---
+    if total_words < 8:
+        # Tier 0: Silent / No Verbal Participation (Strictly 1.0 / 10)
+        overall = 1.0
+        comm_score = 1.0
+        content_score = 1.0
+        conf_score = 1.0
+        body_score = Decimal('1.0')
+        tier_label = "No Verbal Participation"
+        tier_class = "danger"
+
+        strengths = [
+            "Hardware Setup: Camera feed and audio input devices initialized.",
+            f"Role Configuration: Interview workspace configured for {role_target}.",
+            "Session Preparedness: Candidate joined the interview room and loaded the questions."
+        ]
+        areas_for_improvement = [
+            "Zero Verbal Participation: No spoken or typed answers were detected by Priya. You must speak aloud into your microphone or submit text answers to receive interview evaluation.",
+            "Use the STAR Structure: When Priya asks a question, state the Situation, Task, Action you took, and the quantifiable Result.",
+            "Check Microphone Permissions: Ensure microphone access is granted in your browser and speak at a steady volume (120-150 words per minute)."
+        ]
+
+        if is_amazon:
+            big_tech_evaluation = {
+                'company': 'Amazon',
+                'track': 'Amazon Bar Raiser & 16 Leadership Principles',
+                'rubric_title': 'Amazon Leadership Principles Evaluation',
+                'principles_evaluated': [
+                    {'name': 'Customer Obsession', 'status': 'No Signal', 'feedback': 'No verbal response provided to evaluate customer obsession.'},
+                    {'name': 'Ownership (I vs We)', 'status': 'No Signal', 'feedback': 'No project examples or personal initiative described.'},
+                    {'name': 'Deliver Results & Metrics', 'status': 'No Signal', 'feedback': 'No quantifiable achievements or business impact shared.'},
+                    {'name': 'Dive Deep & Bias for Action', 'status': 'No Signal', 'feedback': 'Technical problem-solving was not attempted.'}
+                ]
+            }
+        elif is_google:
+            big_tech_evaluation = {
+                'company': 'Google',
+                'track': 'Googleyness & General Cognitive Ability (GCA)',
+                'rubric_title': 'Google Hiring Committee Assessment',
+                'principles_evaluated': [
+                    {'name': 'Googleyness & Intellectual Humility', 'status': 'No Signal', 'feedback': 'No verbal participation detected during the interview.'},
+                    {'name': 'Navigating Ambiguity', 'status': 'No Signal', 'feedback': 'No open-ended technical questions attempted.'},
+                    {'name': 'General Cognitive Ability (GCA)', 'status': 'No Signal', 'feedback': 'Cognitive problem decomposition requires spoken or typed answers.'},
+                    {'name': '10x Scalability & Scale Thinking', 'status': 'No Signal', 'feedback': 'No system architecture or distributed trade-offs discussed.'}
+                ]
+            }
+        elif is_msft:
+            big_tech_evaluation = {
+                'company': 'Microsoft',
+                'track': 'Microsoft Growth Mindset & Inclusive Innovation',
+                'rubric_title': 'Microsoft Core Competency Assessment',
+                'principles_evaluated': [
+                    {'name': 'Growth Mindset (Learn-It-All)', 'status': 'No Signal', 'feedback': 'No learning moments or past project challenges shared.'},
+                    {'name': 'Building on Others\' Work', 'status': 'No Signal', 'feedback': 'Software reuse and ecosystem collaboration not discussed.'},
+                    {'name': 'Customer Empathy & Inclusion', 'status': 'No Signal', 'feedback': 'Customer accessibility and empathy not demonstrated.'},
+                    {'name': 'Enterprise Reliability & Trust', 'status': 'No Signal', 'feedback': 'System testing and security discipline not articulated.'}
+                ]
+            }
+        else:
+            big_tech_evaluation = None
+
+    elif total_words < 45:
+        # Tier 1: Ultra-brief / Terse Responses (8-44 words)
+        comm_score = round(2.5 + min(1.5, (total_words - 8) * 0.04), 1)
+        content_score = round(2.0 + min(1.5, (total_words - 8) * 0.04), 1)
+        conf_score = round(2.8 + min(1.5, (total_words - 8) * 0.04), 1)
+        body_score = Decimal(str(round(max(2.5, min(5.0, (eye_contact_percent or 65) / 18.0)), 1)))
+        overall = round(float(comm_score) * 0.3 + float(content_score) * 0.35 + float(conf_score) * 0.2 + float(body_score) * 0.15, 1)
+        tier_label = "Needs Significant Improvement"
+        tier_class = "danger"
+
+        strengths = [
+            "Initial Engagement: Attempted verbal or text response to Priya's prompt.",
+            "Composure: Maintained session presence through the question flow.",
+            f"Domain Alignment: Identified target role as {role_target}."
+        ]
+        areas_for_improvement = [
+            f"Answers Were Far Too Brief: Detected only {total_words} words across the interview. Aim for 100-150 words per question.",
+            "Adopt the STAR Framework: Explain the Situation, Task, your personal Action, and the quantifiable Result.",
+            "Provide Concrete Technical Depth: Mention specific libraries, APIs, algorithms, or metrics instead of one-line summaries."
+        ]
+
+        if is_amazon:
+            big_tech_evaluation = {
+                'company': 'Amazon',
+                'track': 'Amazon Bar Raiser & 16 Leadership Principles',
+                'rubric_title': 'Amazon Leadership Principles Evaluation',
+                'principles_evaluated': [
+                    {'name': 'Customer Obsession', 'status': 'Developing', 'feedback': 'Brief answer lacked customer problem context.'},
+                    {'name': 'Ownership (I vs We)', 'status': 'Developing', 'feedback': 'Isolate personal contributions with specific actions.'},
+                    {'name': 'Deliver Results & Metrics', 'status': 'Needs Metrics', 'feedback': 'Include specific percentages, latencies, or revenue metrics.'},
+                    {'name': 'Dive Deep & Bias for Action', 'status': 'Developing', 'feedback': 'Elaborate on root cause analysis and technical steps.'}
+                ]
+            }
+        elif is_google:
+            big_tech_evaluation = {
+                'company': 'Google',
+                'track': 'Googleyness & General Cognitive Ability (GCA)',
+                'rubric_title': 'Google Hiring Committee Assessment',
+                'principles_evaluated': [
+                    {'name': 'Googleyness & Intellectual Humility', 'status': 'Developing', 'feedback': 'Elaborate on collaborative experiences and navigating feedback.'},
+                    {'name': 'Navigating Ambiguity', 'status': 'Developing', 'feedback': 'State clarifying assumptions when answering open-ended questions.'},
+                    {'name': 'General Cognitive Ability (GCA)', 'status': 'Developing', 'feedback': 'Deconstruct problems into architecture and algorithmic trade-offs.'},
+                    {'name': '10x Scalability & Scale Thinking', 'status': 'Developing', 'feedback': 'Discuss system bottlenecks and high-traffic considerations.'}
+                ]
+            }
+        elif is_msft:
+            big_tech_evaluation = {
+                'company': 'Microsoft',
+                'track': 'Microsoft Growth Mindset & Inclusive Innovation',
+                'rubric_title': 'Microsoft Core Competency Assessment',
+                'principles_evaluated': [
+                    {'name': 'Growth Mindset (Learn-It-All)', 'status': 'Developing', 'feedback': 'Share deep reflection on lessons learned from engineering challenges.'},
+                    {'name': 'Building on Others\' Work', 'status': 'Developing', 'feedback': 'Discuss existing open-source frameworks and team collaboration.'},
+                    {'name': 'Customer Empathy & Inclusion', 'status': 'Developing', 'feedback': 'Elaborate on user accessibility and empathetic design.'},
+                    {'name': 'Enterprise Reliability & Trust', 'status': 'Developing', 'feedback': 'Provide details on testing, security, and exception handling.'}
+                ]
+            }
+        else:
+            big_tech_evaluation = None
+
+    elif total_words < 75 and not (total_words >= 45 and (any(k in combined_text.lower() for k in ['result', 'impact', 'metric', 'reduced', 'improved', '%', 'latency']) and bool(re.search(r'\d+', combined_text)))):
+        # Tier 2: Developing / Moderate Answers (brief to medium answers)
+        comm_score = 5.6
+        if total_fillers > 8:
+            comm_score -= 1.0
+        elif total_fillers > 4:
+            comm_score -= 0.5
+        if total_words >= 60:
+            comm_score += 0.6
+        comm_score = round(max(4.5, min(6.8, comm_score)), 1)
+
+        content_score = 5.2
+        if any(k in combined_text.lower() for k in ['result', 'impact', 'metric', 'percent', 'reduced', 'improved', 'achieved', 'outcome', '%']):
+            content_score += 0.8
+        if any(k in combined_text.lower() for k in ['implemented', 'designed', 'built', 'architected', 'tested', 'api', 'database', 'pipeline', 'redis']):
+            content_score += 0.7
+        content_score = round(max(4.5, min(7.0, content_score)), 1)
+
+        conf_score = 5.8
+        if total_fillers > 6:
+            conf_score -= 0.8
+        if eye_contact_percent is not None and eye_contact_percent >= 70:
+            conf_score += 0.5
+        conf_score = round(max(4.8, min(7.2, conf_score)), 1)
+
+        body_score = Decimal(str(round(max(5.5, min(7.5, (eye_contact_percent or 75) / 12.0)), 1)))
+        overall = round(float(comm_score) * 0.3 + float(content_score) * 0.35 + float(conf_score) * 0.2 + float(body_score) * 0.15, 1)
+        tier_label = "Developing Candidate"
+        tier_class = "warning"
+
+        has_metrics = bool(re.search(r'\d+', combined_text)) or any(w in combined_text.lower() for w in ['%', 'percent', 'metric', 'reduced', 'improved', 'ms'])
+        we_count = len(re.findall(r'\bwe\b', combined_text.lower()))
+        i_count = len(re.findall(r'\bi\b', combined_text.lower()))
+        owns_story = i_count >= we_count
+
+        strengths = [
+            "Constructive Engagement: Communicated project background and technical stack with good intent.",
+            "Positive Demeanor: Maintained professional engagement during the interview flow.",
+            "Relevant Domain Focus: Addressed the core question concepts with relevant terminology."
+        ]
+        if has_metrics:
+            strengths[0] = "Measurable Outcomes: Began citing concrete numbers and verifiable progress in answers."
+
+        areas_for_improvement = [
+            "Deepen STAR Detail: Expand on the specific engineering obstacles and implementation nuances.",
+            f"Watch Verbal Fillers: Detected {total_fillers} filler words. Pause briefly instead of using filler syllables.",
+            "Conclude With Verifiable Impact: Finish every answer with clear metrics (e.g. latency, throughput, user adoption)."
+        ]
+
+        if is_amazon:
+            big_tech_evaluation = {
+                'company': 'Amazon',
+                'track': 'Amazon Bar Raiser & 16 Leadership Principles',
+                'rubric_title': 'Amazon Leadership Principles Evaluation',
+                'principles_evaluated': [
+                    {'name': 'Customer Obsession', 'status': 'Demonstrated' if any(w in combined_text.lower() for w in ['customer', 'user', 'client']) else 'Developing', 'feedback': 'Framed problem around user pain points.' if any(w in combined_text.lower() for w in ['customer', 'user', 'client']) else 'Anchor answers more directly around end-user experience.'},
+                    {'name': 'Ownership (I vs We)', 'status': 'Demonstrated' if owns_story else 'Needs Clarity', 'feedback': 'Clearly articulated individual decisions.' if owns_story else 'Use "I" rather than "We" when describing your specific actions.'},
+                    {'name': 'Deliver Results & Metrics', 'status': 'Demonstrated' if has_metrics else 'Needs Metrics', 'feedback': 'Quantifiable outcomes provided.' if has_metrics else 'Conclude STAR stories with verifiable numbers (%, latency, cost).'},
+                    {'name': 'Dive Deep & Bias for Action', 'status': 'Developing', 'feedback': 'Elaborate deeper into edge cases and root-cause debugging.'}
+                ]
+            }
+        elif is_google:
+            big_tech_evaluation = {
+                'company': 'Google',
+                'track': 'Googleyness & General Cognitive Ability (GCA)',
+                'rubric_title': 'Google Hiring Committee Assessment',
+                'principles_evaluated': [
+                    {'name': 'Googleyness & Intellectual Humility', 'status': 'Demonstrated', 'feedback': 'Showed openness to feedback and team collaboration.'},
+                    {'name': 'Navigating Ambiguity', 'status': 'Developing', 'feedback': 'Proactively clarify open-ended constraints before presenting solutions.'},
+                    {'name': 'General Cognitive Ability (GCA)', 'status': 'Demonstrated', 'feedback': 'Explained technical concepts logically.'},
+                    {'name': '10x Scalability & Scale Thinking', 'status': 'Developing', 'feedback': 'Consider distributed trade-offs and multi-region scale.'}
+                ]
+            }
+        elif is_msft:
+            big_tech_evaluation = {
+                'company': 'Microsoft',
+                'track': 'Microsoft Growth Mindset & Inclusive Innovation',
+                'rubric_title': 'Microsoft Core Competency Assessment',
+                'principles_evaluated': [
+                    {'name': 'Growth Mindset (Learn-It-All)', 'status': 'Demonstrated', 'feedback': 'Approached challenges with curiosity and learning mindset.'},
+                    {'name': 'Building on Others\' Work', 'status': 'Demonstrated', 'feedback': 'Leveraged standard frameworks and modular design.'},
+                    {'name': 'Customer Empathy & Inclusion', 'status': 'Developing', 'feedback': 'Incorporate inclusive software design principles.'},
+                    {'name': 'Enterprise Reliability & Trust', 'status': 'Developing', 'feedback': 'Deepen emphasis on security, test suites, and monitoring.'}
+                ]
+            }
+        else:
+            big_tech_evaluation = None
+
+    else:
+        # Tier 3: Comprehensive / Strong Answers (detailed responses or strong STAR + metrics)
+        has_metrics = bool(re.search(r'\d+', combined_text)) or any(w in combined_text.lower() for w in ['%', 'percent', 'metric', 'reduced', 'improved', 'ms', 'seconds'])
+        we_count = len(re.findall(r'\bwe\b', combined_text.lower()))
+        i_count = len(re.findall(r'\bi\b', combined_text.lower()))
+        owns_story = i_count >= we_count
+
+        comm_score = 7.8
+        if total_words >= 150:
+            comm_score += 0.8
+        elif total_words >= 80:
+            comm_score += 0.4
+        if total_fillers > 8:
+            comm_score -= 1.2
+        elif total_fillers > 4:
+            comm_score -= 0.6
+        comm_score = round(max(6.5, min(9.5, comm_score)), 1)
+
+        content_score = 7.6
+        if any(k in combined_text.lower() for k in ['result', 'impact', 'learned', 'outcome', 'metrics', 'percent', '%', 'reduced', 'improved']):
+            content_score += 0.8
+        if any(k in combined_text.lower() for k in ['challenge', 'problem', 'implemented', 'designed', 'built', 'architected', 'optimized', 'decoupled']):
+            content_score += 0.7
+        if has_metrics:
+            content_score += 0.6
+        if total_words > 150:
+            content_score += 0.4
+        content_score = round(max(6.8, min(9.8, content_score)), 1)
+
+        conf_score = 7.8
+        if total_fillers > 8:
+            conf_score -= 1.0
+        if eye_contact_percent is not None and eye_contact_percent < 70:
+            conf_score -= 0.8
+        elif eye_contact_percent is not None and eye_contact_percent >= 80:
+            conf_score += 0.4
+        conf_score = round(max(6.8, min(9.6, conf_score)), 1)
+
+        body_score = Decimal(str(round(max(6.8, min(9.5, (eye_contact_percent or 85) / 10.0)), 1)))
+        overall = round(float(comm_score) * 0.3 + float(content_score) * 0.35 + float(conf_score) * 0.2 + float(body_score) * 0.15, 1)
+        tier_label = "Exceptional Candidate" if overall >= 8.5 else "Strong Candidate"
+        tier_class = "success" if overall >= 8.5 else "primary"
+
+        if is_amazon:
+            strengths = [
+                "Demonstrated strong personal ownership and initiative using the STAR methodology.",
+                "Articulated customer-focused problem solving and technical implementation steps.",
+                "Maintained composure while detailing complex architectural decisions."
+            ]
+            if has_metrics:
+                strengths[0] = "Excellent Deliver Results alignment: backed up claims with verifiable numbers and customer outcomes."
+
+            areas_for_improvement = [
+                "Amazon Bar Raiser: In Amazon interviews, every STAR answer must finish with quantifiable business or technical metrics (e.g. latency reduced by 40%, 99.9% uptime).",
+                f"Be conscious of verbal fillers (detected {total_fillers} instances)—Amazon interviewers value concise, high-signal communication.",
+                "Amazon Ownership Principle: Clearly distinguish your specific personal contributions ('I built', 'I decided') from overall team accomplishments ('We')."
+            ]
+
+            big_tech_evaluation = {
+                'company': 'Amazon',
+                'track': 'Amazon Bar Raiser & 16 Leadership Principles',
+                'rubric_title': 'Amazon Leadership Principles Evaluation',
+                'principles_evaluated': [
+                    {'name': 'Customer Obsession', 'status': 'Demonstrated' if any(w in combined_text.lower() for w in ['customer', 'user', 'client']) else 'Developing', 'feedback': 'Framed problem around user pain points.' if any(w in combined_text.lower() for w in ['customer', 'user', 'client']) else 'Anchor answers more directly around the end-customer experience.'},
+                    {'name': 'Ownership (I vs We)', 'status': 'High Bar' if owns_story else 'Needs Clarity', 'feedback': 'Clearly articulated individual decisions.' if owns_story else 'Use "I" rather than "We" when describing your specific actions.'},
+                    {'name': 'Deliver Results & Metrics', 'status': 'Demonstrated' if has_metrics else 'Needs Metrics', 'feedback': 'Quantifiable outcomes provided.' if has_metrics else 'Conclude STAR stories with verifiable numbers (%, latency, cost).'},
+                    {'name': 'Dive Deep & Bias for Action', 'status': 'Demonstrated', 'feedback': 'Showed willingness to troubleshoot complex technical obstacles proactively.'}
+                ]
+            }
+
+        elif is_google:
+            strengths = [
+                "Demonstrated strong General Cognitive Ability (GCA) and structured problem decomposition.",
+                "Exhibited intellectual humility and openness to collaborative problem solving.",
+                "Communicated architectural decisions with clarity and technical depth."
+            ]
+            areas_for_improvement = [
+                "Googleyness & Navigating Ambiguity: Proactively clarify open-ended constraints, state working assumptions, and explore trade-offs before proposing a solution.",
+                "Google Scale: Consider planetary distributed scale (billions of queries, multi-region replication, fault tolerance) when explaining systems.",
+                f"Be mindful of verbal fillers ({total_fillers} detected)—strive for crisp, well-paced communication."
+            ]
+
+            big_tech_evaluation = {
+                'company': 'Google',
+                'track': 'Googleyness & General Cognitive Ability (GCA)',
+                'rubric_title': 'Google Hiring Committee Assessment',
+                'principles_evaluated': [
+                    {'name': 'Googleyness & Intellectual Humility', 'status': 'Demonstrated', 'feedback': 'Showed openness to feedback, acknowledged unknowns, and exhibited collaborative spirit.'},
+                    {'name': 'Navigating Ambiguity', 'status': 'Strong' if len(all_answers) >= 3 else 'Developing', 'feedback': 'Structured unstructured requirements effectively.'},
+                    {'name': 'General Cognitive Ability (GCA)', 'status': 'High Bar', 'feedback': 'Broke down complex distributed systems into logical components.'},
+                    {'name': '10x Scalability & Scale Thinking', 'status': 'Demonstrated', 'feedback': 'Accounted for distributed trade-offs and edge case failure modes.'}
+                ]
+            }
+
+        elif is_msft:
+            strengths = [
+                "Demonstrated an authentic Growth Mindset by treating engineering challenges as learning opportunities.",
+                "Communicated strong customer empathy and understanding of inclusive software design.",
+                "Demonstrated discipline around maintainability, testing, and clean architecture."
+            ]
+            areas_for_improvement = [
+                "Microsoft Growth Mindset: Deepen reflection on mistakes and project failures—articulate what a past failure taught you about software design and team leadership.",
+                "Building on Others' Work: Emphasize software reuse, leveraging existing open-source libraries and enterprise platforms rather than reinventing wheels.",
+                f"Address verbal filler habits ({total_fillers} detected)—pause quietly when gathering your thoughts."
+            ]
+
+            big_tech_evaluation = {
+                'company': 'Microsoft',
+                'track': 'Microsoft Growth Mindset & Inclusive Innovation',
+                'rubric_title': 'Microsoft Core Competency Assessment',
+                'principles_evaluated': [
+                    {'name': 'Growth Mindset (Learn-It-All)', 'status': 'Demonstrated', 'feedback': 'Approached challenges as learning opportunities and demonstrated continuous curiosity.'},
+                    {'name': 'Building on Others\' Work', 'status': 'High Bar', 'feedback': 'Leveraged existing frameworks and avoided reinventing wheels.'},
+                    {'name': 'Customer Empathy & Inclusion', 'status': 'Demonstrated', 'feedback': 'Prioritized user accessibility and diverse perspectives in design.'},
+                    {'name': 'Enterprise Reliability & Trust', 'status': 'Strong', 'feedback': 'Demonstrated discipline around security, testing, and backwards compatibility.'}
+                ]
+            }
+
+        else:
+            strengths = [
+                "Strong authenticity and willingness to share hands-on project experiences.",
+                "Clear articulation of personal motivation for the target role and domain.",
+                "Demonstrated positive mindset toward collaborative teamwork and continuous learning."
+            ]
+            if has_metrics:
+                strengths[0] = "Excellent focus on outcomes and measurable impact rather than just describing duties."
+
+            areas_for_improvement = [
+                "Incorporate the STAR methodology (Situation, Task, Action, Result) more systematically so every answer finishes with tangible results.",
+                f"Be conscious of verbal filler words (detected {total_fillers} instances like 'um'/'like')—try pausing quietly for 1 second instead.",
+                "Deepen role-specific technical terminology to showcase mastery when explaining architecture or strategic trade-offs."
+            ]
+            big_tech_evaluation = None
+
     return {
         'overall_score': Decimal(str(overall)),
         'communication_score': Decimal(str(comm_score)),
         'content_score': Decimal(str(content_score)),
         'confidence_score': Decimal(str(conf_score)),
         'body_language_score': Decimal(str(body_score)),
+        'tier_label': tier_label,
+        'tier_class': tier_class,
+        'total_words': total_words,
         'strengths': strengths,
         'areas_for_improvement': areas_for_improvement,
         'sample_answer': weakest_sample,
@@ -2362,8 +2586,10 @@ def generate_mock_interview_report(session, transcript_history, observed_metrics
             'total_fillers': total_fillers,
             'filler_details': filler_data['breakdown'],
             'speaking_pace_wpm': metrics.get('speaking_pace_wpm', calculate_speaking_pace(total_words, int(observed_metrics.get('duration_seconds', 300)))),
-            'eye_contact_percent': eye_contact_percent if eye_contact_percent is not None else observed_metrics.get('eye_contact_percent', 88),
+            'eye_contact_percent': eye_contact_percent if eye_contact_percent is not None else observed_metrics.get('eye_contact_percent', 88 if total_words >= 8 else 50),
             'camera_active': observed_metrics.get('camera_active', True),
             'company_evaluation': big_tech_evaluation,
+            'tier_label': tier_label,
+            'tier_class': tier_class,
         }
     }

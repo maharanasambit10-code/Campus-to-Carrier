@@ -44,12 +44,16 @@
                 <div class="display-3 fw-bold text-primary mb-1">
                     {{ session.overall_score }}<span class="fs-4 text-muted">/10</span>
                 </div>
-                {% if session.overall_score >= 8.5 %}
+                {% if session.overall_score <= 2.0 or session.observations.total_words < 8 %}
+                    <span class="badge text-bg-danger px-3 py-1 rounded-pill fs-6">{{ tier_label|default:session.observations.tier_label|default:"No Verbal Participation" }}</span>
+                {% elif session.overall_score >= 8.5 %}
                     <span class="badge text-bg-success px-3 py-1 rounded-pill fs-6">Exceptional Candidate</span>
                 {% elif session.overall_score >= 7.0 %}
                     <span class="badge text-bg-primary px-3 py-1 rounded-pill fs-6">Strong Candidate</span>
-                {% else %}
+                {% elif session.overall_score >= 4.5 %}
                     <span class="badge text-bg-warning text-dark px-3 py-1 rounded-pill fs-6">Developing Candidate</span>
+                {% else %}
+                    <span class="badge text-bg-danger px-3 py-1 rounded-pill fs-6">{{ tier_label|default:session.observations.tier_label|default:"Needs Significant Improvement" }}</span>
                 {% endif %}
                 <p class="small text-muted mt-2 mb-0">Based on communication clarity, STAR methodology, and executive presence.</p>
             </div>
@@ -77,6 +81,25 @@
             </div>
         </div>
     </div>
+
+    <!-- Diagnostic Warning for Minimal or Silent Participation -->
+    {% if session.overall_score <= 2.0 or session.observations.total_words < 8 %}
+    <div class="alert alert-danger border-danger-subtle shadow-sm rounded-4 p-4 mb-4 d-flex align-items-center gap-3">
+        <i class="bi bi-exclamation-triangle-fill fs-2 text-danger flex-shrink-0"></i>
+        <div>
+            <h3 class="h6 fw-bold mb-1 text-danger">No Verbal Participation Detected</h3>
+            <p class="small text-dark mb-0">Priya recorded zero or minimal spoken/typed responses during this interview session. Full interview rubrics and hiring committee scores require active verbal participation. Speak aloud into your microphone or submit complete STAR answers to achieve a full score.</p>
+        </div>
+    </div>
+    {% elif session.overall_score < 4.5 %}
+    <div class="alert alert-warning border-warning-subtle shadow-sm rounded-4 p-3 mb-4 d-flex align-items-center gap-3">
+        <i class="bi bi-info-circle-fill fs-2 text-warning flex-shrink-0"></i>
+        <div>
+            <h3 class="h6 fw-bold mb-1 text-dark">Brief Responses Detected</h3>
+            <p class="small text-muted mb-0">Your answers were very short ({{ session.observations.total_words|default:total_words|default:"few" }} words recorded). Technical and behavioral interviews require structured STAR answers with technical depth and quantifiable metrics.</p>
+        </div>
+    </div>
+    {% endif %}
 
     <!-- Metric Breakdown Grid -->
     <div class="row g-3 mb-4">
@@ -121,6 +144,34 @@
             </div>
         </div>
     </div>
+
+    <!-- Big Tech Specialized Evaluation Card (Google / Amazon / Microsoft) -->
+    {% if observations.company_evaluation %}
+    <div class="card border-0 shadow-sm rounded-4 p-4 mb-4" style="background: linear-gradient(135deg, #091220 0%, #15243b 100%); color: #fff; border: 1.5px solid rgba(56, 189, 248, 0.3) !important;">
+        <div class="d-flex flex-wrap justify-content-between align-items-center gap-2 mb-3">
+            <div class="d-flex align-items-center gap-2">
+                <span class="badge rounded-pill px-3 py-1 fs-6 fw-bold" style="background: {% if observations.company_evaluation.company == 'Google' %}#4285F4{% elif observations.company_evaluation.company == 'Amazon' %}#FF9900; color: #111;{% else %}#00A4EF{% endif %};">
+                    {{ observations.company_evaluation.rubric_title|default:observations.company_evaluation.company|upper }}
+                </span>
+                <span class="text-white-50 small">{{ observations.company_evaluation.track }}</span>
+            </div>
+            <span class="badge text-bg-dark border border-secondary text-info small">Big Tech High-Bar Rubric</span>
+        </div>
+        <div class="row g-3">
+            {% for item in observations.company_evaluation.principles_evaluated %}
+            <div class="col-md-6">
+                <div class="p-3 rounded-3" style="background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.12);">
+                    <div class="d-flex justify-content-between align-items-center mb-1">
+                        <strong class="text-white small">{{ item.name }}</strong>
+                        <span class="badge {% if item.status == 'High Bar' or item.status == 'Demonstrated' %}bg-success{% elif item.status == 'No Signal' or item.status == 'Did Not Attempt' %}bg-danger{% else %}bg-warning text-dark{% endif %} small rounded-pill px-2 py-1">{{ item.status }}</span>
+                    </div>
+                    <p class="small text-white-50 mb-0" style="font-size: 0.82rem;">{{ item.feedback }}</p>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+    {% endif %}
 
     <!-- Strengths & Areas to Improve -->
     <div class="row g-4 mb-4">

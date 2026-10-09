@@ -1,4 +1,5 @@
 import json
+from decimal import Decimal
 from unittest.mock import Mock, patch
 from django.contrib.auth import get_user_model
 from django.test import Client, TestCase
@@ -648,6 +649,45 @@ class AriaServicesTest(TestCase):
         self.assertIsNotNone(report_msft['big_tech_evaluation'])
         self.assertEqual(report_msft['big_tech_evaluation']['company'], 'Microsoft')
         self.assertIn('Growth Mindset', report_msft['big_tech_evaluation']['track'])
+
+    def test_silent_interview_yields_minimum_rating_and_warning(self):
+        """Verify that when a candidate stays silent or provides no answers, rating is strictly 1.0/10 and flagged as No Verbal Participation."""
+        session_google = MockInterviewSession(company_type='Google', role_target='Software Engineer Intern')
+        # Candidate was silent - no Student turns or empty text
+        empty_transcript = [
+            {'speaker': 'Priya', 'text': 'Tell me about yourself.'},
+            {'speaker': 'Priya', 'text': 'Are you ready to begin?'}
+        ]
+        report = generate_mock_interview_report(session_google, empty_transcript)
+        self.assertEqual(report['overall_score'], Decimal('1.0'))
+        self.assertEqual(report['communication_score'], Decimal('1.0'))
+        self.assertEqual(report['content_score'], Decimal('1.0'))
+        self.assertEqual(report['confidence_score'], Decimal('1.0'))
+        self.assertEqual(report['body_language_score'], Decimal('1.0'))
+        self.assertEqual(report['tier_label'], 'No Verbal Participation')
+        self.assertEqual(report['tier_class'], 'danger')
+        self.assertIn('Zero Verbal Participation', report['areas_for_improvement'][0])
+
+        # Check Big tech principles are marked with No Signal
+        self.assertIsNotNone(report['big_tech_evaluation'])
+        for principle in report['big_tech_evaluation']['principles_evaluated']:
+            self.assertEqual(principle['status'], 'No Signal')
+
+    def test_comprehensive_interview_yields_high_rating(self):
+        """Verify that when a candidate answers substantively with STAR details and metrics, rating reflects strong competence (>= 7.5/10)."""
+        session_amazon = MockInterviewSession(company_type='Amazon', role_target='Software Development Engineer')
+        detailed_transcript = [
+            {'speaker': 'Priya', 'text': 'Tell me about a complex project you designed and delivered.'},
+            {
+                'speaker': 'Student',
+                'text': 'During my previous software internship, I took ownership of our microservice payment processing gateway that suffered from severe latency bottlenecks during flash sale traffic spikes. As lead backend engineer, my task was to bring 99th percentile transaction response times below 250 milliseconds while handling 6000 concurrent requests per second. I designed and implemented an asynchronous event-driven architecture using Python Django, Celery, and Redis caching. I decoupled synchronous database transactions using an Amazon SQS queue, optimized relational PostgreSQL indexes, and architected automated circuit breakers with retry backoff. As a result, our checkout latency dropped by 85 percent from 2.8 seconds to 190 milliseconds, zero transactions were lost, and customer cart completion improved by 28 percent across 2 million orders.'
+            }
+        ]
+        report = generate_mock_interview_report(session_amazon, detailed_transcript)
+        self.assertGreaterEqual(float(report['overall_score']), 7.5)
+        self.assertIn(report['tier_label'], ['Strong Candidate', 'Exceptional Candidate'])
+        self.assertIsNotNone(report['big_tech_evaluation'])
+        self.assertIn('Amazon', report['big_tech_evaluation']['company'])
 
     def test_candidate_answer_is_sent_once_to_gemini(self):
         answer = 'I built a campus scheduling app and improved booking completion by twenty percent.'

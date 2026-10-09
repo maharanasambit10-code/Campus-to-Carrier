@@ -531,6 +531,15 @@
                 </div>
 
                 <div id="feedbackContent" class="d-none">
+                    <!-- Silent / Minimal Participation Diagnostic Alert Banner -->
+                    <div id="silentInterviewAlert" class="alert alert-danger border-danger-subtle shadow-sm rounded-4 p-3 mb-4 d-flex align-items-center gap-3 d-none">
+                        <i class="bi bi-exclamation-triangle-fill fs-2 text-danger flex-shrink-0"></i>
+                        <div>
+                            <h3 class="h6 fw-bold mb-1 text-danger">No Verbal Participation Detected</h3>
+                            <p class="small text-dark mb-0">Priya recorded zero or minimal spoken/typed responses. To receive a high interview score and hiring recommendation, speak aloud into your microphone or type answers using the STAR method.</p>
+                        </div>
+                    </div>
+
                     <!-- Top Score Summary Banner -->
                     <div class="row g-4 mb-4 align-items-center">
                         <div class="col-md-4 text-center">
@@ -1731,6 +1740,16 @@ document.addEventListener('DOMContentLoaded', function() {
         window.speechSynthesis && window.speechSynthesis.cancel();
         clearInterval(callTimerInterval);
 
+        // Capture any pending text from the input field if user didn't press Enter
+        if (typedAnswerInput && typedAnswerInput.value.trim()) {
+            transcriptHistory.push({
+                speaker: 'Student',
+                text: typedAnswerInput.value.trim(),
+                timestamp: new Date().toISOString()
+            });
+            typedAnswerInput.value = '';
+        }
+
         feedbackModal.show();
         document.getElementById('feedbackLoading').classList.remove('d-none');
         document.getElementById('feedbackContent').classList.add('d-none');
@@ -1773,6 +1792,18 @@ document.addEventListener('DOMContentLoaded', function() {
         document.getElementById('feedbackLoading').classList.add('d-none');
         document.getElementById('feedbackContent').classList.remove('d-none');
 
+        const overallScore = Number(report.overall_score);
+        const totalWords = Number(report.total_words ?? report.observations?.total_words ?? 0);
+        const silentAlert = document.getElementById('silentInterviewAlert');
+
+        if (silentAlert) {
+            if (totalWords < 8 || overallScore <= 2.0) {
+                silentAlert.classList.remove('d-none');
+            } else {
+                silentAlert.classList.add('d-none');
+            }
+        }
+
         document.getElementById('reportOverallScore').innerHTML = `${report.overall_score}<span class="fs-4 text-muted">/10</span>`;
         document.getElementById('scoreComm').textContent = report.communication_score;
         document.getElementById('scoreContent').textContent = report.content_score;
@@ -1780,15 +1811,21 @@ document.addEventListener('DOMContentLoaded', function() {
         document.getElementById('scoreBody').textContent = report.body_language_score;
 
         const tierBadge = document.getElementById('reportTierBadge');
-        if (report.overall_score >= 8.5) {
+        if (totalWords < 8 || overallScore <= 2.0) {
+            tierBadge.className = 'badge text-bg-danger px-3 py-1 rounded-pill';
+            tierBadge.textContent = report.tier_label || 'No Verbal Participation';
+        } else if (overallScore >= 8.5) {
             tierBadge.className = 'badge text-bg-success px-3 py-1 rounded-pill';
             tierBadge.textContent = 'Exceptional Candidate';
-        } else if (report.overall_score >= 7.0) {
+        } else if (overallScore >= 7.0) {
             tierBadge.className = 'badge text-bg-primary px-3 py-1 rounded-pill';
             tierBadge.textContent = 'Strong Candidate';
-        } else {
+        } else if (overallScore >= 4.5) {
             tierBadge.className = 'badge text-bg-warning text-dark px-3 py-1 rounded-pill';
             tierBadge.textContent = 'Developing Candidate';
+        } else {
+            tierBadge.className = 'badge text-bg-danger px-3 py-1 rounded-pill';
+            tierBadge.textContent = report.tier_label || 'Needs Significant Practice';
         }
 
         // Big Tech Assessment Card Rendering
@@ -1822,6 +1859,8 @@ document.addEventListener('DOMContentLoaded', function() {
                     statusBg = 'bg-success';
                 } else if (item.status === 'Developing' || item.status === 'Needs Clarity' || item.status === 'Needs Metrics') {
                     statusBg = 'bg-warning text-dark';
+                } else if (item.status === 'No Signal' || item.status === 'Did Not Attempt') {
+                    statusBg = 'bg-danger text-white';
                 }
                 col.innerHTML = `
                     <div class="p-3 rounded-3" style="background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.12);">

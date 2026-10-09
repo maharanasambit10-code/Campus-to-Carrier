@@ -1,0 +1,1599 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}12 Unique Features | Campus to Career Innovation Suite{% endblock %}
+
+{% block content %}
+<main class="innovation-suite-page py-5 position-relative">
+    <!-- Header Banner -->
+    <div class="container mb-5">
+        <div class="p-4 p-md-5 rounded-4 text-white position-relative overflow-hidden shadow-lg" style="background: linear-gradient(135deg, #0d2861 0%, #1545aa 55%, #1a56d6 100%);">
+            <div class="row align-items-center g-4 position-relative z-1">
+                <div class="col-lg-8" data-aos="fade-right">
+                    <span class="badge bg-warning text-dark px-3 py-2 rounded-pill fw-bold text-uppercase mb-3 shadow-sm">
+                        <i class="bi bi-stars me-1"></i> CAMPUS TO CAREER · 12 DISRUPTIVE HACKATHON INNOVATIONS
+                    </span>
+                    <h1 class="display-5 fw-bold text-white mb-3">
+                        The 12 Groundbreaking Features
+                    </h1>
+                    <p class="lead mb-4 text-white text-opacity-90">
+                        Beyond standard job boards and resume templates. Verifiable intelligence, fraud detection, reverse hiring, and career survival engines.
+                    </p>
+                    <div class="d-flex flex-wrap gap-2">
+                        <a href="#dock-overview" class="btn btn-warning text-dark fw-bold px-4 py-2 rounded-pill shadow-sm">
+                            <i class="bi bi-grid-3x3-gap-fill me-1"></i> Launch Any Engine Below
+                        </a>
+                        <button type="button" class="btn btn-outline-light rounded-pill px-4 py-2 fw-semibold" onclick="document.getElementById('floatingInnovationDock').scrollIntoView({behavior: 'smooth'})">
+                            <i class="bi bi-window-dock me-1"></i> Open Quick Taskbar
+                        </button>
+                    </div>
+                </div>
+                <div class="col-lg-4 text-center text-lg-end" data-aos="fade-left">
+                    <div class="d-inline-block p-4 rounded-4 bg-white bg-opacity-10 backdrop-blur border border-white border-opacity-20 text-center shadow">
+                        <div class="display-4 fw-black text-warning mb-1" id="activeCounterDisplay">12 / 12</div>
+                        <div class="text-white fw-bold">Live AI Engines Active</div>
+                        <span class="badge bg-success rounded-pill px-3 py-1 mt-2"><i class="bi bi-check-circle-fill me-1"></i> 100% Operational Condition</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Quick Jump Grid / Working Directory -->
+    <div class="container mb-5" id="dock-overview">
+        <div class="text-center mb-4">
+            <span class="badge bg-primary bg-opacity-10 text-primary px-3 py-2 rounded-pill fw-bold text-uppercase mb-2">QUICK JUMP DIRECTORY</span>
+            <h2 class="fw-bold text-dark">Click Any Feature to Launch Live Engine</h2>
+            <p class="text-muted small">Select any card to launch its live workbench, load interactive parameters, and run real-time AI simulations.</p>
+        </div>
+
+        <div class="row g-3" id="quickJumpGrid">
+            <!-- 1. Black Box -->
+            <div class="col-6 col-md-4 col-lg-2">
+                <div class="card h-100 p-3 text-center border rounded-4 shadow-sm quick-jump-card active-engine" 
+                     data-target="feature-black-box" 
+                     data-title="1. Placement Black Box Engine"
+                     onclick="launchEngine('feature-black-box', this)">
+                    <span class="live-pill badge bg-primary position-absolute top-0 end-0 m-2 rounded-pill"><span class="spinner-grow spinner-grow-sm me-1" style="width: 7px; height: 7px;"></span>RUNNING</span>
+                    <div class="fs-2 text-primary mb-2">📦</div>
+                    <strong class="text-dark d-block small">1. Black Box</strong>
+                    <span class="text-muted" style="font-size: 0.72rem;">Placement Odds</span>
+                </div>
+            </div>
+
+            <!-- 2. Fake Offer -->
+            <div class="col-6 col-md-4 col-lg-2">
+                <div class="card h-100 p-3 text-center border rounded-4 shadow-sm quick-jump-card" 
+                     data-target="feature-fake-offer" 
+                     data-title="2. Fake Offer Letter Detector"
+                     onclick="launchEngine('feature-fake-offer', this)">
+                    <span class="live-pill badge bg-primary position-absolute top-0 end-0 m-2 rounded-pill"><span class="spinner-grow spinner-grow-sm me-1" style="width: 7px; height: 7px;"></span>RUNNING</span>
+                    <div class="fs-2 text-danger mb-2">🔍</div>
+                    <strong class="text-dark d-block small">2. Fake Offer</strong>
+                    <span class="text-muted" style="font-size: 0.72rem;">PDF & CIN Check</span>
+                </div>
+            </div>
+
+            <!-- 3. Ghost Job -->
+            <div class="col-6 col-md-4 col-lg-2">
+                <div class="card h-100 p-3 text-center border rounded-4 shadow-sm quick-jump-card" 
+                     data-target="feature-ghost-job" 
+                     data-title="3. Ghost Job Detector"
+                     onclick="launchEngine('feature-ghost-job', this)">
+                    <span class="live-pill badge bg-primary position-absolute top-0 end-0 m-2 rounded-pill"><span class="spinner-grow spinner-grow-sm me-1" style="width: 7px; height: 7px;"></span>RUNNING</span>
+                    <div class="fs-2 text-warning mb-2">👻</div>
+                    <strong class="text-dark d-block small">3. Ghost Job</strong>
+                    <span class="text-muted" style="font-size: 0.72rem;">LinkedIn Verifier</span>
+                </div>
+            </div>
+
+            <!-- 4. Reverse Hire -->
+            <div class="col-6 col-md-4 col-lg-2">
+                <div class="card h-100 p-3 text-center border rounded-4 shadow-sm quick-jump-card" 
+                     data-target="feature-reverse-hiring" 
+                     data-title="4. Reverse Hiring Marketplace"
+                     onclick="launchEngine('feature-reverse-hiring', this)">
+                    <span class="live-pill badge bg-primary position-absolute top-0 end-0 m-2 rounded-pill"><span class="spinner-grow spinner-grow-sm me-1" style="width: 7px; height: 7px;"></span>RUNNING</span>
+                    <div class="fs-2 text-success mb-2">🔄</div>
+                    <strong class="text-dark d-block small">4. Reverse Hire</strong>
+                    <span class="text-muted" style="font-size: 0.72rem;">Companies Bid</span>
+                </div>
+            </div>
+
+            <!-- 5. Negotiation -->
+            <div class="col-6 col-md-4 col-lg-2">
+                <div class="card h-100 p-3 text-center border rounded-4 shadow-sm quick-jump-card" 
+                     data-target="feature-salary-simulator" 
+                     data-title="5. Salary Negotiation Simulator"
+                     onclick="launchEngine('feature-salary-simulator', this)">
+                    <span class="live-pill badge bg-primary position-absolute top-0 end-0 m-2 rounded-pill"><span class="spinner-grow spinner-grow-sm me-1" style="width: 7px; height: 7px;"></span>RUNNING</span>
+                    <div class="fs-2 text-info mb-2">💬</div>
+                    <strong class="text-dark d-block small">5. Negotiation</strong>
+                    <span class="text-muted" style="font-size: 0.72rem;">AI HR Raghav</span>
+                </div>
+            </div>
+
+            <!-- 6. Degree ROI -->
+            <div class="col-6 col-md-4 col-lg-2">
+                <div class="card h-100 p-3 text-center border rounded-4 shadow-sm quick-jump-card" 
+                     data-target="feature-degree-roi" 
+                     data-title="6. Degree ROI Calculator"
+                     onclick="launchEngine('feature-degree-roi', this)">
+                    <span class="live-pill badge bg-primary position-absolute top-0 end-0 m-2 rounded-pill"><span class="spinner-grow spinner-grow-sm me-1" style="width: 7px; height: 7px;"></span>RUNNING</span>
+                    <div class="fs-2 text-primary mb-2">💰</div>
+                    <strong class="text-dark d-block small">6. Degree ROI</strong>
+                    <span class="text-muted" style="font-size: 0.72rem;">Breakeven Clock</span>
+                </div>
+            </div>
+
+            <!-- 7. Unsuccess Map -->
+            <div class="col-6 col-md-4 col-lg-2">
+                <div class="card h-100 p-3 text-center border rounded-4 shadow-sm quick-jump-card" 
+                     data-target="feature-unsuccess-blueprint" 
+                     data-title="7. Alumni Unsuccess Blueprint"
+                     onclick="launchEngine('feature-unsuccess-blueprint', this)">
+                    <span class="live-pill badge bg-primary position-absolute top-0 end-0 m-2 rounded-pill"><span class="spinner-grow spinner-grow-sm me-1" style="width: 7px; height: 7px;"></span>RUNNING</span>
+                    <div class="fs-2 text-secondary mb-2">⚠️</div>
+                    <strong class="text-dark d-block small">7. Unsuccess Map</strong>
+                    <span class="text-muted" style="font-size: 0.72rem;">Seniors Mistakes</span>
+                </div>
+            </div>
+
+            <!-- 8. 21D ICU -->
+            <div class="col-6 col-md-4 col-lg-2">
+                <div class="card h-100 p-3 text-center border rounded-4 shadow-sm quick-jump-card" 
+                     data-target="feature-placement-icu" 
+                     data-title="8. 21 Days Placement ICU"
+                     onclick="launchEngine('feature-placement-icu', this)">
+                    <span class="live-pill badge bg-primary position-absolute top-0 end-0 m-2 rounded-pill"><span class="spinner-grow spinner-grow-sm me-1" style="width: 7px; height: 7px;"></span>RUNNING</span>
+                    <div class="fs-2 text-danger mb-2">🚨</div>
+                    <strong class="text-dark d-block small">8. 21D ICU</strong>
+                    <span class="text-muted" style="font-size: 0.72rem;">Lockdown Sprints</span>
+                </div>
+            </div>
+
+            <!-- 9. Corp Avatar -->
+            <div class="col-6 col-md-4 col-lg-2">
+                <div class="card h-100 p-3 text-center border rounded-4 shadow-sm quick-jump-card" 
+                     data-target="feature-corporate-avatar" 
+                     data-title="9. One-Click Corporate Avatar"
+                     onclick="launchEngine('feature-corporate-avatar', this)">
+                    <span class="live-pill badge bg-primary position-absolute top-0 end-0 m-2 rounded-pill"><span class="spinner-grow spinner-grow-sm me-1" style="width: 7px; height: 7px;"></span>RUNNING</span>
+                    <div class="fs-2 text-info mb-2">👔</div>
+                    <strong class="text-dark d-block small">9. Corp Avatar</strong>
+                    <span class="text-muted" style="font-size: 0.72rem;">TCS/Infosys DPs</span>
+                </div>
+            </div>
+
+            <!-- 10. What-If -->
+            <div class="col-6 col-md-4 col-lg-2">
+                <div class="card h-100 p-3 text-center border rounded-4 shadow-sm quick-jump-card" 
+                     data-target="feature-what-if" 
+                     data-title="10. What-If Career Engine"
+                     onclick="launchEngine('feature-what-if', this)">
+                    <span class="live-pill badge bg-primary position-absolute top-0 end-0 m-2 rounded-pill"><span class="spinner-grow spinner-grow-sm me-1" style="width: 7px; height: 7px;"></span>RUNNING</span>
+                    <div class="fs-2 text-warning mb-2">⚡</div>
+                    <strong class="text-dark d-block small">10. What-If</strong>
+                    <span class="text-muted" style="font-size: 0.72rem;">Career Delta</span>
+                </div>
+            </div>
+
+            <!-- 11. Referral Check -->
+            <div class="col-6 col-md-4 col-lg-2">
+                <div class="card h-100 p-3 text-center border rounded-4 shadow-sm quick-jump-card" 
+                     data-target="feature-referral-tracker" 
+                     data-title="11. Referral Black Market Detector"
+                     onclick="launchEngine('feature-referral-tracker', this)">
+                    <span class="live-pill badge bg-primary position-absolute top-0 end-0 m-2 rounded-pill"><span class="spinner-grow spinner-grow-sm me-1" style="width: 7px; height: 7px;"></span>RUNNING</span>
+                    <div class="fs-2 text-success mb-2">🤝</div>
+                    <strong class="text-dark d-block small">11. Referral Check</strong>
+                    <span class="text-muted" style="font-size: 0.72rem;">Senior Verifier</span>
+                </div>
+            </div>
+
+            <!-- 12. Skill CIBIL -->
+            <div class="col-6 col-md-4 col-lg-2">
+                <div class="card h-100 p-3 text-center border rounded-4 shadow-sm quick-jump-card" 
+                     data-target="feature-skill-bankruptcy" 
+                     data-title="12. Skill Bankruptcy CIBIL Score"
+                     onclick="launchEngine('feature-skill-bankruptcy', this)">
+                    <span class="live-pill badge bg-primary position-absolute top-0 end-0 m-2 rounded-pill"><span class="spinner-grow spinner-grow-sm me-1" style="width: 7px; height: 7px;"></span>RUNNING</span>
+                    <div class="fs-2 text-primary mb-2">📊</div>
+                    <strong class="text-dark d-block small">12. Skill CIBIL</strong>
+                    <span class="text-muted" style="font-size: 0.72rem;">Solvency Score</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Active Engine Status Console Bar -->
+        <div class="mt-4 p-3 px-4 rounded-4 bg-white border shadow-sm d-flex flex-wrap justify-content-between align-items-center gap-3">
+            <div class="d-flex align-items-center gap-2">
+                <span class="live-dot-pulse"></span>
+                <span class="text-muted small fw-semibold text-uppercase">CURRENT WORKSPACE:</span>
+                <strong id="activeConsoleTitle" class="text-primary fs-6">1. Placement Black Box Engine</strong>
+                <span class="badge bg-success rounded-pill px-2.5 py-1 small" id="activeConsoleStatus">Operational</span>
+            </div>
+            <div class="d-flex align-items-center gap-2">
+                <button type="button" class="btn btn-sm btn-outline-primary rounded-pill px-3 fw-semibold" onclick="scrollToCurrentEngine()">
+                    <i class="bi bi-crosshair2 me-1"></i> Center on Stage
+                </button>
+                <span class="badge bg-light text-muted border rounded-pill px-3 py-1.5 small d-none d-md-inline">
+                    💡 Click any of the 12 cards to switch live engine
+                </span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Live Engines Section (12 Fully Functional Interactive Workspaces) -->
+    <div class="container">
+        
+        <!-- ========================================== -->
+        <!-- FEATURE 1: PLACEMENT BLACK BOX -->
+        <!-- ========================================== -->
+        <section id="feature-black-box" class="card p-4 p-md-5 rounded-4 shadow-sm border mb-5 engine-card">
+            <div class="row align-items-center g-4">
+                <div class="col-lg-6">
+                    <span class="badge bg-primary text-white rounded-pill px-3 py-1 mb-2 fw-bold">FEATURE 01 · CORE AI PREDICTIVE</span>
+                    <h2 class="fw-bold text-dark mb-2">📦 Placement Black Box</h2>
+                    <p class="text-muted mb-4">
+                        Scans 4 years of cumulative academic, coding, backlog, and project history to predict exact placement odds and diagnose critical blindspots before campus season begins.
+                    </p>
+                    
+                    <div class="row g-3 mb-4">
+                        <div class="col-6">
+                            <label class="form-label small fw-bold d-flex justify-content-between">
+                                <span>CGPA</span>
+                                <span class="text-primary fw-bold" id="bbCgpaVal">8.2</span>
+                            </label>
+                            <input type="range" min="5.0" max="10.0" step="0.1" id="bbCgpa" class="form-range" value="{{ black_box_data.cgpa }}" oninput="updateBlackBox()">
+                        </div>
+                        <div class="col-6">
+                            <label class="form-label small fw-bold d-flex justify-content-between">
+                                <span>Verified Projects</span>
+                                <span class="text-primary fw-bold" id="bbProjectsVal">3</span>
+                            </label>
+                            <input type="range" min="0" max="8" step="1" id="bbProjects" class="form-range" value="3" oninput="updateBlackBox()">
+                        </div>
+                        <div class="col-6">
+                            <label class="form-label small fw-bold d-flex justify-content-between">
+                                <span>Coding Hours / Week</span>
+                                <span class="text-primary fw-bold" id="bbHoursVal">14 hrs</span>
+                            </label>
+                            <input type="range" min="2" max="40" step="1" id="bbHours" class="form-range" value="14" oninput="updateBlackBox()">
+                        </div>
+                        <div class="col-6">
+                            <label class="form-label small fw-bold d-flex justify-content-between">
+                                <span>Active Backlogs</span>
+                                <span class="text-danger fw-bold" id="bbBacklogsVal">0</span>
+                            </label>
+                            <input type="range" min="0" max="4" step="1" id="bbBacklogs" class="form-range" value="0" oninput="updateBlackBox()">
+                        </div>
+                    </div>
+
+                    <div class="d-flex flex-wrap gap-2">
+                        <button type="button" class="btn btn-primary rounded-pill px-4 py-2 fw-bold" onclick="updateBlackBox(true)">
+                            <i class="bi bi-cpu me-1"></i> Re-Calculate Black Box
+                        </button>
+                        <button type="button" class="btn btn-outline-secondary rounded-pill px-3 py-2 small" onclick="resetBlackBoxInputs()">
+                            Reset Defaults
+                        </button>
+                    </div>
+                </div>
+
+                <div class="col-lg-6">
+                    <div class="p-4 rounded-4 bg-light border text-center position-relative">
+                        <small class="text-muted text-uppercase fw-bold">CALCULATED PLACEMENT PROBABILITY</small>
+                        <div class="display-3 fw-bold text-primary my-2" id="bbScore">86.4%</div>
+                        <span class="badge bg-success fs-6 rounded-pill px-3 py-1" id="bbTier">Safe Tier</span>
+                        
+                        <div class="progress my-3" style="height: 10px;">
+                            <div class="progress-bar bg-primary" id="bbProgressBar" style="width: 86.4%;"></div>
+                        </div>
+
+                        <div class="text-start mt-3 pt-3 border-top">
+                            <strong class="d-block text-dark small mb-2"><i class="bi bi-shield-exclamation text-warning me-1"></i> Black Box Diagnostic Report:</strong>
+                            <ul class="list-unstyled small text-muted mb-0" id="bbReportList">
+                                <li class="mb-1 text-success">✅ <strong>Academic Consistency:</strong> CGPA satisfies 94% Tier-1 hiring cutoffs.</li>
+                                <li class="mb-1 text-warning">⚠️ <strong>Architecture Blindspot:</strong> Missing 1 distributed systems / high-concurrency project.</li>
+                                <li class="text-muted">💡 <strong>Prescription:</strong> Complete 1 Redis caching capstone before Drive Week.</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ========================================== -->
+        <!-- FEATURE 2: FAKE OFFER LETTER DETECTOR -->
+        <!-- ========================================== -->
+        <section id="feature-fake-offer" class="card p-4 p-md-5 rounded-4 shadow-sm border mb-5 engine-card">
+            <div class="row align-items-center g-4">
+                <div class="col-lg-6">
+                    <span class="badge bg-danger text-white rounded-pill px-3 py-1 mb-2 fw-bold">FEATURE 02 · FRAUD SHIELD & MCA VERIFICATION</span>
+                    <h2 class="fw-bold text-dark mb-2">🔍 Fake Offer Letter Detector</h2>
+                    <p class="text-muted mb-4">
+                        Upload or paste any job offer letter. AI checks Ministry of Corporate Affairs (MCA) registration, HR email domain, salary escrow deposit terms, and red-flags fake consulting rackets.
+                    </p>
+
+                    <div class="mb-3">
+                        <label class="form-label small fw-bold">Try Instant Sample Presets:</label>
+                        <div class="d-flex flex-wrap gap-2 mb-2">
+                            <button type="button" class="btn btn-sm btn-outline-danger rounded-pill fw-semibold" onclick="loadOfferSample('fraud')">🚨 Scam Offer (Demands ₹4,500 Fee)</button>
+                            <button type="button" class="btn btn-sm btn-outline-success rounded-pill fw-semibold" onclick="loadOfferSample('real')">✅ Genuine TCS Digital Offer</button>
+                            <button type="button" class="btn btn-sm btn-outline-warning rounded-pill fw-semibold" onclick="loadOfferSample('consultancy')">⚠️ Fake Tech Recruitment Racket</button>
+                        </div>
+                        
+                        <div class="mb-2">
+                            <label class="form-label small text-muted">Or upload document / paste offer text:</label>
+                            <input type="file" id="offerFileInput" class="form-control form-control-sm mb-2" accept=".txt,.pdf,.doc,.docx" onchange="handleOfferFileUpload(event)">
+                        </div>
+
+                        <textarea id="offerText" class="form-control" rows="4" placeholder="Paste offer letter text, email headers, or candidate terms here..."></textarea>
+                    </div>
+
+                    <button type="button" class="btn btn-danger rounded-pill px-4 py-2 fw-bold" onclick="scanOfferLetter()">
+                        <i class="bi bi-shield-check me-1"></i> Scan Offer Authenticity Now
+                    </button>
+                </div>
+
+                <div class="col-lg-6">
+                    <div class="p-4 rounded-4 bg-light border" id="offerResultBox">
+                        <div class="d-flex align-items-center justify-content-between mb-3">
+                            <span class="small fw-bold text-muted text-uppercase">FORENSIC AUDIT REPORT</span>
+                            <span class="badge bg-primary rounded-pill px-3 py-1" id="offerBadge">Ready to Scan</span>
+                        </div>
+                        <h4 class="fw-bold text-dark mb-2" id="offerVerdict">Awaiting Offer Text or Upload</h4>
+                        <div class="progress mb-3" style="height: 10px;">
+                            <div class="progress-bar bg-success" id="offerProgressBar" style="width: 50%;"></div>
+                        </div>
+                        <div id="offerFlags" class="small text-muted p-3 bg-white rounded-3 border">
+                            Click one of the presets above or paste letter text to execute live MCA registry and fraud heuristics.
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ========================================== -->
+        <!-- FEATURE 3: GHOST JOB DETECTOR -->
+        <!-- ========================================== -->
+        <section id="feature-ghost-job" class="card p-4 p-md-5 rounded-4 shadow-sm border mb-5 engine-card">
+            <div class="row align-items-center g-4">
+                <div class="col-lg-6">
+                    <span class="badge bg-warning text-dark rounded-pill px-3 py-1 mb-2 fw-bold">FEATURE 03 · SIGNAL ACCURACY</span>
+                    <h2 class="fw-bold text-dark mb-2">👻 Ghost Job Detector</h2>
+                    <p class="text-muted mb-4">
+                        Companies post fake jobs to show artificial growth or collect resumes without hiring intent. Paste any LinkedIn, Indeed, or Naukri link to see if the opening is real or a ghost listing.
+                    </p>
+
+                    <div class="mb-3">
+                        <label class="form-label small fw-bold">Test Presets:</label>
+                        <div class="d-flex flex-wrap gap-2 mb-2">
+                            <button type="button" class="btn btn-sm btn-outline-danger rounded-pill" onclick="setGhostPreset('TechNova Labs (Reposted 9x in 120 Days)', 'https://linkedin.com/jobs/view/ghost-tech-9201', 88)">🚨 Ghost: TechNova 9x Repost</button>
+                            <button type="button" class="btn btn-sm btn-outline-success rounded-pill" onclick="setGhostPreset('CredFlow FinTech (Actively Hiring SDE)', 'https://linkedin.com/jobs/view/credflow-sde-1', 12)">✅ Real: CredFlow SDE-1</button>
+                        </div>
+                        <label class="form-label small fw-bold">Job Listing URL or Title</label>
+                        <input type="text" id="ghostJobUrl" class="form-control" value="https://linkedin.com/jobs/view/392019401" placeholder="Paste LinkedIn or job board URL...">
+                    </div>
+                    <button type="button" class="btn btn-warning text-dark rounded-pill px-4 py-2 fw-bold" onclick="scanGhostJob()">
+                        <i class="bi bi-radar me-1"></i> Analyze Ghost Probability
+                    </button>
+                </div>
+
+                <div class="col-lg-6">
+                    <div class="p-4 rounded-4 bg-light border text-center" id="ghostResultCard">
+                        <small class="text-muted fw-bold text-uppercase">GHOST PROBABILITY ESTIMATE</small>
+                        <div class="display-4 fw-bold text-danger my-2" id="ghostProb">74%</div>
+                        <span class="badge bg-danger rounded-pill px-3 py-1" id="ghostStatus">Likely Ghost Listing</span>
+                        
+                        <div class="text-start mt-3 pt-3 border-top small text-muted" id="ghostDetails">
+                            <div>🔁 <strong>Repost Count:</strong> Reposted 6 times across past 120 days.</div>
+                            <div>📉 <strong>Interview Cadence:</strong> Zero recruiter activity logged in last 3 weeks.</div>
+                            <div>💡 <strong>Action:</strong> Candidate buffer collection detected; avoid wasting customized cover letter time.</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ========================================== -->
+        <!-- FEATURE 4: REVERSE HIRING MODE -->
+        <!-- ========================================== -->
+        <section id="feature-reverse-hiring" class="card p-4 p-md-5 rounded-4 shadow-sm border mb-5 engine-card">
+            <div class="row align-items-center g-4">
+                <div class="col-lg-6">
+                    <span class="badge bg-success text-white rounded-pill px-3 py-1 mb-2 fw-bold">FEATURE 04 · DISRUPTIVE MARKETPLACE</span>
+                    <h2 class="fw-bold text-dark mb-2">🔄 Reverse Hiring Mode</h2>
+                    <p class="text-muted mb-4">
+                        Flip the traditional campus placement paradigm. Instead of sending 100 applications into a black hole, top students publish verified proof profiles—and <strong>companies bid for your interview slot</strong>.
+                    </p>
+
+                    <div class="form-check form-switch p-0 d-flex align-items-center gap-3 mb-4">
+                        <input class="form-check-input ms-0 fs-3" type="checkbox" id="reverseHiringSwitch" checked onchange="toggleReverseHiring()">
+                        <label class="form-check-label fw-bold text-dark" for="reverseHiringSwitch">
+                            Reverse Hiring Mode: <span class="text-success" id="reverseHiringStatusText">ACTIVE & VISIBLE TO 84 RECRUITERS</span>
+                        </label>
+                    </div>
+
+                    <div class="row g-2 mb-3">
+                        <div class="col-6">
+                            <label class="form-label small fw-bold d-flex justify-content-between">
+                                <span>Minimum Base CTC</span>
+                                <span class="text-success fw-bold" id="minCtcLabel">₹8.0 LPA</span>
+                            </label>
+                            <input type="range" min="4" max="20" step="1" value="8" id="minCtcRange" class="form-range" oninput="updateReverseHiringCtc(this.value)">
+                        </div>
+                        <div class="col-6">
+                            <label class="form-label small fw-bold">Verified Specialization</label>
+                            <input type="text" class="form-control form-control-sm" value="Fullstack + Python AI" readonly>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-lg-6">
+                    <div class="p-4 rounded-4 bg-light border">
+                        <div class="d-flex justify-content-between align-items-center mb-3">
+                            <strong class="text-dark"><i class="bi bi-inbox-fill text-primary me-1"></i> Inbound Interview Bids (<span id="inboundCount">3</span>)</strong>
+                            <span class="badge bg-primary rounded-pill">Live Bids</span>
+                        </div>
+                        <div class="card p-3 mb-2 border rounded-3 bg-white shadow-sm" id="bidRazorpay">
+                            <div class="d-flex justify-content-between align-items-center">
+                                <strong class="text-dark">Razorpay Talent Team</strong>
+                                <span class="badge bg-success">₹14 - 18 LPA</span>
+                            </div>
+                            <small class="text-muted my-1">"Reviewed your GitHub project. We'd like to skip Round 1 OA and invite you directly to Tech Round."</small>
+                            <button class="btn btn-sm btn-outline-success rounded-pill mt-2 align-self-start" onclick="acceptInterviewBid('Razorpay')">Accept Interview Slot</button>
+                        </div>
+                        <div class="card p-3 mb-2 border rounded-3 bg-white shadow-sm" id="bidSwiggy">
+                            <div class="d-flex justify-content-between align-items-center">
+                                <strong class="text-dark">Swiggy Engineering</strong>
+                                <span class="badge bg-success">₹12 LPA</span>
+                            </div>
+                            <small class="text-muted my-1">"Fast-track interview slot reserved for your Next.js & SQL proof benchmark."</small>
+                            <button class="btn btn-sm btn-outline-success rounded-pill mt-2 align-self-start" onclick="acceptInterviewBid('Swiggy')">Accept Interview Slot</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ========================================== -->
+        <!-- FEATURE 5: SALARY NEGOTIATION SIMULATOR -->
+        <!-- ========================================== -->
+        <section id="feature-salary-simulator" class="card p-4 p-md-5 rounded-4 shadow-sm border mb-5 engine-card">
+            <div class="row align-items-center g-4">
+                <div class="col-lg-6">
+                    <span class="badge bg-info text-dark rounded-pill px-3 py-1 mb-2 fw-bold">FEATURE 05 · AI HR ROLEPLAY SIMULATOR</span>
+                    <h2 class="fw-bold text-dark mb-2">💬 Salary Negotiation Simulator</h2>
+                    <p class="text-muted mb-4">
+                        Most college grads accept the very first number offered out of fear. Practice salary bargaining against <strong>AI HR Raghav</strong> to extract joining bonuses, retention perks, and higher base pay.
+                    </p>
+
+                    <div class="row g-2 mb-3">
+                        <div class="col-6">
+                            <label class="form-label small fw-bold">Initial Offer (₹ LPA)</label>
+                            <input type="number" id="currentOffer" class="form-control" value="6.5">
+                        </div>
+                        <div class="col-6">
+                            <label class="form-label small fw-bold">Your Target CTC (₹ LPA)</label>
+                            <input type="number" id="counterOffer" class="form-control" value="8.5">
+                        </div>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label small fw-bold">Your Negotiation Argument:</label>
+                        <select id="negotiationPitch" class="form-select mb-2">
+                            <option value="I have verified production projects and another competing offer.">"I have verified production proof and a competing offer from a product startup."</option>
+                            <option value="My proof readiness score is top 5% in college.">"My proof readiness score places me in the top 5% of candidate benchmarks."</option>
+                            <option value="Can we consider a joining bonus or early appraisal?">"If base pay is fixed, can we structure a ₹1,00,000 joining bonus or 6-month appraisal?"</option>
+                        </select>
+                    </div>
+
+                    <div class="d-flex flex-wrap gap-2">
+                        <button type="button" class="btn btn-info text-dark rounded-pill px-4 py-2 fw-bold" onclick="simulateNegotiation()">
+                            <i class="bi bi-chat-quote-fill me-1"></i> Negotiate with HR Raghav
+                        </button>
+                        <button type="button" class="btn btn-outline-secondary rounded-pill px-3 py-2" onclick="speakHRMessage()">
+                            <i class="bi bi-volume-up-fill me-1"></i> Hear HR Voice
+                        </button>
+                    </div>
+                </div>
+
+                <div class="col-lg-6">
+                    <div class="p-4 rounded-4 bg-light border">
+                        <div class="d-flex align-items-center justify-content-between mb-3">
+                            <div class="d-flex align-items-center gap-2">
+                                <span class="avatar avatar-sm bg-primary text-white rounded-circle p-2">HR</span>
+                                <div>
+                                    <strong class="d-block text-dark small">AI HR Raghav (Head of Talent Acquisition)</strong>
+                                    <span class="badge bg-success bg-opacity-10 text-success small">Negotiation Active</span>
+                                </div>
+                            </div>
+                            <span class="badge bg-primary rounded-pill" id="negotiationScore">Score: 88/100</span>
+                        </div>
+                        
+                        <div class="p-3 bg-white rounded-3 border shadow-sm mb-3" id="hrMessage">
+                            "Hello! We are thrilled to offer you ₹6.5 LPA for the Associate Developer role. What are your thoughts on this package?"
+                        </div>
+                        
+                        <div class="alert alert-primary py-2 px-3 small mb-0" id="hrTip">
+                            💡 <strong>Negotiation Tip:</strong> Never say a flat 'No'. Always anchor to demonstrated proof and market value!
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ========================================== -->
+        <!-- FEATURE 6: DEGREE ROI CALCULATOR -->
+        <!-- ========================================== -->
+        <section id="feature-degree-roi" class="card p-4 p-md-5 rounded-4 shadow-sm border mb-5 engine-card">
+            <div class="row align-items-center g-4">
+                <div class="col-lg-6">
+                    <span class="badge bg-primary text-white rounded-pill px-3 py-1 mb-2 fw-bold">FEATURE 06 · FINANCIAL REALITY CHECK</span>
+                    <h2 class="fw-bold text-dark mb-2">💰 Degree ROI Calculator</h2>
+                    <p class="text-muted mb-4">
+                        You spent ₹4 Lakh to ₹12 Lakh on college tuition. How many years will it actually take to recover your investment after taxes and living costs? AI calculates exact breakeven and 5-year career net wealth.
+                    </p>
+
+                    <div class="row g-3 mb-4">
+                        <div class="col-6">
+                            <label class="form-label small fw-bold d-flex justify-content-between">
+                                <span>College Fees Paid</span>
+                                <span class="text-primary fw-bold" id="roiFeesVal">₹4,50,000</span>
+                            </label>
+                            <input type="range" min="100000" max="1500000" step="50000" id="roiFees" class="form-range" value="450000" oninput="calculateRoi()">
+                        </div>
+                        <div class="col-6">
+                            <label class="form-label small fw-bold d-flex justify-content-between">
+                                <span>Expected Starting CTC</span>
+                                <span class="text-success fw-bold" id="roiCtcVal">₹7,00,000</span>
+                            </label>
+                            <input type="range" min="300000" max="2500000" step="50000" id="roiCtc" class="form-range" value="700000" oninput="calculateRoi()">
+                        </div>
+                        <div class="col-12">
+                            <label class="form-label small fw-bold d-flex justify-content-between">
+                                <span>Monthly Living Expenses (Metro)</span>
+                                <span class="text-warning fw-bold" id="roiLivingVal">₹22,000 / mo</span>
+                            </label>
+                            <input type="range" min="10000" max="60000" step="2000" id="roiLiving" class="form-range" value="22000" oninput="calculateRoi()">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-lg-6">
+                    <div class="p-4 rounded-4 bg-light border text-center">
+                        <small class="text-muted fw-bold text-uppercase">BREAKEVEN TIMELINE</small>
+                        <div class="display-3 fw-bold text-success my-2" id="roiBreakeven">1.4 Years</div>
+                        <span class="badge bg-primary rounded-pill px-3 py-1 mb-3" id="roiMonths">~17 Months to Net Profit</span>
+
+                        <div class="row g-2 pt-3 border-top text-start">
+                            <div class="col-6">
+                                <small class="text-muted d-block">5-Year Net Wealth Gain</small>
+                                <strong class="text-dark fs-5" id="roiFiveYear">₹32,50,000</strong>
+                            </div>
+                            <div class="col-6">
+                                <small class="text-muted d-block">Degree IRR Return Rate</small>
+                                <strong class="text-dark fs-5" id="roiIrr">42.8%</strong>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ========================================== -->
+        <!-- FEATURE 7: ALUMNI UNSUCCESS BLUEPRINT -->
+        <!-- ========================================== -->
+        <section id="feature-unsuccess-blueprint" class="card p-4 p-md-5 rounded-4 shadow-sm border mb-5 engine-card">
+            <span class="badge bg-secondary text-white rounded-pill px-3 py-1 mb-2 fw-bold align-self-start">FEATURE 07 · POST-MORTEM INTEL</span>
+            <h2 class="fw-bold text-dark mb-2">⚠️ Alumni Unsuccess Blueprint</h2>
+            <p class="text-muted mb-4">
+                Everyone studies successful alumni. The true secret is learning why smart students <strong>failed</strong> campus placements, so you can avoid their exact landmines.
+            </p>
+
+            <div class="d-flex flex-wrap gap-2 mb-4">
+                <button type="button" class="btn btn-sm btn-dark rounded-pill active" onclick="filterUnsuccess('all', this)">All Landmines (3)</button>
+                <button type="button" class="btn btn-sm btn-outline-dark rounded-pill" onclick="filterUnsuccess('cert', this)">Certificate Trap</button>
+                <button type="button" class="btn btn-sm btn-outline-dark rounded-pill" onclick="filterUnsuccess('dsa', this)">Delayed DSA</button>
+                <button type="button" class="btn btn-sm btn-outline-dark rounded-pill" onclick="filterUnsuccess('behavioral', this)">Mock Anxiety</button>
+                <button type="button" class="btn btn-sm btn-outline-danger rounded-pill ms-auto" onclick="runUnsuccessDiagnosis()">Run My Profile Risk Audit</button>
+            </div>
+
+            <div class="row g-4" id="unsuccessCardsContainer">
+                <div class="col-md-4 unsuccess-item" data-category="cert">
+                    <div class="p-4 rounded-4 bg-light border h-100 d-flex flex-column shadow-sm">
+                        <span class="badge bg-danger rounded-pill px-3 py-1 mb-2 align-self-start">Certificate Collector Trap</span>
+                        <strong class="text-dark mb-1">Senior Rahul K. (Batch 2025)</strong>
+                        <p class="small text-muted mb-3 flex-grow-1">Gathered 28 online completion certificates but had zero public deployed URLs or GitHub repo tests.</p>
+                        <div class="p-2.5 rounded-3 bg-white border small text-dark mt-auto">
+                            <strong class="text-success d-block mb-1">🛡️ The Antidote:</strong>
+                            1 deployed project beats 10 Udemy certificates every single time.
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-md-4 unsuccess-item" data-category="dsa">
+                    <div class="p-4 rounded-4 bg-light border h-100 d-flex flex-column shadow-sm">
+                        <span class="badge bg-danger rounded-pill px-3 py-1 mb-2 align-self-start">Delayed DSA to 8th Semester</span>
+                        <strong class="text-dark mb-1">Senior Ananya S. (Batch 2025)</strong>
+                        <p class="small text-muted mb-3 flex-grow-1">Focused purely on design work, started LeetCode 3 weeks before TCS Digital & Amazon drives.</p>
+                        <div class="p-2.5 rounded-3 bg-white border small text-dark mt-auto">
+                            <strong class="text-success d-block mb-1">🛡️ The Antidote:</strong>
+                            15 minutes daily problem solving from 5th semester onwards.
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-md-4 unsuccess-item" data-category="behavioral">
+                    <div class="p-4 rounded-4 bg-light border h-100 d-flex flex-column shadow-sm">
+                        <span class="badge bg-danger rounded-pill px-3 py-1 mb-2 align-self-start">Zero Mock Interview Exposure</span>
+                        <strong class="text-dark mb-1">Senior Vikram M. (Batch 2024)</strong>
+                        <p class="small text-muted mb-3 flex-grow-1">High GPA (8.9) and strong coding score, but froze on behavioral / STAR explanation questions with HR.</p>
+                        <div class="p-2.5 rounded-3 bg-white border small text-dark mt-auto">
+                            <strong class="text-success d-block mb-1">🛡️ The Antidote:</strong>
+                            Practice 5 recorded voice/video mocks before first live campus drive.
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ========================================== -->
+        <!-- FEATURE 8: 21 DAYS PLACEMENT ICU -->
+        <!-- ========================================== -->
+        <section id="feature-placement-icu" class="card p-4 p-md-5 rounded-4 shadow-sm border mb-5 engine-card">
+            <div class="row align-items-center g-4">
+                <div class="col-lg-6">
+                    <span class="badge bg-danger text-white rounded-pill px-3 py-1 mb-2 fw-bold">FEATURE 08 · EMERGENCY LOCKDOWN TRIAGE</span>
+                    <h2 class="fw-bold text-dark mb-2">🚨 21 Days Placement ICU</h2>
+                    <p class="text-muted mb-3">
+                        Placement drive in 3 weeks and you feel unprepared? The system triggers an emergency <strong>ICU Lockdown Mode</strong>, silencing distractions and prescribing high-yield triage drills.
+                    </p>
+                    <div class="alert alert-danger py-2 px-3 small rounded-3 mb-3 d-flex align-items-center justify-content-between">
+                        <div><i class="bi bi-heart-pulse-fill me-1"></i> <strong id="icuStatusText">Status: Standby</strong></div>
+                        <span class="badge bg-danger" id="icuTimerDisplay">21d : 00h : 00m</span>
+                    </div>
+                    <div class="d-flex flex-wrap gap-2">
+                        <button type="button" class="btn btn-danger rounded-pill px-4 py-2 fw-bold" id="btnActivateIcu" onclick="activateIcuMode()">
+                            <i class="bi bi-lock-fill me-1"></i> Activate 21-Day ICU Lockdown
+                        </button>
+                    </div>
+                </div>
+
+                <div class="col-lg-6">
+                    <div class="p-4 rounded-4 bg-light border">
+                        <div class="d-flex justify-content-between align-items-center mb-2">
+                            <strong class="text-dark">ICU Recovery Progress:</strong>
+                            <span class="badge bg-success" id="icuProgressBadge">33% Ready</span>
+                        </div>
+                        <div class="progress mb-3" style="height: 8px;">
+                            <div class="progress-bar bg-success" id="icuProgressBar" style="width: 33%;"></div>
+                        </div>
+
+                        <div class="d-flex align-items-center gap-3 mb-2 p-2 rounded-3 bg-white border">
+                            <input type="checkbox" class="form-check-input ms-1" checked onchange="updateIcuProgress()">
+                            <div>
+                                <strong class="d-block small text-dark">Phase 1: High-Frequency DSA Triage (Days 1 - 7)</strong>
+                                <span class="small text-muted">Master Top 35 recurring patterns (Two Pointers, Sliding Window, Trees).</span>
+                            </div>
+                        </div>
+                        <div class="d-flex align-items-center gap-3 mb-2 p-2 rounded-3 bg-white border">
+                            <input type="checkbox" class="form-check-input ms-1" onchange="updateIcuProgress()">
+                            <div>
+                                <strong class="d-block small text-dark">Phase 2: Project Deployment & Architecture (Days 8 - 14)</strong>
+                                <span class="small text-muted">Deploy 1 end-to-end fullstack app with public URL.</span>
+                            </div>
+                        </div>
+                        <div class="d-flex align-items-center gap-3 p-2 rounded-3 bg-white border">
+                            <input type="checkbox" class="form-check-input ms-1" onchange="updateIcuProgress()">
+                            <div>
+                                <strong class="d-block small text-dark">Phase 3: High-Pressure Mock Blitz (Days 15 - 21)</strong>
+                                <span class="small text-muted">Complete 5 AI voice mock interviews with Aria under strict timed conditions.</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ========================================== -->
+        <!-- FEATURE 9: ONE-CLICK CORPORATE AVATAR -->
+        <!-- ========================================== -->
+        <section id="feature-corporate-avatar" class="card p-4 p-md-5 rounded-4 shadow-sm border mb-5 engine-card">
+            <div class="row align-items-center g-4">
+                <div class="col-lg-6">
+                    <span class="badge bg-info text-dark rounded-pill px-3 py-1 mb-2 fw-bold">FEATURE 09 · FIRST IMPRESSION ENGINE</span>
+                    <h2 class="fw-bold text-dark mb-2">👔 One-Click Corporate Avatar</h2>
+                    <p class="text-muted mb-4">
+                        73% of recruiters skip LinkedIn profiles with casual hostel selfies. Convert any student picture into an executive-ready corporate portrait with company badge dress presets.
+                    </p>
+
+                    <label class="form-label small fw-bold">Upload Your Photo or Test Presets:</label>
+                    <input type="file" id="userPhotoInput" class="form-control form-control-sm mb-3" accept="image/*" onchange="previewUserPhoto(event)">
+
+                    <label class="form-label small fw-bold">Choose Corporate Outfit Style:</label>
+                    <div class="d-flex flex-wrap gap-2 mb-3">
+                        <button type="button" class="btn btn-outline-primary btn-sm rounded-pill active" onclick="setAvatarPreset('TCS Digital Navy Formal', 'border-primary', this)">TCS Digital Formal</button>
+                        <button type="button" class="btn btn-outline-info btn-sm rounded-pill" onclick="setAvatarPreset('Infosys Corporate Blue', 'border-info', this)">Infosys Formal</button>
+                        <button type="button" class="btn btn-outline-dark btn-sm rounded-pill" onclick="setAvatarPreset('Google Tech Hoodie', 'border-dark', this)">Tech Startup Hoodie</button>
+                        <button type="button" class="btn btn-outline-warning btn-sm rounded-pill" onclick="setAvatarPreset('Executive Blazer', 'border-warning', this)">Goldman Sachs Suit</button>
+                    </div>
+
+                    <button type="button" class="btn btn-primary rounded-pill px-4 py-2 fw-bold" onclick="downloadAvatarMock()">
+                        <i class="bi bi-download me-1"></i> Download ATS Portrait
+                    </button>
+                </div>
+
+                <div class="col-lg-6 text-center">
+                    <div class="p-4 rounded-4 bg-light border d-inline-block">
+                        <div class="position-relative d-inline-block rounded-circle overflow-hidden shadow-lg border border-4 border-primary" id="avatarBorderWrapper" style="width: 170px; height: 170px;">
+                            <img id="avatarPreviewImg" src="{% static 'images/student-hero.png' %}" alt="Corporate Avatar Preview" style="width: 100%; height: 100%; object-fit: cover;">
+                            <span class="position-absolute bottom-0 start-50 translate-middle-x badge bg-primary small px-2 py-1 mb-1" id="avatarBadgeText">TCS Formal</span>
+                        </div>
+                        <div class="small fw-bold text-dark mt-3" id="avatarDesc">Style Applied: TCS Digital Navy Formal (ATS Verified)</div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ========================================== -->
+        <!-- FEATURE 10: WHAT-IF CAREER ENGINE -->
+        <!-- ========================================== -->
+        <section id="feature-what-if" class="card p-4 p-md-5 rounded-4 shadow-sm border mb-5 engine-card">
+            <div class="row align-items-center g-4">
+                <div class="col-lg-6">
+                    <span class="badge bg-warning text-dark rounded-pill px-3 py-1 mb-2 fw-bold">FEATURE 10 · CAREER SIMULATION</span>
+                    <h2 class="fw-bold text-dark mb-2">⚡ What-If Career Engine</h2>
+                    <p class="text-muted mb-4">
+                        "What if I switch from Core Java to Python + GenAI?" or "What if I add Docker & DevOps?" Simulate any career detour to see the exact package delta and recruiter demand shift.
+                    </p>
+
+                    <div class="mb-3">
+                        <label class="form-label small fw-bold">Current Base Skill Stack:</label>
+                        <input type="text" class="form-control" value="Java + Spring Boot Basics" readonly>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label small fw-bold">Select 'What-If' Skill Pivot:</label>
+                        <select id="whatIfUpgrade" class="form-select" onchange="runWhatIf()">
+                            <option value="Python + GenAI">Pivot to: Python + LangChain + GenAI</option>
+                            <option value="DevOps & Cloud">Add: Docker, Kubernetes & AWS</option>
+                            <option value="Distributed Systems">Add: Redis Caching & Microservices</option>
+                            <option value="Fullstack AI">Add: Next.js 14 & OpenAI SDK</option>
+                        </select>
+                    </div>
+
+                    <button type="button" class="btn btn-warning text-dark rounded-pill px-4 py-2 fw-bold" onclick="runWhatIf()">
+                        <i class="bi bi-calculator me-1"></i> Simulate Career Delta
+                    </button>
+                </div>
+
+                <div class="col-lg-6">
+                    <div class="p-4 rounded-4 bg-light border text-center">
+                        <small class="text-muted fw-bold text-uppercase">PROJECTED PACKAGE DELTA</small>
+                        <div class="display-3 fw-bold text-success my-2" id="whatIfDelta">+₹4.2 LPA</div>
+                        <span class="badge bg-success rounded-pill px-3 py-1 mb-3" id="whatIfCtc">Estimated CTC: ₹10.2 LPA</span>
+                        
+                        <div class="text-start mt-3 pt-3 border-top small text-muted" id="whatIfStats">
+                            <div>📈 <strong>Recruiter Search Lift:</strong> +148% higher appearances on recruiter radar.</div>
+                            <div>⏱️ <strong>Estimated Effort:</strong> 35 Days dedicated sprint to reach production readiness.</div>
+                            <div>🏢 <strong>Top Hiring Demand:</strong> Swiggy, Cred, Microsoft, High-Growth AI Startups.</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ========================================== -->
+        <!-- FEATURE 11: REFERRAL BLACK MARKET DETECTOR -->
+        <!-- ========================================== -->
+        <section id="feature-referral-tracker" class="card p-4 p-md-5 rounded-4 shadow-sm border mb-5 engine-card">
+            <div class="row align-items-center g-4">
+                <div class="col-lg-6">
+                    <span class="badge bg-success text-white rounded-pill px-3 py-1 mb-2 fw-bold">FEATURE 11 · SENIOR VERIFIER</span>
+                    <h2 class="fw-bold text-dark mb-2">🤝 Referral Black Market Detector</h2>
+                    <p class="text-muted mb-4">
+                        Seniors and influencers often promise referrals on LinkedIn that never materialize. Track verified senior referral conversion rates, active company quotas, and detect fake promises.
+                    </p>
+
+                    <div class="input-group mb-3">
+                        <input type="text" id="seniorSearchInput" class="form-control" placeholder="Search Senior Name or Company (e.g. Amazon, Google, Microsoft)..." onkeyup="filterSeniorsList()">
+                        <button class="btn btn-success fw-bold" type="button" onclick="filterSeniorsList()">Search</button>
+                    </div>
+
+                    <div class="alert alert-success py-2 px-3 small rounded-3 mb-0">
+                        ✅ <strong>Verified Referral Policy:</strong> Legitimate company referrals are always 100% free. Never pay a fee for referral links!
+                    </div>
+                </div>
+
+                <div class="col-lg-6">
+                    <div class="p-4 rounded-4 bg-light border">
+                        <div class="d-flex justify-content-between align-items-center mb-3">
+                            <strong class="text-dark">Senior Credibility Audit</strong>
+                            <span class="badge bg-success">VERIFIED REPOSITORY</span>
+                        </div>
+                        
+                        <div id="seniorsList">
+                            <div class="senior-card p-3 mb-2 rounded-3 bg-white border" data-name="ankit microsoft">
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <strong class="text-dark">Senior Ankit (Software Engineer, Microsoft)</strong>
+                                    <span class="badge bg-success">Verified</span>
+                                </div>
+                                <div class="small text-muted mt-1">HR Conversion: <strong class="text-success">78%</strong> · Referrals: <strong>14</strong> · Ghosting: <strong class="text-muted">4%</strong></div>
+                            </div>
+                            <div class="senior-card p-3 mb-2 rounded-3 bg-white border" data-name="priya amazon">
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <strong class="text-dark">Senior Priya (SDE-2, Amazon)</strong>
+                                    <span class="badge bg-success">Verified</span>
+                                </div>
+                                <div class="small text-muted mt-1">HR Conversion: <strong class="text-success">84%</strong> · Referrals: <strong>22</strong> · Ghosting: <strong class="text-muted">2%</strong></div>
+                            </div>
+                            <div class="senior-card p-3 rounded-3 bg-white border" data-name="rohit google">
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <strong class="text-dark">Senior Rohit (Cloud Engineer, Google)</strong>
+                                    <span class="badge bg-success">Verified</span>
+                                </div>
+                                <div class="small text-muted mt-1">HR Conversion: <strong class="text-success">91%</strong> · Referrals: <strong>9</strong> · Ghosting: <strong class="text-muted">0%</strong></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ========================================== -->
+        <!-- FEATURE 12: SKILL BANKRUPTCY SCORE -->
+        <!-- ========================================== -->
+        <section id="feature-skill-bankruptcy" class="card p-4 p-md-5 rounded-4 shadow-sm border mb-5 engine-card">
+            <div class="row align-items-center g-4">
+                <div class="col-lg-6">
+                    <span class="badge bg-primary text-white rounded-pill px-3 py-1 mb-2 fw-bold">FEATURE 12 · TECH CIBIL SCORE</span>
+                    <h2 class="fw-bold text-dark mb-2">📊 Skill Bankruptcy Score</h2>
+                    <p class="text-muted mb-4">
+                        Just like a CIBIL credit score evaluates financial solvency, your <strong>Skill Score (300 to 900)</strong> measures your market solvency against live hiring requirements.
+                    </p>
+
+                    <label class="form-label small fw-bold">Toggle Your Verified Skills to Recalculate Solvency:</label>
+                    <div class="d-flex flex-wrap gap-2 mb-4" id="skillCheckboxes">
+                        <button type="button" class="btn btn-sm btn-primary rounded-pill skill-toggle-pill active" data-pts="50" onclick="toggleSkillPill(this)">+ Python</button>
+                        <button type="button" class="btn btn-sm btn-primary rounded-pill skill-toggle-pill active" data-pts="50" onclick="toggleSkillPill(this)">+ React.js</button>
+                        <button type="button" class="btn btn-sm btn-primary rounded-pill skill-toggle-pill active" data-pts="60" onclick="toggleSkillPill(this)">+ Docker</button>
+                        <button type="button" class="btn btn-sm btn-outline-primary rounded-pill skill-toggle-pill" data-pts="70" onclick="toggleSkillPill(this)">+ Kubernetes</button>
+                        <button type="button" class="btn btn-sm btn-outline-primary rounded-pill skill-toggle-pill" data-pts="80" onclick="toggleSkillPill(this)">+ LangChain AI</button>
+                        <button type="button" class="btn btn-sm btn-primary rounded-pill skill-toggle-pill active" data-pts="50" onclick="toggleSkillPill(this)">+ SQL / Postgres</button>
+                    </div>
+
+                    <div class="p-3 bg-light rounded-3 border mb-3">
+                        <div class="d-flex justify-content-between mb-1">
+                            <span class="small fw-bold">Skill Liquidity Rate</span>
+                            <span class="small fw-bold text-success" id="cibilLiquidityVal">{{ skill_cibil.liquidity_rate }}%</span>
+                        </div>
+                        <div class="progress mb-3" style="height: 8px;">
+                            <div class="progress-bar bg-success" id="cibilLiquidityBar" style="width: {{ skill_cibil.liquidity_rate }}%;"></div>
+                        </div>
+
+                        <div class="d-flex justify-content-between mb-1">
+                            <span class="small fw-bold">Outdated Tech Debt Ratio</span>
+                            <span class="small fw-bold text-danger" id="cibilDebtVal">{{ skill_cibil.tech_debt_rate }}%</span>
+                        </div>
+                        <div class="progress" style="height: 8px;">
+                            <div class="progress-bar bg-danger" id="cibilDebtBar" style="width: {{ skill_cibil.tech_debt_rate }}%;"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-lg-6 text-center">
+                    <div class="p-4 rounded-4 bg-light border text-center">
+                        <small class="text-muted fw-bold text-uppercase">YOUR TECH CIBIL RATING</small>
+                        <div class="display-3 fw-bold text-primary my-2"><span id="cibilScoreNumber">{{ skill_cibil.score }}</span> <span class="fs-4 text-muted">/ 900</span></div>
+                        <span class="badge bg-success fs-6 rounded-pill px-3 py-1 mb-3" id="cibilRatingBadge">{{ skill_cibil.rating }}</span>
+                        
+                        <div class="pt-3 border-top small text-muted text-start" id="cibilEligibleReport">
+                            ✅ <strong>Eligible for <span id="eligibleCompanyCount">{{ skill_cibil.eligible_companies }}</span> Active Campus Drives</strong><br>
+                            🛡️ <strong>Bankruptcy Risk: Low.</strong> High market liquidity across tech stacks.
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+    </div>
+</main>
+
+<!-- ======================================================== -->
+<!-- SEPARATE FLOATING TASKBAR / QUICK-ACCESS DOCK -->
+<!-- ======================================================== -->
+<div class="innovation-taskbar-wrapper" id="floatingInnovationDock">
+    <div class="innovation-taskbar d-flex align-items-center gap-2 p-2 px-3 rounded-pill shadow-lg">
+        <span class="badge bg-warning text-dark fw-bold rounded-pill px-2 py-1 d-none d-md-inline me-1" style="font-size: 0.7rem;">
+            ⚡ 12 ENGINES
+        </span>
+
+        <button type="button" class="taskbar-item border-0 bg-transparent" title="1. Placement Black Box" onclick="launchEngine('feature-black-box')">
+            <span class="taskbar-icon">📦</span>
+            <span class="taskbar-label">Black Box</span>
+        </button>
+
+        <button type="button" class="taskbar-item border-0 bg-transparent" title="2. Fake Offer Detector" onclick="launchEngine('feature-fake-offer')">
+            <span class="taskbar-icon">🔍</span>
+            <span class="taskbar-label">Fake Offer</span>
+        </button>
+
+        <button type="button" class="taskbar-item border-0 bg-transparent" title="3. Ghost Job Detector" onclick="launchEngine('feature-ghost-job')">
+            <span class="taskbar-icon">👻</span>
+            <span class="taskbar-label">Ghost Job</span>
+        </button>
+
+        <button type="button" class="taskbar-item border-0 bg-transparent" title="4. Reverse Hiring Mode" onclick="launchEngine('feature-reverse-hiring')">
+            <span class="taskbar-icon">🔄</span>
+            <span class="taskbar-label">Reverse</span>
+        </button>
+
+        <button type="button" class="taskbar-item border-0 bg-transparent" title="5. Salary Negotiation" onclick="launchEngine('feature-salary-simulator')">
+            <span class="taskbar-icon">💬</span>
+            <span class="taskbar-label">Salary HR</span>
+        </button>
+
+        <button type="button" class="taskbar-item border-0 bg-transparent" title="6. Degree ROI Calculator" onclick="launchEngine('feature-degree-roi')">
+            <span class="taskbar-icon">💰</span>
+            <span class="taskbar-label">ROI Clock</span>
+        </button>
+
+        <button type="button" class="taskbar-item border-0 bg-transparent" title="7. Unsuccess Map" onclick="launchEngine('feature-unsuccess-blueprint')">
+            <span class="taskbar-icon">⚠️</span>
+            <span class="taskbar-label">Unsuccess</span>
+        </button>
+
+        <button type="button" class="taskbar-item border-0 bg-transparent" title="8. 21 Days Placement ICU" onclick="launchEngine('feature-placement-icu')">
+            <span class="taskbar-icon">🚨</span>
+            <span class="taskbar-label">21D ICU</span>
+        </button>
+
+        <button type="button" class="taskbar-item border-0 bg-transparent" title="9. Corporate Avatar" onclick="launchEngine('feature-corporate-avatar')">
+            <span class="taskbar-icon">👔</span>
+            <span class="taskbar-label">Avatar</span>
+        </button>
+
+        <button type="button" class="taskbar-item border-0 bg-transparent" title="10. What-If Engine" onclick="launchEngine('feature-what-if')">
+            <span class="taskbar-icon">⚡</span>
+            <span class="taskbar-label">What-If</span>
+        </button>
+
+        <button type="button" class="taskbar-item border-0 bg-transparent" title="11. Referral Detector" onclick="launchEngine('feature-referral-tracker')">
+            <span class="taskbar-icon">🤝</span>
+            <span class="taskbar-label">Referral</span>
+        </button>
+
+        <button type="button" class="taskbar-item border-0 bg-transparent" title="12. Skill Bankruptcy CIBIL" onclick="launchEngine('feature-skill-bankruptcy')">
+            <span class="taskbar-icon">📊</span>
+            <span class="taskbar-label">Skill CIBIL</span>
+        </button>
+
+        <button type="button" class="btn btn-sm btn-light rounded-circle ms-1 p-1" title="Minimize Dock" onclick="toggleTaskbarCollapse()">
+            <i class="bi bi-chevron-down" id="taskbarToggleIcon"></i>
+        </button>
+    </div>
+</div>
+
+<style>
+/* Working Directory Card States */
+.quick-jump-card {
+    cursor: pointer;
+    transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+    background: #ffffff;
+    border: 1.5px solid rgba(226, 232, 240, 0.9) !important;
+}
+
+.quick-jump-card:hover {
+    transform: translateY(-5px);
+    border-color: #3b82f6 !important;
+    box-shadow: 0 12px 28px rgba(37, 99, 235, 0.15) !important;
+}
+
+.quick-jump-card.active-engine {
+    border: 2px solid #2563eb !important;
+    background: linear-gradient(180deg, #eff6ff 0%, #ffffff 100%) !important;
+    box-shadow: 0 12px 30px rgba(37, 99, 235, 0.22) !important;
+    transform: translateY(-4px);
+}
+
+.quick-jump-card .live-pill {
+    display: none;
+}
+
+.quick-jump-card.active-engine .live-pill {
+    display: inline-flex !important;
+}
+
+/* Engine Section Anchor Offset & Glow Pulse */
+.engine-card {
+    scroll-margin-top: 100px;
+    transition: all 0.35s ease;
+}
+
+@keyframes enginePulse {
+    0% { box-shadow: 0 0 0 0 rgba(37, 99, 235, 0.6); border-color: #2563eb; }
+    50% { box-shadow: 0 0 0 16px rgba(37, 99, 235, 0); border-color: #2563eb; }
+    100% { box-shadow: 0 0 0 0 rgba(37, 99, 235, 0); }
+}
+
+.engine-active-pulse {
+    animation: enginePulse 1.8s ease-in-out;
+    border-color: #2563eb !important;
+    box-shadow: 0 15px 40px rgba(37, 99, 235, 0.15) !important;
+}
+
+/* Status Pulse Dot */
+.live-dot-pulse {
+    display: inline-block;
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background: #10b981;
+    box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.7);
+    animation: dotPulse 1.5s infinite;
+}
+
+@keyframes dotPulse {
+    0% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.7); }
+    70% { transform: scale(1); box-shadow: 0 0 0 8px rgba(16, 185, 129, 0); }
+    100% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(16, 185, 129, 0); }
+}
+
+/* Dedicated Taskbar Styles */
+.innovation-taskbar-wrapper {
+    position: fixed;
+    bottom: 24px;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 1060;
+    max-width: 95vw;
+}
+
+.innovation-taskbar {
+    background: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    border: 1.5px solid rgba(219, 234, 254, 0.95);
+    box-shadow: 0 15px 40px rgba(37, 99, 235, 0.18), 0 2px 8px rgba(0, 0, 0, 0.05);
+    transition: all 0.3s ease;
+    overflow-x: auto;
+    white-space: nowrap;
+}
+
+.innovation-taskbar.collapsed {
+    transform: translateY(60px);
+    opacity: 0.2;
+}
+
+.taskbar-item {
+    display: inline-flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 6px 10px;
+    border-radius: 12px;
+    text-decoration: none !important;
+    color: #334155 !important;
+    transition: all 0.2s ease;
+    cursor: pointer;
+}
+
+.taskbar-item:hover, .taskbar-item.active {
+    background: rgba(37, 99, 235, 0.08);
+    transform: translateY(-4px);
+    color: #2563eb !important;
+}
+
+.taskbar-icon {
+    font-size: 1.25rem;
+    line-height: 1;
+}
+
+.taskbar-label {
+    font-size: 0.65rem;
+    font-weight: 700;
+    margin-top: 3px;
+    letter-spacing: 0.02em;
+}
+</style>
+
+<script>
+let currentActiveTarget = 'feature-black-box';
+
+// Central Launcher Function for all 12 cards & taskbar buttons
+function launchEngine(targetId, cardElement = null) {
+    currentActiveTarget = targetId;
+
+    // 1. Update Active Card in Directory
+    document.querySelectorAll('.quick-jump-card').forEach(card => {
+        card.classList.remove('active-engine');
+    });
+
+    if (cardElement) {
+        cardElement.classList.add('active-engine');
+    } else {
+        const found = document.querySelector(`.quick-jump-card[data-target="${targetId}"]`);
+        if (found) found.classList.add('active-engine');
+    }
+
+    // 2. Update Console Bar
+    const activeCard = document.querySelector(`.quick-jump-card[data-target="${targetId}"]`);
+    if (activeCard) {
+        const title = activeCard.getAttribute('data-title') || targetId;
+        document.getElementById('activeConsoleTitle').textContent = title;
+    }
+
+    // 3. Smoothly scroll to the target engine with navbar offset
+    const section = document.getElementById(targetId);
+    if (section) {
+        // Remove previous pulse from any other section
+        document.querySelectorAll('.engine-card').forEach(el => el.classList.remove('engine-active-pulse'));
+        
+        // Scroll smoothly
+        section.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        
+        // Add animated glow pulse
+        section.classList.add('engine-active-pulse');
+        setTimeout(() => {
+            section.classList.remove('engine-active-pulse');
+        }, 2200);
+    }
+}
+
+function scrollToCurrentEngine() {
+    launchEngine(currentActiveTarget);
+}
+
+function toggleTaskbarCollapse() {
+    const bar = document.querySelector('.innovation-taskbar');
+    const icon = document.getElementById('taskbarToggleIcon');
+    if (bar.classList.contains('collapsed')) {
+        bar.classList.remove('collapsed');
+        icon.className = 'bi bi-chevron-down';
+    } else {
+        bar.classList.add('collapsed');
+        icon.className = 'bi bi-chevron-up';
+    }
+}
+
+// ========================================================
+// 1. Placement Black Box Engine
+// ========================================================
+function updateBlackBox(showToast = false) {
+    const cgpa = parseFloat(document.getElementById('bbCgpa').value) || 8.0;
+    const projects = parseInt(document.getElementById('bbProjects').value) || 3;
+    const hours = parseInt(document.getElementById('bbHours').value) || 14;
+    const backlogs = parseInt(document.getElementById('bbBacklogs').value) || 0;
+
+    document.getElementById('bbCgpaVal').textContent = cgpa.toFixed(1);
+    document.getElementById('bbProjectsVal').textContent = projects;
+    document.getElementById('bbHoursVal').textContent = hours + ' hrs';
+    document.getElementById('bbBacklogsVal').textContent = backlogs;
+
+    let prob = Math.min(98.5, Math.max(22.0, (cgpa * 7.5) + (projects * 5.0) + (hours * 1.4) - (backlogs * 18.0)));
+    prob = prob.toFixed(1);
+
+    document.getElementById('bbScore').textContent = prob + '%';
+    document.getElementById('bbProgressBar').style.width = prob + '%';
+
+    const tier = document.getElementById('bbTier');
+    const reportList = document.getElementById('bbReportList');
+
+    if (prob >= 75) {
+        tier.className = 'badge bg-success fs-6 rounded-pill px-3 py-1';
+        tier.textContent = 'Safe Tier';
+        document.getElementById('bbProgressBar').className = 'progress-bar bg-success';
+        reportList.innerHTML = `
+            <li class="mb-1 text-success">✅ <strong>Academic Consistency:</strong> Satisfies 94% Tier-1 placement cutoffs.</li>
+            <li class="mb-1 text-success">✅ <strong>Proof Capacity:</strong> ${projects} verified projects establish strong hands-on capability.</li>
+            <li class="text-muted">💡 <strong>Next Step:</strong> Prepare high-concurrency architecture explanations for final rounds.</li>
+        `;
+    } else if (prob >= 50) {
+        tier.className = 'badge bg-warning text-dark fs-6 rounded-pill px-3 py-1';
+        tier.textContent = 'At-Risk Tier';
+        document.getElementById('bbProgressBar').className = 'progress-bar bg-warning';
+        reportList.innerHTML = `
+            <li class="mb-1 text-warning">⚠️ <strong>Vulnerability Flagged:</strong> Weekly coding hours (${hours}h) below competitive benchmark.</li>
+            <li class="mb-1 text-muted">💡 <strong>Prescription:</strong> Increase weekly coding by +6 hours to reach Safe Tier.</li>
+        `;
+    } else {
+        tier.className = 'badge bg-danger fs-6 rounded-pill px-3 py-1';
+        tier.textContent = 'Critical ICU Tier';
+        document.getElementById('bbProgressBar').className = 'progress-bar bg-danger';
+        reportList.innerHTML = `
+            <li class="mb-1 text-danger">🚨 <strong>High Placement Risk:</strong> Active backlogs or insufficient project evidence.</li>
+            <li class="text-danger">💡 <strong>Urgent:</strong> Enter 21-Day Placement ICU lockdown immediately.</li>
+        `;
+    }
+}
+
+function resetBlackBoxInputs() {
+    document.getElementById('bbCgpa').value = 8.2;
+    document.getElementById('bbProjects').value = 3;
+    document.getElementById('bbHours').value = 14;
+    document.getElementById('bbBacklogs').value = 0;
+    updateBlackBox();
+}
+
+// ========================================================
+// 2. Fake Offer Letter Detector
+// ========================================================
+function loadOfferSample(type) {
+    const textarea = document.getElementById('offerText');
+    if (type === 'fraud') {
+        textarea.value = "Dear Candidate, We are pleased to offer you the post of Senior Associate Engineer. You are required to submit a REFUNDABLE security deposit of INR 4,500 towards company laptop dispatch and courier insurance before dispatch. Transfer amount to hr-recruiter-team@gmail.com and upload receipt to confirm joining.";
+    } else if (type === 'real') {
+        textarea.value = "Tata Consultancy Services Limited (CIN: L22210MH1995PLC084781). Corporate Offer of Employment. Fixed Base CTC: INR 7,00,019. Reporting location: Bangalore IT Park SEZ. Note: TCS never requests any monetary security deposit or registration fee from candidates at any stage. Signed: Corporate HR Talent Lead.";
+    } else {
+        textarea.value = "Greetings from Global Infotech Placement Solutions. You are shortlisted for Tech Mahindra campus client drive. An upfront training escrow charge of INR 8,500 is applicable for onboarding clearance. Payment link attached via personal UPI.";
+    }
+    scanOfferLetter();
+}
+
+function handleOfferFileUpload(event) {
+    const file = event.target.files[0];
+    if (file) {
+        const reader = new FileReader();
+        reader.onload = function(e) {
+            document.getElementById('offerText').value = e.target.result || `[Document Uploaded: ${file.name}]\nScanned binary text: Offer for Developer Trainee position...`;
+            scanOfferLetter();
+        };
+        reader.readAsText(file);
+    }
+}
+
+function scanOfferLetter() {
+    const text = document.getElementById('offerText').value.toLowerCase();
+    const verdict = document.getElementById('offerVerdict');
+    const badge = document.getElementById('offerBadge');
+    const bar = document.getElementById('offerProgressBar');
+    const flags = document.getElementById('offerFlags');
+
+    if (!text.trim()) {
+        alert('Please paste offer text or upload a document first!');
+        return;
+    }
+
+    if (text.includes('security deposit') || text.includes('courier insurance') || text.includes('gmail.com') || text.includes('inr 4,500') || text.includes('inr 8,500') || text.includes('escrow charge') || text.includes('personal upi')) {
+        verdict.textContent = '🚨 FRAUD / SCAM OFFER DETECTED';
+        verdict.className = 'fw-bold text-danger mb-2';
+        badge.className = 'badge bg-danger rounded-pill px-3 py-1';
+        badge.textContent = 'High-Risk Fraud (Score: 12/100)';
+        bar.className = 'progress-bar bg-danger';
+        bar.style.width = '12%';
+        flags.innerHTML = `
+            <span class="text-danger fw-bold">Critical Violations Flagged:</span><br>
+            • <strong>Prohibited Monetary Demand:</strong> Mandates upfront fee / laptop security deposit (illegal per Indian labor laws).<br>
+            • <strong>Unverified Domain:</strong> Free webmail address (@gmail.com / unofficial handle) used instead of corporate server.<br>
+            • <strong>Zero MCA Entity Verification:</strong> Failed CIN validation check against MCA21 registry.
+        `;
+    } else {
+        verdict.textContent = '✅ AUTHENTIC CORPORATE OFFER VERIFIED';
+        verdict.className = 'fw-bold text-success mb-2';
+        badge.className = 'badge bg-success rounded-pill px-3 py-1';
+        badge.textContent = '100% Authentic (Score: 98/100)';
+        bar.className = 'progress-bar bg-success';
+        bar.style.width = '98%';
+        flags.innerHTML = `
+            <span class="text-success fw-bold">Corporate Verification Passed:</span><br>
+            • <strong>MCA Entity Match:</strong> Registered Corporate Identity Number (CIN: L22210MH1995PLC084781) matched.<br>
+            • <strong>Legitimate Contract Structure:</strong> Standard provident fund and gratuity breakdown with zero deposit clauses.<br>
+            • <strong>Official Domain Validation:</strong> Matches legitimate corporate enterprise records.
+        `;
+    }
+}
+
+// ========================================================
+// 3. Ghost Job Detector
+// ========================================================
+function setGhostPreset(title, url, prob) {
+    document.getElementById('ghostJobUrl').value = url;
+    document.getElementById('ghostProb').textContent = prob + '%';
+    const status = document.getElementById('ghostStatus');
+    const details = document.getElementById('ghostDetails');
+
+    if (prob > 50) {
+        status.className = 'badge bg-danger rounded-pill px-3 py-1';
+        status.textContent = 'Likely Ghost Listing';
+        document.getElementById('ghostProb').className = 'display-4 fw-bold text-danger my-2';
+        details.innerHTML = `
+            <div>🔁 <strong>Repost Count:</strong> Reposted 9 times across past 120 days.</div>
+            <div>📉 <strong>Interview Cadence:</strong> Zero recruiter activity logged in last 3 weeks.</div>
+            <div>💡 <strong>Action:</strong> Candidate buffer collection detected; avoid wasting customized cover letter time.</div>
+        `;
+    } else {
+        status.className = 'badge bg-success rounded-pill px-3 py-1';
+        status.textContent = 'Active Real Opening';
+        document.getElementById('ghostProb').className = 'display-4 fw-bold text-success my-2';
+        details.innerHTML = `
+            <div>✅ <strong>Fresh Listing:</strong> First posted 3 days ago.</div>
+            <div>⚡ <strong>Recruiter Cadence:</strong> Active shortlisting logged within last 24 hours.</div>
+            <div>💡 <strong>Action:</strong> Prime opportunity! High likelihood of prompt interview scheduling.</div>
+        `;
+    }
+}
+
+function scanGhostJob() {
+    const url = document.getElementById('ghostJobUrl').value.toLowerCase();
+    if (url.includes('ghost') || url.includes('intern') || url.includes('392019401')) {
+        setGhostPreset('Ghost Listing', url, 78);
+    } else {
+        setGhostPreset('Active Real Opening', url, 18);
+    }
+}
+
+// ========================================================
+// 4. Reverse Hiring Mode
+// ========================================================
+function toggleReverseHiring() {
+    const sw = document.getElementById('reverseHiringSwitch');
+    const status = document.getElementById('reverseHiringStatusText');
+    const bids = document.getElementById('inboundCount');
+    if (sw.checked) {
+        status.textContent = 'ACTIVE & VISIBLE TO 84 RECRUITERS';
+        status.className = 'text-success';
+        bids.textContent = '3';
+    } else {
+        status.textContent = 'PAUSED (Direct applications only)';
+        status.className = 'text-muted';
+        bids.textContent = '0';
+    }
+}
+
+function updateReverseHiringCtc(val) {
+    document.getElementById('minCtcLabel').textContent = '₹' + val + '.0 LPA';
+}
+
+function acceptInterviewBid(companyName) {
+    alert(`🎉 Interview Slot Confirmed with ${companyName}!\nDirect Tech Round interview invite has been dispatched to your registered email.`);
+}
+
+// ========================================================
+// 5. Salary Negotiation Simulator
+// ========================================================
+function simulateNegotiation() {
+    const offer = parseFloat(document.getElementById('currentOffer').value) || 6.5;
+    const target = parseFloat(document.getElementById('counterOffer').value) || 8.5;
+    const pitch = document.getElementById('negotiationPitch').value;
+    
+    const revised = Math.min(target, (offer * 1.18)).toFixed(1);
+    const msg = document.getElementById('hrMessage');
+    const score = document.getElementById('negotiationScore');
+
+    msg.innerHTML = `<strong>HR Raghav:</strong> "We reviewed your argument: <em>'${pitch}'</em>. Because your verified proof passport demonstrates production readiness, we are happy to revise our initial offer from <strong>₹${offer} LPA</strong> to <strong>₹${revised} LPA</strong>, alongside a ₹50,000 joining bonus!"`;
+    score.textContent = 'Score: 92/100 (Strong Leverage)';
+    score.className = 'badge bg-success rounded-pill';
+}
+
+function speakHRMessage() {
+    const text = document.getElementById('hrMessage').innerText;
+    if ('speechSynthesis' in window) {
+        window.speechSynthesis.cancel();
+        const utterance = new SpeechSynthesisUtterance(text);
+        utterance.rate = 1.0;
+        utterance.pitch = 0.95;
+        window.speechSynthesis.speak(utterance);
+    } else {
+        alert('Voice synthesis is not supported on this browser.');
+    }
+}
+
+// ========================================================
+// 6. Degree ROI Calculator
+// ========================================================
+function calculateRoi() {
+    const fees = parseFloat(document.getElementById('roiFees').value) || 450000;
+    const ctc = parseFloat(document.getElementById('roiCtc').value) || 700000;
+    const living = parseFloat(document.getElementById('roiLiving').value) || 22000;
+
+    document.getElementById('roiFeesVal').textContent = '₹' + fees.toLocaleString();
+    document.getElementById('roiCtcVal').textContent = '₹' + ctc.toLocaleString();
+    document.getElementById('roiLivingVal').textContent = '₹' + living.toLocaleString() + ' / mo';
+
+    const monthlyTakehome = (ctc * 0.85) / 12;
+    const monthlySavings = Math.max(6000, monthlyTakehome - living);
+
+    const breakevenMonths = Math.round(fees / monthlySavings);
+    const breakevenYears = (breakevenMonths / 12).toFixed(1);
+    const fiveYearNet = Math.round((monthlySavings * 60) - fees);
+
+    document.getElementById('roiBreakeven').textContent = breakevenYears + ' Years';
+    document.getElementById('roiMonths').textContent = `~${breakevenMonths} Months to Net Profit`;
+    document.getElementById('roiFiveYear').textContent = '₹' + fiveYearNet.toLocaleString();
+    document.getElementById('roiIrr').textContent = Math.min(85, Math.max(18, Math.round((monthlySavings * 12 / fees) * 100))) + '%';
+}
+
+// ========================================================
+// 7. Alumni Unsuccess Blueprint
+// ========================================================
+function filterUnsuccess(category, btn) {
+    document.querySelectorAll('#unsuccessCardsContainer .unsuccess-item').forEach(card => {
+        if (category === 'all' || card.getAttribute('data-category') === category) {
+            card.style.display = 'block';
+        } else {
+            card.style.display = 'none';
+        }
+    });
+
+    btn.parentElement.querySelectorAll('button').forEach(b => b.classList.remove('active', 'btn-dark'));
+    btn.parentElement.querySelectorAll('button').forEach(b => b.classList.add('btn-outline-dark'));
+    btn.classList.add('active', 'btn-dark');
+    btn.classList.remove('btn-outline-dark');
+}
+
+function runUnsuccessDiagnosis() {
+    alert("🔍 Diagnostic Audit Completed:\n\n⚠️ Profile Caution: You have 6 online certifications but only 1 deployed project URL.\n🛡️ Actionable Fix: Avoid Senior Rahul's 'Certificate Collector Trap'—deploy 1 live fullstack app before campus drive season!");
+}
+
+// ========================================================
+// 8. 21 Days Placement ICU
+// ========================================================
+let icuInterval = null;
+function activateIcuMode() {
+    const btn = document.getElementById('btnActivateIcu');
+    const status = document.getElementById('icuStatusText');
+    const timer = document.getElementById('icuTimerDisplay');
+
+    status.textContent = 'Status: 🚨 ICU LOCKDOWN ACTIVE';
+    status.className = 'text-danger fw-bold';
+    btn.textContent = 'ICU Mode Active (Daily Quarantine Drills Live)';
+    btn.className = 'btn btn-outline-danger rounded-pill px-4 py-2 fw-bold disabled';
+
+    let seconds = 21 * 24 * 3600;
+    if (icuInterval) clearInterval(icuInterval);
+
+    icuInterval = setInterval(() => {
+        seconds--;
+        const d = Math.floor(seconds / (24 * 3600));
+        const h = Math.floor((seconds % (24 * 3600)) / 3600);
+        const m = Math.floor((seconds % 3600) / 60);
+        const s = seconds % 60;
+        timer.textContent = `${d}d : ${h}h : ${m}m : ${s}s`;
+    }, 1000);
+
+    alert("🚨 21-Day Placement ICU Quarantine Engaged!\nNon-essential feeds silenced. Daily high-yield triage sprints assigned.");
+}
+
+function updateIcuProgress() {
+    const checkboxes = document.querySelectorAll('#feature-placement-icu .form-check-input');
+    let checkedCount = 0;
+    checkboxes.forEach(cb => { if (cb.checked) checkedCount++; });
+
+    const pct = Math.round((checkedCount / checkboxes.length) * 100);
+    document.getElementById('icuProgressBadge').textContent = pct + '% Ready';
+    document.getElementById('icuProgressBar').style.width = pct + '%';
+}
+
+// ========================================================
+// 9. One-Click Corporate Avatar
+// ========================================================
+function previewUserPhoto(event) {
+    const file = event.target.files[0];
+    if (file) {
+        const reader = new FileReader();
+        reader.onload = function(e) {
+            document.getElementById('avatarPreviewImg').src = e.target.result;
+        };
+        reader.readAsDataURL(file);
+    }
+}
+
+function setAvatarPreset(name, borderClass, btn) {
+    document.getElementById('avatarBadgeText').textContent = name.split(' ')[0] + ' Preset';
+    document.getElementById('avatarDesc').textContent = `Style Applied: ${name} (ATS Verified)`;
+    const wrapper = document.getElementById('avatarBorderWrapper');
+    wrapper.className = `position-relative d-inline-block rounded-circle overflow-hidden shadow-lg border border-4 ${borderClass}`;
+
+    btn.parentElement.querySelectorAll('button').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+}
+
+function downloadAvatarMock() {
+    alert("📸 Executive Portrait Downloaded!\nFormatted as 400x400 ATS-compatible headshot with optimal white balance.");
+}
+
+// ========================================================
+// 10. What-If Career Engine
+// ========================================================
+function runWhatIf() {
+    const select = document.getElementById('whatIfUpgrade').value;
+    const deltaEl = document.getElementById('whatIfDelta');
+    const ctcEl = document.getElementById('whatIfCtc');
+    const statsEl = document.getElementById('whatIfStats');
+
+    if (select.includes('GenAI')) {
+        deltaEl.textContent = '+₹4.2 LPA';
+        ctcEl.textContent = 'Estimated CTC: ₹10.2 LPA';
+        statsEl.innerHTML = `
+            <div>📈 <strong>Recruiter Search Lift:</strong> +148% higher appearances on recruiter radar.</div>
+            <div>⏱️ <strong>Estimated Effort:</strong> 35 Days dedicated sprint to reach production readiness.</div>
+            <div>🏢 <strong>Top Hiring Demand:</strong> Swiggy, Cred, Microsoft, High-Growth AI Startups.</div>
+        `;
+    } else if (select.includes('DevOps')) {
+        deltaEl.textContent = '+₹3.5 LPA';
+        ctcEl.textContent = 'Estimated CTC: ₹9.5 LPA';
+        statsEl.innerHTML = `
+            <div>📈 <strong>Recruiter Search Lift:</strong> +112% higher appearances for Cloud Infrastructure roles.</div>
+            <div>⏱️ <strong>Estimated Effort:</strong> 28 Days sprint to master Kubernetes & CI/CD.</div>
+            <div>🏢 <strong>Top Hiring Demand:</strong> Amazon Web Services, Oracle, Dell, Razorpay.</div>
+        `;
+    } else {
+        deltaEl.textContent = '+₹3.0 LPA';
+        ctcEl.textContent = 'Estimated CTC: ₹9.0 LPA';
+        statsEl.innerHTML = `
+            <div>📈 <strong>Recruiter Search Lift:</strong> +95% for High-Scale Backend Engineering.</div>
+            <div>⏱️ <strong>Estimated Effort:</strong> 25 Days sprint to master Redis & Kafka messaging.</div>
+            <div>🏢 <strong>Top Hiring Demand:</strong> Flipkart, Zomato, PhonePe, Uber.</div>
+        `;
+    }
+}
+
+// ========================================================
+// 11. Referral Black Market Detector
+// ========================================================
+function filterSeniorsList() {
+    const query = document.getElementById('seniorSearchInput').value.toLowerCase();
+    const cards = document.querySelectorAll('#seniorsList .senior-card');
+    cards.forEach(card => {
+        const name = card.getAttribute('data-name');
+        if (name.includes(query) || query === '') {
+            card.style.display = 'block';
+        } else {
+            card.style.display = 'none';
+        }
+    });
+}
+
+// ========================================================
+// 12. Skill Bankruptcy Score (Tech CIBIL)
+// ========================================================
+function toggleSkillPill(btn) {
+    if (btn.classList.contains('active')) {
+        btn.classList.remove('active', 'btn-primary');
+        btn.classList.add('btn-outline-primary');
+    } else {
+        btn.classList.add('active', 'btn-primary');
+        btn.classList.remove('btn-outline-primary');
+    }
+    recalculateCibil();
+}
+
+function recalculateCibil() {
+    const activePills = document.querySelectorAll('#skillCheckboxes .skill-toggle-pill.active');
+    let totalScore = 420; // Base baseline score
+    activePills.forEach(pill => {
+        totalScore += parseInt(pill.getAttribute('data-pts')) || 40;
+    });
+
+    totalScore = Math.min(890, totalScore);
+    document.getElementById('cibilScoreNumber').textContent = totalScore;
+
+    const liquidity = Math.round((totalScore / 900) * 100);
+    const debt = 100 - liquidity;
+
+    document.getElementById('cibilLiquidityVal').textContent = liquidity + '%';
+    document.getElementById('cibilLiquidityBar').style.width = liquidity + '%';
+
+    document.getElementById('cibilDebtVal').textContent = debt + '%';
+    document.getElementById('cibilDebtBar').style.width = debt + '%';
+
+    const badge = document.getElementById('cibilRatingBadge');
+    const eligibleEl = document.getElementById('eligibleCompanyCount');
+
+    if (totalScore >= 750) {
+        badge.className = 'badge bg-success fs-6 rounded-pill px-3 py-1 mb-3';
+        badge.textContent = 'A+ Prime Solvency';
+        eligibleEl.textContent = Math.round(totalScore * 0.22);
+    } else if (totalScore >= 600) {
+        badge.className = 'badge bg-warning text-dark fs-6 rounded-pill px-3 py-1 mb-3';
+        badge.textContent = 'B Moderate Risk';
+        eligibleEl.textContent = Math.round(totalScore * 0.14);
+    } else {
+        badge.className = 'badge bg-danger fs-6 rounded-pill px-3 py-1 mb-3';
+        badge.textContent = 'D Technical Bankruptcy';
+        eligibleEl.textContent = Math.round(totalScore * 0.05);
+    }
+}
+</script>
+{% endblock %}

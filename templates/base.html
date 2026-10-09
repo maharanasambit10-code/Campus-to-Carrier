@@ -11,8 +11,8 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="{% static 'css/style.css' %}?v=20261008_cosmic_cyber_total">
-    <link rel="stylesheet" href="{% static 'css/premium_hero.css' %}?v=20261008_cosmic_cyber_total">
+    <link rel="stylesheet" href="{% static 'css/style.css' %}?v=20261009_starting_urls">
+    <link rel="stylesheet" href="{% static 'css/premium_hero.css' %}?v=20261009_starting_urls">
     <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
@@ -26,49 +26,51 @@
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#mainNavigation" aria-controls="mainNavigation" aria-expanded="false" aria-label="Toggle navigation"><i class="bi bi-list"></i></button>
             <div class="collapse navbar-collapse" id="mainNavigation">
             <div class="nav-actions d-flex align-items-center gap-2 gap-lg-3 ms-auto">
-                <a href="{% url 'hackathon_demo' %}" class="badge bg-warning text-dark text-decoration-none px-3 py-2 rounded-pill fw-bold d-flex align-items-center gap-1 shadow-sm">
-                    <i class="bi bi-play-circle-fill"></i> 3-Min Wow Demo
-                </a>
-
-                <div class="dropdown">
-                    <a href="#" class="public-nav-link dropdown-toggle" data-bs-toggle="dropdown">
-                        <i class="bi bi-cpu me-1"></i> Engines & Tools
-                    </a>
-                    <ul class="dropdown-menu shadow border-0 rounded-3 mt-2">
-                        <li><a class="dropdown-item" href="{% url 'role_decoder' %}"><i class="bi bi-file-earmark-code me-2 text-primary"></i>01 Role Decoder</a></li>
-                        <li><a class="dropdown-item" href="{% url 'proof_miner' %}"><i class="bi bi-link-45deg me-2 text-success"></i>02 Proof Miner</a></li>
-                        <li><a class="dropdown-item" href="{% url 'readiness_score' %}"><i class="bi bi-graph-up me-2 text-warning"></i>03 Readiness Score</a></li>
-                        <li><a class="dropdown-item" href="{% url 'action_coach' %}"><i class="bi bi-compass me-2 text-info"></i>04 Action Coach</a></li>
-                        <li><hr class="dropdown-divider"></li>
-                        <li><a class="dropdown-item" href="{% url 'career_skill_graph' %}"><i class="bi bi-diagram-3-fill me-2 text-primary"></i>Career Skill Graph</a></li>
-                        <li><a class="dropdown-item" href="{% url 'interview_arena' %}"><i class="bi bi-mic-fill me-2 text-danger"></i>AI Interview Arena</a></li>
-                        <li><a class="dropdown-item" href="{% url 'placement_risk_early_warning' %}"><i class="bi bi-shield-exclamation me-2 text-danger"></i>Placement Risk Early-Warning</a></li>
-                        <li><a class="dropdown-item" href="{% url 'personalized_improvement' %}"><i class="bi bi-bullseye me-2 text-warning"></i>Next-Best Action</a></li>
-                        <li><a class="dropdown-item" href="{% url 'ecosystem_hub' %}"><i class="bi bi-diagram-2-fill me-2 text-success"></i>Complete Ecosystem</a></li>
-                        <li><a class="dropdown-item" href="{% url 'final_hackathon_pitch' %}"><i class="bi bi-file-earmark-slides me-2 text-warning"></i>Final Pitch Deck</a></li>
-                    </ul>
-                </div>
-
-                <a href="{% url 'role_mission_default' %}" class="public-nav-link"><i class="bi bi-stopwatch me-1"></i>15-min Mission</a>
-                <a href="{% url 'interview_arena' %}" class="public-nav-link"><i class="bi bi-mic me-1"></i>Interview Arena</a>
-                <a href="{% url 'college_readiness_radar' %}" class="public-nav-link"><i class="bi bi-radar me-1"></i>College Radar</a>
-                <a href="{% url 'recruiter_proof_shortlist' %}" class="public-nav-link"><i class="bi bi-award me-1"></i>Proof Shortlist</a>
-
-                <button type="button" class="theme-toggle ms-2" aria-label="Toggle theme" title="Toggle light/dark mode">
+                <button type="button" class="theme-toggle" aria-label="Toggle theme" title="Toggle light/dark mode">
                     <i class="bi bi-moon-stars-fill theme-icon dark-icon"></i>
                     <i class="bi bi-sun-fill theme-icon light-icon"></i>
                 </button>
+
                 {% if request.user.is_authenticated %}
                 <a href="{% url 'dashboard_redirect' %}" class="public-nav-link">Dashboard</a>
-                <a href="{% url 'proof_passport_dashboard' %}" class="public-nav-link"><i class="bi bi-patch-check me-1"></i>Passport</a>
+                <a href="{% url 'profile' %}" class="public-nav-link"><i class="bi bi-person me-1"></i>Profile</a>
                 <a href="{% url 'job_list' %}" class="public-nav-link">Jobs</a>
+                <a href="{% url 'job_list' %}" class="public-nav-link">Internships</a>
+                <a href="{% url 'company_list' %}" class="public-nav-link">Companies</a>
+                {% if request.user.role == 'STUDENT' %}
+                <a href="{% url 'student_applications' %}" class="public-nav-link">Applications</a>
+                {% endif %}
+                <a href="{% url 'interview_list' %}" class="public-nav-link">Interviews</a>
+                {% if request.user.role == 'RECRUITER' %}
+                <a href="{% url 'recruiter_job_create' %}" class="public-nav-link">Post Job</a>
+                {% endif %}
+
+                <div class="dropdown">
+                    <a href="#" class="public-nav-link dropdown-toggle" data-bs-toggle="dropdown">
+                        <i class="bi bi-cpu me-1"></i> AI Tools
+                    </a>
+                    <ul class="dropdown-menu shadow border-0 rounded-3 mt-2">
+                        <li><a class="dropdown-item fw-bold text-primary" href="{% url 'innovation_suite' %}"><i class="bi bi-stars me-2 text-primary"></i>12 Unique Features 🔥</a></li>
+                        <li><a class="dropdown-item" href="{% url 'career_match' %}"><i class="bi bi-stars me-2 text-primary"></i>AI Career Match</a></li>
+                        <li><a class="dropdown-item" href="{% url 'ai_mock_interview' %}"><i class="bi bi-camera-video me-2 text-info"></i>AI Mock Interview</a></li>
+                        <li><a class="dropdown-item" href="{% url 'hackathon_demo' %}"><i class="bi bi-play-circle-fill me-2 text-warning"></i>3-Min Wow Demo</a></li>
+                        <li><a class="dropdown-item" href="{% url 'role_decoder' %}"><i class="bi bi-file-earmark-code me-2 text-primary"></i>Role Decoder</a></li>
+                        <li><a class="dropdown-item" href="{% url 'proof_miner' %}"><i class="bi bi-link-45deg me-2 text-success"></i>Proof Miner</a></li>
+                        <li><a class="dropdown-item" href="{% url 'readiness_score' %}"><i class="bi bi-graph-up me-2 text-warning"></i>Readiness Score</a></li>
+                        <li><a class="dropdown-item" href="{% url 'simulator_catalog' %}"><i class="bi bi-airplane-engines me-2 text-info"></i>Flight Simulator</a></li>
+                        <li><a class="dropdown-item" href="{% url 'proof_passport_dashboard' %}"><i class="bi bi-patch-check me-2 text-primary"></i>Proof Passport</a></li>
+                    </ul>
+                </div>
+                <a href="{% url 'innovation_suite' %}" class="public-nav-link text-primary fw-bold"><i class="bi bi-rocket-takeoff-fill me-1"></i>12 Features</a>
                 <a href="{% url 'notification_list' %}" class="nav-icon-link" aria-label="Notifications"><i class="bi bi-bell fs-5"></i>{% if unread_notification_count %}<span class="notification-dot" aria-hidden="true"></span>{% endif %}</a>
+                {% if request.user.membership.is_active %}<a href="{% url 'pro_landing' %}" class="pro-nav-link"><i class="bi bi-stars"></i> PRO Member</a>{% else %}<a href="{% url 'pro_landing' %}" class="pro-nav-link"><i class="bi bi-stars"></i> Go PRO</a>{% endif %}
                 <div class="dropdown">
                     <a href="#" class="user-menu d-flex align-items-center text-decoration-none dropdown-toggle" data-bs-toggle="dropdown" aria-label="Open profile menu">
                         <span class="avatar avatar-sm me-2">{{ request.user.first_name|first|default:request.user.username|first|upper }}</span>
                         <strong class="text-dark user-name">{{ request.user.get_full_name|default:request.user.username }}</strong>
                     </a>
                     <ul class="dropdown-menu dropdown-menu-end shadow border-0 rounded-3 mt-2">
+                        <li><a class="dropdown-item fw-bold text-primary" href="{% url 'innovation_suite' %}"><i class="bi bi-stars me-2 text-primary"></i>12 Unique Features 🔥</a></li>
                         <li><a class="dropdown-item" href="{% url 'dashboard_redirect' %}"><i class="bi bi-speedometer2 me-2"></i>Dashboard</a></li>
                         <li><a class="dropdown-item" href="{% url 'hackathon_demo' %}"><i class="bi bi-stars me-2 text-warning"></i>3-Min Wow Journey</a></li>
                         <li><a class="dropdown-item" href="{% url 'role_decoder' %}"><i class="bi bi-file-earmark-code me-2"></i>Role Decoder</a></li>
@@ -83,6 +85,28 @@
                     </ul>
                 </div>
                 {% else %}
+                <a href="{% url 'home' %}" class="public-nav-link">Home</a>
+                <a href="{% url 'job_list' %}" class="public-nav-link">Jobs</a>
+                <a href="{% url 'job_list' %}" class="public-nav-link">Internships</a>
+                <a href="{% url 'company_list' %}" class="public-nav-link">Companies</a>
+                <a href="{% url 'career_match' %}" class="public-nav-link">AI Guidance</a>
+                <a href="{% url 'innovation_suite' %}" class="public-nav-link text-primary fw-bold"><i class="bi bi-rocket-takeoff-fill me-1"></i>12 Features</a>
+                <a href="{% url 'home' %}#about" class="public-nav-link">About</a>
+                <div class="dropdown">
+                    <a href="#" class="public-nav-link dropdown-toggle" data-bs-toggle="dropdown">
+                        <i class="bi bi-cpu me-1"></i> AI Tools
+                    </a>
+                    <ul class="dropdown-menu shadow border-0 rounded-3 mt-2">
+                        <li><a class="dropdown-item fw-bold text-primary" href="{% url 'innovation_suite' %}"><i class="bi bi-stars me-2 text-primary"></i>12 Unique Features 🔥</a></li>
+                        <li><a class="dropdown-item" href="{% url 'hackathon_demo' %}"><i class="bi bi-play-circle-fill me-2 text-warning"></i>3-Min Wow Demo</a></li>
+                        <li><a class="dropdown-item" href="{% url 'career_match' %}"><i class="bi bi-stars me-2 text-primary"></i>AI Career Match</a></li>
+                        <li><a class="dropdown-item" href="{% url 'role_decoder' %}"><i class="bi bi-file-earmark-code me-2 text-primary"></i>Role Decoder</a></li>
+                        <li><a class="dropdown-item" href="{% url 'proof_miner' %}"><i class="bi bi-link-45deg me-2 text-success"></i>Proof Miner</a></li>
+                        <li><a class="dropdown-item" href="{% url 'readiness_score' %}"><i class="bi bi-graph-up me-2 text-warning"></i>Readiness Score</a></li>
+                        <li><a class="dropdown-item" href="{% url 'simulator_catalog' %}"><i class="bi bi-airplane-engines me-2 text-info"></i>Flight Simulator</a></li>
+                        <li><a class="dropdown-item" href="{% url 'interview_arena' %}"><i class="bi bi-mic me-2 text-danger"></i>Interview Arena</a></li>
+                    </ul>
+                </div>
                 <a href="{% url 'login' %}" class="btn-premium-login">Login</a>
                 <a href="{% url 'student_register' %}" class="btn-premium-signup">Sign Up</a>
                 {% endif %}
@@ -160,7 +184,7 @@
         </div>
     </footer>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="{% static 'js/main.js' %}?v=20260912"></script>
+    <script src="{% static 'js/main.js' %}?v=20261009_blue_white"></script>
     <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
     <script>
         document.addEventListener('DOMContentLoaded', function() {

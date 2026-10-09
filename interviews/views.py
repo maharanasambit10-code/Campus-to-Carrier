@@ -410,6 +410,9 @@ def api_finish_mock_interview(request):
             'content_score': float(report['content_score']),
             'confidence_score': float(report['confidence_score']),
             'body_language_score': float(report['body_language_score']),
+            'tier_label': report.get('tier_label', 'Candidate Evaluation'),
+            'tier_class': report.get('tier_class', 'primary'),
+            'total_words': report.get('total_words', 0),
             'strengths': report['strengths'],
             'areas_for_improvement': report['areas_for_improvement'],
             'sample_answer': report['sample_answer'],
@@ -425,6 +428,7 @@ def api_finish_mock_interview(request):
 def mock_interview_report(request, session_id):
     """Render dedicated feedback and evaluation report for a mock interview."""
     session = get_object_or_404(MockInterviewSession, pk=session_id, user=request.user)
+    obs = session.observations or {}
     return render(request, 'interviews/report.html', {
         'session': session,
         'strengths': session.strengths,
@@ -432,6 +436,9 @@ def mock_interview_report(request, session_id):
         'practice_plan': session.practice_plan,
         'observations': session.observations,
         'transcript': session.transcript,
+        'tier_label': obs.get('tier_label'),
+        'tier_class': obs.get('tier_class'),
+        'total_words': obs.get('total_words', 0),
     })
 
 

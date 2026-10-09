@@ -36,14 +36,19 @@ document.addEventListener("DOMContentLoaded", function() {
         setInterval(updateDashboardClock, 1000);
     }
 
-    const storedTheme = localStorage.getItem('campuslink-theme');
-    const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-    const theme = storedTheme || (prefersDark ? 'dark' : 'light');
+    // Default theme is the premium blue-white combination ('light')
+    let storedTheme = localStorage.getItem('campuslink-theme-v2');
+    if (!storedTheme) {
+        // Clear previous forced dark mode and default cleanly to light
+        storedTheme = 'light';
+        localStorage.setItem('campuslink-theme-v2', 'light');
+    }
+    const theme = storedTheme === 'dark' ? 'dark' : 'light';
 
     const themeToggles = document.querySelectorAll('.theme-toggle');
     const applyTheme = (mode) => {
         document.body.setAttribute('data-theme', mode);
-        localStorage.setItem('campuslink-theme', mode);
+        localStorage.setItem('campuslink-theme-v2', mode);
         themeToggles.forEach((toggle) => {
             const isDark = mode === 'dark';
             toggle.setAttribute('aria-pressed', String(isDark));
@@ -55,7 +60,8 @@ document.addEventListener("DOMContentLoaded", function() {
 
     themeToggles.forEach((toggle) => {
         toggle.addEventListener('click', () => {
-            const nextTheme = document.body.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
+            const currentTheme = document.body.getAttribute('data-theme') || 'light';
+            const nextTheme = currentTheme === 'dark' ? 'light' : 'dark';
             applyTheme(nextTheme);
         });
     });

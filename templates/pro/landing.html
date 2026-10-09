@@ -37,7 +37,7 @@
             <div class="row g-3">
                 {% for icon, title, description, slug in pro_features %}
                 <div class="col-md-6 col-lg-4">
-                    <a href="{% if membership and membership.is_active %}{% if slug == 'resume-analyzer' %}{% url 'career_match' %}{% elif slug == 'mock-interview' %}{% url 'ai_mock_interview' %}{% elif slug == 'learning-hub' %}{% url 'course_list' %}{% elif slug == 'career-roadmap' %}{% url 'career_match' %}#skill-gap{% else %}{% url 'career_match' %}{% endif %}{% else %}{% url 'pro_feature' slug %}{% endif %}" class="premium-pro-card animated-card text-decoration-none d-flex flex-column h-100">
+                    <a href="{% if membership and membership.is_active %}{% if slug == 'resume-analyzer' %}{% url 'career_match' %}{% elif slug == 'mock-interview' %}{% url 'ai_mock_interview' %}{% elif slug == 'learning-hub' %}{% url 'course_list' %}{% elif slug == 'career-roadmap' %}{% url 'career_match' %}#skill-gap{% else %}{% url 'career_match' %}{% endif %}{% else %}{% url 'pro_feature' slug %}{% endif %}" class="card premium-pro-card p-4 rounded-4 shadow-sm border animated-card text-decoration-none d-flex flex-column h-100">
                         <div class="premium-pro-card-top">
                             <span class="premium-pro-icon"><i class="bi {{ icon }}"></i></span>
                             <span class="premium-pro-badge">PRO ✦</span>

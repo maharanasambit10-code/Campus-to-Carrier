@@ -62,5 +62,10 @@ urlpatterns = [
     path('passport/artifact/add/', views.proof_passport_add_artifact, name='proof_passport_add_artifact'),
     path('passport/peer-review/add/', views.proof_passport_add_peer_review, name='proof_passport_add_peer_review'),
     path('passport/settings/update/', views.proof_passport_update_settings, name='proof_passport_update_settings'),
+
+    # 12 Killer Unique Features for Campus to Career
+    path('unique-features/', views.innovation_suite_view, name='innovation_suite'),
+    path('unique-features/taskbar/', views.innovation_suite_view, name='innovation_taskbar'),
+    path('api/unique-features/<str:feature_name>/', views.api_feature_interaction, name='api_feature_interaction'),
 ]
 
